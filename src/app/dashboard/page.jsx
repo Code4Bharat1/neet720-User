@@ -15,6 +15,7 @@ import MostVisitedPageCard from "@/components/dashboard/MostVisitedCard";
 import PerformanceSummaryCard from "@/components/dashboard/PerformanceSummaryCard";
 import jsPDF from "jspdf";
 import Chatbot from "@/components/chatbot/chatbot";
+import Head from "next/head";
 
 const Page = () => {
   const [selectedFilter, setSelectedFilter] = useState("This Year");
@@ -45,47 +46,70 @@ const Page = () => {
     }
   };
 
-  return (  
-    <div className="md:flex min-h-screen relative bg-white">
-      {/* Sidebar for md screens (Excluded from Snapshot) */}
-      <Sidebar />
+  return (
+    <>
+      <Head>
+        <title>NEET720 Dashboard</title>
+        <meta name="description" content="Track your NEET preparation performance with real-time stats on accuracy, success rate, test scores, and personalized recommendations." />
+        <meta name="keywords" content="NEET720 Dashboard, NEET preparation, test analytics, student portal, performance tracking, medical entrance" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      {/* Main Content */}
-      <div className="w-full md:w-5/6 flex flex-col">
-        {/* Excluded Components */}
-          <Chatbot/>
-        <ToggleBar />
-        <NavBar />
-        <Hero selectedFilter={selectedFilter} />
+        {/* Open Graph Tags */}
+        <meta property="og:title" content="NEET720 Dashboard" />
+        <meta property="og:description" content="Access your NEET preparation dashboard to view test performance, statistics, and personalized study insights." />
+        <meta property="og:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/DashboardImage" />
+        <meta property="og:url" content="https://neet720.com/dashboard" />
+        <meta property="og:type" content="website" />
 
-        {/* Overview Section (Pass Download Function) */}
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="NEET720 Dashboard" />
+        <meta name="twitter:description" content="Monitor your NEET test analytics, accuracy, and performance summary on the NEET720 Dashboard." />
+        <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/DashboardImage" />
+      </Head>
 
-        <div className="md:mx-4">
-          <Overview
-            setSelectedFilter={setSelectedFilter}
-            handleDownload={handleDownload}
-          />
-        </div>
-        {/* Snapshot Area Starts Here */}
-        <div ref={captureRef} className="bg-white w-full">
-          {/* Updated Grid Layout: 3 Columns in Medium Screens */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4  mt-6">
-            <SpeedCard changeDate={selectedFilter} />
-            <AccuracyCard selectedFilter={selectedFilter} />
-            <SuccessRateCard selectedFilter={selectedFilter} />
+      <div className="md:flex min-h-screen relative bg-white">
+        {/* Sidebar for md screens (Excluded from Snapshot) */}
+        <Sidebar />
+
+        {/* Main Content */}
+        <div className="w-full md:w-5/6 flex flex-col">
+          {/* Excluded Components */}
+          <Chatbot />
+          <ToggleBar />
+          <NavBar />
+          <Hero selectedFilter={selectedFilter} />
+
+          {/* Overview Section (Pass Download Function) */}
+
+          <div className="md:mx-4">
+            <Overview
+              setSelectedFilter={setSelectedFilter}
+              handleDownload={handleDownload}
+            />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 mt-6">
-            <OverallPerformanceCard selectedFilter={selectedFilter} />
-            <MostVisitedPageCard selectedFilter={selectedFilter} />
-            <PerformanceSummaryCard selectedFilter={selectedFilter} />
+          {/* Snapshot Area Starts Here */}
+          <div ref={captureRef} className="bg-white w-full">
+            {/* Updated Grid Layout: 3 Columns in Medium Screens */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4  mt-6">
+              <SpeedCard changeDate={selectedFilter} />
+              <AccuracyCard selectedFilter={selectedFilter} />
+              <SuccessRateCard selectedFilter={selectedFilter} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 mt-6">
+              <OverallPerformanceCard selectedFilter={selectedFilter} />
+              <MostVisitedPageCard selectedFilter={selectedFilter} />
+              <PerformanceSummaryCard selectedFilter={selectedFilter} />
+            </div>
           </div>
-        </div>
-        {/* Snapshot Area Ends Here */}
+          {/* Snapshot Area Ends Here */}
 
-        {/* Bottom Navbar for mobile screens (Excluded from Snapshot) */}
-        <BottomNavbar selectedFilter={selectedFilter} />
+          {/* Bottom Navbar for mobile screens (Excluded from Snapshot) */}
+          <BottomNavbar selectedFilter={selectedFilter} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
