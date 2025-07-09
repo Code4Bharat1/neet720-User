@@ -42,6 +42,7 @@ const Chapters = () => {
         });
 
         setChapters(dynamicChapters);
+        console.log("Chapters fetched:", dynamicChapters);
       } catch (error) {
         console.error(`Error fetching chapters:`, error);
       }

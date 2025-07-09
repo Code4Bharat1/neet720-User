@@ -1,16 +1,40 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaAtom, FaFlask, FaDna, FaClock, FaChevronLeft, FaChevronRight, FaEraser, FaBolt } from "react-icons/fa";
+import {
+  FaAtom,
+  FaFlask,
+  FaDna,
+  FaClock,
+  FaChevronLeft,
+  FaChevronRight,
+  FaEraser,
+  FaBolt,
+} from "react-icons/fa";
 import { MdFlag, MdDone, MdVisibility } from "react-icons/md";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { IoMdCheckmark } from "react-icons/io";
 import axios from "axios";
 
 const subjectIcons = {
-  Physics: { icon: FaAtom, color: "text-blue-600", gradientFrom: "from-blue-400", gradientTo: "to-blue-600" },
-  Chemistry: { icon: FaFlask, color: "text-green-600", gradientFrom: "from-green-400", gradientTo: "to-green-600" },
-  Biology: { icon: FaDna, color: "text-red-600", gradientFrom: "from-red-400", gradientTo: "to-red-600" },
+  Physics: {
+    icon: FaAtom,
+    color: "text-blue-600",
+    gradientFrom: "from-blue-400",
+    gradientTo: "to-blue-600",
+  },
+  Chemistry: {
+    icon: FaFlask,
+    color: "text-green-600",
+    gradientFrom: "from-green-400",
+    gradientTo: "to-green-600",
+  },
+  Biology: {
+    icon: FaDna,
+    color: "text-red-600",
+    gradientFrom: "from-red-400",
+    gradientTo: "to-red-600",
+  },
 };
 
 const formatTime = (seconds) => {
@@ -81,34 +105,33 @@ const TestInterface = () => {
 
   // Helper to store marks live (prevents double counting)
   const updateMarks = (subject, qIdx, selectedKey, correctKey) => {
-  let marks = JSON.parse(localStorage.getItem("marks") || "{}");
-  let answerIndexKey = `${subject}-${qIdx}`;
-  let prevSelected = answers[answerIndexKey];
+    let marks = JSON.parse(localStorage.getItem("marks") || "{}");
+    let answerIndexKey = `${subject}-${qIdx}`;
+    let prevSelected = answers[answerIndexKey];
 
-  // Make sure marks[subject] is always a number
-  if (!(subject in marks)) marks[subject] = 0;
+    // Make sure marks[subject] is always a number
+    if (!(subject in marks)) marks[subject] = 0;
 
-  // Undo the effect of the previous answer if it existed
-  if (prevSelected !== undefined) {
-    if (prevSelected === correctKey) {
-      // Previously correct, so remove +4
-      marks[subject] -= 4;
-    } else {
-      // Previously wrong, so remove -1 (i.e., add +1)
-      marks[subject] += 1;
+    // Undo the effect of the previous answer if it existed
+    if (prevSelected !== undefined) {
+      if (prevSelected === correctKey) {
+        // Previously correct, so remove +4
+        marks[subject] -= 4;
+      } else {
+        // Previously wrong, so remove -1 (i.e., add +1)
+        marks[subject] += 1;
+      }
     }
-  }
 
-  // Apply new answer's effect
-  if (selectedKey === correctKey) {
-    marks[subject] += 4;
-  } else {
-    marks[subject] -= 1;
-  }
+    // Apply new answer's effect
+    if (selectedKey === correctKey) {
+      marks[subject] += 4;
+    } else {
+      marks[subject] -= 1;
+    }
 
-  localStorage.setItem("marks", JSON.stringify(marks));
-};
-
+    localStorage.setItem("marks", JSON.stringify(marks));
+  };
 
   const handleOptionClick = (subject, qIdx, selectedKey) => {
     if (submitted) return;
@@ -144,7 +167,8 @@ const TestInterface = () => {
   const handleReviewLater = () => {
     setMarkedForReview((prev) => ({
       ...prev,
-      [`${currentSubject}-${currentQuestion}`]: !prev[`${currentSubject}-${currentQuestion}`],
+      [`${currentSubject}-${currentQuestion}`]:
+        !prev[`${currentSubject}-${currentQuestion}`],
     }));
   };
 
@@ -205,12 +229,15 @@ const TestInterface = () => {
   // Stats
   const getQuestionStats = () => {
     const total = numQuestions;
-    const answered = Object.keys(answers)
-      .filter(key => key.startsWith(`${currentSubject}-`)).length;
-    const marked = Object.keys(markedForReview)
-      .filter(key => key.startsWith(`${currentSubject}-`) && markedForReview[key]).length;
-    const visited = Object.keys(visitedQuestions)
-      .filter(key => key.startsWith(`${currentSubject}-`)).length;
+    const answered = Object.keys(answers).filter((key) =>
+      key.startsWith(`${currentSubject}-`)
+    ).length;
+    const marked = Object.keys(markedForReview).filter(
+      (key) => key.startsWith(`${currentSubject}-`) && markedForReview[key]
+    ).length;
+    const visited = Object.keys(visitedQuestions).filter((key) =>
+      key.startsWith(`${currentSubject}-`)
+    ).length;
     const notVisited = total - visited;
     return { total, answered, marked, visited, notVisited };
   };
@@ -225,19 +252,39 @@ const TestInterface = () => {
             {/* Timer */}
             <div className="relative">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${isLowTime ? 'bg-red-100 animate-pulse' : 'bg-blue-100'}`}>
-                  <FaClock className={`text-xl ${isLowTime ? 'text-red-600' : 'text-blue-600'}`} />
+                <div
+                  className={`p-2 rounded-full ${
+                    isLowTime ? "bg-red-100 animate-pulse" : "bg-blue-100"
+                  }`}
+                >
+                  <FaClock
+                    className={`text-xl ${
+                      isLowTime ? "text-red-600" : "text-blue-600"
+                    }`}
+                  />
                 </div>
                 <div className="flex gap-1">
-                  <div className={`${isLowTime ? 'bg-red-600 animate-pulse' : 'bg-gray-900'} text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center`}>
+                  <div
+                    className={`${
+                      isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center`}
+                  >
                     {formattedTime.hours}
                   </div>
                   <span className="text-gray-600 self-center font-bold">:</span>
-                  <div className={`${isLowTime ? 'bg-red-600 animate-pulse' : 'bg-gray-900'} text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center`}>
+                  <div
+                    className={`${
+                      isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center`}
+                  >
                     {formattedTime.minutes}
                   </div>
                   <span className="text-gray-600 self-center font-bold">:</span>
-                  <div className={`${isLowTime ? 'bg-red-600 animate-pulse' : 'bg-gray-900'} text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center`}>
+                  <div
+                    className={`${
+                      isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center`}
+                  >
                     {formattedTime.seconds}
                   </div>
                 </div>
@@ -257,14 +304,22 @@ const TestInterface = () => {
                       setCurrentQuestion(0);
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all transform hover:scale-105 ${
-                      isActive 
-                        ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-lg` 
-                        : 'bg-white/80 text-gray-700 hover:bg-white/90 shadow border border-gray-200'
+                      isActive
+                        ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-lg`
+                        : "bg-white/80 text-gray-700 hover:bg-white/90 shadow border border-gray-200"
                     }`}
                   >
-                    <SubjectIcon className={`text-lg ${isActive ? 'text-white' : config.color}`} />
+                    <SubjectIcon
+                      className={`text-lg ${
+                        isActive ? "text-white" : config.color
+                      }`}
+                    />
                     <span className="font-medium">{subject}</span>
-                    <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : config.color}`} />
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        isActive ? "bg-white" : config.color
+                      }`}
+                    />
                   </button>
                 );
               })}
@@ -290,14 +345,22 @@ const TestInterface = () => {
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${subjectConfig.gradientFrom} ${subjectConfig.gradientTo} flex items-center justify-center text-white shadow-lg`}>
+                    <div
+                      className={`w-10 h-10 rounded-lg bg-gradient-to-br ${subjectConfig.gradientFrom} ${subjectConfig.gradientTo} flex items-center justify-center text-white shadow-lg`}
+                    >
                       <span className="text-xl">?</span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className={`font-semibold ${subjectConfig.color}`}>{currentSubject}</span>
+                        <span
+                          className={`font-semibold ${subjectConfig.color}`}
+                        >
+                          {currentSubject}
+                        </span>
                         <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                        <span className="text-gray-500">Question {currentQuestion + 1} of {numQuestions}</span>
+                        <span className="text-gray-500">
+                          Question {currentQuestion + 1} of {numQuestions}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -305,7 +368,11 @@ const TestInterface = () => {
                     {currentQuestionData?.question}
                   </h2>
                   {currentQuestionData?.diagramUrl && (
-                    <img src={currentQuestionData.diagramUrl} alt="Diagram" className="my-2 max-w-xs" />
+                    <img
+                      src={currentQuestionData.diagramUrl}
+                      alt="Diagram"
+                      className="my-2 max-w-xs"
+                    />
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -313,8 +380,8 @@ const TestInterface = () => {
                     onClick={handleReviewLater}
                     className={`p-3 rounded-xl transition-all transform hover:scale-110 ${
                       markedForReview[`${currentSubject}-${currentQuestion}`]
-                        ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                     title="Mark for review"
                   >
@@ -324,33 +391,64 @@ const TestInterface = () => {
               </div>
               {/* Options */}
               <div className="space-y-4 mb-8">
-                {currentQuestionData && currentQuestionData.options && typeof currentQuestionData.options === "object" ? (
-                  Object.entries(currentQuestionData.options).map(([key, value]) => {
-                    const isSelected = answers[`${currentSubject}-${currentQuestion}`] === key;
-                    return (
-                      <button
-                        key={key}
-                        onClick={() => handleOptionClick(currentSubject, currentQuestion, key)}
-                        className={`w-full text-left p-5 rounded-xl border-2 transition-all transform hover:scale-[1.01] relative overflow-hidden ${
-                          isSelected 
-                            ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900' 
-                            : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                            isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
-                          }`}>
-                            {isSelected && <IoMdCheckmark className="text-white text-sm" />}
-                          </div>
-                          <span className="text-base leading-relaxed">
-                            <span className="font-medium text-gray-600 mr-2">{key}.</span>
-                            {value}
-                          </span>
+                {currentQuestionData &&
+                currentQuestionData.options &&
+                typeof currentQuestionData.options === "object" ? (
+                  Object.entries(currentQuestionData.options).map(
+                    ([key, value], idx) => {
+                      const isSelected =
+                        answers[`${currentSubject}-${currentQuestion}`] === key;
+                      const serialLetter = String.fromCharCode(65 + idx); // A, B, C, D...
+                      const inputName = `option-${currentSubject}-${currentQuestion}`;
+                      return (
+                        <div key={key} className="flex items-center gap-4">
+                          <input
+                            type="radio"
+                            id={`${inputName}-${key}`}
+                            name={inputName}
+                            value={key}
+                            checked={isSelected}
+                            onChange={() =>
+                              handleOptionClick(
+                                currentSubject,
+                                currentQuestion,
+                                key
+                              )
+                            }
+                            className="peer hidden"
+                          />
+                          <label
+                            htmlFor={`${inputName}-${key}`}
+                            className={`
+    flex items-center cursor-pointer w-full p-5 rounded-xl border-2 transition-all hover:scale-[1.01] relative overflow-hidden
+    select-none
+    mb-0
+    border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50
+    peer-checked:border-blue-500 peer-checked:bg-gradient-to-r peer-checked:from-blue-50 peer-checked:to-indigo-50 peer-checked:text-blue-900
+  `}
+                          >
+                            <span
+                              className={`
+      w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold text-lg mr-4
+      ${
+        isSelected
+          ? "bg-blue-500 text-white border-blue-500"
+          : "bg-gray-200 text-blue-600 border-gray-300"
+      }
+      peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500
+      transition-all duration-200
+    `}
+                            >
+                              {serialLetter}
+                            </span>
+                            <span className="text-base leading-relaxed">
+                              {value}
+                            </span>
+                          </label>
                         </div>
-                      </button>
-                    );
-                  })
+                      );
+                    }
+                  )
                 ) : (
                   <p className="text-red-500 text-sm">Invalid options</p>
                 )}
@@ -403,7 +501,9 @@ const TestInterface = () => {
                     <MdDone className="text-green-300" />
                     <span className="text-sm">Answered</span>
                   </div>
-                  <div className="text-2xl font-bold">{stats.answered}/{stats.total}</div>
+                  <div className="text-2xl font-bold">
+                    {stats.answered}/{stats.total}
+                  </div>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
@@ -414,7 +514,7 @@ const TestInterface = () => {
                 </div>
               </div>
               <div className="mt-4 bg-white/20 rounded-full h-2">
-                <div 
+                <div
                   className="h-full bg-yellow-300 rounded-full transition-all duration-500"
                   style={{ width: `${(stats.answered / stats.total) * 100}%` }}
                 ></div>
@@ -435,20 +535,27 @@ const TestInterface = () => {
             <div className="grid grid-cols-5 gap-2">
               {questionsData[currentSubject]?.map((_, index) => {
                 const isCurrentQuestion = currentQuestion === index;
-                const isAnswered = answers[`${currentSubject}-${index}`] !== undefined;
+                const isAnswered =
+                  answers[`${currentSubject}-${index}`] !== undefined;
                 const isMarked = markedForReview[`${currentSubject}-${index}`];
-                const isVisited = visitedQuestions[`${currentSubject}-${index}`];
-                let buttonClass = 'w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 relative ';
+                const isVisited =
+                  visitedQuestions[`${currentSubject}-${index}`];
+                let buttonClass =
+                  "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 relative ";
                 if (isCurrentQuestion) {
-                  buttonClass += 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg scale-110';
+                  buttonClass +=
+                    "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg scale-110";
                 } else if (isMarked) {
-                  buttonClass += 'bg-gradient-to-br from-red-500 to-pink-500 text-white';
+                  buttonClass +=
+                    "bg-gradient-to-br from-red-500 to-pink-500 text-white";
                 } else if (isAnswered) {
-                  buttonClass += 'bg-gradient-to-br from-green-500 to-emerald-500 text-white';
+                  buttonClass +=
+                    "bg-gradient-to-br from-green-500 to-emerald-500 text-white";
                 } else if (isVisited) {
-                  buttonClass += 'bg-gradient-to-br from-orange-400 to-pink-400 text-white';
+                  buttonClass +=
+                    "bg-gradient-to-br from-orange-400 to-pink-400 text-white";
                 } else {
-                  buttonClass += 'bg-gray-100 text-gray-600 hover:bg-gray-200';
+                  buttonClass += "bg-gray-100 text-gray-600 hover:bg-gray-200";
                 }
                 return (
                   <button
@@ -467,8 +574,13 @@ const TestInterface = () => {
       {/* CSS for shimmer/floats */}
       <style jsx>{`
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
         }
         .animate-float {
           animation: float 6s ease-in-out infinite;

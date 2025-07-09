@@ -70,7 +70,7 @@ const Sidebar = ({ isOpen }) => {
       >
         {/* Logo Section */}
         <div className="p-4 flex justify-center">
-          <Image src="/nexcore-logo-pc.png" alt="Nexcore Logo" width={160} height={40} />
+          <Image src="/neet720_logo.jpg" className="object-cover w-40 h-20" alt="Neet720 Logo" width={160} height={40} />
         </div>
 
         {/* Sidebar Menu */}
