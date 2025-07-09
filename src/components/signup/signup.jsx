@@ -100,7 +100,7 @@ const SignUpPage = () => {
       {/* Left Section */}
       <div className="hidden md:flex md:w-[40%] bg-gradient-to-b from-[#0077B6] to-[#ADE8F4] items-center justify-center">
         <Image
-          src="/nexcore-logo-pc.png"
+          src="/neet720_logo.jpg"
           alt="Nexcore Logo"
           width={300}
           height={200}
