@@ -32,6 +32,8 @@ const Page = () => {
         <meta name="twitter:title" content="NEET720 Past Tests - Review Performance & Track Progress" />
         <meta name="twitter:description" content="Track your NEET preparation journey by reviewing scores, mistakes, and improvement areas on NEET720." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/PastTest" />
+
+        <link rel="canonical" href="https://neet720.com/pasttest" />
       </Head>
       <div className="md:flex min-h-screen relative">
         {/* Sidebar for md screens */}

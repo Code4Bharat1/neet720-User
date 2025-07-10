@@ -264,6 +264,7 @@ const Page = () => {
         <meta name="twitter:title" content="NEET720 Scholarships & Credits – Earn Rewards Through Your Test Performance" />
         <meta name="twitter:description" content="Boost your NEET journey by earning credits and scholarships for every test you take. Track your points and aim for excellence with NEET720." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/scholarship" />
+        <link rel="canonical" href="https://neet720.com/credits" />
       </Head>
 
       <div className='flex min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50'>
@@ -433,8 +434,8 @@ const Page = () => {
               <div className="flex space-x-8">
                 <button
                   className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'results'
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     } transition`}
                   onClick={() => setActiveTab('results')}
                 >
@@ -442,8 +443,8 @@ const Page = () => {
                 </button>
                 <button
                   className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'subscriptions'
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     } transition`}
                   onClick={() => setActiveTab('subscriptions')}
                 >
@@ -557,8 +558,8 @@ const Page = () => {
                                   onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
                                   disabled={currentPage === 0}
                                   className={`px-3 py-1 rounded-md text-sm ${currentPage === 0
-                                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                      : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
                                     }`}
                                 >
                                   Previous
@@ -570,8 +571,8 @@ const Page = () => {
                                   onClick={() => setCurrentPage(p => p + 1)}
                                   disabled={(currentPage + 1) * 10 >= allTests.length}
                                   className={`px-3 py-1 rounded-md text-sm ${(currentPage + 1) * 10 >= allTests.length
-                                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                      : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
                                     }`}
                                 >
                                   Next
@@ -675,8 +676,8 @@ const Page = () => {
                           onClick={() => handleRedeemClick(plan)}
                           disabled={results.totals.overallTotal < plan.points}
                           className={`w-full py-3 px-4 rounded-lg font-medium text-sm text-center transition shadow-md ${results.totals.overallTotal >= plan.points
-                              ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg transform hover:-translate-y-0.5`
-                              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg transform hover:-translate-y-0.5`
+                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
                         >
                           {results.totals.overallTotal >= plan.points

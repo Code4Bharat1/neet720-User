@@ -67,6 +67,7 @@ const Page = () => {
         <meta name="twitter:title" content="NEET720 Dashboard" />
         <meta name="twitter:description" content="Monitor your NEET test analytics, accuracy, and performance summary on the NEET720 Dashboard." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/DashboardImage" />
+        <link rel="canonical" href="https://neet720.com/dashboard" />
       </Head>
 
       <div className="md:flex min-h-screen relative bg-white">

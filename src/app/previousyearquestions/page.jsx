@@ -72,6 +72,8 @@ const PreviousYearList = () => {
         <meta name="twitter:title" content="NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online" />
         <meta name="twitter:description" content="NEET720 helps you prepare better with official previous year NEET papers from 2005 to 2024. Start practicing full tests online for free." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/pyqs.png" />
+
+        <link rel="canonical" href="https://neet720.com/previousyearquestions" />
       </Head>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container mx-auto px-4 py-12">
