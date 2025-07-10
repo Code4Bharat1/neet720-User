@@ -334,7 +334,7 @@ const handleAddMoreQuestions = async (count = 5) => {
       const parsed = JSON.parse(optionsString);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
-      return optionsString.split(",").map((opt) => opt.trim());
+      return optionsString?.split(",").map((opt) => opt.trim());
     }
   };
 
@@ -628,12 +628,12 @@ const handleAddMoreQuestions = async (count = 5) => {
                     </span>
                   </div>
                   <h2 className="text-xl font-semibold text-slate-800 leading-relaxed">
-                    {currentQuestion.questionText}
+                    {currentQuestion.question_text}
                   </h2>
                 </div>
 
                 <div className="space-y-3">
-                  {parseQuestionOptions(currentQuestion.questionOption).map(
+                  {parseQuestionOptions(currentQuestion.questionOption)?.map(
                     (opt, idx) => (
                       <div
                         key={idx}
