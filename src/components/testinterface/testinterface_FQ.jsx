@@ -111,7 +111,7 @@ const QuizInterface = () => {
           numberOfQuestions: numberOfQuestions,
           difficulty: difficulty.toLowerCase(),
           excludeIds: [], // No exclusions for first fetch
-        }
+        }//questions
       );
       setQuestions(res.data.questions);
       console.log("Fetched questions:", res.data.questions, difficulty, numberOfQuestions);
