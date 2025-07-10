@@ -32,6 +32,8 @@ const Page = () => {
         <meta name="twitter:title" content="NEET720 Exam Plan - Biology, Chemistry & Physics Preparation" />
         <meta name="twitter:description" content="Personalize your NEET exam plan for Biology, Chemistry, and Physics and track your subject-wise study progress and performance." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/ExamPlan" />
+
+        <link rel="canonical" href="https://neet720.com/examplan" />
       </Head>
       <div className="md:flex min-h-screen relative">
         {/* Sidebar for md screens */}
