@@ -30,12 +30,15 @@ const QuizInterface = () => {
   const [error, setError] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(difficultySettings[difficulty].timeLimit);
+  const [timeLeft, setTimeLeft] = useState(
+    difficultySettings[difficulty].timeLimit
+  );
   const [showResult, setShowResult] = useState(false);
   const [botPrompt, setBotPrompt] = useState("");
   const [showFinalResults, setShowFinalResults] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [botThinking, setBotThinking] = useState(false);
+  const serialLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const timerRef = useRef(null);
   const thinkingRef = useRef(null);
 
@@ -43,26 +46,40 @@ const QuizInterface = () => {
   const currentAnswer = answers[currentQuestion.id];
 
   //useEffect to control the escape screen
-    useEffect (() => {
-      const handleFullScreenChange = () =>{
-        if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement && !document.mozFullscreenElement) {
-          //push the page 
-          router.push("/testselection")
-        }
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (
+        !document.fullscreenElement &&
+        !document.webkitFullscreenElement &&
+        !document.msFullscreenElement &&
+        !document.mozFullscreenElement
+      ) {
+        //push the page
+        router.push("/testselection");
       }
-  
-      document.addEventListener("fullscreenchange", handleFullScreenChange);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
     document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
     document.addEventListener("mozfullscreenchange", handleFullScreenChange);
     document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-  
+
     return () => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullScreenChange
+      );
     };
-    },[])
+  }, []);
 
   useEffect(() => {
     fetchQuestions();
@@ -87,10 +104,13 @@ const QuizInterface = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`, {
-        numberOfQuestions,
-        difficulty,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`,
+        {
+          numberOfQuestions,
+          difficulty,
+        }
+      );
       setQuestions(res.data.questions);
     } catch (err) {
       setError("Failed to fetch questions");
@@ -102,7 +122,7 @@ const QuizInterface = () => {
   const startBotThinking = () => {
     setBotThinking(true);
     setBotPrompt("🤔 Let me think about this question...");
-    
+
     const thinkingPrompts = [
       "🤔 Hmm, analyzing the options...",
       "🧠 Let me process this carefully...",
@@ -113,7 +133,7 @@ const QuizInterface = () => {
       "💡 This is a tricky one!",
       "⏳ Time is ticking, but I'm confident...",
       "🤖 My circuits are working hard on this!",
-      "🏃‍♂️ Racing against time here..."
+      "🏃‍♂️ Racing against time here...",
     ];
 
     let promptIndex = 0;
@@ -156,13 +176,21 @@ const QuizInterface = () => {
     if (currentAnswer === undefined) {
       const correctAnswer = currentQuestion.correctAnswer;
       handleOptionSelect(currentQuestion.id, correctAnswer, true);
-      setBotPrompt("⏱️ Time's up! I got this one for my team. Try to be faster!");
+      setBotPrompt(
+        "⏱️ Time's up! I got this one for my team. Try to be faster!"
+      );
     }
     setShowResult(true);
   };
 
-  const handleOptionSelect = (questionId, selectedOption, isAutoAnswered = false) => {
-    const correctAnswer = questions.find((q) => q.id === questionId)?.correctAnswer;
+  const handleOptionSelect = (
+    questionId,
+    selectedOption,
+    isAutoAnswered = false
+  ) => {
+    const correctAnswer = questions.find(
+      (q) => q.id === questionId
+    )?.correctAnswer;
     const isCorrect = selectedOption === correctAnswer;
 
     setAnswers((prev) => ({
@@ -194,7 +222,7 @@ const QuizInterface = () => {
           : "🤖 My answer would have been correct!",
         isCorrect
           ? "🏆 You got it before me this time!"
-          : "🎯 I was just about to pick the right one!"
+          : "🎯 I was just about to pick the right one!",
       ];
       setBotPrompt(feedbacks[Math.floor(Math.random() * feedbacks.length)]);
     }
@@ -241,8 +269,12 @@ const QuizInterface = () => {
       totalAnswered++;
     });
 
-    const studentAccuracy = totalAnswered > 0 ? (studentCorrect / Object.keys(answers).length) * 100 : 0;
-    const botAccuracy = totalAnswered > 0 ? (botCorrect / Object.keys(answers).length) * 100 : 0;
+    const studentAccuracy =
+      totalAnswered > 0
+        ? (studentCorrect / Object.keys(answers).length) * 100
+        : 0;
+    const botAccuracy =
+      totalAnswered > 0 ? (botCorrect / Object.keys(answers).length) * 100 : 0;
 
     return {
       studentCorrect,
@@ -251,7 +283,12 @@ const QuizInterface = () => {
       totalAnswered,
       studentAccuracy: Math.round(studentAccuracy),
       botAccuracy: Math.round(botAccuracy),
-      winner: studentCorrect > botCorrect ? 'student' : studentCorrect < botCorrect ? 'bot' : 'tie'
+      winner:
+        studentCorrect > botCorrect
+          ? "student"
+          : studentCorrect < botCorrect
+          ? "bot"
+          : "tie",
     };
   };
 
@@ -265,13 +302,15 @@ const QuizInterface = () => {
   };
 
   const getOptionClasses = (opt) => {
-    let classes = "flex items-center p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group";
+    let classes =
+      "flex items-center p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group";
     const correctAnswer = currentQuestion.correctAnswer;
     const selectedOption = currentAnswer?.selectedOption;
 
     if (showResult) {
       if (opt === correctAnswer) {
-        classes += " bg-emerald-50 border-emerald-400 shadow-emerald-100 shadow-lg";
+        classes +=
+          " bg-emerald-50 border-emerald-400 shadow-emerald-100 shadow-lg";
       } else if (opt === selectedOption) {
         classes += " bg-red-50 border-red-400 shadow-red-100 shadow-lg";
       } else {
@@ -280,52 +319,71 @@ const QuizInterface = () => {
     } else if (opt === selectedOption) {
       classes += " bg-indigo-50 border-indigo-400 shadow-indigo-100 shadow-lg";
     } else {
-      classes += " border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-md";
+      classes +=
+        " border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-md";
     }
 
     return classes;
   };
 
   const getTimerColor = () => {
-    if (timeLeft > difficultySettings[difficulty].timeLimit * 0.6) return 'text-emerald-500 bg-emerald-100';
-    if (timeLeft > difficultySettings[difficulty].timeLimit * 0.3) return 'text-amber-500 bg-amber-100';
-    return 'text-red-500 bg-red-100';
+    if (timeLeft > difficultySettings[difficulty].timeLimit * 0.6)
+      return "text-emerald-500 bg-emerald-100";
+    if (timeLeft > difficultySettings[difficulty].timeLimit * 0.3)
+      return "text-amber-500 bg-amber-100";
+    return "text-red-500 bg-red-100";
   };
 
   if (showFinalResults) {
     const results = calculateResults();
-    
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-slate-800 mb-4">Quiz Complete!</h1>
-            <p className="text-xl text-slate-600">Let's see how you did against the Bot</p>
+            <h1 className="text-4xl font-bold text-slate-800 mb-4">
+              Quiz Complete!
+            </h1>
+            <p className="text-xl text-slate-600">
+              Let's see how you did against the Bot
+            </p>
           </div>
 
           {/* Winner Announcement */}
           <div className="bg-white rounded-3xl p-8 mb-8 shadow-xl border border-slate-200">
             <div className="text-center">
-              {results.winner === 'student' && (
+              {results.winner === "student" && (
                 <>
                   <div className="text-6xl mb-4">🏆</div>
-                  <h2 className="text-3xl font-bold text-emerald-600 mb-2">You Won!</h2>
-                  <p className="text-slate-600">Congratulations! You outperformed the Quiz Bot!</p>
+                  <h2 className="text-3xl font-bold text-emerald-600 mb-2">
+                    You Won!
+                  </h2>
+                  <p className="text-slate-600">
+                    Congratulations! You outperformed the Quiz Bot!
+                  </p>
                 </>
               )}
-              {results.winner === 'bot' && (
+              {results.winner === "bot" && (
                 <>
                   <div className="text-6xl mb-4">🤖</div>
-                  <h2 className="text-3xl font-bold text-red-600 mb-2">Bot Wins!</h2>
-                  <p className="text-slate-600">The Quiz Bot got more answers right this time. Try again!</p>
+                  <h2 className="text-3xl font-bold text-red-600 mb-2">
+                    Bot Wins!
+                  </h2>
+                  <p className="text-slate-600">
+                    The Quiz Bot got more answers right this time. Try again!
+                  </p>
                 </>
               )}
-              {results.winner === 'tie' && (
+              {results.winner === "tie" && (
                 <>
                   <div className="text-6xl mb-4">🤝</div>
-                  <h2 className="text-3xl font-bold text-indigo-600 mb-2">It's a Tie!</h2>
-                  <p className="text-slate-600">Great match! You and the Bot are evenly matched!</p>
+                  <h2 className="text-3xl font-bold text-indigo-600 mb-2">
+                    It's a Tie!
+                  </h2>
+                  <p className="text-slate-600">
+                    Great match! You and the Bot are evenly matched!
+                  </p>
                 </>
               )}
             </div>
@@ -340,18 +398,24 @@ const QuizInterface = () => {
                   <span className="text-2xl">👤</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">Your Score</h3>
+                  <h3 className="text-xl font-bold text-slate-800">
+                    Your Score
+                  </h3>
                   <p className="text-slate-600">Human Player</p>
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600">Correct Answers:</span>
-                  <span className="text-2xl font-bold text-emerald-600">{results.studentCorrect}</span>
+                  <span className="text-2xl font-bold text-emerald-600">
+                    {results.studentCorrect}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600">Accuracy:</span>
-                  <span className="text-xl font-semibold text-indigo-600">{results.studentAccuracy}%</span>
+                  <span className="text-xl font-semibold text-indigo-600">
+                    {results.studentAccuracy}%
+                  </span>
                 </div>
               </div>
             </div>
@@ -363,18 +427,24 @@ const QuizInterface = () => {
                   <span className="text-2xl">🤖</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">Bot Score</h3>
+                  <h3 className="text-xl font-bold text-slate-800">
+                    Bot Score
+                  </h3>
                   <p className="text-slate-600">AI Assistant</p>
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600">Correct Answers:</span>
-                  <span className="text-2xl font-bold text-emerald-600">{results.botCorrect}</span>
+                  <span className="text-2xl font-bold text-emerald-600">
+                    {results.botCorrect}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600">Accuracy:</span>
-                  <span className="text-xl font-semibold text-indigo-600">{results.botAccuracy}%</span>
+                  <span className="text-xl font-semibold text-indigo-600">
+                    {results.botAccuracy}%
+                  </span>
                 </div>
               </div>
             </div>
@@ -382,22 +452,32 @@ const QuizInterface = () => {
 
           {/* Detailed Stats */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 mb-8">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">Quiz Statistics</h3>
+            <h3 className="text-xl font-bold text-slate-800 mb-4">
+              Quiz Statistics
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-slate-50 rounded-xl">
-                <div className="text-2xl font-bold text-slate-800">{results.totalQuestions}</div>
+                <div className="text-2xl font-bold text-slate-800">
+                  {results.totalQuestions}
+                </div>
                 <div className="text-sm text-slate-600">Total Questions</div>
               </div>
               <div className="text-center p-4 bg-slate-50 rounded-xl">
-                <div className="text-2xl font-bold text-slate-800">{results.totalAnswered}</div>
+                <div className="text-2xl font-bold text-slate-800">
+                  {results.totalAnswered}
+                </div>
                 <div className="text-sm text-slate-600">Questions Answered</div>
               </div>
               <div className="text-center p-4 bg-slate-50 rounded-xl">
-                <div className="text-2xl font-bold text-slate-800 capitalize">{difficulty}</div>
+                <div className="text-2xl font-bold text-slate-800 capitalize">
+                  {difficulty}
+                </div>
                 <div className="text-sm text-slate-600">Difficulty Level</div>
               </div>
               <div className="text-center p-4 bg-slate-50 rounded-xl">
-                <div className="text-2xl font-bold text-slate-800">{difficultySettings[difficulty].timeLimit}s</div>
+                <div className="text-2xl font-bold text-slate-800">
+                  {difficultySettings[difficulty].timeLimit}s
+                </div>
                 <div className="text-sm text-slate-600">Time Per Question</div>
               </div>
             </div>
@@ -434,7 +514,9 @@ const QuizInterface = () => {
                 <span className="text-2xl">⚡</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Fast Quiz Challenge</h1>
+                <h1 className="text-2xl font-bold text-slate-800">
+                  Fast Quiz Challenge
+                </h1>
                 <p className="text-slate-600 capitalize">
                   {difficulty} Level • {numberOfQuestions} Questions
                 </p>
@@ -470,22 +552,29 @@ const QuizInterface = () => {
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${getTimerColor()}`}>
+                    <div
+                      className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${getTimerColor()}`}
+                    >
                       {timeLeft}
                     </div>
                     <div>
-                      <div className="font-semibold text-slate-800">Time Remaining</div>
+                      <div className="font-semibold text-slate-800">
+                        Time Remaining
+                      </div>
                       <div className="text-sm text-slate-600">seconds left</div>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
                     <div className="text-sm text-slate-600 mb-2">Progress</div>
                     <div className="w-32 bg-slate-200 rounded-full h-3">
                       <div
                         className="bg-indigo-600 h-3 rounded-full transition-all duration-300"
                         style={{
-                          width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
+                          width: `${
+                            ((currentQuestionIndex + 1) / questions.length) *
+                            100
+                          }%`,
                         }}
                       ></div>
                     </div>
@@ -507,39 +596,64 @@ const QuizInterface = () => {
                 </div>
 
                 <div className="space-y-3">
-                  {parseQuestionOptions(currentQuestion.questionOption).map((opt, idx) => (
-                    <div
-                      key={idx}
-                      className={getOptionClasses(opt)}
-                      onClick={() => !showResult && handleOptionSelect(currentQuestion.id, opt)}
-                    >
-                      <input
-                        type="radio"
-                        id={`${currentQuestion.id}-${idx}`}
-                        name={`question-${currentQuestion.id}`}
-                        className="mr-4 w-4 h-4 text-indigo-600"
-                        checked={currentAnswer?.selectedOption === opt}
-                        readOnly
-                      />
-                      <label htmlFor={`${currentQuestion.id}-${idx}`} className="flex-1 cursor-pointer font-medium">
-                        {opt}
-                      </label>
-                      {showResult && opt === currentQuestion.correctAnswer && (
-                        <span className="ml-2 text-emerald-600 text-xl">✓</span>
-                      )}
-                      {showResult &&
-                        currentAnswer?.selectedOption === opt &&
-                        opt !== currentQuestion.correctAnswer && (
-                          <span className="ml-2 text-red-600 text-xl">✗</span>
-                        )}
-                      {currentAnswer?.isAutoAnswered &&
-                        currentAnswer.selectedOption === opt && (
-                          <span className="ml-2 bg-amber-100 text-amber-600 px-2 py-1 rounded-full text-xs font-medium">
-                            Bot's Answer
+                  {parseQuestionOptions(currentQuestion.questionOption).map(
+                    (opt, idx) => (
+                      <div
+                        key={idx}
+                        className={getOptionClasses(opt)}
+                        onClick={() =>
+                          !showResult &&
+                          handleOptionSelect(currentQuestion.id, opt)
+                        }
+                      >
+                        <label
+                          htmlFor={`${currentQuestion.id}-${idx}`}
+                          className="flex items-center cursor-pointer w-full"
+                        >
+                          <input
+                            type="radio"
+                            id={`${currentQuestion.id}-${idx}`}
+                            name={`question-${currentQuestion.id}`}
+                            className="hidden peer"
+                            value={serialLetter[idx]}
+                            checked={currentAnswer?.selectedOption === opt}
+                            readOnly
+                          />
+                          <span
+                            className={`
+          flex items-center justify-center mr-4 w-8 h-8 rounded-full border-2
+          text-indigo-600 font-bold text-lg
+          border-indigo-300
+          peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600
+          transition-all duration-200
+        `}
+                          >
+                            {serialLetter[idx]}
                           </span>
-                        )}
-                    </div>
-                  ))}
+                          <span className="flex-1 font-medium">{opt}</span>
+                          {showResult &&
+                            opt === currentQuestion.correctAnswer && (
+                              <span className="ml-2 text-emerald-600 text-xl">
+                                ✓
+                              </span>
+                            )}
+                          {showResult &&
+                            currentAnswer?.selectedOption === opt &&
+                            opt !== currentQuestion.correctAnswer && (
+                              <span className="ml-2 text-red-600 text-xl">
+                                ✗
+                              </span>
+                            )}
+                          {currentAnswer?.isAutoAnswered &&
+                            currentAnswer.selectedOption === opt && (
+                              <span className="ml-2 bg-amber-100 text-amber-600 px-2 py-1 rounded-full text-xs font-medium">
+                                Bot's Answer
+                              </span>
+                            )}
+                        </label>
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
 
@@ -557,8 +671,6 @@ const QuizInterface = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  
-
                   {currentQuestionIndex < questions.length - 1 ? (
                     <button
                       onClick={() => handleNavigation("next")}
@@ -590,30 +702,40 @@ const QuizInterface = () => {
                   <h3 className="font-bold text-slate-800 mb-2">Quiz Bot</h3>
                   <p className="text-sm text-slate-600">Your AI Competitor</p>
                 </div>
-                
+
                 {botPrompt && (
-                  <div className={`border rounded-xl p-4 mb-4 transition-all duration-300 ${
-                    botThinking 
-                      ? 'bg-amber-50 border-amber-200 animate-pulse' 
-                      : showResult 
-                        ? 'bg-indigo-50 border-indigo-200' 
-                        : 'bg-slate-50 border-slate-200'
-                  }`}>
-                    <div className={`text-center font-medium ${
-                      botThinking 
-                        ? 'text-amber-700' 
-                        : showResult 
-                          ? 'text-indigo-700' 
-                          : 'text-slate-700'
-                    }`}>
+                  <div
+                    className={`border rounded-xl p-4 mb-4 transition-all duration-300 ${
+                      botThinking
+                        ? "bg-amber-50 border-amber-200 animate-pulse"
+                        : showResult
+                        ? "bg-indigo-50 border-indigo-200"
+                        : "bg-slate-50 border-slate-200"
+                    }`}
+                  >
+                    <div
+                      className={`text-center font-medium ${
+                        botThinking
+                          ? "text-amber-700"
+                          : showResult
+                          ? "text-indigo-700"
+                          : "text-slate-700"
+                      }`}
+                    >
                       {botPrompt}
                     </div>
                     {botThinking && (
                       <div className="flex justify-center mt-2">
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                          <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                          <div
+                            className="w-2 h-2 bg-amber-400 rounded-full animate-bounce"
+                            style={{ animationDelay: "0.1s" }}
+                          ></div>
+                          <div
+                            className="w-2 h-2 bg-amber-400 rounded-full animate-bounce"
+                            style={{ animationDelay: "0.2s" }}
+                          ></div>
                         </div>
                       </div>
                     )}
@@ -625,13 +747,21 @@ const QuizInterface = () => {
                   <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
                     <span className="text-slate-600">👤 Your Score:</span>
                     <span className="font-bold text-emerald-600">
-                      {Object.values(answers).filter(a => a.isCorrect && !a.isAutoAnswered).length}
+                      {
+                        Object.values(answers).filter(
+                          (a) => a.isCorrect && !a.isAutoAnswered
+                        ).length
+                      }
                     </span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
                     <span className="text-slate-600">🤖 Bot Score:</span>
                     <span className="font-bold text-amber-600">
-                      {Object.values(answers).filter(a => a.isCorrect && a.isAutoAnswered).length}
+                      {
+                        Object.values(answers).filter(
+                          (a) => a.isCorrect && a.isAutoAnswered
+                        ).length
+                      }
                     </span>
                   </div>
                 </div>

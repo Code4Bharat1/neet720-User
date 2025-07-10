@@ -504,28 +504,46 @@ const TestInterface = () => {
                   </div>
 
                   <div className="space-y-3">
-                    {questionsData[currentSubject]?.[currentQuestion]?.options.map(
-                      (option, index) => (
-                        <button
-                          key={index}
-                          className={`w-full text-left px-5 py-3 rounded-lg border transition-all duration-300 flex items-center ${
-                            answers[`${currentSubject}-${currentQuestion}`] === index
-                              ? "bg-blue-600 text-white border-blue-600 shadow-md"
-                              : "bg-white hover:bg-gray-50 border-gray-200"
-                          }`}
-                          onClick={() => handleOptionClick(index)}
-                        >
-                          <span className={`w-8 h-8 flex items-center justify-center rounded-full mr-3 border ${
-                            answers[`${currentSubject}-${currentQuestion}`] === index
-                              ? "border-white bg-white/20"
-                              : "border-gray-300 bg-gray-50"
-                          }`}>
-                            <div className="border-4 border-gray-50 rounded-full"></div>
-                          </span>
-                          <span className="text-md">{option}</span>
-                        </button>
-                      )
-                    )}
+                    {questionsData[currentSubject]?.[currentQuestion]?.options.map((option, index) => {
+  const serialLetter = String.fromCharCode(65 + index); // A, B, C, D...
+  const inputName = `option-${currentSubject}-${currentQuestion}`;
+  const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index;
+  return (
+    <div key={index} className="flex items-center mb-3">
+      <input
+        type="radio"
+        id={`${inputName}-${index}`}
+        name={inputName}
+        value={index}
+        checked={isSelected}
+        onChange={() => handleOptionClick(index)}
+        className="peer hidden"
+      />
+      <label
+        htmlFor={`${inputName}-${index}`}
+        className={`flex items-center cursor-pointer w-full px-5 py-3 rounded-lg border transition-all duration-300
+          ${isSelected
+            ? "bg-blue-600 text-white border-blue-600 shadow-md"
+            : "bg-white hover:bg-gray-50 border-gray-200"}
+        `}
+      >
+        <span
+          className={`
+            w-8 h-8 flex items-center justify-center rounded-full mr-3 border-2 font-bold text-lg
+            ${isSelected
+              ? "bg-blue-500 text-white border-blue-500"
+              : "bg-gray-200 text-blue-600 border-gray-300"}
+            peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500
+            transition-all duration-200
+          `}
+        >
+          {serialLetter}
+        </span>
+        <span className="text-md">{option}</span>
+      </label>
+    </div>
+  );
+})}
                   </div>
                 </div>
               </div>

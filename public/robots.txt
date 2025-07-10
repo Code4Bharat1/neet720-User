@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://neet720.com
+
+# Sitemaps
+Sitemap: https://neet720.com/sitemap.xml
