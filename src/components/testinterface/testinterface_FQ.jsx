@@ -633,65 +633,59 @@ const handleAddMoreQuestions = async (count = 5) => {
                 </div>
 
                 <div className="space-y-3">
-                  {parseQuestionOptions(currentQuestion.questionOption)?.map(
-                    (opt, idx) => (
-                      <div
-                        key={idx}
-                        className={getOptionClasses(opt)}
-                        onClick={() =>
-                          !showResult &&
-                          handleOptionSelect(currentQuestion.id, opt)
-                        }
-                      >
-                        <label
-                          htmlFor={`${currentQuestion.id}-${idx}`}
-                          className="flex items-center cursor-pointer w-full"
-                        >
-                          <input
-                            type="radio"
-                            id={`${currentQuestion.id}-${idx}`}
-                            name={`question-${currentQuestion.id}`}
-                            className="hidden peer"
-                            value={serialLetter[idx]}
-                            checked={currentAnswer?.selectedOption === opt}
-                            readOnly
-                          />
-                          <span
-                            className={`
-          flex items-center justify-center mr-4 w-8 h-8 rounded-full border-2
-          text-indigo-600 font-bold text-lg
-          border-indigo-300
-          peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600
-          transition-all duration-200
-        `}
-                          >
-                            {serialLetter[idx]}
-                          </span>
-                          <span className="flex-1 font-medium">{opt}</span>
-                          {showResult &&
-                            opt === currentQuestion.correctAnswer && (
-                              <span className="ml-2 text-emerald-600 text-xl">
-                                ✓
-                              </span>
-                            )}
-                          {showResult &&
-                            currentAnswer?.selectedOption === opt &&
-                            opt !== currentQuestion.correctAnswer && (
-                              <span className="ml-2 text-red-600 text-xl">
-                                ✗
-                              </span>
-                            )}
-                          {currentAnswer?.isAutoAnswered &&
-                            currentAnswer.selectedOption === opt && (
-                              <span className="ml-2 bg-amber-100 text-amber-600 px-2 py-1 rounded-full text-xs font-medium">
-                                Bot's Answer
-                              </span>
-                            )}
-                        </label>
-                      </div>
-                    )
-                  )}
-                </div>
+  {currentQuestion.options?.map((opt, idx) => (
+    <div
+      key={opt.id}
+      className={getOptionClasses(opt.option_text)}
+      onClick={() =>
+        !showResult &&
+        handleOptionSelect(currentQuestion.id, opt.option_text)
+      }
+    >
+      <label
+        htmlFor={`${currentQuestion.id}-${idx}`}
+        className="flex items-center cursor-pointer w-full"
+      >
+        <input
+          type="radio"
+          id={`${currentQuestion.id}-${idx}`}
+          name={`question-${currentQuestion.id}`}
+          className="hidden peer"
+          value={serialLetter[idx]}
+          checked={currentAnswer?.selectedOption === opt.option_text}
+          readOnly
+        />
+        <span
+          className={`
+            flex items-center justify-center mr-4 w-8 h-8 rounded-full border-2
+            text-indigo-600 font-bold text-lg
+            border-indigo-300
+            peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600
+            transition-all duration-200
+          `}
+        >
+          {serialLetter[idx]}
+        </span>
+        <span className="flex-1 font-medium">{opt.option_text}</span>
+        {showResult &&
+          opt.option_text === currentQuestion.correctAnswer && (
+            <span className="ml-2 text-emerald-600 text-xl">✓</span>
+          )}
+        {showResult &&
+          currentAnswer?.selectedOption === opt.option_text &&
+          opt.option_text !== currentQuestion.correctAnswer && (
+            <span className="ml-2 text-red-600 text-xl">✗</span>
+          )}
+        {currentAnswer?.isAutoAnswered &&
+          currentAnswer.selectedOption === opt.option_text && (
+            <span className="ml-2 bg-amber-100 text-amber-600 px-2 py-1 rounded-full text-xs font-medium">
+              Bot's Answer
+            </span>
+          )}
+      </label>
+    </div>
+  ))}
+</div>
               </div>
 
               {/* Navigation Buttons */}
