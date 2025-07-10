@@ -65,6 +65,7 @@ const Page = () => {
         <meta name="twitter:title" content="NEET720 Analytics - Track NEET Performance" />
         <meta name="twitter:description" content="Track your NEET preparation with subject analytics, tasks, and performance stats on NEET720." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/AnalyticsPageImage.jpg" />
+        <link rel="canonical" href="https://neet720.com/analytics" />
       </Head>
       <div className="md:flex min-h-screen relative bg-white">
         {/* Sidebar for md screens (Excluded from Snapshot) */}

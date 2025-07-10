@@ -2,7 +2,7 @@
 const config = {
   siteUrl: 'https://neet720.com',
   generateRobotsTxt: true,
-  changefreq: 'weekly',
+  changefreq: 'daily',
   priority: 0.7,
   sitemapSize: 5000,
   exclude: ['/login', '/forgotpassword'],

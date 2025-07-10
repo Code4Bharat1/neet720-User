@@ -32,6 +32,7 @@ const Page = () => {
         <meta name="twitter:title" content="NEET720 College Predictor – Explore NEET Cutoffs & Top Medical Colleges" />
         <meta name="twitter:description" content="Discover NEET college cutoffs and MBBS options using your score with NEET720's AI-powered predictor tool." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/colleges" />
+        <link rel="canonical" href="https://neet720.com/colleges" />
       </Head>
 
       <div className="md:flex min-h-screen relative">

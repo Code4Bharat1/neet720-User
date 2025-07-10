@@ -70,6 +70,8 @@ const NoticesPage = () => {
         <meta name="twitter:title" content="NEET720 Notice Board – Latest NEET Updates, News & Announcements" />
         <meta name="twitter:description" content="Track all the latest NEET news, circulars, and key updates directly from NEET720's official notice board." />
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/noticeboard.png" />
+
+        <link rel="canonical" href="https://neet720.com/notice" />
       </Head>
       <div className="md:flex min-h-screen relative bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <Sidebar />
