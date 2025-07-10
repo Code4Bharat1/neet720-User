@@ -38,6 +38,7 @@ const QuizInterface = () => {
   const [showFinalResults, setShowFinalResults] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [botThinking, setBotThinking] = useState(false);
+  const [addingQuestions, setAddingQuestions] = useState(false);
   const serialLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const timerRef = useRef(null);
   const thinkingRef = useRef(null);
@@ -107,17 +108,53 @@ const QuizInterface = () => {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`,
         {
-          numberOfQuestions,
-          difficulty,
+          numberOfQuestions: numberOfQuestions,
+          difficulty: difficulty.toLowerCase(),
+          excludeIds: [], // No exclusions for first fetch
         }
       );
       setQuestions(res.data.questions);
+      console.log("Fetched questions:", res.data.questions, difficulty, numberOfQuestions);
     } catch (err) {
       setError("Failed to fetch questions");
     } finally {
       setLoading(false);
     }
   };
+
+  // Add more questions, excluding already used ones
+  const [noMoreQuestions, setNoMoreQuestions] = useState(false);
+
+const handleAddMoreQuestions = async (count = 5) => {
+  setAddingQuestions(true);
+  setError("");
+  try {
+    const usedIds = questions.map((q) => q.id);
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`,
+      {
+        numberOfQuestions: count,
+        difficulty,
+        excludeIds: usedIds,
+      }
+    );
+    // Filter out any accidental repeats (in case backend doesn't filter)
+    const newQuestions = res.data.questions.filter(
+      (q) => !usedIds.includes(q.id)
+    );
+    if (newQuestions.length === 0) {
+      setNoMoreQuestions(true);
+      setError("No more unique questions available for this quiz.");
+    } else {
+      setQuestions((prev) => [...prev, ...newQuestions]);
+      setNoMoreQuestions(false); // Reset if new questions are added
+    }
+  } catch (err) {
+    setError("Failed to add more questions");
+  } finally {
+    setAddingQuestions(false);
+  }
+};
 
   const startBotThinking = () => {
     setBotThinking(true);
@@ -671,6 +708,13 @@ const QuizInterface = () => {
                 </div>
 
                 <div className="flex gap-3">
+                  <button
+                    onClick={() => handleAddMoreQuestions(5)}
+                    className="px-6 py-3 bg-amber-500 text-white rounded-xl font-medium hover:bg-amber-600 transition-all duration-300"
+                    disabled={addingQuestions}
+                  >
+                    {addingQuestions ? "Adding..." : "Add More Questions"}
+                  </button>
                   {currentQuestionIndex < questions.length - 1 ? (
                     <button
                       onClick={() => handleNavigation("next")}
