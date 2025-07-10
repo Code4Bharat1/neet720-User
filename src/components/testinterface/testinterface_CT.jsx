@@ -35,45 +35,45 @@ const TestInterface = () => {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [numQuestions, setNumQuestions] = useState(0);
-  
+
   // Use ref to track if the timer has been initialized
   const timerInitialized = useRef(false);
   const intervalRef = useRef(null);
-  
+
   const router = useRouter();
 
   //useEffect to control the escape screen
-  useEffect (() => {
-    const handleFullScreenChange = () =>{
-      if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement && !document.mozFullscreenElement) {
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement && !document.mozFullscreenElement) {
         //push the page 
         router.push("/testselection")
       }
     }
 
     document.addEventListener("fullscreenchange", handleFullScreenChange);
-  document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
-  document.addEventListener("mozfullscreenchange", handleFullScreenChange);
-  document.addEventListener("MSFullscreenChange", handleFullScreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
 
-  return () => {
-    document.removeEventListener("fullscreenchange", handleFullScreenChange);
-    document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
-    document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
-    document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
-  };
-  },[])
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
+      document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
+      document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
+    };
+  }, [])
 
   // 1. INITIALIZATION EFFECT - Runs only once on mount
   useEffect(() => {
     if (typeof window === "undefined") return; // Safety check for SSR
-  
+
     const storedSelectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {};
     setSelectedChapters(storedSelectedChapters);
-  
+
     const storedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || [];
     setSelectedSubjects(storedSubjects);
-  
+
     // Calculate total questions across ALL subjects
     let totalQuestionsCount = 0;
     storedSubjects.forEach(subject => {
@@ -85,34 +85,62 @@ const TestInterface = () => {
         );
       }
     });
-    
+
     setTotalQuestions(totalQuestionsCount);
-    
+
     // Set initial timer value only if not already initialized
     if (totalQuestionsCount > 0 && !timerInitialized.current) {
       setTimer(totalQuestionsCount * 60);
       timerInitialized.current = true;
     }
-  
+
     // Fetch questions data
+    // Replace the fetch questions section with this improved version:
+
     const fetchQuestions = async () => {
       try {
+        // Calculate total questions for validation
+        let totalQuestionsCount = 0;
+        storedSubjects.forEach(subject => {
+          const subjectChapters = storedSelectedChapters[subject];
+          if (subjectChapters) {
+            totalQuestionsCount += Object.values(subjectChapters).reduce(
+              (total, chapter) => total + (Number(chapter.numQuestions) || 0),
+              0
+            );
+          }
+        });
+
+        // Prepare payload with proper structure
+        const payload = {
+          selectedSubjects: storedSubjects,
+          selectedChapters: storedSelectedChapters,
+          numQuestions: totalQuestionsCount, // Total for validation/reference
+          // Remove the confusing numQuestions field
+        };
+
+        console.log('Sending payload to backend:', payload); // Debug log
+
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/fetch-questions`,
-          {
-            selectedSubjects: storedSubjects,
-            selectedChapters: storedSelectedChapters,
-            numQuestions: totalQuestionsCount,
-          }
+          payload
         );
+
+        console.log("response data : ", response.data); // Debug log
+
         const data = response.data;
-  
+
+        // Validate that we received the expected number of questions
+        if (data.questions && data.questions.length !== totalQuestionsCount) {
+          console.warn(`Expected ${totalQuestionsCount} questions but received ${data.questions.length}`);
+        }
+
         const subjectWiseQuestions = {
           Physics: [],
           Chemistry: [],
           Biology: [],
         };
-  
+
         data.questions.forEach((item) => {
           const subject = item.question.subject;
           subjectWiseQuestions[subject]?.push({
@@ -124,17 +152,17 @@ const TestInterface = () => {
               : null,
           });
         });
-  
+
         setQuestionsData(subjectWiseQuestions);
         setLoading(false);
-  
+
         // Store chapter info
         const questionInfo = data.questions.map((item) => ({
           chapterId: item.question.chapterId,
           chapterName: item.question.chapter,
           questionIds: item.question.id,
         }));
-  
+
         localStorage.setItem("questionInfo", JSON.stringify(questionInfo));
       } catch (err) {
         console.error("Error fetching questions:", err);
@@ -142,9 +170,9 @@ const TestInterface = () => {
         setLoading(false);
       }
     };
-  
+
     fetchQuestions();
-    
+
     // Clean up on unmount
     return () => {
       if (intervalRef.current) {
@@ -152,16 +180,16 @@ const TestInterface = () => {
       }
     };
   }, []); // Empty dependency array - runs only once on mount
-  
+
   // 2. TIMER EFFECT - Runs only after initialization
   useEffect(() => {
     if (!timerInitialized.current) return; // Don't start timer until initialized
-    
+
     // Clear any existing interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    
+
     // Start countdown
     intervalRef.current = setInterval(() => {
       setTimer((prev) => {
@@ -185,13 +213,13 @@ const TestInterface = () => {
   // 3. SUBJECT QUESTIONS UPDATE - Runs when currentSubject changes
   useEffect(() => {
     if (!selectedChapters[currentSubject]) return;
-    
+
     const subjectChapters = selectedChapters[currentSubject];
     const numQuestion = Object.values(subjectChapters).reduce(
       (total, chapter) => total + (Number(chapter.numQuestions) || 0),
       0
     );
-    
+
     setNumQuestions(numQuestion);
   }, [currentSubject, selectedChapters]);
 
@@ -206,26 +234,26 @@ const TestInterface = () => {
     if (!questionsData[currentSubject] || !questionsData[currentSubject][currentQuestion]) {
       return;
     }
-    
+
     const questionData = questionsData[currentSubject][currentQuestion];
     const selectedAnswer = questionData.options[index];
     const correctAnswer = questionData.correctAnswer;
     const isCorrect = selectedAnswer === correctAnswer;
-  
+
     const answerSnapshot = {
       question_id: questionData.id,
       selectedAnswer,
       correctAnswer,
     };
     localStorage.setItem("lastAnswerClicked", JSON.stringify(answerSnapshot));
-  
+
     const questionId = questionData.id;
     const questionInfo = JSON.parse(localStorage.getItem("questionInfo")) || [];
     const chapterInfo = questionInfo.find(
       (item) => item.questionIds === questionId
     );
     const chapterName = chapterInfo ? chapterInfo.chapterName : "Unknown Chapter";
-  
+
     const answerData = {
       subject: currentSubject,
       question: questionData.question,
@@ -235,53 +263,53 @@ const TestInterface = () => {
       isCorrect,
       correctAnswer,
     };
-  
+
     let savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
-  
+
     const existingIndex = savedAnswers.findIndex(
       (answer) =>
         answer.question_id === questionData.id &&
         answer.subject === currentSubject
     );
-  
+
     const currentTime = new Date();
     const timeTakenInSeconds = (currentTime - startTime) / 1000;
     const minutes = Math.floor(timeTakenInSeconds / 60);
     const seconds = Math.floor(timeTakenInSeconds % 60);
-  
+
     const answerWithTime = { ...answerData, timeTaken: { minutes, seconds } };
-  
+
     // Replace if already answered, otherwise add new
     if (existingIndex >= 0) {
       savedAnswers[existingIndex] = answerWithTime;
     } else {
       savedAnswers.push(answerWithTime);
     }
-  
+
     localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
-  
+
     setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index });
     setVisitedQuestions({
       ...visitedQuestions,
       [`${currentSubject}-${currentQuestion}`]: true,
     });
-  
+
     // Track time spent on each question
     const previousTime = JSON.parse(localStorage.getItem("questionTime")) || {};
     previousTime[`${currentSubject}-${currentQuestion}`] = timeTakenInSeconds;
     localStorage.setItem("questionTime", JSON.stringify(previousTime));
-  
+
     const savedTimeForCurrentQuestion = previousTime[`${currentSubject}-${currentQuestion}`];
     const newStartTime = savedTimeForCurrentQuestion
       ? new Date(new Date() - savedTimeForCurrentQuestion * 1000)
       : currentTime;
-  
+
     setStartTime(newStartTime);
   };
 
   const handleNavigation = (direction) => {
     const totalQuestions = numQuestions || 0;
-    
+
     if (direction === "next" && currentQuestion >= totalQuestions - 1) {
       const currentSubjectIndex = selectedSubjects.indexOf(currentSubject);
       const nextSubjectIndex = (currentSubjectIndex + 1) % selectedSubjects.length;
@@ -297,16 +325,16 @@ const TestInterface = () => {
       if (currentSubjectIndex > 0) {
         const prevSubject = selectedSubjects[currentSubjectIndex - 1];
         setCurrentSubject(prevSubject);
-        
+
         // Get the number of questions in the previous subject
         const prevSubjectChapters = selectedChapters[prevSubject];
         const prevSubjectQuestions = prevSubjectChapters
           ? Object.values(prevSubjectChapters).reduce(
-              (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-              0
-            )
+            (total, chapter) => total + (Number(chapter.numQuestions) || 0),
+            0
+          )
           : 0;
-          
+
         setCurrentQuestion(Math.max(prevSubjectQuestions - 1, 0));
       }
     }
@@ -323,12 +351,12 @@ const TestInterface = () => {
     const updatedAnswers = { ...answers };
     delete updatedAnswers[`${currentSubject}-${currentQuestion}`];
     setAnswers(updatedAnswers);
-    
+
     // Also update localStorage
     let savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
     savedAnswers = savedAnswers.filter(
       answer => !(answer.question_id === questionsData[currentSubject][currentQuestion]?.id &&
-                answer.subject === currentSubject)
+        answer.subject === currentSubject)
     );
     localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
   };
@@ -337,90 +365,90 @@ const TestInterface = () => {
   const calculateTotalTime = (subject) => {
     const questionTime = JSON.parse(localStorage.getItem("questionTime")) || {};
     let totalTimeInSeconds = 0;
-  
+
     // Sum up the time for each question in the current subject
     Object.keys(questionTime).forEach((key) => {
       if (key.startsWith(subject)) {
         totalTimeInSeconds += questionTime[key];
       }
     });
-  
+
     const minutes = Math.floor(totalTimeInSeconds / 60);
     const seconds = Math.floor(totalTimeInSeconds % 60);
-  
+
     return { minutes, seconds };
   };
-  
+
   // Helper functions for stats
   const getAnsweredCount = () => {
     return Object.keys(answers).length;
   };
-  
+
   const getMarkedCount = () => {
     return Object.values(markedForReview).filter(Boolean).length;
   };
-  
+
   const getAnsweredCountBySubject = (subject) => {
     return Object.keys(answers).filter(key => key.startsWith(`${subject}-`)).length;
   };
 
   const handleSubmit = async () => {
     if (!window.confirm("Confirm submit?")) return;
-    
+
     if (isSubmitting) return;
     setIsSubmitting(true);
-  
+
     try {
       // Clear the timer when submitting
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      
+
       const testAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
       const authToken = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
       const testName = localStorage.getItem("testName") || [];
-    
+
       if (!authToken) {
         alert("No authentication token found!");
         return;
       }
-    
+
       const correctAnswers = [];
       const wrongAnswers = [];
       const notAttempted = [];
-    
+
       const subjectWiseMarks = {
         Physics: 0,
         Chemistry: 0,
         Biology: 0,
       };
-    
+
       const endTime = new Date();
       let total_marks = 0;
-    
+
       // Calculate total time per subject
       const totalTimePerSubject = {
         Physics: calculateTotalTime("Physics"),
         Chemistry: calculateTotalTime("Chemistry"),
         Biology: calculateTotalTime("Biology"),
       };
-    
+
       // Loop through the answers and calculate subject-wise marks
       testAnswers.forEach((answerObj) => {
         const { subject, question, selectedAnswer, correctAnswer } = answerObj;
-    
+
         const chapter = "General"; // You can refine this if you track chapters per question
         const questionId = question; // Ideally, replace with questionId if available
         const marks = selectedAnswer === correctAnswer ? 4 : -1; // +4 for correct, -1 for incorrect
         const timeSpent = "N/A"; // Optional: you can integrate actual tracking
-    
+
         // Update the subject-wise marks
         if (selectedAnswer === correctAnswer) {
           subjectWiseMarks[subject] += 4; // Add 4 for correct answers
         } else if (selectedAnswer !== null && selectedAnswer !== "") {
           subjectWiseMarks[subject] -= 1; // Subtract 1 for incorrect answers
         }
-    
+
         const answerPayload = [
           questionId,
           subject,
@@ -430,7 +458,7 @@ const TestInterface = () => {
           marks,
           timeSpent,
         ];
-    
+
         if (!selectedAnswer) {
           notAttempted.push([questionId, subject, chapter]);
         } else if (selectedAnswer === correctAnswer) {
@@ -442,7 +470,7 @@ const TestInterface = () => {
           }
         }
       });
-    
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/submit-test`,
         {
@@ -463,7 +491,7 @@ const TestInterface = () => {
           },
         }
       );
-    
+
       toast.success(response.data.message, {
         duration: 5000
       });
@@ -547,7 +575,7 @@ const TestInterface = () => {
                 const SubjectIcon = subjectIcons[subject]?.icon || FaAtom;
                 const isActive = currentSubject === subject;
                 const config = subjectIcons[subject] || subjectIcons.Physics;
-                
+
                 return (
                   <button
                     key={subject}
@@ -555,11 +583,10 @@ const TestInterface = () => {
                       setCurrentSubject(subject);
                       setCurrentQuestion(0);
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all transform hover:scale-105 ${
-                      isActive 
-                        ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-lg` 
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all transform hover:scale-105 ${isActive
+                        ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-lg`
                         : 'bg-white/80 text-gray-700 hover:bg-white/90 shadow border border-gray-200'
-                    }`}
+                      }`}
                   >
                     <SubjectIcon className={`text-lg ${isActive ? 'text-white' : config.color}`} />
                     <span className="font-medium">{subject}</span>
@@ -594,7 +621,7 @@ const TestInterface = () => {
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 relative overflow-hidden">
             {/* Animated Background Effect */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100/20 to-purple-100/20 rounded-full filter blur-3xl -translate-y-20 translate-x-20"></div>
-            
+
             {/* Question Header with Animation */}
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-8">
@@ -619,11 +646,10 @@ const TestInterface = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={handleReviewLater}
-                    className={`p-3 rounded-xl transition-all transform hover:scale-110 ${
-                      markedForReview[`${currentSubject}-${currentQuestion}`]
+                    className={`p-3 rounded-xl transition-all transform hover:scale-110 ${markedForReview[`${currentSubject}-${currentQuestion}`]
                         ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
+                      }`}
                     title="Mark for review"
                   >
                     <MdFlag className={markedForReview[`${currentSubject}-${currentQuestion}`] ? 'animate-pulse' : ''} />
@@ -636,23 +662,21 @@ const TestInterface = () => {
                 {currentQuestionData?.options.map((option, index) => {
                   const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index;
                   const isHovered = hoveredOption === index;
-                  
+
                   return (
                     <button
                       key={index}
                       onClick={() => handleOptionClick(index)}
                       onMouseEnter={() => setHoveredOption(index)}
                       onMouseLeave={() => setHoveredOption(null)}
-                      className={`w-full text-left p-5 rounded-xl border-2 transition-all transform hover:scale-[1.01] relative overflow-hidden ${
-                        isSelected 
-                          ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900' 
+                      className={`w-full text-left p-5 rounded-xl border-2 transition-all transform hover:scale-[1.01] relative overflow-hidden ${isSelected
+                          ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900'
                           : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                          isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
-                        }`}>
+                        <div className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                          }`}>
                           {isSelected && (
                             <IoMdCheckmark className="text-white text-sm" />
                           )}
@@ -684,7 +708,7 @@ const TestInterface = () => {
                 <FaEraser className="text-sm" />
                 Clear Response
               </button>
-              
+
               <div className="flex gap-3">
                 <button
                   onClick={() => handleNavigation("prev")}
@@ -734,7 +758,7 @@ const TestInterface = () => {
                 </div>
               </div>
               <div className="mt-4 bg-white/20 rounded-full h-2">
-                <div 
+                <div
                   className="h-full bg-yellow-300 rounded-full transition-all duration-500"
                   style={{ width: `${(getAnsweredCount() / totalQuestions) * 100}%` }}
                 ></div>
@@ -748,7 +772,7 @@ const TestInterface = () => {
           {/* Test Overview Card */}
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-6">
             <h3 className="font-bold text-gray-900 mb-4">Test Overview</h3>
-            
+
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div className="bg-green-50 p-3 rounded-lg">
                 <div className="flex justify-between items-center">
@@ -756,7 +780,7 @@ const TestInterface = () => {
                   <span className="text-green-700 font-bold">{totalQuestions}</span>
                 </div>
               </div>
-              
+
               <div className="bg-red-50 p-3 rounded-lg">
                 <div className="flex justify-between items-center">
                   <span className="text-red-700 text-sm">Remaining</span>
@@ -766,12 +790,12 @@ const TestInterface = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gray-100 p-3 rounded-lg">
               <div className="text-sm text-gray-500 mb-1">Overall Progress</div>
               <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                <div 
-                  className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 transition-all duration-500" 
+                <div
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 transition-all duration-500"
                   style={{ width: `${(getAnsweredCount() / totalQuestions) * 100}%` }}
                 ></div>
               </div>
@@ -795,9 +819,9 @@ const TestInterface = () => {
                 const isAnswered = answers[`${currentSubject}-${index}`] !== undefined;
                 const isMarked = markedForReview[`${currentSubject}-${index}`];
                 const isVisited = visitedQuestions[`${currentSubject}-${index}`];
-                
+
                 let buttonClass = 'w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 relative ';
-                
+
                 if (isCurrentQuestion) {
                   buttonClass += 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg scale-110';
                 } else if (isMarked) {
@@ -809,7 +833,7 @@ const TestInterface = () => {
                 } else {
                   buttonClass += 'bg-gray-100 text-gray-600 hover:bg-gray-200';
                 }
-                
+
                 return (
                   <button
                     key={index}
@@ -824,7 +848,7 @@ const TestInterface = () => {
                 );
               })}
             </div>
-            
+
             {/* Legend */}
             <div className="grid grid-cols-2 gap-3 mt-6 text-xs">
               <div className="flex items-center gap-2">
@@ -851,17 +875,17 @@ const TestInterface = () => {
             <h3 className="font-bold text-gray-900 mb-4">Subject Statistics</h3>
             <div className="space-y-3">
               {selectedSubjects.map((subject) => {
-                const subjectQuestions = selectedChapters[subject] 
+                const subjectQuestions = selectedChapters[subject]
                   ? Object.values(selectedChapters[subject]).reduce(
-                      (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-                      0
-                    )
+                    (total, chapter) => total + (Number(chapter.numQuestions) || 0),
+                    0
+                  )
                   : 0;
                 const subjectAnswered = getAnsweredCountBySubject(subject);
                 const percentage = subjectQuestions > 0 ? Math.round((subjectAnswered / subjectQuestions) * 100) : 0;
                 const SubjectIcon = subjectIcons[subject]?.icon || FaAtom;
                 const config = subjectIcons[subject] || subjectIcons.Physics;
-                
+
                 return (
                   <div key={subject} className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${config.gradientFrom} ${config.gradientTo} flex items-center justify-center text-white`}>
@@ -873,7 +897,7 @@ const TestInterface = () => {
                         <span className="text-xs text-gray-500">{subjectAnswered}/{subjectQuestions}</span>
                       </div>
                       <div className="bg-gray-200 rounded-full h-2 mt-1">
-                        <div 
+                        <div
                           className={`h-full rounded-full transition-all duration-500 bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
                           style={{ width: `${percentage}%` }}
                         ></div>
