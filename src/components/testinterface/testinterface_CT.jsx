@@ -75,7 +75,6 @@ const TestInterface = () => {
   const [timer, setTimer] = useState(0)
   const [startTime, setStartTime] = useState(new Date())
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [hoveredOption, setHoveredOption] = useState(null)
   const [totalQuestions, setTotalQuestions] = useState(0)
   const [numQuestions, setNumQuestions] = useState(0)
 
@@ -702,7 +701,7 @@ const TestInterface = () => {
               <div className="space-y-4 mb-8">
                 {currentQuestionData?.options.map((option, index) => {
                   const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index
-                  const isHovered = hoveredOption === index
+                  
                   const optionLetter = String.fromCharCode(65 + index) // A, B, C, D
 
                   return (
@@ -713,8 +712,6 @@ const TestInterface = () => {
                           ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-100 shadow-lg shadow-blue-200"
                           : "border-gray-200 bg-white/80 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50"
                       }`}
-                      onMouseEnter={() => setHoveredOption(index)}
-                      onMouseLeave={() => setHoveredOption(null)}
                     >
                       {/* Custom Radio Input */}
                       <div className="relative">
@@ -738,9 +735,6 @@ const TestInterface = () => {
                             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 opacity-20 animate-pulse"></div>
                           )}
                         </div>
-                        {isHovered && !isSelected && (
-                          <div className="absolute inset-0 rounded-full bg-blue-200 opacity-30 animate-pulse"></div>
-                        )}
                       </div>
 
                       {/* Option Text */}
@@ -970,24 +964,6 @@ const TestInterface = () => {
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Floating Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-float opacity-20"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${5 + Math.random() * 5}s`,
-            }}
-          >
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
-          </div>
-        ))}
       </div>
 
       {/* Custom Animations */}
