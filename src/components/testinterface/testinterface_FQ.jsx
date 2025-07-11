@@ -165,6 +165,7 @@ const QuizInterface = () => {
         excludeIds: [],
       })
       setQuestions(res.data.questions)
+      console.log("Fetched questions:", res.data.questions)
     } catch (err) {
       setError("Failed to fetch questions")
     } finally {
@@ -256,43 +257,50 @@ const QuizInterface = () => {
   }
 
   const autoAnswerQuestion = () => {
-    if (currentAnswer === undefined) {
-      const correctAnswer = currentQuestion.correctAnswer
-      handleOptionSelect(currentQuestion.id, correctAnswer, true)
-      setBotPrompt("⏱️ Time's up! I got this one for my team!")
-    }
-    setShowResult(true)
-  }
+  const correctAnswer = currentQuestion.options.find((opt) => opt.is_correct)?.option_text || "";
+
+  // Forcefully set bot answer every time (even if user answered wrong)
+  handleOptionSelect(currentQuestion.id, correctAnswer, true);
+
+  setBotPrompt("⏱️ Time's up! I got this one for my team!");
+  setShowResult(true);
+};
+
 
   const handleOptionSelect = (questionId, selectedOption, isAutoAnswered = false) => {
-    const correctAnswer = questions.find((q) => q.id === questionId)?.correctAnswer
-    const isCorrect = selectedOption === correctAnswer
+  const correctAnswer = questions.find((q) => q.id === questionId)?.options.find((opt) => opt.is_correct)?.option_text || "";
 
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: {
-        selectedOption,
-        isAutoAnswered,
-        isCorrect,
-      },
-    }))
+  const isCorrect = selectedOption?.trim().toLowerCase() === correctAnswer?.trim().toLowerCase();
+    console.log("Selected Option:", selectedOption);
+  console.log("Correct Answer:", correctAnswer);
+  console.log("Is Correct:", isCorrect);
+  setAnswers((prev) => ({
+    ...prev,
+    [questionId]: {
+      selectedOption,
+      isAutoAnswered,
+      isCorrect,
+      correctAnswer,
+    },
+  }));
 
-    if (!isAutoAnswered) {
-      clearInterval(timerRef.current)
-      stopBotThinking()
-      setShowResult(true)
+  if (!isAutoAnswered) {
+    clearInterval(timerRef.current);
+    stopBotThinking();
+    setShowResult(true);
 
-      const feedbacks = [
-        isCorrect ? "🎯 Excellent! You beat me to it!" : "🤔 Oops! That's a point for me.",
-        isCorrect ? "🔥 You're quick! Well done!" : "😅 I would have gotten that right!",
-        isCorrect ? "👏 Nice work! You're on fire!" : "💡 Better luck next time!",
-        isCorrect ? "⚡ Lightning fast! Amazing!" : "🤖 My circuits say otherwise!",
-        isCorrect ? "🏆 You got it before me!" : "🎯 I was about to pick the right one!",
-      ]
+    const feedbacks = [
+      isCorrect ? "🎯 Excellent! You beat me to it!" : "🤔 Oops! That's a point for me.",
+      isCorrect ? "🔥 You're quick! Well done!" : "😅 I would have gotten that right!",
+      isCorrect ? "👏 Nice work! You're on fire!" : "💡 Better luck next time!",
+      isCorrect ? "⚡ Lightning fast! Amazing!" : "🤖 My circuits say otherwise!",
+      isCorrect ? "🏆 You got it before me!" : "🎯 I was about to pick the right one!",
+    ];
 
-      setBotPrompt(feedbacks[Math.floor(Math.random() * feedbacks.length)])
-    }
+    setBotPrompt(feedbacks[Math.floor(Math.random() * feedbacks.length)]);
   }
+};
+
 
   const handleNavigation = (direction) => {
     if (direction === "next" && currentQuestionIndex < questions.length - 1) {
@@ -353,7 +361,7 @@ const QuizInterface = () => {
     let classes =
       "group relative flex items-center p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer transform hover:scale-[1.02] hover:shadow-lg"
 
-    const correctAnswer = currentQuestion.correctAnswer
+    const correctAnswer = questions.find((q) => q.id === currentQuestion.id)?.options.find((opt) => opt.is_correct)?.option_text || "";
     const selectedOption = currentAnswer?.selectedOption
 
     if (showResult) {
@@ -719,56 +727,70 @@ const QuizInterface = () => {
 
                 {/* Options */}
                 <div className="space-y-4">
-                  {currentQuestion.options?.map((opt, idx) => (
-                    <div
-                      key={opt.id}
-                      className={getOptionClasses(opt.option_text)}
-                      onClick={() => !showResult && handleOptionSelect(currentQuestion.id, opt.option_text)}
-                    >
-                      <label
-                        htmlFor={`${currentQuestion.id}-${idx}`}
-                        className="flex items-center cursor-pointer w-full"
-                      >
-                        <input
-                          type="radio"
-                          id={`${currentQuestion.id}-${idx}`}
-                          name={`question-${currentQuestion.id}`}
-                          className="hidden peer"
-                          value={serialLetter[idx]}
-                          checked={currentAnswer?.selectedOption === opt.option_text}
-                          readOnly
-                        />
-                        <span className="flex items-center justify-center mr-4 w-10 h-10 rounded-full border-2 text-indigo-600 font-bold text-lg border-indigo-300 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 transition-all duration-300 shadow-md">
-                          {serialLetter[idx]}
-                        </span>
-                        <span className="flex-1 font-medium text-slate-700">{opt.option_text}</span>
+                  {currentQuestion.options?.map((opt, idx) => {
+  const optionText = opt.option_text.trim().toLowerCase();
+  const correctAnswer = currentAnswer?.correctAnswer?.trim().toLowerCase();
+  const selectedAnswer = currentAnswer?.selectedOption?.trim().toLowerCase();
 
-                        {/* Result Icons */}
-                        {showResult && opt.option_text === currentQuestion.correctAnswer && (
-                          <div className="ml-2 flex items-center gap-1">
-                            <CheckCircle className="w-6 h-6 text-emerald-600" />
-                            <span className="text-emerald-600 font-medium text-sm">Correct</span>
-                          </div>
-                        )}
+  return (
+    <div
+      key={opt.id}
+      className={getOptionClasses(opt.option_text)}
+      onClick={() =>
+        !showResult && handleOptionSelect(currentQuestion.id, opt.option_text)
+      }
+    >
+      <label
+        htmlFor={`${currentQuestion.id}-${idx}`}
+        className="flex items-center cursor-pointer w-full"
+      >
+        <input
+          type="radio"
+          id={`${currentQuestion.id}-${idx}`}
+          name={`question-${currentQuestion.id}`}
+          className="hidden peer"
+          value={serialLetter[idx]}
+          checked={selectedAnswer === optionText}
+          readOnly
+        />
+        <span className="flex items-center justify-center mr-4 w-10 h-10 rounded-full border-2 text-indigo-600 font-bold text-lg border-indigo-300 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 transition-all duration-300 shadow-md">
+          {serialLetter[idx]}
+        </span>
+        <span className="flex-1 font-medium text-slate-700">
+          {opt.option_text}
+        </span>
+      </label>
 
-                        {showResult &&
-                          currentAnswer?.selectedOption === opt.option_text &&
-                          opt.option_text !== currentQuestion.correctAnswer && (
-                            <div className="ml-2 flex items-center gap-1">
-                              <XCircle className="w-6 h-6 text-red-600" />
-                              <span className="text-red-600 font-medium text-sm">Wrong</span>
-                            </div>
-                          )}
+      {/* ✅ Correct Answer */}
+      {showResult && optionText === correctAnswer && (
+        <div className="ml-28 -mr-14 w-1/2 mt-1 flex items-center flex-wrap gap-1 text-green-600 text-sm font-medium">
+          ✅ Correct Answer
+        </div>
+      )}
 
-                        {currentAnswer?.isAutoAnswered && currentAnswer.selectedOption === opt.option_text && (
-                          <span className="ml-2 bg-gradient-to-r from-amber-100 to-amber-200 text-amber-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                            <Bot className="w-3 h-3" />
-                            Bot's Answer
-                          </span>
-                        )}
-                      </label>
-                    </div>
-                  ))}
+      {/* ❌ User's Wrong Answer */}
+      {showResult &&
+        selectedAnswer === optionText &&
+        optionText !== correctAnswer && (
+          <div className="ml-56 w-1/2 mt-1 flex items-center gap-1 text-red-600 text-sm font-medium">
+            ❌ Your Answer
+          </div>
+        )}
+
+      {/* 🤖 Bot's Auto Answer */}
+      {showResult &&
+        currentAnswer?.isAutoAnswered &&
+        optionText === correctAnswer && (
+          <div className="ml-5 -mr-10 w-1/2 mt-1 flex items-center gap-1 text-green-700 text-xs font-bold">
+            <Bot className="w-4 h-4" />
+            Bot's Answer
+          </div>
+        )}
+    </div>
+  );
+})}
+
+
                 </div>
 
                 {/* Clear Response Button */}
