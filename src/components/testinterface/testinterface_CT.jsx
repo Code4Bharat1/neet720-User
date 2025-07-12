@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import { set } from "date-fns"
 
 const subjectIcons = {
   Physics: {
@@ -67,7 +68,7 @@ const TestInterface = () => {
   const [questionsData, setQuestionsData] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [currentSubject, setCurrentSubject] = useState("Chemistry")
+  const [currentSubject, setCurrentSubject] = useState("")
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState({})
   const [visitedQuestions, setVisitedQuestions] = useState({})
@@ -107,7 +108,6 @@ const TestInterface = () => {
       document.removeEventListener("MSFullscreenChange", handleFullScreenChange)
     }
   }, [router])
-
   // Initialization effect
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -117,6 +117,7 @@ const TestInterface = () => {
 
     const storedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || []
     setSelectedSubjects(storedSubjects)
+    setCurrentSubject(storedSubjects[0] || "")
 
     let totalQuestionsCount = 0
     storedSubjects.forEach((subject) => {
