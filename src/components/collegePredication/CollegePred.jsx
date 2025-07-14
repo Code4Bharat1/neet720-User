@@ -1,35 +1,35 @@
 import Image from "next/image";
 
-export default function Scholarship() {
+export default function CollegePred() {
   const features = [
     {
       left: {
-        title: "Earn Credits for Every Test",
+        title: "Predict Your Rank",
         image:
           "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
       },
-      right: "Get points for high scores and consistency",
+      right: "Get an estimate based on your current scores",
     },
     {
-      left: "Use credits for discounts, scholarships & perks",
+      left: "See which colleges you may qualify for",
       right: {
-        title: "Redeem for Benefits",
+        title: "Explore Colleges",
         image:
           "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
       },
     },
     {
       left: {
-        title: "Support for Deserving Students",
+        title: "Location & Seat Info",
         image:
           "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
       },
-      right: "Performance-based rewards keep you focused",
+      right: "Filter by region and seat availability",
     },
     {
-      left: "Credits help ease the financial burden of education",
+      left: "Start early with admission guidance",
       right: {
-        title: "Boost Your Motivation",
+        title: "Counselling Planning",
         image:
           "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
       },
@@ -40,31 +40,37 @@ export default function Scholarship() {
     <div className="min-h-screen bg-[#103f5d] text-white">
       {/* Navbar */}
       <div className="bg-[#1DB5AC] py-3 md:py-4 px-4 md:px-6 flex justify-center items-center space-x-2 md:space-x-3">
-        <span className="text-white text-base md:text-lg font-semibold">Features</span>
+        <span className="text-white text-base md:text-lg font-semibold">
+          Features
+        </span>
         <span className="text-white text-lg md:text-xl font-bold">{">>>"}</span>
-        <span className="text-white text-lg md:text-xl font-semibold">Scholarship</span>
+        <span className="text-white text-lg md:text-xl font-semibold">
+          College Prediction
+        </span>
       </div>
 
       {/* Hero Section - Reordered for mobile */}
       <div className="flex flex-col-reverse md:flex-row items-center justify-center px-4 sm:px-6 py-8 md:py-16 gap-6 md:gap-12 lg:gap-20 bg-[#083e5d]">
         {/* Text Section */}
-        <div className="text-center md:text-left">
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold font-serif mb-3 md:mb-4">
-            Scholarship
+        <div className="text-center">
+          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold font-serif mb-3">
+            College
+            <br />
+            Prediction
           </h2>
 
           {/* Decorative Underline */}
-          <div className="flex items-center justify-center md:justify-start mb-3 md:mb-4">
+          <div className="flex items-center justify-center mb-3">
             <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white rounded-full"></span>
             <div className="border-t border-white w-32 sm:w-40 md:w-44 lg:w-64 mx-[1px]"></div>
             <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white rounded-full"></span>
           </div>
 
           {/* Subtext */}
-          <p className="text-[#1DB5AC] text-xl sm:text-2xl md:text-3xl text-center font-serif font-medium leading-relaxed">
-            Earn Rewards for Your
+          <p className="text-[#1DB5AC] text-xl sm:text-2xl md:text-3xl font-serif font-medium leading-relaxed">
+            Know Your Rank, Find Your
             <br />
-            Performance
+            College
           </p>
         </div>
 
@@ -88,16 +94,21 @@ export default function Scholarship() {
           </h3>
         </div>
 
-        {/* Description Paragraph */}
-        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-200 leading-relaxed max-w-3xl sm:max-w-4xl mx-auto">
-          The Scholarship feature on NEET720 lets students earn credits based on
-          their performance in mock tests. These credits act as reward points
-          that can be redeemed for scholarships, discounts, or other benefits on
-          the platform. By encouraging consistent effort and high scores, this
-          feature keeps students motivated and engaged. It also supports
-          financially deserving learners by offering practical rewards for
-          academic excellence, turning hard work into real opportunities.
-        </p>
+        {/* Description */}
+        <div className="text-center text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl lg:max-w-4xl mx-auto space-y-2 sm:space-y-3">
+          <p>
+            Predict your NEET rank based on test scores and previous trends.
+          </p>
+          <ul className="list-disc list-inside space-y-1 sm:space-y-1">
+            <li>
+              Get a personalized list of colleges you're likely to qualify for.
+            </li>
+            <li>
+              Plan ahead for counselling with cut-off, seat info, and admission
+              chances.
+            </li>
+          </ul>
+        </div>
       </div>
 
       {/* Features Section */}
@@ -112,7 +123,13 @@ export default function Scholarship() {
           <div key={idx}>
             <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 sm:gap-6 md:gap-8 max-w-5xl mx-auto py-4 sm:py-6 md:py-8 px-3 sm:px-4">
               {/* Left - Reordered for mobile */}
-              <div className={`flex justify-center ${typeof item.left === 'string' ? 'order-1' : 'order-2 md:order-1'}`}>
+              <div
+                className={`flex justify-center ${
+                  typeof item.left === "string"
+                    ? "order-1"
+                    : "order-2 md:order-1"
+                }`}
+              >
                 {typeof item.left === "string" ? (
                   <p className="text-white text-center text-xl sm:text-2xl md:text-3xl font-normal leading-relaxed">
                     {item.left}
@@ -128,13 +145,21 @@ export default function Scholarship() {
                         className="rounded-full border-2 sm:border-3 md:border-4 border-white shadow-md w-12 h-12 sm:w-16 sm:h-16 md:w-18 md:h-18"
                       />
                     </div>
-                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl">{item.left.title}</h3>
+                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl">
+                      {item.left.title}
+                    </h3>
                   </div>
                 )}
               </div>
 
               {/* Right - Reordered for mobile */}
-              <div className={`flex justify-center ${typeof item.right === 'string' ? 'order-1' : 'order-2 md:order-1'}`}>
+              <div
+                className={`flex justify-center ${
+                  typeof item.right === "string"
+                    ? "order-1"
+                    : "order-2 md:order-1"
+                }`}
+              >
                 {typeof item.right === "string" ? (
                   <p className="text-white text-center text-xl sm:text-2xl md:text-3xl font-normal leading-relaxed">
                     {item.right}
@@ -150,7 +175,9 @@ export default function Scholarship() {
                         className="rounded-full border-2 sm:border-3 md:border-4 border-white shadow-md w-12 h-12 sm:w-16 sm:h-16 md:w-18 md:h-18"
                       />
                     </div>
-                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl">{item.right.title}</h3>
+                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl">
+                      {item.right.title}
+                    </h3>
                   </div>
                 )}
               </div>

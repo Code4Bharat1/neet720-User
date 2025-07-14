@@ -2,32 +2,32 @@ import Image from "next/image";
 
 const features = [
   {
-    title: "Time-Stamped Alerts",
-    description: "Every update is dated for clear tracking",
+    title: "New Test Alerts",
+    description: "Be notified the moment a new test goes live",
     image:
       "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg", // Replace with your image path
   },
   {
-    title: "Categorized Notices",
-    description: "Filter by exam tips, schedules, or syllabus updates",
+    title: "Upcoming Task Reminders",
+    description: "Get alerts for deadlines, tasks, and quizzes",
     image:
       "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
   },
   {
-    title: "Highlight Important Info",
-    description: "Key messages stay pinned and visible",
+    title: "Result Updates",
+    description: "Instant notification when scores are published",
     image:
       "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
   },
   {
-    title: "Access Past Notices",
-    description: "Review older alerts anytime for reference",
+    title: "Schedule Sync",
+    description: "Stay aligned with your daily/weekly study goals",
     image:
       "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
   },
 ];
 
-export default function Notice() {
+export default function Notification() {
   return (
     <div className="bg-[#103f5d]">
       {/* First Section */}
@@ -36,7 +36,7 @@ export default function Notice() {
         <div className="bg-[#1DB5AC] py-3 md:py-4 px-4 md:px-6 flex justify-center items-center space-x-2 md:space-x-3">
           <span className="text-white text-base md:text-lg font-semibold">Features</span>
           <span className="text-white text-lg md:text-xl font-bold">{">>>"}</span>
-          <span className="text-white text-lg md:text-xl font-semibold">Notice</span>
+          <span className="text-white text-lg md:text-xl font-semibold">Notification Section</span>
         </div>
 
         {/* Content */}
@@ -57,18 +57,18 @@ export default function Notice() {
           {/* Heading */}
           <div className="text-center">
             <h2 className="text-white text-center text-3xl sm:text-4xl md:text-5xl font-semibold font-serif mb-3 md:mb-4">
-              Notice
+              Notification Section
             </h2>
             <div className="flex items-center justify-center mb-3 md:mb-4">
               <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white rounded-full"></span>
-              <div className="border-t border-white w-32 sm:w-40 md:w-44 mx-[1px]"></div>
+              <div className="border-t border-white w-32 sm:w-40 md:w-2/5 mx-[1px]"></div>
               <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white rounded-full"></span>
             </div>
           </div>
 
           {/* Subheading */}
           <p className="text-[#18e0d0] text-lg sm:text-xl font-serif font-medium mb-4 md:mb-6">
-            All Important Updates in One Place
+           Stay Alert, Stay Ready
           </p>
 
           {/* Tagline */}
@@ -79,21 +79,20 @@ export default function Notice() {
           {/* Description */}
           <div className="text-left text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl lg:max-w-4xl mx-auto space-y-2 sm:space-y-3">
             <p>
-              Get all important updates like test schedules, syllabus changes,
-              tips, and deadlines in one place.
+              Instantly notifies students about new tests, pending quizzes, upcoming tasks, and result updates.
             </p>
             <ul className="list-disc list-inside space-y-1 sm:space-y-1">
               <li>
-                Every notice is time-stamped and categorized for easy tracking
-                and quick access.
+                Real-time alerts ensure nothing important is missed or delayed.
               </li>
               <li>
-                Important alerts are highlighted, and past notices remain
-                available for future reference.
+                 Helps manage time better by reminding about key academic events and deadlines.
               </li>
               <li>
-                Keeps students organized, well-informed, and perfectly aligned
-                with their prep schedule.
+                 Keeps all notifications organized — from urgent updates to general platform activity — in one place.
+              </li>
+              <li>
+                 Boosts consistency and keeps students active, informed, and well-prepared throughout their journey.
               </li>
             </ul>
           </div>
@@ -143,13 +142,11 @@ export default function Notice() {
 
           {/* List Items */}
           <ul className="text-left max-w-md sm:max-w-xl mx-auto space-y-2 sm:space-y-4 text-base sm:text-lg md:text-xl lg:text-2xl">
-            <li>✅ No missed deadlines or surprise changes</li>
-            <li>✅ Instant access to important academic information</li>
-            <li>✅ One-stop communication hub</li>
-            <li>
-              ✅ Keeps students aligned with the latest syllabus and test dates
-            </li>
-            <li>✅ Improves coordination between instructors and learners</li>
+            <li>✅ Reduces chances of missing important updates</li>
+            <li>✅ Helps manage time and stay consistent</li>
+            <li>✅ Encourages timely action with real-time alerts</li>
+            <li>✅ Centralizes all academic activity in one place</li>
+            <li>✅ Keeps learners active, organized, and stress-free</li>
           </ul>
         </div>
       </section>

@@ -1,13 +1,13 @@
 import Image from "next/image";
 
-export default function ResultSection() {
+export default function RecentTest() {
   return (
     <div className="min-h-screen bg-[#103f5d] text-white">
       {/* Navbar */}
       <div className="bg-[#1DB5AC] py-3 md:py-4 px-4 md:px-6 flex justify-center items-center space-x-2 md:space-x-3">
         <span className="text-white text-sm md:text-lg font-semibold">Features</span>
         <span className="text-white text-base md:text-xl font-bold">{">>>"}</span>
-        <span className="text-white text-base md:text-xl font-semibold">Result Section</span>
+        <span className="text-white text-base md:text-xl font-semibold">Recent Tests</span>
       </div>
 
       {/* Hero Section */}
@@ -25,8 +25,8 @@ export default function ResultSection() {
 
         {/* Text Section */}
         <div className="text-center md:text-left">
-          <h2 className="text-white text-3xl md:text-5xl font-bold font-serif mb-3 md:mb-4">
-            Result Section
+          <h2 className="text-white text-center text-3xl md:text-5xl font-semibold font-serif mb-3 md:mb-4">
+            Recent Tests  
           </h2>
 
           {/* Decorative Underline */}
@@ -38,9 +38,9 @@ export default function ResultSection() {
 
           {/* Subtext */}
           <p className="text-[#1DB5AC] text-xl md:text-3xl text-center md:text-left font-serif font-medium leading-relaxed">
-            Monitor Your Progress
+            Quick Access to Your Latest
             <br />
-            Effectively
+            Attempts
           </p>
         </div>
       </div>
@@ -49,19 +49,13 @@ export default function ResultSection() {
         {/* Highlighted Heading */}
         <div className="inline-block border border-cyan-400 rounded-full px-4 py-1 md:px-6 md:py-2 mb-4 md:mb-6">
           <h3 className="text-base md:text-2xl font-serif font-thin text-white">
-            Every result brings you closer to your goal
+            Your next high score could make the list
           </h3>
         </div>
 
         {/* Description Paragraph */}
         <p className="text-sm md:text-2xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-          The Result Section keeps all your test performances neatly organized
-          in one place. It tracks your scores, time taken, accuracy, and
-          subject-wise breakdown for every test attempt. With visual graphs and
-          trends, it becomes easy to analyze your growth over time, compare past
-          performances, and identify patterns of improvement or decline. By
-          regularly reviewing your results, you can fine-tune your study
-          strategy, stay motivated, and move steadily toward NEET success.
+          The Recent Tests feature helps students stay in sync with their preparation by offering instant access to their most recent test attempts. With just one click, students can revisit scores, analyze mistakes, and check solutions — all without jumping through complicated menus. It encourages frequent self-assessment and builds a strong habit of improvement. This tool makes reflection easy and smart, turning every test into a step forward.
         </p>
       </div>
     </div>
