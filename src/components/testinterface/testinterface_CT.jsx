@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import { set } from "date-fns"
 
 const subjectIcons = {
   Physics: {
@@ -67,7 +68,7 @@ const TestInterface = () => {
   const [questionsData, setQuestionsData] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [currentSubject, setCurrentSubject] = useState("Chemistry")
+  const [currentSubject, setCurrentSubject] = useState("")
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState({})
   const [visitedQuestions, setVisitedQuestions] = useState({})
@@ -75,7 +76,6 @@ const TestInterface = () => {
   const [timer, setTimer] = useState(0)
   const [startTime, setStartTime] = useState(new Date())
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [hoveredOption, setHoveredOption] = useState(null)
   const [totalQuestions, setTotalQuestions] = useState(0)
   const [numQuestions, setNumQuestions] = useState(0)
 
@@ -108,7 +108,6 @@ const TestInterface = () => {
       document.removeEventListener("MSFullscreenChange", handleFullScreenChange)
     }
   }, [router])
-
   // Initialization effect
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -118,6 +117,7 @@ const TestInterface = () => {
 
     const storedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || []
     setSelectedSubjects(storedSubjects)
+    setCurrentSubject(storedSubjects[0] || "")
 
     let totalQuestionsCount = 0
     storedSubjects.forEach((subject) => {
@@ -504,7 +504,7 @@ const TestInterface = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center">
+      <div className="min-h-screen max-sm:text-sm bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="text-center">
           <div className="relative">
             <div className="animate-spin rounded-full h-20 w-20 border-4 border-indigo-200 border-t-indigo-600 mx-auto mb-6"></div>
@@ -540,11 +540,11 @@ const TestInterface = () => {
   const SubjectIcon = subjectConfig.icon
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 select-none">
+    <div className="min-h-screen max-sm:text-sm bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 select-none">
       {/* Enhanced Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/90 shadow-xl border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
+      <div className="sticky max-sm:text-sm top-0 z-20 backdrop-blur-xl bg-white/90 shadow-xl border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 py-4 max-sm:py-2">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-4 max-sm:gap-2">
             {/* Timer Section */}
             <div className="relative">
               <div className="flex items-center gap-4">
@@ -598,7 +598,7 @@ const TestInterface = () => {
                 </div>
               )}
             </div>
-
+            <div className="max-sm:text-sm flex items-center gap-4">
             {/* Subject Tabs */}
             <div className="flex flex-wrap gap-3 justify-center">
               {selectedSubjects.map((subject) => {
@@ -609,19 +609,20 @@ const TestInterface = () => {
                 return (
                   <button
                     key={subject}
+                     title={subject}
                     onClick={() => {
                       setCurrentSubject(subject)
                       setCurrentQuestion(0)
                     }}
-                    className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${
+                    className={`flex items-center gap-3 max-sm:px-2 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${
                       isActive
                         ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-xl`
                         : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white shadow-md border border-gray-200"
                     }`}
                   >
                     <Icon className={`text-xl ${isActive ? "text-white" : config.color}`} />
-                    <span className="font-semibold">{subject}</span>
-                    <div
+                    <span className="font-semibold max-sm:hidden" title={subject}>{subject}</span>
+                    <div title={subject}
                       className={`w-3 h-3 rounded-full ${isActive ? "bg-white/80" : `${config.bgColor} animate-pulse`}`}
                     />
                   </button>
@@ -633,7 +634,7 @@ const TestInterface = () => {
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="relative overflow-hidden px-8 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-2xl hover:from-red-600 hover:to-pink-700 transition-all transform hover:scale-105 shadow-xl disabled:opacity-50 flex items-center gap-3 font-semibold"
+              className="relative overflow-hidden px-8 py-3 max-sm:px-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-2xl hover:from-red-600 hover:to-pink-700 transition-all transform hover:scale-105 shadow-xl disabled:opacity-50 flex items-center gap-3 font-semibold"
             >
               {isSubmitting ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
@@ -643,12 +644,13 @@ const TestInterface = () => {
               Submit Test
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full hover:translate-x-[-200%] transition-transform duration-1000"></div>
             </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="max-w-7xl max-sm:text-sm mx-auto p-4 md:p-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Question Section */}
         <div className="xl:col-span-2">
           <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-6 md:p-8 relative overflow-hidden">
@@ -658,7 +660,7 @@ const TestInterface = () => {
 
             {/* Question Header */}
             <div className="relative z-10">
-              <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
+              <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8 max-sm:gap-2 max-sm:mb-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-4">
                     <div
@@ -680,14 +682,14 @@ const TestInterface = () => {
                       </div>
                     </div>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-semibold text-gray-900 leading-relaxed mb-6">
+                  <h2 className="text-xl md:text-2xl font-semibold text-gray-900 leading-relaxed mb-6 max-sm:text-[16px] max-sm:mb-1">
                     {currentQuestionData?.question || "No Question Available"}
                   </h2>
                 </div>
 
                 <button
                   onClick={handleReviewLater}
-                  className={`p-4 rounded-2xl transition-all transform hover:scale-110 shadow-lg ${
+                  className={`p-4 rounded-2xl transition-all transform hover:scale-110 shadow-lg max-sm:p-1 ${
                     markedForReview[`${currentSubject}-${currentQuestion}`]
                       ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-red-200"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -702,19 +704,17 @@ const TestInterface = () => {
               <div className="space-y-4 mb-8">
                 {currentQuestionData?.options.map((option, index) => {
                   const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index
-                  const isHovered = hoveredOption === index
+                  
                   const optionLetter = String.fromCharCode(65 + index) // A, B, C, D
 
                   return (
                     <label
                       key={index}
-                      className={`group relative flex items-center gap-4 p-2 rounded-2xl border-2 cursor-pointer transition-all transform hover:scale-[1.02] hover:shadow-xl ${
+                      className={`group relative flex items-center max-sm:gap-2 max-sm:p-1 gap-4 p-2 rounded-2xl border-2 cursor-pointer transition-all transform hover:scale-[1.02] hover:shadow-xl ${
                         isSelected
                           ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-100 shadow-lg shadow-blue-200"
                           : "border-gray-200 bg-white/80 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50"
                       }`}
-                      onMouseEnter={() => setHoveredOption(index)}
-                      onMouseLeave={() => setHoveredOption(null)}
                     >
                       {/* Custom Radio Input */}
                       <div className="relative">
@@ -724,10 +724,10 @@ const TestInterface = () => {
                           value={index}
                           checked={isSelected}
                           onChange={() => handleOptionClick(index)}
-                          className="sr-only"
+                          className="sr-only max-sm:text-sm max-sm:opacity-0 max-sm:invisible max-sm:w-2 max-sm:h-2"
                         />
                         <div
-                          className={`relative w-12 h-12 rounded-full border-3 flex items-center justify-center font-bold text-lg transition-all ${
+                          className={`relative w-12 h-12 max-sm:text-sm max-sm:w-9 max-sm:h-9 rounded-full border-3 max-sm:border-1 flex items-center justify-center font-bold text-lg transition-all ${
                             isSelected
                               ? "border-blue-500 bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg"
                               : "border-gray-300 bg-white text-gray-600 group-hover:border-blue-400 group-hover:bg-blue-50"
@@ -735,24 +735,21 @@ const TestInterface = () => {
                         >
                           {optionLetter}
                           {isSelected && (
-                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 opacity-20 animate-pulse"></div>
+                            <div className="absolute inset-0 rounded-full max-sm:text-sm bg-gradient-to-r from-blue-400 to-indigo-500 opacity-20 animate-pulse"></div>
                           )}
                         </div>
-                        {isHovered && !isSelected && (
-                          <div className="absolute inset-0 rounded-full bg-blue-200 opacity-30 animate-pulse"></div>
-                        )}
                       </div>
 
                       {/* Option Text */}
                       <div className="flex-1">
-                        <span className="text-base md:text-lg leading-relaxed text-gray-800 font-medium">{option}</span>
+                        <span className="text-base md:text-lg max-sm:text-sm leading-relaxed text-gray-800 font-medium">{option}</span>
                       </div>
 
                       {/* Selection Indicator */}
                       {isSelected && (
                         <div className="flex items-center gap-2">
-                          <CheckCircle className="w-6 h-6 text-blue-600" />
-                          <span className="text-sm font-medium text-blue-600">Selected</span>
+                          <CheckCircle className="w-6 h-6 max-sm:w-4 max-sm:h-4 text-blue-600" />
+                          <span className="text-sm max-sm:text-xs font-medium text-blue-600">Selected</span>
                         </div>
                       )}
 
@@ -766,10 +763,10 @@ const TestInterface = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 max-sm:gap-1 pt-6 max-sm:pt-1 border-t border-gray-200">
                 <button
                   onClick={handleClearResponse}
-                  className="flex items-center gap-2 px-6 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-all transform hover:scale-105 font-medium"
+                  className="flex items-center gap-2 px-6 py-3 text-red-600 max-sm:text-xs hover:bg-red-50 rounded-xl transition-all transform hover:scale-105 font-medium"
                 >
                   <RotateCcw className="w-5 h-5" />
                   Clear Response
@@ -779,7 +776,7 @@ const TestInterface = () => {
                   <button
                     onClick={() => handleNavigation("prev")}
                     disabled={currentQuestion === 0 && selectedSubjects.indexOf(currentSubject) === 0}
-                    className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed bg-white shadow-md font-medium"
+                    className="flex items-center gap-2 px-6 py-3 max-sm:py-2 max-sm:px-2 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed bg-white shadow-md font-medium"
                   >
                     <ChevronLeft className="w-5 h-5" />
                     Previous
@@ -790,7 +787,7 @@ const TestInterface = () => {
                       currentQuestion === numQuestions - 1 &&
                       selectedSubjects.indexOf(currentSubject) === selectedSubjects.length - 1
                     }
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                    className="flex items-center gap-2 px-6 py-3 max-sm:py-2 max-sm:px-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   >
                     Next
                     <ChevronRight className="w-5 h-5" />
@@ -804,25 +801,25 @@ const TestInterface = () => {
         {/* Enhanced Sidebar */}
         <div className="xl:col-span-1 space-y-6">
           {/* Progress Card */}
-          <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-6 relative overflow-hidden">
+          <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-6 max-sm:p-3 max-sm:rounded-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-20 translate-x-20"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 -translate-x-16"></div>
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-6">
-                <Trophy className="text-2xl" />
-                <h3 className="font-bold text-xl">Test Progress</h3>
+                <Trophy className="text-2xl max-sm:text-xl" />
+                <h3 className="font-bold text-xl  max-sm:text-lg">Test Progress</h3>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+              <div className="grid grid-cols-2 gap-4 mb-6 max-sm:grid-cols-1 max-sm:gap-2">
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl flex md:flex-col items-center justify-center max-sm:flex max-sm:justify-between p-4 max-sm:p-2">
                   <div className="flex items-center gap-2 mb-2">
                     <CheckCircle className="text-green-300 w-5 h-5" />
                     <span className="text-sm font-medium">Answered</span>
                   </div>
-                  <div className="text-3xl font-bold">
+                  <div className="text-3xl font-bold max-sm:text-2xl">
                     {getAnsweredCount()}/{totalQuestions}
                   </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 flex md:flex-col items-center justify-center max-sm:flex max-sm:justify-between max-sm:p-2">
                   <div className="flex items-center gap-2 mb-2">
                     <Clock className="text-red-300 w-5 h-5" />
                     <span className="text-sm font-medium">Marked</span>
@@ -853,7 +850,7 @@ const TestInterface = () => {
               <h3 className="font-bold text-gray-900 text-lg">{currentSubject} Questions</h3>
             </div>
 
-            <div className="grid grid-cols-5 gap-3 mb-6">
+            <div className="grid grid-cols-5 max-sm:grid-cols-6 gap-3 mb-6 max-sm:gap-2">
               {Array.from({ length: numQuestions }).map((_, index) => {
                 const isCurrentQuestion = currentQuestion === index
                 const isAnswered = answers[`${currentSubject}-${index}`] !== undefined
@@ -861,7 +858,7 @@ const TestInterface = () => {
                 const isVisited = visitedQuestions[`${currentSubject}-${index}`]
 
                 let buttonClass =
-                  "w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 shadow-lg relative "
+                  "w-7 h-7 rounded-xl flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 shadow-lg relative "
 
                 if (isCurrentQuestion) {
                   buttonClass += "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-blue-300 scale-110"
@@ -970,24 +967,6 @@ const TestInterface = () => {
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Floating Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-float opacity-20"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${5 + Math.random() * 5}s`,
-            }}
-          >
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
-          </div>
-        ))}
       </div>
 
       {/* Custom Animations */}

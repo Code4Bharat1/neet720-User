@@ -6,7 +6,7 @@ const Page = () => {
   return (
     <div>
       {/* Desktop View (TestInterface will be visible) */}
-      <div className="hidden md:block">
+      <div className="block">
         <TestInterface_FQ />
       </div>
     </div>

@@ -171,11 +171,7 @@ const NavBar = () => {
 
   return (
     <div
-      className="hidden md:flex w-full px-8 py-4 items-center justify-between relative"
-      style={{
-        background: `linear-gradient(to right, ${colors.navbarColor}, ${colors.sidebarColor})`,
-        color: colors.textColor,
-      }}
+      className="hidden md:flex w-full px-8 py-4 items-center justify-between relative bg-slate-500"
     >
       <div className="flex items-center flex-grow max-w-md">
         {/* Placeholder for left section */}

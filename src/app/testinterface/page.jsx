@@ -7,14 +7,14 @@ const Page = () => {
   return (
     <div>
       {/* Desktop View (TestInterface will be visible) */}
-      <div className="hidden md:block">
+      <div className="">
         <TestInterface />
       </div>
 
       {/* Mobile View (TestInterfaceMobile will be visible) */}
-      <div className="block md:hidden">
+      {/* <div className="block md:hidden">
         <TestInterfaceMobile/>
-      </div>
+      </div> */}
     </div>
   );
 }
