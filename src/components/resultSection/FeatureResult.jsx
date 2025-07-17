@@ -2,32 +2,32 @@ import Image from "next/image";
 
 const features = [
   {
-    title: "Time & Accuracy Tracker",
-    description: "Monitor how efficiently you're solving questions",
+    title: "Accuracy Analysis",
+    description: "Know how many answers you're getting right — and why",
     image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
   },
   {
-    title: "Subject-Wise Breakdown",
-    description: "Analyze how you're performing in each subject",
+    title: "Speed Tracker",
+    description: "Time taken per question and overall test pace",
     image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
   },
   {
-    title: "Growth Graphs",
-    description: "See trends and improvement over multiple tests",
+    title: "Weak Topic Detection",
+    description: "Pinpoint which chapters need more attention",
     image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
   },
   {
-    title: "All Results in One Place",
-    description: "Access all your performance data easily anytime",
+    title: "Trend Graphs",
+    description: "See your growth over multiple attempts visually",
     image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
   },
 ];
 
 export default function FeatureResult() {
   return (
-    <section className="bg-gradient-to-br from-[#0f3b63] to-[#079ba1] rounded-[40px] py-16 px-6 md:px-12 max-w-6xl mx-auto">
+    <section className="bg-gradient-to-br from-[#0f3b63] to-[#079ba1] rounded-[40px] py-16 px-6 md:px-12 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-16">
         <div className="inline-block bg-[#029fa5] text-white px-6 py-2 rounded-full font-semibold text-lg shadow-md">
           Features
         </div>
