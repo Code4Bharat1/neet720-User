@@ -35,6 +35,18 @@ export default {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },
+      fontFamily:{
+        tinos: ['Tinos', 'serif'],
+        poppins: ['Poppins', 'sans-serif'],
+     
+      },
+       fontWeight: {
+        normal: '400',
+        light: '300',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+      },  
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

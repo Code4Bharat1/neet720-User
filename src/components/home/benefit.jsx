@@ -35,7 +35,7 @@ const benefitsData = [
 
 export default function BenefitsPage() {
   return (
-    <div className="bg-[#0B3558] min-h-screen text-white p-6 md:p-16 ">
+    <div className="bg-[#0B3558] min-h-screen text-white p-6 md:p-16 overflow-x-hidden">
       <h1 className="text-3xl md:text-6xl font-bold mb-12 text-white pl-6">
         Benefits
       </h1>
