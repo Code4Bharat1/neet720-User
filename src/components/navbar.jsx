@@ -67,7 +67,7 @@ export default function Navbar() {
                   {[
                     { href: "/fulltest", text: "Full Test" },
                     { href: "/fast-quiz", text: "Fast Quiz" },
-                    { href: "/createmytest", text: "Create Test" },
+                    { href: "/landing", text: "Create Test" },
                     { href: "/subjectwise", text: "Subject-wise Marks Analysis" },
                     { href: "/chatbot", text: "Chatbot" },
                     { href: "/resultSection", text: "Result Section" },
