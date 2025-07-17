@@ -103,26 +103,36 @@ export default function ExamPlan() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-gradient-to-b from-[#1DB5AC] to-[#083e5d] rounded-xl shadow-md text-white p-3 sm:p-4 flex flex-col items-center text-center"
-            >
-              <h3 className="font-bold text-base sm:text-lg mb-2 sm:mb-4">{feature.title}</h3>
-              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mb-2 sm:mb-4">
-                <img
-                  src={feature.image}
-                  alt={feature.title}
-                  width={96}
-                  height={96}
-                  className="rounded-full object-cover w-full h-full"
-                />
-              </div>
-              <p className="text-xs sm:text-sm">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 px-2 sm:px-10">
+  {features.map((feature, index) => (
+    <div
+      key={index}
+      className="bg-[#103F5D] rounded-lg text-white border"
+    >
+      {/* Top section with background and title */}
+      <div className="bg-[#129EA0] h-44 sm:h-48 flex flex-col items-center justify-center rounded-t-lg">
+        <h1 className="text-lg md:text-xl font-bold pb-8">
+          {feature.title}
+        </h1>
+
+        {/* Overlapping Image */}
+        <img
+          src={feature.image}
+          alt={feature.title}
+          width={100}
+          height={100}
+          className="rounded-full -mb-16 h-28 w-28 object-cover"
+        />
+      </div>
+
+      {/* Bottom section with description */}
+      <div className="flex flex-col items-center mt-20 mb-10 px-4">
+        <p className="text-xl md:text-2xl text-center">{feature.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
+
 
         {/* Benefits Section */}
         <div className="bg-[#103f5d] py-8 sm:py-12 px-3 sm:px-4 text-white text-center">

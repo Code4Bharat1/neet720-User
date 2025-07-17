@@ -95,26 +95,33 @@ export default function PYQ() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-gradient-to-b from-[#1DB5AC] to-[#083e5d] rounded-xl shadow-md text-white p-3 sm:p-4 flex flex-col items-center text-center"
-            >
-              <h3 className="font-bold text-base sm:text-lg mb-2 sm:mb-4">{feature.title}</h3>
-              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mb-2 sm:mb-4">
-                <img
-                  src={feature.image}
-                  alt={feature.title}
-                  width={96}
-                  height={96}
-                  className="rounded-full object-cover w-full h-full"
-                />
-              </div>
-              <p className="text-xs sm:text-sm">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto px-4">
+  {features.map((feature, index) => (
+    <div
+      key={index}
+      className="bg-[#083E5D] rounded-lg text-white border shadow-md overflow-hidden"
+    >
+      {/* Top Section with Title and Image */}
+      <div className="bg-[#1DB5AC] h-48 sm:h-52 flex flex-col items-center justify-center rounded-t-lg relative">
+        <h3 className="text-lg md:text-xl font-bold pb-8 px-2 text-center">
+          {feature.title}
+        </h3>
+        <img
+          src={feature.image}
+          alt={feature.title}
+          className="absolute bottom-[-40px] h-24 w-24 sm:h-28 sm:w-28 object-cover rounded-full border-4 border-white"
+        />
+      </div>
+
+      {/* Bottom Section with Description */}
+      <div className="flex flex-col items-center justify-center mt-16 sm:mt-20 mb-6 px-4 text-center">
+        <p className="text-base sm:text-lg">{feature.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
+
+
 
         {/* Benefits Section */}
         <div className="bg-[#103f5d] py-8 sm:py-12 px-3 sm:px-4 text-white text-center">
