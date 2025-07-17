@@ -112,84 +112,84 @@ export default function CollegePred() {
       </div>
 
       {/* Features Section */}
-      <section className="bg-[#083e5d] py-8 sm:py-12 px-3 sm:px-4">
-        {/* Header */}
-        <div className="bg-[#0fa5a5] text-white text-base sm:text-lg font-semibold text-center py-1 sm:py-2 px-3 sm:px-4 rounded-full w-full shadow-md mb-8 sm:mb-12">
-          Features
+<section className="bg-[#083e5d] py-8 sm:py-12 px-3 sm:px-4">
+  {/* Header */}
+  <div className="bg-[#0fa5a5] text-white text-base sm:text-lg font-semibold text-center py-1 sm:py-2 px-3 sm:px-4 rounded-full w-full shadow-md mb-8 sm:mb-12">
+    Features
+  </div>
+
+  {/* Feature Rows - Reordered for mobile */}
+  {features.map((item, idx) => (
+    <div key={idx}>
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 sm:gap-10 md:gap-12 max-w-4xl mx-auto py-4 sm:py-6 md:py-8 px-4 sm:px-6">
+        {/* Left - Reordered for mobile */}
+        <div
+          className={`flex justify-center ${
+            typeof item.left === "string"
+              ? "order-1"
+              : "order-2 md:order-1"
+          }`}
+        >
+          {typeof item.left === "string" ? (
+            <p className="text-white text-center text-xl sm:text-2xl md:text-3xl font-normal leading-relaxed px-4 sm:px-6">
+              {item.left}
+            </p>
+          ) : (
+            <div className="bg-gradient-to-b from-[#104662] to-[#12999d] text-white px-6 sm:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8 rounded-xl sm:rounded-2xl w-full max-w-xs sm:max-w-md mx-auto text-center shadow-md border border-[#1DB5AC]">
+              <div className="flex justify-center mb-4 sm:mb-5">
+                <img
+                  src={item.left.image}
+                  alt="Profile"
+                  width={64}
+                  height={64}
+                  className="rounded-full border-2 sm:border-3 md:border-4 border-white shadow-md w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18"
+                />
+              </div>
+              <h3 className="font-bold text-lg sm:text-xl md:text-2xl">
+                {item.left.title}
+              </h3>
+            </div>
+          )}
         </div>
 
-        {/* Feature Rows - Reordered for mobile */}
-        {features.map((item, idx) => (
-          <div key={idx}>
-            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 sm:gap-6 md:gap-8 max-w-5xl mx-auto py-4 sm:py-6 md:py-8 px-3 sm:px-4">
-              {/* Left - Reordered for mobile */}
-              <div
-                className={`flex justify-center ${
-                  typeof item.left === "string"
-                    ? "order-1"
-                    : "order-2 md:order-1"
-                }`}
-              >
-                {typeof item.left === "string" ? (
-                  <p className="text-white text-center text-xl sm:text-2xl md:text-3xl font-normal leading-relaxed">
-                    {item.left}
-                  </p>
-                ) : (
-                  <div className="bg-gradient-to-b from-[#104662] to-[#12999d] text-white px-4 sm:px-6 pt-4 sm:pt-6 pb-4 sm:pb-6 rounded-xl sm:rounded-2xl w-full max-w-xs sm:max-w-md mx-auto text-center shadow-md border border-[#1DB5AC]">
-                    <div className="flex justify-center mb-3 sm:mb-4">
-                      <img
-                        src={item.left.image}
-                        alt="Profile"
-                        width={64}
-                        height={64}
-                        className="rounded-full border-2 sm:border-3 md:border-4 border-white shadow-md w-12 h-12 sm:w-16 sm:h-16 md:w-18 md:h-18"
-                      />
-                    </div>
-                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl">
-                      {item.left.title}
-                    </h3>
-                  </div>
-                )}
+        {/* Right - Reordered for mobile */}
+        <div
+          className={`flex justify-center ${
+            typeof item.right === "string"
+              ? "order-1"
+              : "order-2 md:order-1"
+          }`}
+        >
+          {typeof item.right === "string" ? (
+            <p className="text-white text-center text-xl sm:text-2xl md:text-3xl font-normal leading-relaxed px-4 sm:px-6">
+              {item.right}
+            </p>
+          ) : (
+            <div className="bg-gradient-to-b from-[#104662] to-[#12999d] text-white px-6 sm:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8 rounded-xl sm:rounded-2xl w-full max-w-xs sm:max-w-md mx-auto text-center shadow-md border border-[#1DB5AC]">
+              <div className="flex justify-center mb-4 sm:mb-5">
+                <img
+                  src={item.right.image}
+                  alt="Profile"
+                  width={64}
+                  height={64}
+                  className="rounded-full border-2 sm:border-3 md:border-4 border-white shadow-md w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18"
+                />
               </div>
-
-              {/* Right - Reordered for mobile */}
-              <div
-                className={`flex justify-center ${
-                  typeof item.right === "string"
-                    ? "order-1"
-                    : "order-2 md:order-1"
-                }`}
-              >
-                {typeof item.right === "string" ? (
-                  <p className="text-white text-center text-xl sm:text-2xl md:text-3xl font-normal leading-relaxed">
-                    {item.right}
-                  </p>
-                ) : (
-                  <div className="bg-gradient-to-b from-[#104662] to-[#12999d] text-white px-4 sm:px-6 pt-4 sm:pt-6 pb-4 sm:pb-6 rounded-xl sm:rounded-2xl w-full max-w-xs sm:max-w-md mx-auto text-center shadow-md border border-[#1DB5AC]">
-                    <div className="flex justify-center mb-3 sm:mb-4">
-                      <img
-                        src={item.right.image}
-                        alt="Profile"
-                        width={64}
-                        height={64}
-                        className="rounded-full border-2 sm:border-3 md:border-4 border-white shadow-md w-12 h-12 sm:w-16 sm:h-16 md:w-18 md:h-18"
-                      />
-                    </div>
-                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl">
-                      {item.right.title}
-                    </h3>
-                  </div>
-                )}
-              </div>
+              <h3 className="font-bold text-lg sm:text-xl md:text-2xl">
+                {item.right.title}
+              </h3>
             </div>
+          )}
+        </div>
+      </div>
 
-            {/* Divider */}
-            {idx < features.length - 1 && (
-              <div className="border-t-2 border-[#1DB5AC] max-w-6xl mx-auto my-1 sm:my-2"></div>
-            )}
-          </div>
-        ))}
-      </section>
+      {/* Divider */}
+      {idx < features.length - 1 && (
+        <div className="border-t-2 border-[#1DB5AC] max-w-6xl mx-auto my-2 sm:my-3"></div>
+      )}
+    </div>
+  ))}
+</section>
     </div>
   );
 }
