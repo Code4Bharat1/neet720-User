@@ -38,8 +38,8 @@ export default function FastQuiz() {
           </div>
 
           {/* Doctor Image */}
-          <div className="flex-shrink-0 w-[90%] sm:w-[400px]">
-            <div className="w-full h-[300px] md:h-[360px] p-[6px] rounded-[24px] bg-[#0b3d59] border-[3px] border-[#00c4a7]">
+          <div className="flex-shrink-0 w-[90%] sm:w-[400px] flex justify-left items-center mx-auto">
+            <div className="w-full h-[300px] md:h-[360px] p-[6px] rounded-[24px] bg-[#0b3d59] border-[3px] border-[#00c4a7] flex justify-left items-left">
               <Image
                 src="/doctor_girl.png"
                 alt="Doctor with stethoscope"
