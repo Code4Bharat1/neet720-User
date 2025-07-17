@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { FaAtom, FaFlask, FaLeaf } from "react-icons/fa"; // Removed GiAnimalHide
 import Chapters from "../chapters/chapters";
 import Preview from "../preview/preview";
@@ -11,63 +11,39 @@ const Createtest = () => {
 
   const [activeStep, setActiveStep] = useState(1);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
-  const [selectedChapters, setSelectedChapters] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [testName, setTestName] = useState("");
 
   const steps = ["Subjects", "Chapters", "Preview"];
 
   //useEffect to control the escape screen
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      if (
-        !document.fullscreenElement &&
-        !document.webkitFullscreenElement &&
-        !document.msFullscreenElement &&
-        !document.mozFullscreenElement
-      ) {
-        //push the page
-        router.push("/testselection");
+    useEffect (() => {
+      const handleFullScreenChange = () =>{
+        if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement && !document.mozFullscreenElement) {
+          //push the page 
+          router.push("/testselection")
+        }
       }
-    };
-
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
+  
+      document.addEventListener("fullscreenchange", handleFullScreenChange);
     document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
     document.addEventListener("mozfullscreenchange", handleFullScreenChange);
     document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-
+  
     return () => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleFullScreenChange
-      );
-      document.removeEventListener(
-        "mozfullscreenchange",
-        handleFullScreenChange
-      );
-      document.removeEventListener(
-        "MSFullscreenChange",
-        handleFullScreenChange
-      );
+      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
+      document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
+      document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
     };
-  }, []);
-
+    },[])
+  
   // Load selected subjects from local storage on mount
   useEffect(() => {
     const savedSubjects = JSON.parse(
       localStorage.getItem("selectedSubjects") || "[]"
     );
     setSelectedSubjects(savedSubjects);
-  }, [activeStep]);
-
-  useEffect(() => {
-    setInterval(() => {
-      const savedChapters = JSON.parse(
-        localStorage.getItem("selectedChapters") || "[chemistry]"
-      );
-      setSelectedChapters(savedChapters);
-    }, 100);
   }, []);
 
   // Function to handle subject selection
@@ -113,12 +89,13 @@ const Createtest = () => {
       setActiveStep(3); // Move to preview page
     }
   };
+
   return (
     <div className="w-full h-screen p-4 bg-white relative">
       {/* Header */}
       <div className="flex justify-center items-center w-[200px] h-12 rounded-xl md:h-20 mx-auto mb-6 bg-[#54ADD3] text-white text-2xl font-bold">
         <h1 className="text-2xl font-bold flex items-center justify-center">
-          <span className="bg-white rounded-full h-6 w-6 p-2 flex items-center justify-center mr-2 text-[#54ADD3]">
+          <span className="bg-white rounded-full h-6 w-6 p-[2px] pr-[4px] flex items-center justify-center mr-2 text-[#54ADD3]">
             +
           </span>
           Create Test
@@ -187,18 +164,15 @@ const Createtest = () => {
                       {subject === "Biology" && "🌱"}
                     </span>
                     {subject}
-                    {selectedSubjects.includes(subject) && (
-                      <span className="ml-auto text-green-500">✓</span>
-                    )}
+                    <input
+                      type="checkbox"
+                      checked={selectedSubjects.includes(subject)}
+                      onChange={() => handleSubjectSelection(subject)}
+                      className="h-5 w-5 ml-auto rounded-md border-2 border-white cursor-pointer"
+                    />
                   </button>
                 </div>
               ))}
-
-              {activeStep === 1 && (
-                <div className="flex items-center">
-                  Please select at least one subject to proceed.
-                </div>
-              )}
             </div>
           </>
         )}
@@ -225,7 +199,9 @@ const Createtest = () => {
             onClick={handleNext}
             disabled={
               (activeStep === 1 && selectedSubjects.length === 0) ||
-              (activeStep === 2 && selectedChapters.length === 0)
+              (activeStep === 2 &&
+                JSON.parse(localStorage.getItem("selectedChapters") || "[]")
+                  .length === 0)
             }
             className="px-6 py-2 bg-[#54ADD3] text-white rounded-md cursor-pointer disabled:opacity-50"
           >
@@ -246,43 +222,44 @@ const Createtest = () => {
 
       {/* Popup for Test Name */}
       {showPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-xl p-6 w-[90%] max-w-sm">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-              Enter Your Test Name
-            </h2>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+    <div className="bg-white rounded-xl shadow-xl p-6 w-[90%] max-w-sm">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+        Enter Your Test Name
+      </h2>
 
-            <input
-              type="text"
-              placeholder="Test Name"
-              value={testName}
-              onChange={(e) => setTestName(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
-            />
+      <input
+        type="text"
+        placeholder="Test Name"
+        value={testName}
+        onChange={(e) => setTestName(e.target.value)}
+        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
+      />
 
-            <div className="flex justify-between gap-3">
-              <button
-                onClick={() => setShowPopup(false)} // cancel action
-                className="w-1/2 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-              >
-                Cancel
-              </button>
+      <div className="flex justify-between gap-3">
+        <button
+          onClick={() => setShowPopup(false)} // cancel action
+          className="w-1/2 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+        >
+          Cancel
+        </button>
 
-              <button
-                onClick={handleSubmitTestName}
-                disabled={!testName.trim()}
-                className={`w-1/2 py-2 rounded-md text-white font-semibold transition ${
-                  testName.trim()
-                    ? "bg-[#54ADD3] hover:bg-[#429abc]"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        <button
+          onClick={handleSubmitTestName}
+          disabled={!testName.trim()}
+          className={`w-1/2 py-2 rounded-md text-white font-semibold transition ${
+            testName.trim()
+              ? "bg-[#54ADD3] hover:bg-[#429abc]"
+              : "bg-gray-300 cursor-not-allowed"
+          }`}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
