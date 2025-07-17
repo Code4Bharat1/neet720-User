@@ -88,7 +88,7 @@ const Sidebar = ({ isOpen }) => {
         </div>
 
         {/* Menu Items */}
-        <ul className="flex flex-col space-y-4 px-6 text-lg mt-10">
+        <ul className="flex flex-col space-y-8 px-6 text-lg mt-10">
           {menuItems.map(({ href, icon: Icon, label }) => {
             const isActive = pathname === href;
 
@@ -96,7 +96,7 @@ const Sidebar = ({ isOpen }) => {
               <li key={href} className="cursor-pointer">
                 <Link
                   href={href}
-                  className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-all ${
+                  className={`flex items-center space-x-3 px-3 rounded-md transition-all ${
                     isActive
                       ? 'bg-white/20 font-bold text-white py-2 hover:bg-white/30'
                       : 'hover:opacity-80 text-white/80'

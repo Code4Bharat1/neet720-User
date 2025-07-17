@@ -8,14 +8,14 @@ const Page = () => {
   return (
     <div>
       {/* Desktop View (TestInterface will be visible) */}
-      <div className="block">
+      <div className="hidden md:block">
         <TestInterface_CT />
       </div>
 
-      {/* Mobile View (TestInterfaceMobile will be visible)
+      {/* Mobile View (TestInterfaceMobile will be visible) */}
       <div className="block md:hidden">
         <TestInterface/>
-      </div> */}
+      </div>
     </div>
   );
 };
