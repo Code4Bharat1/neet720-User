@@ -5,6 +5,7 @@ import BenefitsSection from '@/components/home/benefit';
 import Home from '@/components/home/neet'
 import Head from 'next/head';
 import React from 'react';
+import CoreFeatureComponent from "../components/home/CoreFeaturesCard.jsx"
 
 
 
@@ -38,6 +39,7 @@ const Page = () => {
      
      <BenefitsSection/>
      <Home/>
+     <CoreFeatureComponent />
 
     </>
   )
