@@ -763,8 +763,8 @@ const QuizInterface = () => {
 
       {/* ✅ Correct Answer */}
       {showResult && optionText === correctAnswer && (
-        <div className="ml-28 -mr-14 w-1/2 mt-1 flex items-center flex-wrap gap-1 text-green-600 text-sm font-medium max-sm:w-fit max-sm:ml-0 max-sm:mr-0">
-          ✅ <span className="max-sm:hidden">Correct Answer</span>
+        <div className="ml-28 -mr-14 w-1/2 mt-1 flex items-center flex-wrap gap-1 text-green-600 text-sm font-medium">
+          ✅ Correct Answer
         </div>
       )}
 
@@ -772,8 +772,8 @@ const QuizInterface = () => {
       {showResult &&
         selectedAnswer === optionText &&
         optionText !== correctAnswer && (
-          <div className="ml-56 w-1/2 mt-1 flex items-center gap-1 text-red-600 text-sm font-medium max-sm:w-fit max-sm:ml-0">
-            ❌ <span className="max-sm:hidden">Your Answer</span>
+          <div className="ml-56 w-1/2 mt-1 flex items-center gap-1 text-red-600 text-sm font-medium">
+            ❌ Your Answer
           </div>
         )}
 
@@ -782,8 +782,8 @@ const QuizInterface = () => {
         currentAnswer?.isAutoAnswered &&
         optionText === correctAnswer && (
           <div className="ml-5 -mr-10 w-1/2 mt-1 flex items-center gap-1 text-green-700 text-xs font-bold">
-            <Bot className="w-4 h-4 max-sm:h-5" />
-            <span className="max-sm:hidden">Bot's Answer</span>
+            <Bot className="w-4 h-4" />
+            Bot's Answer
           </div>
         )}
     </div>

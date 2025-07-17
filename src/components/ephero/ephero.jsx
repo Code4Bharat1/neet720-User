@@ -19,7 +19,7 @@ const Ephero = () => {
           <p className="text-gray-600 text-sm">Never stop learning</p>
           <h1 className="text-2xl md:text-4xl font-bold text-[#005F56] leading-tight mt-2">
             Grow up your skills by <br /> online courses with <br />
-            <span className="text-[#005F56]">NEET720</span>
+            <span className="text-[#005F56]">Nexcore Alliance</span>
           </h1>
 
           {/* Student Data Box */}
