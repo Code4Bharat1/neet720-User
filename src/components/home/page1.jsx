@@ -31,54 +31,30 @@ export default function HomePage() {
         </button>
       </div>
 
-      <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-end z-10">
-        <div
-          className="w-[500px] h-[500px] overflow-hidden"
-          style={{ clipPath: "ellipse(70% 100% at 40% 50%)" }}
-        >
-          <Image
-            src="/Ellipse 16.png"
-            alt="Teacher and Student"
-            width={400}
-            height={400}
-            className="object-cover w-full h-full"
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Rectangle 6926.png"
-            width={900}
-            height={900}
-            className="absolute bottom-[100px] right-[900px] rotate-[65.4deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Rectangle 6926.png"
-            width={900}
-            height={900}
-            className="absolute top-[-60px] left-[250px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 17.png"
-            width={200}
-            height={200}
-            className="absolute bottom-[50px] left-[250px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 17.png"
-            width={100}
-            height={100}
-            className="absolute top-[200px] right-[600px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
+        <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-end z-10">
+          <div
+            className="w-[500px] h-[500px] overflow-hidden"
+            style={{ clipPath: 'ellipse(70% 100% at 40% 50%)' }}
+          >
+            <Image
+              src="/Ellipse 16.png"
+              alt="Teacher and Student"
+              width={400}
+              height={400}
+              className="object-cover w-full h-full"
+            />
+          </div>
+              <div className='mt-0 '>
+<Image
+  src="/Rectangle 6926.png"
+  width={500}
+  height={500}
+      className="absolute top-[-60px] left-[290px] rotate-[100.4deg] opacity-70"
+    style={{ filter: 'blur(4px)' }}
+/>
+
+    </div>
+
         </div>
       </div>
     </section>,
@@ -258,6 +234,7 @@ export default function HomePage() {
         >
           <Image src="/image 4.png" alt="WhatsApp" width={40} height={40} />
         </a>
+     
       </main>
     </>
   );
