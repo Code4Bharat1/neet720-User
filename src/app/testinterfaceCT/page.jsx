@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import TestInterface_CT from "@/components/testinterface/testinterface_CT";
-import TestInterfaceMobile from "@/components/testinterfacemobile/testinterfacemobile_CT';";
+import TestInterfaceMobile from "@/components/testinterfacemobile/testinterfacemobile_CT";
 import TestInterface from '@/components/testInterfaceMobileView/testInterface_CT';
 
 const Page = () => {
