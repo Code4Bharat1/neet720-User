@@ -8,7 +8,7 @@ const subjectImages = {
   Physics: "/pyq.png",
   Chemistry: "/collage.png",
   Biology: "/online.png",
-  English: "/images/pyq-english.png",
+  English: "/image.png",
   History: "/a+.png",
 };
 
