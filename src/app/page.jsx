@@ -38,8 +38,8 @@ const Page = () => {
      <HomePage/>
      
      <BenefitsSection/>
-     <Home/>
      <CoreFeatureComponent />
+     <Home/>
 
     </>
   )
