@@ -61,7 +61,7 @@ const Login = () => {
         {/* Logo Section for Mobile */}
         <div className="md:hidden flex justify-center mb-6">
           <Image
-            src="/nexcore-logo-pc.png"
+            src="/neet720_logo.jpg"
             alt="Nexcore Logo"
             width={160}
             height={40}
