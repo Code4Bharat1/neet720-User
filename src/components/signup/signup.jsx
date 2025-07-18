@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import axios from "axios"; // For making API requests
+import axios from "axios";
 import {
   AiOutlineMail,
   AiOutlineUser,
@@ -15,8 +15,10 @@ import toast from "react-hot-toast";
 const SignUpPage = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    firstName: "",
+    lastName: "",
+    emailAddress: "",
+    mobileNumber: "",
     password: "",
     confirmPassword: "",
   });
@@ -27,69 +29,112 @@ const SignUpPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-
+  const [otp, setOtp] = useState("");
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  // Handle form input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = (field) => {
-    setShowPassword((prevState) => ({
-      ...prevState,
-      [field]: !prevState[field],
+    setShowPassword((prev) => ({
+      ...prev,
+      [field]: !prev[field],
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    const { name, email, password, confirmPassword } = formData;
-
-    // Validate the form data
-    if (!name || !email || !password || !confirmPassword) {
-      setError("All fields are required.");
-      setLoading(false);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      setLoading(false);
+  const handleSendOtp = async () => {
+    if (!formData.mobileNumber || formData.mobileNumber.length !== 10) {
+      toast.error("Enter valid 10-digit mobile number.");
       return;
     }
 
     try {
-      const response = await axios.post(`${apiBaseUrl}/admin/createadmin`, {
-        name,
-        emailAddress: email,
-        password,
-        confirmPassword,
+      setLoading(true);
+      const res = await axios.post(`${apiBaseUrl}/demo/sendotp`, {
+        mobileNumber: formData.mobileNumber,
       });
-      console.log("API Response:", response.data);
-      if (response.status >= 200 && response.status < 300) {
+
+      if (res.status === 200) {
+        toast.success("OTP sent to your mobile!");
         setOtpSent(true);
-        localStorage.setItem("email", email); // Store email for OTP verification
-        toast.success("Registration successful! Check your email for OTP.",{
-          duration: 5000
-        });
-        router.push("/verifyyouremail"); // Redirect to OTP verification page
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message || "An error occurred. Please try again."
-      );
+      toast.error(err?.response?.data?.message || "Failed to send OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      toast.error("Enter a valid 6-digit OTP.");
+      return;
+    }
+
+    try {
+      setVerifyingOtp(true);
+      const res = await axios.post(`${apiBaseUrl}/demo/verifyotp`, {
+        mobileNumber: formData.mobileNumber,
+        otp,
+      });
+
+      if (res.status === 200) {
+        toast.success("OTP verified!");
+        setOtpVerified(true);
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "OTP verification failed.");
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { firstName, lastName, emailAddress, mobileNumber, password, confirmPassword } = formData;
+
+    if (!firstName || !emailAddress || !mobileNumber || !password || !confirmPassword) {
+      toast.error("All fields are required.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    if (!otpVerified) {
+      toast.error("Please verify OTP first.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${apiBaseUrl}/demo/signup`, {
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`,
+        emailAddress,
+        mobileNumber,
+        password,
+        isDemo: true,
+      });
+
+      if (res.status === 201) {
+        toast.success("Signup successful!");
+        router.push("/login");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Signup failed.");
     } finally {
       setLoading(false);
     }
@@ -97,171 +142,170 @@ const SignUpPage = () => {
 
   return (
     <div className="flex flex-wrap bg-gradient-to-b from-[#0077B6] to-[#ADE8F4] min-h-screen">
-      {/* Left Section */}
-      <div className="hidden md:flex md:w-[40%] bg-gradient-to-b from-[#0077B6] to-[#ADE8F4] items-center justify-center">
-        <Image
-          src="/neet720_logo.jpg"
-          alt="Nexcore Logo"
-          width={300}
-          height={200}
-          className="object-contain"
-        />
+      {/* Left */}
+      <div className="hidden md:flex md:w-[40%] items-center justify-center">
+        <Image src="/neet720_logo.jpg" alt="Logo" width={300} height={200} />
       </div>
 
-      {/* Right Section */}
+      {/* Right */}
       <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white p-6 md:rounded-l-3xl">
-        {/* Logo Section for Mobile */}
-        <div className="md:hidden flex justify-center mb-6">
-          <Image
-            src="/nexcore-logo-pc.png"
-            alt="Nexcore Logo"
-            width={160}
-            height={40}
-            className="object-contain"
-          />
-        </div>
-
-        {/* Heading Section */}
-        <h2 className="text-center text-2xl md:text-3xl font-bold text-[#45A4CE] mb-6">
-          Create An Account
+        <h2 className="text-2xl md:text-3xl font-bold text-[#45A4CE] mb-6 text-center">
+          {otpSent && !otpVerified ? "Enter OTP" : "Create an Account"}
         </h2>
 
-        {/* Form Section */}
-        <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
-          {/* Name Input */}
-          <div className="mb-6">
-            <label
-              htmlFor="name"
-              className="block text-sm font-bold text-black mb-2"
-            >
-              Name
-            </label>
-            <div className="relative">
-              <AiOutlineUser className="absolute left-3 top-3 text-gray-500 text-xl" />
-              <input
-                type="text"
-                name="name"
-                id="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="appearance-none rounded-md block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Name"
-              />
+        {!otpSent || (otpSent && otpVerified) ? (
+          <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
+            <div className="flex gap-4">
+              <div className="w-1/2">
+                <label className="block mb-1 text-sm font-bold">First Name</label>
+                <div className="relative">
+                  <AiOutlineUser className="absolute left-3 top-3 text-gray-500 text-xl" />
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="pl-10 py-2 border rounded-md w-full"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="w-1/2">
+                <label className="block mb-1 text-sm font-bold">Last Name</label>
+                <div className="relative">
+                  <AiOutlineUser className="absolute left-3 top-3 text-gray-500 text-xl" />
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="pl-10 py-2 border rounded-md w-full"
+                    required
+                  />
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Email Input */}
-          <div className="mb-6">
-            <label
-              htmlFor="email"
-              className="block text-sm font-bold text-black mb-2"
-            >
-              Email Address
-            </label>
-            <div className="relative">
-              <AiOutlineMail className="absolute left-3 top-3 text-gray-500 text-xl" />
-              <input
-                type="email"
-                name="email"
-                id="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="appearance-none rounded-md block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Email Address"
-              />
+            <div>
+              <label className="block mb-1 text-sm font-bold">Email</label>
+              <div className="relative">
+                <AiOutlineMail className="absolute left-3 top-3 text-gray-500 text-xl" />
+                <input
+                  type="email"
+                  name="emailAddress"
+                  value={formData.emailAddress}
+                  onChange={handleChange}
+                  className="pl-10 py-2 border rounded-md w-full"
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Password Input */}
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-bold text-black-700 mb-2"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <AiOutlineLock className="absolute left-3 top-3 text-gray-500 text-xl" />
-              <input
-                type={showPassword.password ? "text" : "password"}
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="appearance-none rounded-md block w-full pl-10 pr-10 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Password"
-              />
-              <span
-                onClick={() => togglePasswordVisibility("password")}
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-              >
-                {showPassword.password ? (
-                  <AiOutlineEye className="text-xl" />
-                ) : (
-                  <AiOutlineEyeInvisible className="text-xl" />
-                )}
-              </span>
+            <div>
+              <label className="block mb-1 text-sm font-bold">Mobile Number</label>
+              <div className="relative">
+                <AiOutlineMail className="absolute left-3 top-3 text-gray-500 text-xl" />
+                <input
+                  type="text"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleChange}
+                  className="pl-10 py-2 border rounded-md w-full"
+                  required
+                />
+              </div>
+              {!otpSent && (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  className="mt-2 text-blue-600 font-semibold hover:underline"
+                >
+                  Send OTP
+                </button>
+              )}
             </div>
-          </div>
 
-          {/* Confirm Password Input */}
-          <div className="mb-6">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-bold text-black mb-2"
-            >
-              Confirm Password
-            </label>
-            <div className="relative">
-              <AiOutlineLock className="absolute left-3 top-3 text-gray-500 text-xl" />
-              <input
-                type={showPassword.confirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                id="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="appearance-none rounded-md block w-full pl-10 pr-10 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Confirm Password"
-              />
-              <span
-                onClick={() => togglePasswordVisibility("confirmPassword")}
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-              >
-                {showPassword.confirmPassword ? (
-                  <AiOutlineEye className="text-xl" />
-                ) : (
-                  <AiOutlineEyeInvisible className="text-xl" />
-                )}
-              </span>
+            <div>
+              <label className="block mb-1 text-sm font-bold">Password</label>
+              <div className="relative">
+                <AiOutlineLock className="absolute left-3 top-3 text-gray-500 text-xl" />
+                <input
+                  type={showPassword.password ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="pl-10 pr-10 py-2 border rounded-md w-full"
+                  required
+                />
+                <span
+                  onClick={() => togglePasswordVisibility("password")}
+                  className="absolute right-3 top-3 cursor-pointer"
+                >
+                  {showPassword.password ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+                </span>
+              </div>
             </div>
+
+            <div>
+              <label className="block mb-1 text-sm font-bold">Confirm Password</label>
+              <div className="relative">
+                <AiOutlineLock className="absolute left-3 top-3 text-gray-500 text-xl" />
+                <input
+                  type={showPassword.confirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="pl-10 pr-10 py-2 border rounded-md w-full"
+                  required
+                />
+                <span
+                  onClick={() => togglePasswordVisibility("confirmPassword")}
+                  className="absolute right-3 top-3 cursor-pointer"
+                >
+                  {showPassword.confirmPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#5babcd]"
+            >
+              {loading ? "Submitting..." : "Sign Up"}
+            </button>
+          </form>
+        ) : (
+          <div className="w-full max-w-sm space-y-4">
+            <p className="text-center text-gray-700">
+              Enter the 6-digit OTP sent to <strong>{formData.mobileNumber}</strong>
+            </p>
+            <input
+              type="text"
+              maxLength={6}
+              value={otp}
+              onChange={(e) => {
+                if (/^\d*$/.test(e.target.value)) setOtp(e.target.value);
+              }}
+              className="w-full text-center text-xl tracking-widest border border-gray-300 rounded-md px-4 py-2"
+              placeholder="Enter OTP"
+            />
+            <button
+              onClick={handleVerifyOtp}
+              disabled={verifyingOtp}
+              className="w-full py-3 bg-[#0077B6] text-white font-semibold rounded-md hover:bg-[#005f8a]"
+            >
+              {verifyingOtp ? "Verifying..." : "Verify OTP"}
+            </button>
           </div>
+        )}
 
-          {/* Sign Up Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#5babcd] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all ${
-              loading ? "opacity-75" : ""
-            }`}
-          >
-            {loading ? "Signing up..." : "Sign Up"}
-          </button>
-        </form>
-
-        {/* Error Message */}
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-        {/* Login Link */}
-        <div className="mt-8 text-center">
+        <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 font-bold">
-            Have an account already?{" "}
+            Already have an account?{" "}
             <button
               onClick={() => router.push("/login")}
-              className="font-bold text-[#45A4CE] hover:text-[#469fc5] transition-all"
+              className="text-[#45A4CE] hover:underline"
             >
               Log in
             </button>
