@@ -2,15 +2,25 @@
 
 import { Card } from "@/components/ui/card";
 
-function PYQCard({ title, description, year, subject }) {
+// Map each subject to a different image
+const subjectImages = {
+  Mathematics: "/test.png",
+  Physics: "/pyq.png",
+  Chemistry: "/collage.png",
+  Biology: "/online.png",
+  English: "/image.png",
+  History: "/a+.png",
+};
+
+function PYQCard({ title, description, year, subject , text2 }) {
   return (
     <Card className="group w-full max-w-sm overflow-hidden bg-white shadow-lg transition duration-300 hover:shadow-xl relative">
       {/* Image Section */}
       <div className="h-48 bg-[#F9FAFB] flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-white">
         <img
-          src="/images/pyq-illustration.png"
-          alt="PYQ Documents Illustration"
-          className="w-full h-full object-contain"
+          src={subjectImages[subject] || "/images/pyq-illustration.png"}
+          alt={`${subject} PYQ Illustration`}
+          className="w-full h-full object-contain transition duration-300 group-hover:opacity-0"
         />
       </div>
 
@@ -18,13 +28,11 @@ function PYQCard({ title, description, year, subject }) {
       <div className="bg-[#129EA0] px-4 py-3 transition-all duration-300 group-hover:bg-white relative h-14">
         {/* Original text hidden */}
         <h2 className="text-white text-xl font-bold text-center opacity-100 group-hover:opacity-0 transition duration-300">
-          PYQ
+          {title}
         </h2>
-
-        {/* Hover text shown */}
       </div>
       <span className="absolute inset-0 flex items-center justify-center text-[#129EA0] text-2xl font-semibold opacity-0 group-hover:opacity-100 transition duration-300">
-        View PYQ
+        {text2} 
       </span>
     </Card>
   );
@@ -34,41 +42,47 @@ export default function CoreFeatureComponent() {
   // Sample data array
   const pyqData = [
     {
-      title: "Mathematics Previous Year Questions",
+      title: "Mathematics PYQ",
       description:
         "Complete collection of previous year questions with detailed solutions",
       year: "2023",
       subject: "Mathematics",
+      text2: "Access And practice Questions From Previous Years.",
     },
     {
-      title: "Physics Question Bank",
+      title: "SUBJECT WISE MARKS ANALYSIS",
       description: "Comprehensive physics questions from past examinations",
       year: "2023",
       subject: "Physics",
+      text2: "View Detailed Dashboard With Subject Performance Analysis.",
     },
     {
-      title: "Chemistry Practice Set",
+      title: "NEET COLLEGE PREDICTION",
       description: "Important chemistry questions with step-by-step solutions",
       year: "2022",
       subject: "Chemistry",
+      text2: "Explore ChemistPredict NEET Rank And Explore Suitable College Optionsry PYQ",
     },
     {
-      title: "Biology MCQ Collection",
+      title: "CREATE TEST",
       description: "Multiple choice questions covering all biology topics",
       year: "2023",
       subject: "Biology",
+      text2: "Customize Tests TO Focus On Specific Topics For Revision.",
     },
     {
-      title: "English Literature Papers",
+      title: "FAST QUIZ",
       description: "Previous year English literature examination papers",
       year: "2022",
       subject: "English",
+      text2: "Review English PYQ",
     },
     {
-      title: "History Question Papers",
+      title: "RESULT SECTION",
       description: "Historical questions with comprehensive answers",
       year: "2023",
       subject: "History",
+      text2: "Track And View Test Results.",
     },
   ];
 
@@ -80,7 +94,7 @@ export default function CoreFeatureComponent() {
         </h1>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 text-center md:grid-cols-2 lg:grid-cols-3 gap-6">
           {pyqData.map((item, index) => (
             <PYQCard
               key={index}
@@ -88,6 +102,7 @@ export default function CoreFeatureComponent() {
               description={item.description}
               year={item.year}
               subject={item.subject}
+              text2={item.text2}
             />
           ))}
         </div>
