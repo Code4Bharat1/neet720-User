@@ -4,22 +4,22 @@ const features = [
   {
     title: "Performance Trends",
     description: "See score growth or drop in each subject over time.",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
+    image: "/S1.png", // Replace with actual image path
   },
   {
     title: "Time Spent Analysis",
     description: "Know how much time you're investing per subject",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/S2.png",
   },
   {
     title: "Accuracy Tracker",
     description: "View attempted vs correct questions by subject",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/S3.png",
   },
   {
     title: "Smart Study Plan",
     description: "Get clarity on where to focus your next revision.",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/S4.png",
   },
 ];
 

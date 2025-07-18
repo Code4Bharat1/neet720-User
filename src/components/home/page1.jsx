@@ -267,6 +267,7 @@ export default function HomePage() {
         >
           <Image src="/image 4.png" alt="WhatsApp" width={40} height={40} />
         </a>
+     
       </main>
     </>
   );

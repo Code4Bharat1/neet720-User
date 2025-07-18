@@ -4,22 +4,22 @@ const features = [
   {
     title: "Instant Score Review",
     description: "View marks and analysis right after finishing the test",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
+    image: "/RT1.png", // Replace with actual image path
   },
   {
     title: "Revisit Mistakes",
     description: "Recheck wrong answers with detailed solutions",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/RT2.png",
   },
   {
     title: "Track Short-Term Growth",
     description: "Compare recent performances side-by-side",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/RT3.png",
   },
   {
     title: "Uninterrupted Learning",
     description: "Access tests easily without losing focus flow",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/RT4.png",
   },
 ];
 

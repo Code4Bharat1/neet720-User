@@ -45,7 +45,7 @@ export default function Notice() {
           <div className="flex justify-center mb-4 md:mb-6">
             <div className="rounded-[20px] border-2 border-teal-500 p-1 shadow-lg overflow-hidden w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] md:w-[240px] md:h-[240px]">
               <Image
-                src="/notice-image.png" // Update if your image name/path is different
+                src="/doctor.png" // Update if your image name/path is different
                 alt="Student"
                 width={240}
                 height={240}

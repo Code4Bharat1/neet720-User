@@ -6,7 +6,7 @@ export default function Scholarship() {
       left: {
         title: "Earn Credits for Every Test",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/Sch1.png",
       },
       right: "Get points for high scores and consistency",
     },
@@ -15,14 +15,14 @@ export default function Scholarship() {
       right: {
         title: "Redeem for Benefits",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/Sch2.png",
       },
     },
     {
       left: {
         title: "Support for Deserving Students",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/Sch3.png",
       },
       right: "Performance-based rewards keep you focused",
     },
@@ -31,7 +31,7 @@ export default function Scholarship() {
       right: {
         title: "Boost Your Motivation",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/Sch4.png",
       },
     },
   ];

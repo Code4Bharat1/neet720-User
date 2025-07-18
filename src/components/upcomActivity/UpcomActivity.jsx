@@ -6,7 +6,7 @@ export default function UpcomActivity() {
       left: {
         title: "Mock Test Schedule",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/UA1.png",
       },
       right: "Stay updated on upcoming tests and practice plans",
     },
@@ -15,14 +15,14 @@ export default function UpcomActivity() {
       right: {
         title: "Assignment & Quiz Alerts",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/UA2.png",
       },
     },
     {
       left: {
         title: "Smart Reminders",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/UA3.png",
       },
       right: "Get notified before each activity, stress-free",
     },
@@ -31,7 +31,7 @@ export default function UpcomActivity() {
       right: {
         title: "Weekly Overview",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/UA4.png",
       },
     },
   ];
