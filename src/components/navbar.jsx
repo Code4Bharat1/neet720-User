@@ -66,7 +66,7 @@ export default function Navbar() {
                 <div className="flex flex-col space-y-0 px-6 py-4">
                   {[
                     { href: "/fulltest", text: "Full Test" },
-                    { href: "/fast-quiz", text: "Fast Quiz" },
+                    { href: "/fastquiz", text: "Fast Quiz" },
                     { href: "/landing", text: "Create Test" },
                     { href: "/subjectwise", text: "Subject-wise Marks Analysis" },
                     { href: "/chatbot", text: "Chatbot" },
@@ -115,7 +115,7 @@ export default function Navbar() {
           </div>
 
           <Link
-            href="/login"
+            href="/signup"
             className="text-lg font-medium text-gray-700 hover:text-blue-600 transition-colors duration-300"
             style={{ fontFamily: 'Tiro Devanagari Sanskrit, serif' }}
           >
@@ -123,6 +123,15 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
+        <div>
+          <Link 
+            href="/login"
+            className="text-lg font-medium bg-blue-400 hover:bg-blue-300 text-white p-2 -m-4 rounded-sm"
+            style={{ fontFamily: 'Tiro Devanagari Sanskrit, serif' }}
+          >
+                  Login
+          </Link>
+        </div>
     </nav>
   );
 }
