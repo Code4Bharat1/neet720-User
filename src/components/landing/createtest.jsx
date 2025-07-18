@@ -7,16 +7,17 @@ export default function CreateTestPage() {
   return (
     <div className="min-h-screen bg-[#103F5D] text-white font-sans">
       {/* Top Navigation Breadcrumb */}
-      <div className="bg-[#00b4d8] text-3xl md:text-5xl py-5 px-4 flex items-center justify-center gap-2 text-center">
-        <div className="font-medium">Features</div>
-        <div className="font-semibold">&#187;&#187; Create Test</div>
-      </div>
+      <div className="bg-[#1DB5AC] py-3 md:py-4 px-4 md:px-6 flex justify-center items-center space-x-2 md:space-x-3">
+          <span className="text-white text-base md:text-lg font-semibold">Features</span>
+          <span className="text-white text-lg md:text-xl font-bold">{">>>"}</span>
+          <span className="text-white text-lg md:text-xl font-semibold">Create Test</span>
+        </div>
 
       {/* Main Content Section */}
       <div className="text-center py-10 px-4 md:px-10">
         {/* Image */}
         <div className="flex justify-center">
-          <div className="w-full max-w-[350px] md:max-w-[550px] aspect-square p-[6px] rounded-[24px] bg-[#0b3d59] border-[3px] border-[#00c4a7]">
+          <div className="w-full max-w-[350px] md:max-w-[400px] aspect-square p-[6px] rounded-[24px] bg-[#0b3d59] border-[3px] border-[#00c4a7]">
             <Image
               src="/doctor_girl.png"
               alt="Doctor with stethoscope"

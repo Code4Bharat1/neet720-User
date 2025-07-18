@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import Head from "next/head";
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const slides = [
+  const slides = useMemo(() => [
     // Slide 1
     <section
       key="slide-1"
@@ -31,7 +31,7 @@ export default function HomePage() {
         </button>
       </div>
 
-      <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-end z-10">
+      <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-end z-10 relative">
         <div
           className="w-[500px] h-[500px] overflow-hidden"
           style={{ clipPath: "ellipse(70% 100% at 40% 50%)" }}
@@ -44,44 +44,17 @@ export default function HomePage() {
             className="object-cover w-full h-full"
           />
         </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Rectangle 6926.png"
-            width={900}
-            height={900}
-            className="absolute bottom-[100px] right-[900px] rotate-[65.4deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Rectangle 6926.png"
-            width={900}
-            height={900}
-            className="absolute top-[-60px] left-[250px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 17.png"
-            width={200}
-            height={200}
-            className="absolute bottom-[50px] left-[250px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 17.png"
-            width={100}
-            height={100}
-            className="absolute top-[200px] right-[600px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
+        <Image
+          src="/Rectangle 6926.png"
+          width={500}
+          height={500}
+          className="absolute top-[-60px] left-[290px] rotate-[100.4deg] opacity-70"
+          style={{ filter: "blur(4px)" }}
+          alt="Blurred Accent"
+        />
       </div>
     </section>,
+
     // Slide 2
     <section
       key="slide-2"
@@ -114,67 +87,64 @@ export default function HomePage() {
         />
       </div>
 
-      <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-end z-10">
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 2.png"
-            width={200}
-            height={200}
-            className="absolute bottom-[50px] left-[250px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 2.png"
-            width={100}
-            height={100}
-            className="absolute top-[200px] right-[600px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 2.png"
-            width={200}
-            height={200}
-            className="absolute top-[50px] left-[50px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 2.png"
-            width={150}
-            height={150}
-            className="absolute top-[100px] right-[50px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
-        <div className="mt-0 ">
-          <Image
-            src="/Ellipse 2.png"
-            width={150}
-            height={150}
-            className="absolute bottom-[150px] right-[150px] rotate-[180deg] opacity-70"
-            style={{ filter: "blur(4px)" }}
-          />
-        </div>
+      {/* Floating Ellipses */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Image
+          src="/Ellipse 2.png"
+          width={200}
+          height={200}
+          alt="Ellipse"
+          className="absolute bottom-[50px] left-[250px] rotate-[180deg] opacity-70"
+          style={{ filter: "blur(4px)" }}
+        />
+        <Image
+          src="/Ellipse 2.png"
+          width={100}
+          height={100}
+          alt="Ellipse"
+          className="absolute top-[200px] right-[600px] rotate-[180deg] opacity-70"
+          style={{ filter: "blur(4px)" }}
+        />
+        <Image
+          src="/Ellipse 2.png"
+          width={200}
+          height={200}
+          alt="Ellipse"
+          className="absolute top-[50px] left-[50px] rotate-[180deg] opacity-70"
+          style={{ filter: "blur(4px)" }}
+        />
+        <Image
+          src="/Ellipse 2.png"
+          width={150}
+          height={150}
+          alt="Ellipse"
+          className="absolute top-[100px] right-[50px] rotate-[180deg] opacity-70"
+          style={{ filter: "blur(4px)" }}
+        />
+        <Image
+          src="/Ellipse 2.png"
+          width={150}
+          height={150}
+          alt="Ellipse"
+          className="absolute bottom-[150px] right-[150px] rotate-[180deg] opacity-70"
+          style={{ filter: "blur(4px)" }}
+        />
       </div>
     </section>,
-    // Slide 3 (Updated to Match Image)
+
+    // Slide 3
     <section
       key="slide-3"
       className="w-full h-[85vh] relative flex flex-col md:flex-row items-center justify-between bg-[#9EE5F6] overflow-hidden px-6 md:px-20 py-16 transition-all duration-700 ease-in-out"
     >
-      {/* Grid Squares */}
+      {/* Grid Squares Background */}
       <div className="absolute inset-0 z-0 grid grid-cols-8 grid-rows-6 gap-4 px-10 py-10 opacity-40">
         {Array.from({ length: 48 }).map((_, i) => (
           <div key={i} className="bg-black/50 w-5 h-3 md:w-8 md:h-4" />
         ))}
       </div>
 
-      {/* Background Arcs */}
+      {/* SVG Arc Background */}
       <div className="absolute inset-0 z-0">
         <svg
           viewBox="0 0 512 512"
@@ -192,7 +162,7 @@ export default function HomePage() {
         </svg>
       </div>
 
-      {/* Text Section */}
+      {/* Text */}
       <div className="relative z-10 md:w-2/3 text-left space-y-4 text-[#00425A]">
         <h2 className="text-3xl md:text-4xl font-bold leading-tight">
           All Previous Year Questions
@@ -203,25 +173,25 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Image Section */}
-      <div className="relative z-20 mt-50 md:mt-0 md:w-1/2 flex justify-center">
+      {/* Image */}
+      <div className="relative z-20 mt-12 md:mt-0 md:w-1/2 flex justify-center">
         <Image
-          src="/rectangle_3.png" // ← replace with your actual image path
+          src="/rectangle_3.png"
           alt="Student with Book"
           width={800}
           height={860}
           className="rounded-xl"
         />
       </div>
-    </section>,
-  ];
+    </section>
+  ], []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, [slides]);
 
   return (
     <>
