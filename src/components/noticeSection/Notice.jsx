@@ -5,25 +5,25 @@ const features = [
     title: "Time-Stamped Alerts",
     description: "Every update is dated for clear tracking",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg", // Replace with your image path
+      "/N1.png", // Replace with your image path
   },
   {
     title: "Categorized Notices",
     description: "Filter by exam tips, schedules, or syllabus updates",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/N2.png",
   },
   {
     title: "Highlight Important Info",
     description: "Key messages stay pinned and visible",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/N3.png",
   },
   {
     title: "Access Past Notices",
     description: "Review older alerts anytime for reference",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/N4.png",
   },
 ];
 

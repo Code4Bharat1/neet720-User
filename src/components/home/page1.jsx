@@ -47,6 +47,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Rectangle 6926.png"
+            alt="Background Rectangle"
             width={900}
             height={900}
             className="absolute bottom-[100px] right-[900px] rotate-[65.4deg] opacity-70"
@@ -56,6 +57,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Rectangle 6926.png"
+            alt="Background Rectangle"
             width={900}
             height={900}
             className="absolute top-[-60px] left-[250px] rotate-[180deg] opacity-70"
@@ -65,6 +67,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Ellipse 17.png"
+            alt="Background Ellipse"
             width={200}
             height={200}
             className="absolute bottom-[50px] left-[250px] rotate-[180deg] opacity-70"
@@ -74,6 +77,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Ellipse 17.png"
+            alt="Background Ellipse"
             width={100}
             height={100}
             className="absolute top-[200px] right-[600px] rotate-[180deg] opacity-70"
@@ -118,6 +122,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Ellipse 2.png"
+            alt="Background Ellipse"
             width={200}
             height={200}
             className="absolute bottom-[50px] left-[250px] rotate-[180deg] opacity-70"
@@ -127,6 +132,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Ellipse 2.png"
+            alt="Background Ellipse"
             width={100}
             height={100}
             className="absolute top-[200px] right-[600px] rotate-[180deg] opacity-70"
@@ -136,6 +142,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Ellipse 2.png"
+            alt="Background Ellipse"
             width={200}
             height={200}
             className="absolute top-[50px] left-[50px] rotate-[180deg] opacity-70"
@@ -145,6 +152,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Ellipse 2.png"
+            alt="Background Ellipse"
             width={150}
             height={150}
             className="absolute top-[100px] right-[50px] rotate-[180deg] opacity-70"
@@ -154,6 +162,7 @@ export default function HomePage() {
         <div className="mt-0 ">
           <Image
             src="/Ellipse 2.png"
+            alt="Background Ellipse"
             width={150}
             height={150}
             className="absolute bottom-[150px] right-[150px] rotate-[180deg] opacity-70"
