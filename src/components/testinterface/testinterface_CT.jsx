@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect, useRef } from "react"
 import axios from "axios"
 import {
@@ -7,7 +6,6 @@ import {
   FlaskRoundIcon as Flask,
   Atom,
   Dna,
-  Flag,
   Clock,
   ChevronLeft,
   ChevronRight,
@@ -67,7 +65,7 @@ const TestInterface = () => {
   const [questionsData, setQuestionsData] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [currentSubject, setCurrentSubject] = useState("Chemistry")
+  const [currentSubject, setCurrentSubject] = useState("Physics") // Default to Physics
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState({})
   const [visitedQuestions, setVisitedQuestions] = useState({})
@@ -75,8 +73,7 @@ const TestInterface = () => {
   const [timer, setTimer] = useState(0)
   const [startTime, setStartTime] = useState(new Date())
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [totalQuestions, setTotalQuestions] = useState(0)
-  const [numQuestions, setNumQuestions] = useState(0)
+  const [totalQuestions, setTotalQuestions] = useState(0) // Total requested questions across all subjects
 
   const timerInitialized = useRef(false)
   const intervalRef = useRef(null)
@@ -89,17 +86,15 @@ const TestInterface = () => {
         !document.fullscreenElement &&
         !document.webkitFullscreenElement &&
         !document.msFullscreenElement &&
-        !document.mozFullscreenElement
+        !document.mozFullScreenElement
       ) {
         router.push("/testselection")
       }
     }
-
     document.addEventListener("fullscreenchange", handleFullScreenChange)
     document.addEventListener("webkitfullscreenchange", handleFullScreenChange)
     document.addEventListener("mozfullscreenchange", handleFullScreenChange)
     document.addEventListener("MSFullscreenChange", handleFullScreenChange)
-
     return () => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange)
       document.removeEventListener("webkitfullscreenchange", handleFullScreenChange)
@@ -111,10 +106,8 @@ const TestInterface = () => {
   // Initialization effect
   useEffect(() => {
     if (typeof window === "undefined") return
-
     const storedSelectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {}
     setSelectedChapters(storedSelectedChapters)
-
     const storedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || []
     setSelectedSubjects(storedSubjects)
 
@@ -128,7 +121,6 @@ const TestInterface = () => {
         )
       }
     })
-
     setTotalQuestions(totalQuestionsCount)
 
     if (totalQuestionsCount > 0 && !timerInitialized.current) {
@@ -144,13 +136,11 @@ const TestInterface = () => {
           numQuestions: totalQuestionsCount,
         })
         const data = response.data
-
         const subjectWiseQuestions = {
           Physics: [],
           Chemistry: [],
           Biology: [],
         }
-
         data.questions.forEach((item) => {
           const subject = item.question.subject
           subjectWiseQuestions[subject]?.push({
@@ -160,9 +150,21 @@ const TestInterface = () => {
             correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
           })
         })
-
         setQuestionsData(subjectWiseQuestions)
         setLoading(false)
+
+        // Set initial subject to the first one with questions, if any
+        if (storedSubjects.length > 0) {
+          const firstSubjectWithQuestions = storedSubjects.find((subject) => subjectWiseQuestions[subject]?.length > 0)
+          if (firstSubjectWithQuestions) {
+            setCurrentSubject(firstSubjectWithQuestions)
+          } else {
+            // If no questions fetched for any selected subject, set error
+            setError("No questions available for the selected subjects/chapters.")
+          }
+        } else {
+          setError("No subjects selected for the test.")
+        }
 
         const questionInfo = data.questions.map((item) => ({
           chapterId: item.question.chapterId,
@@ -176,7 +178,6 @@ const TestInterface = () => {
         setLoading(false)
       }
     }
-
     fetchQuestions()
 
     return () => {
@@ -189,26 +190,23 @@ const TestInterface = () => {
   //prevent reload on F5 or Ctrl+R
   useEffect(() => {
     const handleBeforeUnload = (event) => {
-      if (!quizCompleted) {
-        event.preventDefault()
-        event.returnValue = ""
-      }
+      // Only prevent if quiz is not completed (assuming quizCompleted state exists elsewhere or is derived)
+      // For now, always prevent to match original intent, but consider a `quizCompleted` state
+      event.preventDefault()
+      event.returnValue = ""
     }
-
     window.addEventListener("beforeunload", handleBeforeUnload)
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
-  }, [])
+  }, []) // Removed quizCompleted from dependency array as it's not defined in this snippet
 
   // Timer effect
   useEffect(() => {
     if (!timerInitialized.current) return
-
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
     }
-
     intervalRef.current = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 0) {
@@ -219,7 +217,6 @@ const TestInterface = () => {
         return prev - 1
       })
     }, 1000)
-
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
@@ -227,18 +224,8 @@ const TestInterface = () => {
     }
   }, [timerInitialized.current])
 
-  // Subject questions update
-  useEffect(() => {
-    if (!selectedChapters[currentSubject]) return
-
-    const subjectChapters = selectedChapters[currentSubject]
-    const numQuestion = Object.values(subjectChapters).reduce(
-      (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-      0,
-    )
-
-    setNumQuestions(numQuestion)
-  }, [currentSubject, selectedChapters])
+  // Calculate the actual number of questions for the current subject
+  const currentSubjectActualQuestionCount = questionsData[currentSubject]?.length || 0
 
   // Format time for display
   const formattedTime = {
@@ -251,7 +238,6 @@ const TestInterface = () => {
     if (!questionsData[currentSubject] || !questionsData[currentSubject][currentQuestion]) {
       return
     }
-
     const questionData = questionsData[currentSubject][currentQuestion]
     const selectedAnswer = questionData.options[index]
     const correctAnswer = questionData.correctAnswer
@@ -280,7 +266,6 @@ const TestInterface = () => {
     }
 
     const savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || []
-
     const existingIndex = savedAnswers.findIndex(
       (answer) => answer.question_id === questionData.id && answer.subject === currentSubject,
     )
@@ -289,7 +274,6 @@ const TestInterface = () => {
     const timeTakenInSeconds = (currentTime - startTime) / 1000
     const minutes = Math.floor(timeTakenInSeconds / 60)
     const seconds = Math.floor(timeTakenInSeconds % 60)
-
     const answerWithTime = { ...answerData, timeTaken: { minutes, seconds } }
 
     if (existingIndex >= 0) {
@@ -297,7 +281,6 @@ const TestInterface = () => {
     } else {
       savedAnswers.push(answerWithTime)
     }
-
     localStorage.setItem("testAnswers", JSON.stringify(savedAnswers))
 
     setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index })
@@ -314,37 +297,29 @@ const TestInterface = () => {
     const newStartTime = savedTimeForCurrentQuestion
       ? new Date(new Date() - savedTimeForCurrentQuestion * 1000)
       : currentTime
-
     setStartTime(newStartTime)
   }
 
   const handleNavigation = (direction) => {
-    const totalQuestions = numQuestions || 0
+    const totalQuestionsInCurrentSubject = currentSubjectActualQuestionCount // Use actual count here
 
-    if (direction === "next" && currentQuestion >= totalQuestions - 1) {
+    if (direction === "next" && currentQuestion >= totalQuestionsInCurrentSubject - 1) {
       const currentSubjectIndex = selectedSubjects.indexOf(currentSubject)
       const nextSubjectIndex = (currentSubjectIndex + 1) % selectedSubjects.length
       setCurrentSubject(selectedSubjects[nextSubjectIndex])
       setCurrentQuestion(0)
     } else if (direction === "prev" && currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1)
-    } else if (direction === "next" && currentQuestion < totalQuestions - 1) {
+    } else if (direction === "next" && currentQuestion < totalQuestionsInCurrentSubject - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else if (direction === "prev" && currentQuestion === 0) {
       const currentSubjectIndex = selectedSubjects.indexOf(currentSubject)
       if (currentSubjectIndex > 0) {
         const prevSubject = selectedSubjects[currentSubjectIndex - 1]
         setCurrentSubject(prevSubject)
-
-        const prevSubjectChapters = selectedChapters[prevSubject]
-        const prevSubjectQuestions = prevSubjectChapters
-          ? Object.values(prevSubjectChapters).reduce(
-              (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-              0,
-            )
-          : 0
-
-        setCurrentQuestion(Math.max(prevSubjectQuestions - 1, 0))
+        // When navigating to previous subject, set question to the last question of that subject
+        const prevSubjectActualQuestionCount = questionsData[prevSubject]?.length || 0
+        setCurrentQuestion(Math.max(prevSubjectActualQuestionCount - 1, 0))
       }
     }
   }
@@ -374,16 +349,13 @@ const TestInterface = () => {
   const calculateTotalTime = (subject) => {
     const questionTime = JSON.parse(localStorage.getItem("questionTime")) || {}
     let totalTimeInSeconds = 0
-
     Object.keys(questionTime).forEach((key) => {
       if (key.startsWith(subject)) {
         totalTimeInSeconds += questionTime[key]
       }
     })
-
     const minutes = Math.floor(totalTimeInSeconds / 60)
     const seconds = Math.floor(totalTimeInSeconds % 60)
-
     return { minutes, seconds }
   }
 
@@ -401,50 +373,41 @@ const TestInterface = () => {
 
   const handleSubmit = async () => {
     if (!window.confirm("Are you sure you want to submit the test?")) return
-
     if (isSubmitting) return
     setIsSubmitting(true)
-
     try {
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
       }
-
       const testAnswers = JSON.parse(localStorage.getItem("testAnswers")) || []
       const authToken = localStorage.getItem("authToken") || sessionStorage.getItem("authToken")
-      const testName = localStorage.getItem("testName") || []
+      const testName = JSON.parse(localStorage.getItem("testName") || '""') // Parse testName as string
 
       if (!authToken) {
         alert("No authentication token found!")
         return
       }
-
       const correctAnswers = []
       const wrongAnswers = []
       const notAttempted = []
-
       const subjectWiseMarks = {
         Physics: 0,
         Chemistry: 0,
         Biology: 0,
       }
-
       const endTime = new Date()
       let total_marks = 0
-
       const totalTimePerSubject = {
         Physics: calculateTotalTime("Physics"),
         Chemistry: calculateTotalTime("Chemistry"),
         Biology: calculateTotalTime("Biology"),
       }
-
       testAnswers.forEach((answerObj) => {
-        const { subject, question, selectedAnswer, correctAnswer } = answerObj
-
-        const chapter = "General"
-        const questionId = question
+        const { subject, selectedAnswer, correctAnswer } = answerObj
+        const chapter = answerObj.chapterName || "General" // Use chapterName from answerObj
+        const questionId = answerObj.question_id // Use question_id from answerObj
         const marks = selectedAnswer === correctAnswer ? 4 : -1
-        const timeSpent = "N/A"
+        const timeSpent = answerObj.timeTaken // Use timeTaken from answerObj
 
         if (selectedAnswer === correctAnswer) {
           subjectWiseMarks[subject] += 4
@@ -452,10 +415,18 @@ const TestInterface = () => {
           subjectWiseMarks[subject] -= 1
         }
 
-        const answerPayload = [questionId, subject, chapter, selectedAnswer, correctAnswer, marks, timeSpent]
+        const answerPayload = {
+          questionId,
+          subject,
+          chapter,
+          selectedAnswer,
+          correctAnswer,
+          marks,
+          timeSpent,
+        }
 
         if (!selectedAnswer) {
-          notAttempted.push([questionId, subject, chapter])
+          notAttempted.push(answerPayload)
         } else if (selectedAnswer === correctAnswer) {
           correctAnswers.push(answerPayload)
           total_marks += 4
@@ -465,7 +436,6 @@ const TestInterface = () => {
           }
         }
       })
-
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/submit-test`,
         {
@@ -486,7 +456,6 @@ const TestInterface = () => {
           },
         },
       )
-
       toast.success(response.data.message, {
         duration: 5000,
       })
@@ -604,7 +573,6 @@ const TestInterface = () => {
                 const isActive = currentSubject === subject
                 const config = subjectIcons[subject] || subjectIcons.Physics
                 const Icon = config.icon
-
                 return (
                   <button
                     key={subject}
@@ -669,8 +637,9 @@ const TestInterface = () => {
                       <div className="flex items-center gap-3 text-sm mb-1">
                         <span className={`font-bold ${subjectConfig.color} text-lg`}>{currentSubject}</span>
                         <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        {/* Use currentSubjectActualQuestionCount here */}
                         <span className="text-gray-600 font-medium">
-                          Question {currentQuestion + 1} of {numQuestions}
+                          Question {currentQuestion + 1} of {currentSubjectActualQuestionCount}
                         </span>
                       </div>
                       <div className="text-xs text-gray-500 flex items-center gap-2">
@@ -683,7 +652,6 @@ const TestInterface = () => {
                     {currentQuestionData?.question || "No Question Available"}
                   </h2>
                 </div>
-
                 <button
                   onClick={handleReviewLater}
                   className={`p-4 rounded-2xl transition-all transform hover:scale-110 shadow-lg ${
@@ -701,9 +669,7 @@ const TestInterface = () => {
               <div className="space-y-4 mb-8">
                 {currentQuestionData?.options.map((option, index) => {
                   const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index
-                  
                   const optionLetter = String.fromCharCode(65 + index) // A, B, C, D
-
                   return (
                     <label
                       key={index}
@@ -736,12 +702,10 @@ const TestInterface = () => {
                           )}
                         </div>
                       </div>
-
                       {/* Option Text */}
                       <div className="flex-1">
                         <span className="text-base md:text-lg leading-relaxed text-gray-800 font-medium">{option}</span>
                       </div>
-
                       {/* Selection Indicator */}
                       {isSelected && (
                         <div className="flex items-center gap-2">
@@ -749,7 +713,6 @@ const TestInterface = () => {
                           <span className="text-sm font-medium text-blue-600">Selected</span>
                         </div>
                       )}
-
                       {/* Animated Background Effect */}
                       {isSelected && (
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/30 to-transparent transform -skew-x-12 translate-x-full animate-[shimmer_1s_ease-out] pointer-events-none rounded-2xl"></div>
@@ -768,7 +731,6 @@ const TestInterface = () => {
                   <RotateCcw className="w-5 h-5" />
                   Clear Response
                 </button>
-
                 <div className="flex gap-3">
                   <button
                     onClick={() => handleNavigation("prev")}
@@ -780,8 +742,9 @@ const TestInterface = () => {
                   </button>
                   <button
                     onClick={() => handleNavigation("next")}
+                    // Use currentSubjectActualQuestionCount for next button disable logic
                     disabled={
-                      currentQuestion === numQuestions - 1 &&
+                      currentQuestion === currentSubjectActualQuestionCount - 1 &&
                       selectedSubjects.indexOf(currentSubject) === selectedSubjects.length - 1
                     }
                     className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
@@ -846,17 +809,15 @@ const TestInterface = () => {
               </div>
               <h3 className="font-bold text-gray-900 text-lg">{currentSubject} Questions</h3>
             </div>
-
             <div className="grid grid-cols-5 gap-3 mb-6">
-              {Array.from({ length: numQuestions }).map((_, index) => {
+              {/* Use currentSubjectActualQuestionCount here */}
+              {Array.from({ length: currentSubjectActualQuestionCount }).map((_, index) => {
                 const isCurrentQuestion = currentQuestion === index
                 const isAnswered = answers[`${currentSubject}-${index}`] !== undefined
                 const isMarked = markedForReview[`${currentSubject}-${index}`]
                 const isVisited = visitedQuestions[`${currentSubject}-${index}`]
-
                 let buttonClass =
                   "w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 shadow-lg relative "
-
                 if (isCurrentQuestion) {
                   buttonClass += "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-blue-300 scale-110"
                 } else if (isMarked) {
@@ -868,7 +829,6 @@ const TestInterface = () => {
                 } else {
                   buttonClass += "bg-gray-100 text-gray-600 hover:bg-gray-200 shadow-gray-200"
                 }
-
                 return (
                   <button key={index} onClick={() => setCurrentQuestion(index)} className={buttonClass}>
                     {index + 1}
@@ -879,7 +839,6 @@ const TestInterface = () => {
                 )
               })}
             </div>
-
             {/* Legend */}
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="flex items-center gap-2">
@@ -909,17 +868,12 @@ const TestInterface = () => {
             </h3>
             <div className="space-y-4">
               {selectedSubjects.map((subject) => {
-                const subjectQuestions = selectedChapters[subject]
-                  ? Object.values(selectedChapters[subject]).reduce(
-                      (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-                      0,
-                    )
-                  : 0
+                // Use actual questions data length for subjectQuestions
+                const subjectQuestions = questionsData[subject]?.length || 0
                 const subjectAnswered = getAnsweredCountBySubject(subject)
                 const percentage = subjectQuestions > 0 ? Math.round((subjectAnswered / subjectQuestions) * 100) : 0
                 const Icon = subjectIcons[subject]?.icon || Atom
                 const config = subjectIcons[subject] || subjectIcons.Physics
-
                 return (
                   <div key={subject} className="flex items-center gap-4">
                     <div
@@ -977,7 +931,6 @@ const TestInterface = () => {
             transform: translateY(-20px);
           }
         }
-
         @keyframes shimmer {
           0% {
             transform: translateX(-100%) skewX(-12deg);
@@ -986,11 +939,9 @@ const TestInterface = () => {
             transform: translateX(100%) skewX(-12deg);
           }
         }
-
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
-
         .border-3 {
           border-width: 3px;
         }

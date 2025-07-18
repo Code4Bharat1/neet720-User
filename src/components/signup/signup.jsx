@@ -51,19 +51,19 @@ const SignUpPage = () => {
   };
 
   const handleSendOtp = async () => {
-    if (!formData.mobileNumber || formData.mobileNumber.length !== 10) {
-      toast.error("Enter valid 10-digit mobile number.");
+    if (!formData.emailAddress) {
+      toast.error("Please enter a valid email address.");
       return;
     }
 
     try {
       setLoading(true);
       const res = await axios.post(`${apiBaseUrl}/demo/sendotp`, {
-        mobileNumber: formData.mobileNumber,
+        emailAddress: formData.emailAddress,
       });
 
       if (res.status === 200) {
-        toast.success("OTP sent to your mobile!");
+        toast.success("OTP sent to your email!");
         setOtpSent(true);
       }
     } catch (err) {
@@ -81,8 +81,8 @@ const SignUpPage = () => {
 
     try {
       setVerifyingOtp(true);
-      const res = await axios.post(`${apiBaseUrl}/demo/verifyotp`, {
-        mobileNumber: formData.mobileNumber,
+      const res = await axios.post(`${apiBaseUrl}/student/verifyotp`, {
+        emailAddress: formData.emailAddress,
         otp,
       });
 
@@ -113,13 +113,13 @@ const SignUpPage = () => {
     }
 
     if (!otpVerified) {
-      toast.error("Please verify OTP first.");
+      toast.error("Please verify the OTP sent to your email.");
       return;
     }
 
     try {
       setLoading(true);
-      const res = await axios.post(`${apiBaseUrl}/demo/signup`, {
+      const res = await axios.post(`${apiBaseUrl}/student/register`, {
         firstName,
         lastName,
         fullName: `${firstName} ${lastName}`,
@@ -199,6 +199,15 @@ const SignUpPage = () => {
                   required
                 />
               </div>
+              {!otpSent && (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  className="mt-2 text-blue-600 font-semibold hover:underline"
+                >
+                  Send OTP
+                </button>
+              )}
             </div>
 
             <div>
@@ -214,15 +223,6 @@ const SignUpPage = () => {
                   required
                 />
               </div>
-              {!otpSent && (
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  className="mt-2 text-blue-600 font-semibold hover:underline"
-                >
-                  Send OTP
-                </button>
-              )}
             </div>
 
             <div>
@@ -278,7 +278,7 @@ const SignUpPage = () => {
         ) : (
           <div className="w-full max-w-sm space-y-4">
             <p className="text-center text-gray-700">
-              Enter the 6-digit OTP sent to <strong>{formData.mobileNumber}</strong>
+              Enter the 6-digit OTP sent to <strong>{formData.emailAddress}</strong>
             </p>
             <input
               type="text"
