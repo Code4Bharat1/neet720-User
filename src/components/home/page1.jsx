@@ -43,6 +43,7 @@ export default function HomePage() {
               <div className='mt-0 '>
 <Image
   src="/Rectangle 6926.png"
+  alt="rectangle"
   width={500}
   height={500}
       className="absolute top-[-60px] left-[290px] rotate-[100.4deg] opacity-70"
@@ -186,6 +187,7 @@ export default function HomePage() {
         >
           <Image src="/image 4.png" alt="WhatsApp" width={40} height={40} />
         </a>
+     
       </main>
     </>
   );
