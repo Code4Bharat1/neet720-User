@@ -5,7 +5,7 @@ export default function Chatbot() {
   {
     left: {
       title: "Instant Answers",
-      image: "/instant.png", // Replace with your own path
+      image: "/AI1.png", // Replace with your own path
     },
     right: "Get the right answer and explanation immediately",
   },
@@ -13,13 +13,13 @@ export default function Chatbot() {
     left: "Ask your doubt any time — day or night",
     right: {
       title: "Available 24/7",
-      image: "/available.png",
+      image: "/AI2.png",
     },
   },
   {
     left: {
       title: "NEET-Focused Help",
-      image: "/neet.png",
+      image: "/AI3.png",
     },
     right: "Explanations are aligned with NEET syllabus",
   },
@@ -27,7 +27,7 @@ export default function Chatbot() {
     left: "Strengthen concepts and grow independently",
     right: {
       title: "Self-Learning Booster",
-      image: "/selflearning.png",
+      image: "/AI4.png",
     },
   },
 ];

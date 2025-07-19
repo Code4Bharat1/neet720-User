@@ -19,7 +19,7 @@ export default function CreateTestPage() {
         <div className="flex justify-center">
           <div className="w-full max-w-[350px] md:max-w-[400px] aspect-square p-[6px] rounded-[24px] bg-[#0b3d59] border-[3px] border-[#00c4a7]">
             <Image
-              src="/doctor_girl.png"
+              src="/doctor.png"
               alt="Doctor with stethoscope"
               width={550}
               height={550}
@@ -77,22 +77,22 @@ export default function CreateTestPage() {
             {
               title: "Choose Questions",
               desc: "Set number of questions, topic, or full chapter.",
-              image: "/doctor_girl.png",
+              image: "/T1.png",
             },
             {
               title: "Set Dficulty",
               desc: "Choose between Easy, Medium, or Hard.",
-              image: "/doctor_girl.png",
+              image: "/T2.png",
             },
             {
               title: "Control Time",
               desc: "Customize your time or practice under pressure.",
-              image: "/doctor_girl.png",
+              image: "/T3.png",
             },
             {
               title: "Repeat or Randomize",
               desc: "Retest specific sections or use variety.",
-              image: "/doctor_girl.png",
+              image: "/T4.png",
             },
           ].map((f, idx) => (
             <div

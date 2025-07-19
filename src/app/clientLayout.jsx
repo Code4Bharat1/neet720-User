@@ -18,6 +18,14 @@ export default function ClientLayout({ children }) {
     "/examplanx",
     "/analyticpage",
     "/collegePrediction",
+    "/pyq",
+    "/noticeSection",
+    "/scholarship",
+    "/notification",
+    "/performance",
+    "/upcommingActivities",
+    "/customTask",
+    "/recentTest"
   ];
 
   const showHeaderFooter = routesWithLayout.includes(pathname);

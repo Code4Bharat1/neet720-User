@@ -6,7 +6,7 @@ export default function CustomTask() {
       left: {
         title: "Plan Daily/Weekly Goals",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CT1.png",
       },
       right: "Create structured tasks based on syllabus & schedule",
     },
@@ -15,14 +15,14 @@ export default function CustomTask() {
       right: {
         title: "Set Smart Reminders",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CT2.png",
       },
     },
     {
       left: {
         title: "Track Progress Easily",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CT3.png",
       },
       right: "Mark tasks as complete and feel motivated",
     },
@@ -31,7 +31,7 @@ export default function CustomTask() {
       right: {
         title: "Prioritize Topics",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CT4.png",
       },
     },
   ];

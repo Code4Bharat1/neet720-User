@@ -5,25 +5,25 @@ const features = [
     title: "Year & Chapter-Wise Practice",
     description: "Solve questions from specific years or topics",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg", // Replace with your image path
+      "/PYQ1.png", // Replace with your image path
   },
   {
     title: "Real Exam Experience",
     description: "Understand pattern, difficulty, and time pressure",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/PYQ2.png",
   },
   {
     title: "Repeat Topic Detection",
     description: "Identify frequently asked concepts to revise better",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/PYQ3.png",
   },
   {
     title: "Detailed Solutions",
     description: "Learn from mistakes with clear explanations",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/PYQ4.png",
   },
 ];
 
@@ -45,7 +45,7 @@ export default function PYQ() {
           <div className="flex justify-center mb-4 md:mb-6">
             <div className="rounded-[20px] border-2 border-teal-500 p-1 shadow-lg overflow-hidden w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] md:w-[240px] md:h-[240px]">
               <Image
-                src="/notice-image.png" // Update if your image name/path is different
+                src="/doctor.png" // Update if your image name/path is different
                 alt="Student"
                 width={240}
                 height={240}

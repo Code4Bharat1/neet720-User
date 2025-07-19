@@ -6,7 +6,7 @@ export default function CollegePred() {
       left: {
         title: "Predict Your Rank",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CP1.png",
       },
       right: "Get an estimate based on your current scores",
     },
@@ -15,14 +15,14 @@ export default function CollegePred() {
       right: {
         title: "Explore Colleges",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CP2.png",
       },
     },
     {
       left: {
         title: "Location & Seat Info",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CP3.png",
       },
       right: "Filter by region and seat availability",
     },
@@ -31,7 +31,7 @@ export default function CollegePred() {
       right: {
         title: "Counselling Planning",
         image:
-          "https://mastdp.com/images/alonegirl/2024/07/alone-girl-pic-04.webp",
+          "/CP4.png",
       },
     },
   ];

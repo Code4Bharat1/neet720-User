@@ -4,22 +4,22 @@ const features = [
   {
     title: "Accuracy Analysis",
     description: "Know how many answers you're getting right — and why",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
+    image: "/A1.png", // Replace with actual image path
   },
   {
     title: "Speed Tracker",
     description: "Time taken per question and overall test pace",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/A2.png",
   },
   {
     title: "Weak Topic Detection",
     description: "Pinpoint which chapters need more attention",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/A3.png",
   },
   {
     title: "Trend Graphs",
     description: "See your growth over multiple attempts visually",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/A4.png",
   },
 ];
 

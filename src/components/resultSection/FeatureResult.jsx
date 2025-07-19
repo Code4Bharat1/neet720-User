@@ -4,22 +4,22 @@ const features = [
   {
     title: "Accuracy Analysis",
     description: "Know how many answers you're getting right — and why",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
+    image: "/R1.png", // Replace with actual image path
   },
   {
     title: "Speed Tracker",
     description: "Time taken per question and overall test pace",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/R2.png",
   },
   {
     title: "Weak Topic Detection",
     description: "Pinpoint which chapters need more attention",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/R3.png",
   },
   {
     title: "Trend Graphs",
     description: "See your growth over multiple attempts visually",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/R4.png",
   },
 ];
 
@@ -38,7 +38,7 @@ export default function FeatureResult() {
   {features.map((feature, index) => (
     <div
       key={index}
-      className="bg-[#129ea0] relative rounded-[48px] border-r-white text-white pt-16 pb-8 px-6 text-center border border-white/50 shadow-md"
+      className="bg-[#129ea0] relative rounded-[48px] border-r-white  text-white pt-16 pb-8 px-6 text-center border border-white/50 shadow-md"
     >
       {/* Profile Image */}
       <div className="absolute -top-10 left-1/2 transform -translate-x-1/2">
@@ -55,7 +55,7 @@ export default function FeatureResult() {
 
       {/* Title & Description */}
       <h3 className="font-bold text-[18px]">{feature.title}</h3>
-      <p className="mt-2 text-sm leading-relaxed">{feature.description}</p>
+      <p className="mt-2 text-lg leading-relaxed">{feature.description}</p>
     </div>
   ))}
 </div>

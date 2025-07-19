@@ -5,25 +5,25 @@ const features = [
     title: "New Test Alerts",
     description: "Be notified the moment a new test goes live",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg", // Replace with your image path
+      "/Noti1.png", // Replace with your image path
   },
   {
     title: "Upcoming Task Reminders",
     description: "Get alerts for deadlines, tasks, and quizzes",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/Noti2.png",
   },
   {
     title: "Result Updates",
     description: "Instant notification when scores are published",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/Noti3.png",
   },
   {
     title: "Schedule Sync",
     description: "Stay aligned with your daily/weekly study goals",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/Noti4.png",
   },
 ];
 
@@ -45,7 +45,7 @@ export default function Notification() {
           <div className="flex justify-center mb-4 md:mb-6">
             <div className="rounded-[20px] border-2 border-teal-500 p-1 shadow-lg overflow-hidden w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] md:w-[240px] md:h-[240px]">
               <Image
-                src="/notice-image.png" // Update if your image name/path is different
+                src="/doctor.png" // Update if your image name/path is different
                 alt="Student"
                 width={240}
                 height={240}

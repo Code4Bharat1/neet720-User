@@ -5,25 +5,25 @@ const features = [
     title: "Target High-Weight Chapters",
     description: "Prioritize topics that matter the most in the exam",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg", // Replace with your image path
+      "/EP1.png", // Replace with your image path
   },
   {
     title: "Balanced Coverage",
     description: "Cover all subjects without wasting effort on low-impact areas",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/EP2.png",
   },
   {
     title: "Efficient Time Management",
     description: "Reduce revision stress with a clear plan",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/EP3.png",
   },
   {
     title: "Track Your Progress",
     description: "Monitor completion and stay on schedule",
     image:
-      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?cs=srgb&dl=pexels-olly-762020.jpg&fm=jpg",
+      "/EP4.png",
   },
 ];
 
@@ -45,7 +45,7 @@ export default function ExamPlan() {
           <div className="flex justify-center mb-4 md:mb-6">
             <div className="rounded-[20px] border-2 border-teal-500 p-1 shadow-lg overflow-hidden w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] md:w-[240px] md:h-[240px]">
               <Image
-                src="/notice-image.png" // Update if your image name/path is different
+                src="/doctor.png" // Update if your image name/path is different
                 alt="Student"
                 width={240}
                 height={240}
@@ -110,7 +110,7 @@ export default function ExamPlan() {
       className="bg-[#103F5D] rounded-lg text-white border"
     >
       {/* Top section with background and title */}
-      <div className="bg-[#129EA0] h-44 sm:h-48 flex flex-col items-center justify-center rounded-t-lg">
+      <div className="bg-[#129EA0] h-44 sm:h-48 flex flex-col text-center items-center justify-center rounded-t-lg">
         <h1 className="text-lg md:text-xl font-bold pb-8">
           {feature.title}
         </h1>

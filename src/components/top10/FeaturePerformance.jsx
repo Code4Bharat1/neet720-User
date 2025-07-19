@@ -4,22 +4,22 @@ const features = [
   {
     title: "Real-Time Leaderboard",
     description: "Rankings update instantly after every test",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
+    image: "/top1.png", // Replace with actual image path
   },
   {
     title: "Motivation Through Recognition",
     description: "Top scorers are acknowledged and appreciated",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/top2.png",
   },
   {
     title: "Push Beyond Limits",
     description: "Competition inspires consistent improvement",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/top3.png",
   },
   {
     title: "Build Exam Pressure Endurance",
     description: "Competing regularly sharpens focus and control",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/top4.png",
   },
 ];
 

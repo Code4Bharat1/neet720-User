@@ -33,8 +33,10 @@ const SignUpPage = () => {
   const [otp, setOtp] = useState("");
   const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+  // Input field change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -43,6 +45,7 @@ const SignUpPage = () => {
     }));
   };
 
+  // Toggle password visibility
   const togglePasswordVisibility = (field) => {
     setShowPassword((prev) => ({
       ...prev,
@@ -50,18 +53,17 @@ const SignUpPage = () => {
     }));
   };
 
+  // Send OTP
   const handleSendOtp = async () => {
     if (!formData.emailAddress) {
       toast.error("Please enter a valid email address.");
       return;
     }
-
     try {
       setLoading(true);
       const res = await axios.post(`${apiBaseUrl}/demo/sendotp`, {
         emailAddress: formData.emailAddress,
       });
-
       if (res.status === 200) {
         toast.success("OTP sent to your email!");
         setOtpSent(true);
@@ -73,19 +75,18 @@ const SignUpPage = () => {
     }
   };
 
+  // Verify OTP
   const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       toast.error("Enter a valid 6-digit OTP.");
       return;
     }
-
     try {
       setVerifyingOtp(true);
-      const res = await axios.post(`${apiBaseUrl}/student/verifyotp`, {
+      const res = await axios.post(`${apiBaseUrl}/demo/verifyotp`, {
         emailAddress: formData.emailAddress,
         otp,
       });
-
       if (res.status === 200) {
         toast.success("OTP verified!");
         setOtpVerified(true);
@@ -97,29 +98,25 @@ const SignUpPage = () => {
     }
   };
 
+  // Submit Sign Up
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { firstName, lastName, emailAddress, mobileNumber, password, confirmPassword } = formData;
-
     if (!firstName || !emailAddress || !mobileNumber || !password || !confirmPassword) {
       toast.error("All fields are required.");
       return;
     }
-
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
       return;
     }
-
     if (!otpVerified) {
       toast.error("Please verify the OTP sent to your email.");
       return;
     }
-
     try {
       setLoading(true);
-      const res = await axios.post(`${apiBaseUrl}/student/register`, {
+      const res = await axios.post(`${apiBaseUrl}/demo/signup`, {
         firstName,
         lastName,
         fullName: `${firstName} ${lastName}`,
@@ -128,10 +125,12 @@ const SignUpPage = () => {
         password,
         isDemo: true,
       });
-
       if (res.status === 201) {
         toast.success("Signup successful!");
-        router.push("/login");
+        if (res.data.token) {
+          localStorage.setItem("authToken", res.data.token);
+        }
+        router.push("/dashboard");
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Signup failed.");
@@ -146,13 +145,12 @@ const SignUpPage = () => {
       <div className="hidden md:flex md:w-[40%] items-center justify-center">
         <Image src="/neet720_logo.jpg" alt="Logo" width={300} height={200} />
       </div>
-
       {/* Right */}
       <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white p-6 md:rounded-l-3xl">
         <h2 className="text-2xl md:text-3xl font-bold text-[#45A4CE] mb-6 text-center">
           {otpSent && !otpVerified ? "Enter OTP" : "Create an Account"}
         </h2>
-
+        {/* Form */}
         {!otpSent || (otpSent && otpVerified) ? (
           <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
             <div className="flex gap-4">
@@ -185,7 +183,6 @@ const SignUpPage = () => {
                 </div>
               </div>
             </div>
-
             <div>
               <label className="block mb-1 text-sm font-bold">Email</label>
               <div className="relative">
@@ -209,7 +206,6 @@ const SignUpPage = () => {
                 </button>
               )}
             </div>
-
             <div>
               <label className="block mb-1 text-sm font-bold">Mobile Number</label>
               <div className="relative">
@@ -224,7 +220,6 @@ const SignUpPage = () => {
                 />
               </div>
             </div>
-
             <div>
               <label className="block mb-1 text-sm font-bold">Password</label>
               <div className="relative">
@@ -245,7 +240,6 @@ const SignUpPage = () => {
                 </span>
               </div>
             </div>
-
             <div>
               <label className="block mb-1 text-sm font-bold">Confirm Password</label>
               <div className="relative">
@@ -266,7 +260,6 @@ const SignUpPage = () => {
                 </span>
               </div>
             </div>
-
             <button
               type="submit"
               disabled={loading}
@@ -299,7 +292,6 @@ const SignUpPage = () => {
             </button>
           </div>
         )}
-
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 font-bold">
             Already have an account?{" "}

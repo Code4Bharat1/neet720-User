@@ -5,14 +5,12 @@ import Image from "next/image";
 export default function FastQuiz() {
   return (
     <div className="min-h-screen bg-[#0A3C5F]">
-      {/* Header */}
-      <div className="bg-teal-500 px-2 py-4 text-center">
-        <div className="flex flex-wrap items-center justify-center text-white text-[40px] md:text-[55px] font-medium font-serif">
-          <span>Features</span>
-          <span className="mx-2">&gt;&gt;</span>
-          <span>Fast Quiz</span>
+      {/* Top Navigation Breadcrumb */}
+      <div className="bg-[#1DB5AC] py-3 md:py-4 px-4 md:px-6 flex justify-center items-center space-x-2 md:space-x-3">
+          <span className="text-white text-base md:text-lg font-semibold">Features</span>
+          <span className="text-white text-lg md:text-xl font-bold">{">>>"}</span>
+          <span className="text-white text-lg md:text-xl font-semibold">Fast Quiz</span>
         </div>
-      </div>
 
       {/* Main Content */}
       <div className="px-6 md:px-16 lg:px-32 py-20">
@@ -38,10 +36,10 @@ export default function FastQuiz() {
           </div>
 
           {/* Doctor Image */}
-          <div className="flex-shrink-0 w-[90%] sm:w-[400px]">
-            <div className="w-full h-[300px] md:h-[360px] p-[6px] rounded-[24px] bg-[#0b3d59] border-[3px] border-[#00c4a7]">
+          <div className="flex-shrink-0 w-[90%] sm:w-[400px] flex justify-left items-center mx-auto">
+            <div className="w-full h-[300px] md:h-[360px] p-[6px] rounded-[24px] bg-[#0b3d59] border-[3px] border-[#00c4a7] flex justify-left items-left">
               <Image
-                src="/doctor_girl.png"
+                src="/doctor.png"
                 alt="Doctor with stethoscope"
                 width={400}
                 height={400}
@@ -95,21 +93,25 @@ export default function FastQuiz() {
               title: "Speed Practice",
               text: "Sharpen reflexes and improve accuracy under timed conditions.",
               reverse: false,
+              image: "/Q1.png",
             },
             {
               title: "Instant Feedback",
               text: "Instantly view scores, mistakes, and correct answers.",
               reverse: true,
+              image: "/Q2.png",
             },
             {
               title: "Gamified Learning",
               text: "Feel the thrill of learning with fun, competitive energy.",
               reverse: false,
+              image: "/Q3.png",
             },
             {
               title: "Quick Revision",
               text: "Perfect for daily revision without investing hours.",
               reverse: true,
+              image: "/Q4.png",
             },
           ].map((item, idx) => (
             <div
@@ -120,7 +122,7 @@ export default function FastQuiz() {
             >
               <div className="flex flex-col items-center text-center">
                 <Image
-                  src="/Ellipse 81.png"
+                  src={item.image}
                   alt={item.title}
                   width={205}
                   height={205}

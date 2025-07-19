@@ -4,22 +4,22 @@ const features = [
   {
     title: "Real NEET Simulation",
     description: "Includes actual pattern, time limit & syllabus-aligned questions.",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
+    image: "/F1.png", // Replace with actual image path
   },
   {
     title: "Physics, Chemistry, Biology",
     description: "Expert-curated questions across all NEET subjects.",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/F2.png",
   },
   {
     title: "Instant Feedback",
     description: "View results + weak topic analysis immediately after test.",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/F3.png",
   },
   {
     title: "Boost Confidence & Accuracy",
     description: "Practice under pressure to reduce exam anxiety.",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    image: "/F4.png",
   },
 ];
 

@@ -148,15 +148,39 @@ const TestInterface = () => {
           Chemistry: [],
           Biology: [],
         }
-        data.questions.forEach((item) => {
-          const subject = item.question.subject
-          subjectWiseQuestions[subject]?.push({
-            id: item.question.id,
-            question: item.question.question_text,
-            options: item.options.map((opt) => opt.option_text),
-            correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
-          })
-        })
+       const subjectCounts = {
+  Physics: 0,
+  Chemistry: 0,
+  Biology: 0,
+};
+
+const limits = {}; // assume you calculate this from selectedChapters
+
+storedSubjects.forEach((subject) => {
+  const chapters = storedSelectedChapters[subject];
+  const total = Object.values(chapters).reduce(
+    (sum, chapter) => sum + (Number(chapter.numQuestions) || 0),
+    0
+  );
+  limits[subject] = total;
+});
+
+data.questions.forEach((item) => {
+  const subject = item.question.subject;
+  if (
+    subjectWiseQuestions[subject] &&
+    subjectCounts[subject] < (limits[subject] || Infinity)
+  ) {
+    subjectWiseQuestions[subject].push({
+      id: item.question.id,
+      question: item.question.question_text,
+      options: item.options.map((opt) => opt.option_text),
+      correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
+    });
+    subjectCounts[subject]++;
+  }
+});
+
         setQuestionsData(subjectWiseQuestions)
         setLoading(false)
 
@@ -1059,22 +1083,4 @@ const TestInterface = () => {
 
 export default TestInterface
 
-// Animations
-const floatAnimation = `
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-20px);
-    }
-  }
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-`
 
-const style = document.createElement("style")
-style.innerHTML = floatAnimation
-document.head.appendChild(style)
