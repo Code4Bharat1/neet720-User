@@ -44,14 +44,6 @@ export default function HomePage() {
             className="object-cover w-full h-full"
           />
         </div>
-        <Image
-          src="/Rectangle 6926.png"
-          width={500}
-          height={500}
-          className="absolute top-[-60px] left-[290px] rotate-[100.4deg] opacity-70"
-          style={{ filter: "blur(4px)" }}
-          alt="Blurred Accent"
-        />
       </div>
     </section>,
 
