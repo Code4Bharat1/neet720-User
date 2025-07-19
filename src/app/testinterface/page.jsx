@@ -7,7 +7,7 @@ const Page = () => {
   return (
     <div>
       {/* Desktop View (TestInterface will be visible) */}
-      <div className="">
+      <div className="block">
         <TestInterface />
       </div>
 

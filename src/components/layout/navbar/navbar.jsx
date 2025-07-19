@@ -171,7 +171,7 @@ const NavBar = () => {
 
   return (
     <div
-      className="hidden md:flex w-full px-8 py-4 items-center justify-between relative bg-slate-500"
+      className="hidden md:flex w-full px-8 py-4 items-center justify-between relative bg-blue-300"
     >
       <div className="flex items-center flex-grow max-w-md">
         {/* Placeholder for left section */}
@@ -225,7 +225,7 @@ const NavBar = () => {
         {/* Profile Dropdown */}
         <div className="relative" ref={profileRef}>
           <img
-            src={profileImage}
+            src="neet720_logo.jpg"
             alt="Profile"
             className="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer"
             onClick={toggleProfileMenu}

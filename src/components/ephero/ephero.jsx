@@ -7,7 +7,7 @@ import { FaCalendarAlt, FaChartBar } from "react-icons/fa"; // Icons
 
 const Ephero = () => {
   return (
-    <div className="w-full md:w-4/5 mx-auto mt-10 flex items-center justify-center bg-[#E3F2F1] p-6  rounded-2xl">
+    <div className="w-full md:w-4/5 mx-auto mt-12 flex items-center justify-center bg-[#E3F2F1] p-6  rounded-2xl">
       <div className="max-w-6xl w-full flex flex-col md:flex-row items-center justify-between">
         {/* Left Content Section */}
         <motion.div
@@ -19,7 +19,7 @@ const Ephero = () => {
           <p className="text-gray-600 text-sm">Never stop learning</p>
           <h1 className="text-2xl md:text-4xl font-bold text-[#005F56] leading-tight mt-2">
             Grow up your skills by <br /> online courses with <br />
-            <span className="text-[#005F56]">NEET720</span>
+            <span className="text-[#005F56]">Neet720</span>
           </h1>
 
           {/* Student Data Box */}

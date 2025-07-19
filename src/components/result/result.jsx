@@ -74,7 +74,7 @@ const ResultPage = () => {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-100 relative">
+    <div className="h-screen w-screen overflow-hidden max-sm:overflow-auto max-sm:h-full flex items-center justify-center bg-gray-100 relative">
       {showConfetti && (
         <Confetti width={width} height={height} numberOfPieces={500} recycle={false} />
       )}
@@ -119,7 +119,7 @@ const ResultPage = () => {
           {subjects.map((subject, index) => (
             <motion.div
               key={index}
-              className={`w-20 md:w-3/4 p-4 mb-2 rounded-3xl ${subject.bgColor} shadow-sm mx-auto`}
+              className={`w-full md:w-3/4 p-4 mb-2 rounded-3xl ${subject.bgColor} shadow-sm mx-auto`}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.2, duration: 0.5 }}
@@ -144,7 +144,7 @@ const ResultPage = () => {
           >
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/review-mistakeEP")}
+              onClick={() => router.push("/review-mistake")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

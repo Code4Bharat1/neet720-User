@@ -1,63 +1,46 @@
 "use client"
-
 import { useState, useEffect, useRef } from "react"
 import axios from "axios"
 import {
-  Timer,
-  FlaskRoundIcon as Flask,
-  Atom,
-  Dna,
-  Flag,
-  Clock,
-  ChevronLeft,
-  ChevronRight,
-  RotateCcw,
-  Zap,
-  FlameIcon as Fire,
-  CheckCircle,
-  Eye,
-  Sparkles,
-  HelpCircle,
-  Target,
-  BarChart3,
-  AlertCircle,
-  Brain,
-  Trophy,
-} from "lucide-react"
+  FaFlask,
+  FaAtom,
+  FaDna,
+  FaCheck,
+  FaChevronLeft,
+  FaChevronRight,
+  FaEraser,
+  FaClock,
+  FaBolt,
+  FaFlag,
+} from "react-icons/fa"
+import { IoMdCheckmark, IoMdClose } from "react-icons/io"
+import { MdVisibility } from "react-icons/md"
+import { HiOutlineSparkles } from "react-icons/hi"
+import { RiQuestionnaireFill } from "react-icons/ri"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
-import { set } from "date-fns"
 
 const subjectIcons = {
   Physics: {
-    icon: Atom,
+    icon: FaAtom,
     color: "text-blue-600",
     bgColor: "bg-blue-500",
-    bgLight: "bg-blue-50",
-    borderColor: "border-blue-300",
     gradientFrom: "from-blue-400",
     gradientTo: "to-blue-600",
-    lightGradient: "from-blue-50 to-blue-100",
   },
   Chemistry: {
-    icon: Flask,
+    icon: FaFlask,
     color: "text-green-600",
     bgColor: "bg-green-500",
-    bgLight: "bg-green-50",
-    borderColor: "border-green-300",
     gradientFrom: "from-green-400",
     gradientTo: "to-green-600",
-    lightGradient: "from-green-50 to-green-100",
   },
   Biology: {
-    icon: Dna,
+    icon: FaDna,
     color: "text-red-600",
     bgColor: "bg-red-500",
-    bgLight: "bg-red-50",
-    borderColor: "border-red-300",
     gradientFrom: "from-red-400",
     gradientTo: "to-red-600",
-    lightGradient: "from-red-50 to-red-100",
   },
 }
 
@@ -68,7 +51,20 @@ const TestInterface = () => {
   const [questionsData, setQuestionsData] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [currentSubject, setCurrentSubject] = useState("")
+  const [currentSubject, setCurrentSubject] = useState(() => {
+    if (typeof window !== "undefined") {
+      const storedSubjects = localStorage.getItem("selectedSubjects")
+      if (storedSubjects) {
+        try {
+          const parsedSubjects = JSON.parse(storedSubjects)
+          return parsedSubjects[0] || "Physics" // fallback to "Physics" if empty array
+        } catch (error) {
+          console.error("Failed to parse subjects from localStorage:", error)
+        }
+      }
+    }
+    return "Physics" // default if nothing found
+  })
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState({})
   const [visitedQuestions, setVisitedQuestions] = useState({})
@@ -76,31 +72,35 @@ const TestInterface = () => {
   const [timer, setTimer] = useState(0)
   const [startTime, setStartTime] = useState(new Date())
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hoveredOption, setHoveredOption] = useState(null)
   const [totalQuestions, setTotalQuestions] = useState(0)
-  const [numQuestions, setNumQuestions] = useState(0)
 
+  // Mobile Sheet/Modal state
+  const [showNavGrid, setShowNavGrid] = useState(false)
+  const [showProgress, setShowProgress] = useState(false)
+  const [showStats, setShowStats] = useState(false)
+
+  // Use ref to track if the timer has been initialized
   const timerInitialized = useRef(false)
   const intervalRef = useRef(null)
   const router = useRouter()
 
-  // Fullscreen escape handler
+  // useEffect to control the escape screen
   useEffect(() => {
     const handleFullScreenChange = () => {
       if (
         !document.fullscreenElement &&
         !document.webkitFullscreenElement &&
         !document.msFullscreenElement &&
-        !document.mozFullscreenElement
+        !document.mozFullScreenElement
       ) {
-        router.push("/testselection")
+        // router.push("/testselection")
       }
     }
-
     document.addEventListener("fullscreenchange", handleFullScreenChange)
     document.addEventListener("webkitfullscreenchange", handleFullScreenChange)
     document.addEventListener("mozfullscreenchange", handleFullScreenChange)
     document.addEventListener("MSFullscreenChange", handleFullScreenChange)
-
     return () => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange)
       document.removeEventListener("webkitfullscreenchange", handleFullScreenChange)
@@ -108,16 +108,15 @@ const TestInterface = () => {
       document.removeEventListener("MSFullscreenChange", handleFullScreenChange)
     }
   }, [router])
-  // Initialization effect
+
+  // 1. INITIALIZATION EFFECT
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") return // SSR
 
     const storedSelectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {}
     setSelectedChapters(storedSelectedChapters)
-
     const storedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || []
     setSelectedSubjects(storedSubjects)
-    setCurrentSubject(storedSubjects[0] || "")
 
     let totalQuestionsCount = 0
     storedSubjects.forEach((subject) => {
@@ -129,7 +128,6 @@ const TestInterface = () => {
         )
       }
     })
-
     setTotalQuestions(totalQuestionsCount)
 
     if (totalQuestionsCount > 0 && !timerInitialized.current) {
@@ -145,26 +143,60 @@ const TestInterface = () => {
           numQuestions: totalQuestionsCount,
         })
         const data = response.data
-
         const subjectWiseQuestions = {
           Physics: [],
           Chemistry: [],
           Biology: [],
         }
+        const subjectCounts = {
+          Physics: 0,
+          Chemistry: 0,
+          Biology: 0,
+        };
+
+        const limits = {}; // assume you calculate this from selectedChapters
+
+        storedSubjects.forEach((subject) => {
+          const chapters = storedSelectedChapters[subject];
+          const total = Object.values(chapters).reduce(
+            (sum, chapter) => sum + (Number(chapter.numQuestions) || 0),
+            0
+          );
+          limits[subject] = total;
+        });
 
         data.questions.forEach((item) => {
-          const subject = item.question.subject
-          subjectWiseQuestions[subject]?.push({
-            id: item.question.id,
-            question: item.question.question_text,
-            options: item.options.map((opt) => opt.option_text),
-            correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
-          })
-        })
+          const subject = item.question.subject;
+          if (
+            subjectWiseQuestions[subject] &&
+            subjectCounts[subject] < (limits[subject] || Infinity)
+          ) {
+            subjectWiseQuestions[subject].push({
+              id: item.question.id,
+              question: item.question.question_text,
+              options: item.options.map((opt) => opt.option_text),
+              correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
+            });
+            subjectCounts[subject]++;
+          }
+        });
 
         setQuestionsData(subjectWiseQuestions)
         setLoading(false)
 
+        // Set initial subject to the first one with questions, if any
+        if (storedSubjects.length > 0) {
+          const firstSubjectWithQuestions = storedSubjects.find((subject) => subjectWiseQuestions[subject]?.length > 0)
+          if (firstSubjectWithQuestions) {
+            setCurrentSubject(firstSubjectWithQuestions)
+          } else {
+            setError("No questions available for the selected subjects/chapters.")
+          }
+        } else {
+          setError("No subjects selected for the test.")
+        }
+
+        // Store chapter info
         const questionInfo = data.questions.map((item) => ({
           chapterId: item.question.chapterId,
           chapterName: item.question.chapter,
@@ -172,12 +204,10 @@ const TestInterface = () => {
         }))
         localStorage.setItem("questionInfo", JSON.stringify(questionInfo))
       } catch (err) {
-        console.error("Error fetching questions:", err)
         setError("Failed to load questions")
         setLoading(false)
       }
     }
-
     fetchQuestions()
 
     return () => {
@@ -187,22 +217,19 @@ const TestInterface = () => {
     }
   }, [])
 
-  //prevent reload on F5 or Ctrl+R
+  // Prevent reload on F5 or Ctrl+R
   useEffect(() => {
     const handleBeforeUnload = (event) => {
-      if (!quizCompleted) {
-        event.preventDefault()
-        event.returnValue = ""
-      }
+      event.preventDefault()
+      event.returnValue = ""
     }
-
     window.addEventListener("beforeunload", handleBeforeUnload)
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
   }, [])
 
-  // Timer effect
+  // 2. TIMER EFFECT
   useEffect(() => {
     if (!timerInitialized.current) return
 
@@ -228,20 +255,9 @@ const TestInterface = () => {
     }
   }, [timerInitialized.current])
 
-  // Subject questions update
-  useEffect(() => {
-    if (!selectedChapters[currentSubject]) return
+  // Calculate the actual number of questions for the current subject
+  const currentSubjectActualQuestionCount = questionsData[currentSubject]?.length || 0
 
-    const subjectChapters = selectedChapters[currentSubject]
-    const numQuestion = Object.values(subjectChapters).reduce(
-      (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-      0,
-    )
-
-    setNumQuestions(numQuestion)
-  }, [currentSubject, selectedChapters])
-
-  // Format time for display
   const formattedTime = {
     hours: String(Math.floor(timer / 3600)).padStart(2, "0"),
     minutes: String(Math.floor((timer % 3600) / 60)).padStart(2, "0"),
@@ -249,10 +265,7 @@ const TestInterface = () => {
   }
 
   const handleOptionClick = (index) => {
-    if (!questionsData[currentSubject] || !questionsData[currentSubject][currentQuestion]) {
-      return
-    }
-
+    if (!questionsData[currentSubject] || !questionsData[currentSubject][currentQuestion]) return
     const questionData = questionsData[currentSubject][currentQuestion]
     const selectedAnswer = questionData.options[index]
     const correctAnswer = questionData.correctAnswer
@@ -281,7 +294,6 @@ const TestInterface = () => {
     }
 
     const savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || []
-
     const existingIndex = savedAnswers.findIndex(
       (answer) => answer.question_id === questionData.id && answer.subject === currentSubject,
     )
@@ -290,7 +302,6 @@ const TestInterface = () => {
     const timeTakenInSeconds = (currentTime - startTime) / 1000
     const minutes = Math.floor(timeTakenInSeconds / 60)
     const seconds = Math.floor(timeTakenInSeconds % 60)
-
     const answerWithTime = { ...answerData, timeTaken: { minutes, seconds } }
 
     if (existingIndex >= 0) {
@@ -298,7 +309,6 @@ const TestInterface = () => {
     } else {
       savedAnswers.push(answerWithTime)
     }
-
     localStorage.setItem("testAnswers", JSON.stringify(savedAnswers))
 
     setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index })
@@ -315,37 +325,28 @@ const TestInterface = () => {
     const newStartTime = savedTimeForCurrentQuestion
       ? new Date(new Date() - savedTimeForCurrentQuestion * 1000)
       : currentTime
-
     setStartTime(newStartTime)
   }
 
   const handleNavigation = (direction) => {
-    const totalQuestions = numQuestions || 0
+    const totalQuestionsInCurrentSubject = currentSubjectActualQuestionCount
 
-    if (direction === "next" && currentQuestion >= totalQuestions - 1) {
+    if (direction === "next" && currentQuestion >= totalQuestionsInCurrentSubject - 1) {
       const currentSubjectIndex = selectedSubjects.indexOf(currentSubject)
       const nextSubjectIndex = (currentSubjectIndex + 1) % selectedSubjects.length
       setCurrentSubject(selectedSubjects[nextSubjectIndex])
       setCurrentQuestion(0)
     } else if (direction === "prev" && currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1)
-    } else if (direction === "next" && currentQuestion < totalQuestions - 1) {
+    } else if (direction === "next" && currentQuestion < totalQuestionsInCurrentSubject - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else if (direction === "prev" && currentQuestion === 0) {
       const currentSubjectIndex = selectedSubjects.indexOf(currentSubject)
       if (currentSubjectIndex > 0) {
         const prevSubject = selectedSubjects[currentSubjectIndex - 1]
         setCurrentSubject(prevSubject)
-
-        const prevSubjectChapters = selectedChapters[prevSubject]
-        const prevSubjectQuestions = prevSubjectChapters
-          ? Object.values(prevSubjectChapters).reduce(
-              (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-              0,
-            )
-          : 0
-
-        setCurrentQuestion(Math.max(prevSubjectQuestions - 1, 0))
+        const prevSubjectActualQuestionCount = questionsData[prevSubject]?.length || 0
+        setCurrentQuestion(Math.max(prevSubjectActualQuestionCount - 1, 0))
       }
     }
   }
@@ -375,16 +376,13 @@ const TestInterface = () => {
   const calculateTotalTime = (subject) => {
     const questionTime = JSON.parse(localStorage.getItem("questionTime")) || {}
     let totalTimeInSeconds = 0
-
     Object.keys(questionTime).forEach((key) => {
       if (key.startsWith(subject)) {
         totalTimeInSeconds += questionTime[key]
       }
     })
-
     const minutes = Math.floor(totalTimeInSeconds / 60)
     const seconds = Math.floor(totalTimeInSeconds % 60)
-
     return { minutes, seconds }
   }
 
@@ -504,17 +502,10 @@ const TestInterface = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen max-sm:text-sm bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center">
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-100 via-blue-50 to-green-100">
         <div className="text-center">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-20 w-20 border-4 border-indigo-200 border-t-indigo-600 mx-auto mb-6"></div>
-            <Brain className="w-8 h-8 text-indigo-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-          </div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">Loading Your Test</h3>
-          <p className="text-gray-600 flex items-center justify-center gap-2">
-            <Sparkles className="w-5 h-5 animate-pulse" />
-            Preparing amazing questions for you...
-          </p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Loading your test...</p>
         </div>
       </div>
     )
@@ -522,13 +513,12 @@ const TestInterface = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
-        <div className="text-center bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-red-200">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertCircle className="w-10 h-10 text-red-600" />
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-red-50 to-orange-50">
+        <div className="text-center bg-white p-8 rounded-xl shadow-lg">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <IoMdClose className="text-3xl text-red-600" />
           </div>
-          <h3 className="text-2xl font-bold text-red-800 mb-2">Oops! Something went wrong</h3>
-          <p className="text-red-600 text-lg">{error}</p>
+          <p className="text-red-600 text-lg font-medium">{error}</p>
         </div>
       </div>
     )
@@ -537,291 +527,236 @@ const TestInterface = () => {
   const currentQuestionData = questionsData[currentSubject]?.[currentQuestion]
   const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics
   const isLowTime = timer < 300
-  const SubjectIcon = subjectConfig.icon
 
   return (
-    <div className="min-h-screen max-sm:text-sm bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 select-none">
-      {/* Enhanced Header */}
-      <div className="sticky max-sm:text-sm top-0 z-20 backdrop-blur-xl bg-white/90 shadow-xl border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 py-4 max-sm:py-2">
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-4 max-sm:gap-2">
-            {/* Timer Section */}
-            <div className="relative">
-              <div className="flex items-center gap-4">
-                <div
-                  className={`p-3 rounded-2xl ${
-                    isLowTime
-                      ? "bg-gradient-to-r from-red-500 to-pink-500 animate-pulse shadow-lg shadow-red-200"
-                      : "bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg shadow-blue-200"
-                  } transition-all`}
-                >
-                  <Timer className={`text-2xl text-white ${isLowTime ? "animate-bounce" : ""}`} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`${
-                      isLowTime
-                        ? "bg-gradient-to-r from-red-600 to-red-700 animate-pulse shadow-lg shadow-red-300"
-                        : "bg-gradient-to-r from-gray-800 to-gray-900 shadow-lg"
-                    } text-white px-4 py-2 rounded-xl font-mono text-lg min-w-[4rem] text-center transition-all transform hover:scale-105`}
-                  >
-                    {formattedTime.hours}
-                  </div>
-                  <span className="text-gray-600 font-bold text-xl">:</span>
-                  <div
-                    className={`${
-                      isLowTime
-                        ? "bg-gradient-to-r from-red-600 to-red-700 animate-pulse shadow-lg shadow-red-300"
-                        : "bg-gradient-to-r from-gray-800 to-gray-900 shadow-lg"
-                    } text-white px-4 py-2 rounded-xl font-mono text-lg min-w-[4rem] text-center transition-all transform hover:scale-105`}
-                  >
-                    {formattedTime.minutes}
-                  </div>
-                  <span className="text-gray-600 font-bold text-xl">:</span>
-                  <div
-                    className={`${
-                      isLowTime
-                        ? "bg-gradient-to-r from-red-600 to-red-700 animate-pulse shadow-lg shadow-red-300"
-                        : "bg-gradient-to-r from-gray-800 to-gray-900 shadow-lg"
-                    } text-white px-4 py-2 rounded-xl font-mono text-lg min-w-[4rem] text-center transition-all transform hover:scale-105`}
-                  >
-                    {formattedTime.seconds}
-                  </div>
-                </div>
-              </div>
-              {isLowTime && (
-                <div className="absolute -top-2 -right-2">
-                  <div className="w-6 h-6 bg-red-500 rounded-full animate-ping"></div>
-                  <div className="absolute top-0 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
-                    <AlertCircle className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="max-sm:text-sm flex items-center gap-4">
-            {/* Subject Tabs */}
-            <div className="flex flex-wrap gap-3 justify-center">
-              {selectedSubjects.map((subject) => {
-                const isActive = currentSubject === subject
-                const config = subjectIcons[subject] || subjectIcons.Physics
-                const Icon = config.icon
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 flex flex-col">
+      {/* Top Bar (Mobile & Desktop) */}
+      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur flex justify-between items-center px-4 py-3 shadow-sm">
+        {/* Timer */}
+        <div className="flex items-center gap-2">
+          <div className={`p-2 rounded-full ${isLowTime ? "bg-red-100 animate-pulse" : "bg-blue-100"} transition-all`}>
+            <FaClock className={`text-lg ${isLowTime ? "text-red-600" : "text-blue-600"}`} />
+          </div>
+          <div className="flex gap-0.5 text-xs font-mono">
+            <span
+              className={`${isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"} text-white px-2 py-0.5 rounded`}
+            >
+              {formattedTime.hours}
+            </span>
+            <span className="text-gray-500 font-bold px-0.5">:</span>
+            <span
+              className={`${isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"} text-white px-2 py-0.5 rounded`}
+            >
+              {formattedTime.minutes}
+            </span>
+            <span className="text-gray-500 font-bold px-0.5">:</span>
+            <span
+              className={`${isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"} text-white px-2 py-0.5 rounded`}
+            >
+              {formattedTime.seconds}
+            </span>
+          </div>
+        </div>
 
+        {/* Subjects selector - compact for mobile, full for desktop */}
+        <div className="flex gap-1 xl:hidden">
+          {selectedSubjects.map((subject) => {
+            const SubjectIcon = subjectIcons[subject]?.icon || FaAtom
+            const isActive = currentSubject === subject
+            const config = subjectIcons[subject] || subjectIcons.Physics
+            return (
+              <button
+                key={subject}
+                onClick={() => {
+                  setCurrentSubject(subject)
+                  setCurrentQuestion(0)
+                }}
+                className={`flex flex-col items-center px-1 py-0.5 rounded ${isActive ? "bg-gradient-to-r from-blue-400 to-indigo-500 text-white" : "bg-white text-gray-600 border"
+                  } mx-0.5`}
+              >
+                <SubjectIcon className={`text-base ${isActive ? "text-white" : config.color}`} />
+                <span className="text-xs font-medium">{subject[0]}</span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Subject Tabs (Desktop) */}
+        <div className="hidden xl:flex flex-wrap gap-3 justify-center">
+          {selectedSubjects.map((subject) => {
+            const isActive = currentSubject === subject
+            const config = subjectIcons[subject] || subjectIcons.Physics
+            const Icon = config.icon
+            return (
+              <button
+                key={subject}
+                onClick={() => {
+                  setCurrentSubject(subject)
+                  setCurrentQuestion(0)
+                }}
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${isActive
+                    ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-xl`
+                    : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white shadow-md border border-gray-200"
+                  }`}
+              >
+                <Icon className={`text-xl ${isActive ? "text-white" : config.color}`} />
+                <span className="font-semibold">{subject}</span>
+                <div
+                  className={`w-3 h-3 rounded-full ${isActive ? "bg-white/80" : `${config.bgColor} animate-pulse`}`}
+                />
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Submit Button (Desktop) */}
+        <button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="hidden xl:flex relative overflow-hidden px-8 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-2xl hover:from-red-600 hover:to-pink-700 transition-all transform hover:scale-105 shadow-xl disabled:opacity-50 items-center gap-3 font-semibold"
+        >
+          {isSubmitting ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+          ) : (
+            <FaBolt className="text-lg" />
+          )}
+          Submit Test
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full hover:translate-x-[-200%] transition-transform duration-1000"></div>
+        </button>
+      </div>
+
+      {/* Main Content Area (Grid for Desktop, Flex for Mobile) */}
+      <div className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 flex flex-col xl:grid xl:grid-cols-3 gap-6">
+        {/* Question Section */}
+        <div className="xl:col-span-2">
+          <div className="bg-white/95 rounded-2xl shadow border border-gray-100 px-4 py-6 relative overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-100/20 to-purple-100/20 rounded-full filter blur-3xl -translate-y-10 translate-x-10"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full filter blur-3xl translate-y-10 -translate-x-10"></div>
+
+            {/* Question header */}
+            <div className="flex items-center mb-3 gap-2 relative z-10">
+              <div
+                className={`w-8 h-8 rounded-lg bg-gradient-to-br ${subjectConfig.gradientFrom} ${subjectConfig.gradientTo} flex items-center justify-center text-white`}
+              >
+                <RiQuestionnaireFill className="text-lg" />
+              </div>
+              <span className={`font-semibold text-sm ${subjectConfig.color}`}>{currentSubject}</span>
+              <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
+              {/* Updated Question Number Display */}
+              <span className="text-xs text-gray-500">
+                Question {currentQuestion + 1} of {currentSubjectActualQuestionCount}
+              </span>
+            </div>
+
+            {/* Question */}
+            <div className="mb-3 text-base font-medium text-gray-900 min-h-[48px] relative z-10">
+              {currentQuestionData?.question || "No Question Available"}
+            </div>
+
+            {/* Options */}
+            <div className="space-y-3 relative z-10">
+              {currentQuestionData?.options.map((option, index) => {
+                const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index
+                const isHovered = hoveredOption === index
                 return (
                   <button
-                    key={subject}
-                     title={subject}
-                    onClick={() => {
-                      setCurrentSubject(subject)
-                      setCurrentQuestion(0)
-                    }}
-                    className={`flex items-center gap-3 max-sm:px-2 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${
-                      isActive
-                        ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-xl`
-                        : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white shadow-md border border-gray-200"
-                    }`}
+                    key={index}
+                    onClick={() => handleOptionClick(index)}
+                    onMouseEnter={() => setHoveredOption(index)}
+                    onMouseLeave={() => setHoveredOption(null)}
+                    className={`w-full text-left py-3 px-4 rounded-xl border-2 transition-all relative overflow-hidden
+                    ${isSelected
+                        ? "border-blue-500 bg-blue-50 text-blue-900 font-semibold"
+                        : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50"
+                      }`}
                   >
-                    <Icon className={`text-xl ${isActive ? "text-white" : config.color}`} />
-                    <span className="font-semibold max-sm:hidden" title={subject}>{subject}</span>
-                    <div title={subject}
-                      className={`w-3 h-3 rounded-full ${isActive ? "bg-white/80" : `${config.bgColor} animate-pulse`}`}
-                    />
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center
+                        ${isSelected ? "border-blue-500 bg-blue-500" : "border-gray-300"}`}
+                      >
+                        {isSelected && <IoMdCheckmark className="text-white text-sm" />}
+                        {isHovered && !isSelected && (
+                          <div className="absolute inset-0 bg-blue-100 rounded-full scale-75 opacity-50"></div>
+                        )}
+                      </div>
+                      <span className="text-base">
+                        <span className="font-medium text-gray-500 mr-2">({String.fromCharCode(65 + index)})</span>
+                        {option}
+                      </span>
+                    </div>
                   </button>
                 )
               })}
             </div>
-
-            {/* Submit Button */}
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="relative overflow-hidden px-8 py-3 max-sm:px-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-2xl hover:from-red-600 hover:to-pink-700 transition-all transform hover:scale-105 shadow-xl disabled:opacity-50 flex items-center gap-3 font-semibold"
-            >
-              {isSubmitting ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-              ) : (
-                <Zap className="text-lg" />
-              )}
-              Submit Test
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full hover:translate-x-[-200%] transition-transform duration-1000"></div>
-            </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-7xl max-sm:text-sm mx-auto p-4 md:p-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Question Section */}
-        <div className="xl:col-span-2">
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-6 md:p-8 relative overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100/30 to-purple-100/30 rounded-full filter blur-3xl -translate-y-32 translate-x-32"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-pink-100/30 to-orange-100/30 rounded-full filter blur-3xl translate-y-32 -translate-x-32"></div>
-
-            {/* Question Header */}
-            <div className="relative z-10">
-              <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8 max-sm:gap-2 max-sm:mb-2">
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div
-                      className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${subjectConfig.gradientFrom} ${subjectConfig.gradientTo} flex items-center justify-center text-white shadow-xl`}
-                    >
-                      <HelpCircle className="text-2xl" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-3 text-sm mb-1">
-                        <span className={`font-bold ${subjectConfig.color} text-lg`}>{currentSubject}</span>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                        <span className="text-gray-600 font-medium">
-                          Question {currentQuestion + 1} of {numQuestions}
-                        </span>
-                      </div>
-                      <div className="text-xs text-gray-500 flex items-center gap-2">
-                        <Target className="w-4 h-4" />
-                        Total: {totalQuestions} Questions • Max Score: {totalQuestions * 4} marks
-                      </div>
-                    </div>
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-semibold text-gray-900 leading-relaxed mb-6 max-sm:text-[16px] max-sm:mb-1">
-                    {currentQuestionData?.question || "No Question Available"}
-                  </h2>
-                </div>
-
-                <button
-                  onClick={handleReviewLater}
-                  className={`p-4 rounded-2xl transition-all transform hover:scale-110 shadow-lg max-sm:p-1 ${
-                    markedForReview[`${currentSubject}-${currentQuestion}`]
-                      ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-red-200"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                  title="Mark for review"
-                >
-                  <Clock className={markedForReview[`${currentSubject}-${currentQuestion}`] ? "animate-pulse" : ""} />
-                </button>
-              </div>
-
-              {/* Enhanced Options with Radio Inputs */}
-              <div className="space-y-4 mb-8">
-                {currentQuestionData?.options.map((option, index) => {
-                  const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index
-                  
-                  const optionLetter = String.fromCharCode(65 + index) // A, B, C, D
-
-                  return (
-                    <label
-                      key={index}
-                      className={`group relative flex items-center max-sm:gap-2 max-sm:p-1 gap-4 p-2 rounded-2xl border-2 cursor-pointer transition-all transform hover:scale-[1.02] hover:shadow-xl ${
-                        isSelected
-                          ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-100 shadow-lg shadow-blue-200"
-                          : "border-gray-200 bg-white/80 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50"
-                      }`}
-                    >
-                      {/* Custom Radio Input */}
-                      <div className="relative">
-                        <input
-                          type="radio"
-                          name={`question-${currentSubject}-${currentQuestion}`}
-                          value={index}
-                          checked={isSelected}
-                          onChange={() => handleOptionClick(index)}
-                          className="sr-only max-sm:text-sm max-sm:opacity-0 max-sm:invisible max-sm:w-2 max-sm:h-2"
-                        />
-                        <div
-                          className={`relative w-12 h-12 max-sm:text-sm max-sm:w-9 max-sm:h-9 rounded-full border-3 max-sm:border-1 flex items-center justify-center font-bold text-lg transition-all ${
-                            isSelected
-                              ? "border-blue-500 bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg"
-                              : "border-gray-300 bg-white text-gray-600 group-hover:border-blue-400 group-hover:bg-blue-50"
-                          }`}
-                        >
-                          {optionLetter}
-                          {isSelected && (
-                            <div className="absolute inset-0 rounded-full max-sm:text-sm bg-gradient-to-r from-blue-400 to-indigo-500 opacity-20 animate-pulse"></div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Option Text */}
-                      <div className="flex-1">
-                        <span className="text-base md:text-lg max-sm:text-sm leading-relaxed text-gray-800 font-medium">{option}</span>
-                      </div>
-
-                      {/* Selection Indicator */}
-                      {isSelected && (
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="w-6 h-6 max-sm:w-4 max-sm:h-4 text-blue-600" />
-                          <span className="text-sm max-sm:text-xs font-medium text-blue-600">Selected</span>
-                        </div>
-                      )}
-
-                      {/* Animated Background Effect */}
-                      {isSelected && (
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/30 to-transparent transform -skew-x-12 translate-x-full animate-[shimmer_1s_ease-out] pointer-events-none rounded-2xl"></div>
-                      )}
-                    </label>
-                  )
-                })}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 max-sm:gap-1 pt-6 max-sm:pt-1 border-t border-gray-200">
+            <div className="hidden xl:flex justify-between items-center mt-6 p-4 bg-white/95 rounded-2xl shadow border border-gray-100">
+              <button
+                onClick={() => handleNavigation("prev")}
+                disabled={currentQuestion === 0 && selectedSubjects.indexOf(currentSubject) === 0}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
+              >
+                <FaChevronLeft className="text-lg" />
+                Previous
+              </button>
+              <div className="flex gap-4">
                 <button
                   onClick={handleClearResponse}
-                  className="flex items-center gap-2 px-6 py-3 text-red-600 max-sm:text-xs hover:bg-red-50 rounded-xl transition-all transform hover:scale-105 font-medium"
+                  className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 >
-                  <RotateCcw className="w-5 h-5" />
+                  <FaEraser className="text-lg" />
                   Clear Response
                 </button>
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => handleNavigation("prev")}
-                    disabled={currentQuestion === 0 && selectedSubjects.indexOf(currentSubject) === 0}
-                    className="flex items-center gap-2 px-6 py-3 max-sm:py-2 max-sm:px-2 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed bg-white shadow-md font-medium"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                    Previous
-                  </button>
-                  <button
-                    onClick={() => handleNavigation("next")}
-                    disabled={
-                      currentQuestion === numQuestions - 1 &&
-                      selectedSubjects.indexOf(currentSubject) === selectedSubjects.length - 1
-                    }
-                    className="flex items-center gap-2 px-6 py-3 max-sm:py-2 max-sm:px-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                  >
-                    Next
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
+                <button
+                  onClick={handleReviewLater}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${markedForReview[`${currentSubject}-${currentQuestion}`]
+                      ? "bg-pink-500 text-white hover:bg-pink-600"
+                      : "bg-yellow-500 text-white hover:bg-yellow-600"
+                    }`}
+                >
+                  <FaFlag className="text-lg" />
+                  {markedForReview[`${currentSubject}-${currentQuestion}`] ? "Unmark" : "Mark for Review"}
+                </button>
               </div>
+              <button
+                onClick={() => handleNavigation("next")}
+                disabled={
+                  currentQuestion === currentSubjectActualQuestionCount - 1 &&
+                  selectedSubjects.indexOf(currentSubject) === selectedSubjects.length - 1
+                }
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
+              >
+                Next
+                <FaChevronRight className="text-lg" />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Sidebar */}
-        <div className="xl:col-span-1 space-y-6">
+        {/* Desktop Sidebar (hidden on mobile) */}
+        <div className="hidden xl:block xl:col-span-1 space-y-6">
           {/* Progress Card */}
-          <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-6 max-sm:p-3 max-sm:rounded-lg relative overflow-hidden">
+          <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-20 translate-x-20"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 -translate-x-16"></div>
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-6">
-                <Trophy className="text-2xl max-sm:text-xl" />
-                <h3 className="font-bold text-xl  max-sm:text-lg">Test Progress</h3>
+                <FaCheck className="text-2xl" /> {/* Using FaCheck for progress icon */}
+                <h3 className="font-bold text-xl">Test Progress</h3>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-6 max-sm:grid-cols-1 max-sm:gap-2">
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl flex md:flex-col items-center justify-center max-sm:flex max-sm:justify-between p-4 max-sm:p-2">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <CheckCircle className="text-green-300 w-5 h-5" />
+                    <IoMdCheckmark className="text-green-300 w-5 h-5" />
                     <span className="text-sm font-medium">Answered</span>
                   </div>
-                  <div className="text-3xl font-bold max-sm:text-2xl">
+                  <div className="text-3xl font-bold">
                     {getAnsweredCount()}/{totalQuestions}
                   </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 flex md:flex-col items-center justify-center max-sm:flex max-sm:justify-between max-sm:p-2">
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Clock className="text-red-300 w-5 h-5" />
+                    <FaClock className="text-red-300 w-5 h-5" />
                     <span className="text-sm font-medium">Marked</span>
                   </div>
                   <div className="text-3xl font-bold">{getMarkedCount()}</div>
@@ -845,21 +780,18 @@ const TestInterface = () => {
               <div
                 className={`w-10 h-10 bg-gradient-to-br ${subjectConfig.gradientFrom} ${subjectConfig.gradientTo} rounded-2xl flex items-center justify-center text-white shadow-lg`}
               >
-                <Eye className="w-5 h-5" />
+                <MdVisibility className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-gray-900 text-lg">{currentSubject} Questions</h3>
             </div>
-
-            <div className="grid grid-cols-5 max-sm:grid-cols-6 gap-3 mb-6 max-sm:gap-2">
-              {Array.from({ length: numQuestions }).map((_, index) => {
+            <div className="grid grid-cols-5 gap-3 mb-6">
+              {Array.from({ length: currentSubjectActualQuestionCount }).map((_, index) => {
                 const isCurrentQuestion = currentQuestion === index
                 const isAnswered = answers[`${currentSubject}-${index}`] !== undefined
                 const isMarked = markedForReview[`${currentSubject}-${index}`]
                 const isVisited = visitedQuestions[`${currentSubject}-${index}`]
-
                 let buttonClass =
-                  "w-7 h-7 rounded-xl flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 shadow-lg relative "
-
+                  "w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 shadow-lg relative "
                 if (isCurrentQuestion) {
                   buttonClass += "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-blue-300 scale-110"
                 } else if (isMarked) {
@@ -871,7 +803,6 @@ const TestInterface = () => {
                 } else {
                   buttonClass += "bg-gray-100 text-gray-600 hover:bg-gray-200 shadow-gray-200"
                 }
-
                 return (
                   <button key={index} onClick={() => setCurrentQuestion(index)} className={buttonClass}>
                     {index + 1}
@@ -882,7 +813,6 @@ const TestInterface = () => {
                 )
               })}
             </div>
-
             {/* Legend */}
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="flex items-center gap-2">
@@ -907,22 +837,16 @@ const TestInterface = () => {
           {/* Subject Statistics */}
           <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-6">
             <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <BarChart3 className="w-6 h-6 text-indigo-600" />
+              <HiOutlineSparkles className="w-6 h-6 text-indigo-600" />
               Subject Statistics
             </h3>
             <div className="space-y-4">
               {selectedSubjects.map((subject) => {
-                const subjectQuestions = selectedChapters[subject]
-                  ? Object.values(selectedChapters[subject]).reduce(
-                      (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-                      0,
-                    )
-                  : 0
+                const subjectQuestions = questionsData[subject]?.length || 0
                 const subjectAnswered = getAnsweredCountBySubject(subject)
                 const percentage = subjectQuestions > 0 ? Math.round((subjectAnswered / subjectQuestions) * 100) : 0
-                const Icon = subjectIcons[subject]?.icon || Atom
+                const Icon = subjectIcons[subject]?.icon || FaAtom
                 const config = subjectIcons[subject] || subjectIcons.Physics
-
                 return (
                   <div key={subject} className="flex items-center gap-4">
                     <div
@@ -950,56 +874,216 @@ const TestInterface = () => {
               })}
             </div>
           </div>
-
-          {/* Mobile Submit Button */}
-          <div className="xl:hidden">
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white p-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-3 font-bold text-lg"
-            >
-              {isSubmitting ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
-              ) : (
-                <Fire className="text-xl" />
-              )}
-              Submit Test
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Custom Animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
+      {/* Bottom Navigation (Mobile Only) */}
+      <div className="fixed z-40 left-0 right-0 bottom-0 w-full bg-white/95 backdrop-blur border-t border-gray-200 flex justify-between items-center px-2 py-2 shadow-md xl:hidden">
+        <button
+          onClick={() => handleNavigation("prev")}
+          disabled={currentQuestion === 0 && selectedSubjects.indexOf(currentSubject) === 0}
+          className="flex flex-col items-center px-2 py-1 text-xs disabled:opacity-50"
+        >
+          <FaChevronLeft className="text-lg" />
+          Prev
+        </button>
+        <button onClick={() => setShowNavGrid(true)} className="flex flex-col items-center px-2 py-1 text-xs">
+          <MdVisibility className="text-lg" />
+          Questions
+        </button>
+        <button onClick={handleReviewLater} className="flex flex-col items-center px-2 py-1 text-xs">
+          <FaFlag
+            className={`text-lg ${markedForReview[`${currentSubject}-${currentQuestion}`] ? "text-pink-500" : ""}`}
+          />
+          Mark
+        </button>
+        <button onClick={() => setShowStats(true)} className="flex flex-col items-center px-2 py-1 text-xs">
+          <HiOutlineSparkles className="text-lg" />
+          Stats
+        </button>
+        <button
+          onClick={() => handleNavigation("next")}
+          disabled={
+            currentQuestion === currentSubjectActualQuestionCount - 1 &&
+            selectedSubjects.indexOf(currentSubject) === selectedSubjects.length - 1
           }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
+          className="flex flex-col items-center px-2 py-1 text-xs disabled:opacity-50"
+        >
+          <FaChevronRight className="text-lg" />
+          Next
+        </button>
+        <button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="flex flex-col items-center px-2 py-1 text-xs text-red-600"
+        >
+          {isSubmitting ? (
+            <div className="animate-spin h-5 w-5 border-b-2 border-red-500 rounded-full"></div>
+          ) : (
+            <FaBolt className="text-lg" />
+          )}
+          Submit
+        </button>
+      </div>
 
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%) skewX(-12deg);
-          }
-          100% {
-            transform: translateX(100%) skewX(-12deg);
-          }
-        }
+      {/* Question Navigation Modal (Mobile Only) */}
+      {showNavGrid && (
+        <div className="fixed z-50 inset-0 bg-black/40 flex flex-col items-center justify-end xl:hidden">
+          <div className="w-full bg-white rounded-t-2xl p-4 max-h-[70vh] overflow-y-auto">
+            <div className="flex items-center mb-2">
+              <MdVisibility className="text-xl mr-1" />
+              <span className="font-bold text-gray-900 text-lg flex-1">{currentSubject} Questions</span>
+              <button onClick={() => setShowNavGrid(false)} className="text-xl px-2">
+                &times;
+              </button>
+            </div>
+            <div className="grid grid-cols-6 gap-2">
+              {Array.from({ length: currentSubjectActualQuestionCount }).map((_, index) => {
+                const isCurrentQuestion = currentQuestion === index
+                const isAnswered = answers[`${currentSubject}-${index}`] !== undefined
+                const isMarked = markedForReview[`${currentSubject}-${index}`]
+                const isVisited = visitedQuestions[`${currentSubject}-${index}`]
+                let buttonClass =
+                  "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all "
+                if (isCurrentQuestion) {
+                  buttonClass += "bg-gradient-to-br from-blue-600 to-indigo-700 text-white scale-110"
+                } else if (isMarked) {
+                  buttonClass += "bg-gradient-to-br from-red-500 to-pink-500 text-white"
+                } else if (isAnswered) {
+                  buttonClass += "bg-gradient-to-br from-green-500 to-emerald-500 text-white"
+                } else if (isVisited) {
+                  buttonClass += "bg-gradient-to-br from-orange-400 to-pink-400 text-white"
+                } else {
+                  buttonClass += "bg-gray-100 text-gray-600"
+                }
+                return (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setCurrentQuestion(index)
+                      setShowNavGrid(false)
+                    }}
+                    className={buttonClass}
+                  >
+                    {index + 1}
+                  </button>
+                )
+              })}
+            </div>
+            {/* Legend */}
+            <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-gradient-to-br from-green-500 to-emerald-500 rounded"></div>
+                Answered
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-gradient-to-br from-red-500 to-pink-500 rounded"></div>
+                Marked
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-gradient-to-br from-orange-400 to-pink-400 rounded"></div>
+                Visited
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-gradient-to-br from-blue-600 to-indigo-700 rounded"></div>
+                Current
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
+      {/* Progress Modal (Mobile Only) */}
+      {showProgress && (
+        <div className="fixed z-50 inset-0 bg-black/40 flex items-end xl:hidden">
+          <div className="w-full bg-white rounded-t-2xl p-4 max-h-[50vh]">
+            <div className="flex items-center gap-2 mb-4">
+              <HiOutlineSparkles className="text-xl" />
+              <span className="font-bold text-lg">Test Progress</span>
+              <button onClick={() => setShowProgress(false)} className="text-xl px-2 ml-auto">
+                &times;
+              </button>
+            </div>
+            <div className="flex gap-2 mb-3">
+              <div className="flex-1 text-center bg-blue-100 rounded p-2">
+                <div className="text-xs text-blue-900">Answered</div>
+                <div className="text-lg font-bold">{getAnsweredCount()}</div>
+              </div>
+              <div className="flex-1 text-center bg-red-100 rounded p-2">
+                <div className="text-xs text-red-900">Marked</div>
+                <div className="text-lg font-bold">{getMarkedCount()}</div>
+              </div>
+              <div className="flex-1 text-center bg-green-100 rounded p-2">
+                <div className="text-xs text-green-900">Remaining</div>
+                <div className="text-lg font-bold">{totalQuestions - getAnsweredCount()}</div>
+              </div>
+            </div>
+            <div className="mt-2 bg-gray-200 rounded-full h-2">
+              <div
+                className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
+                style={{ width: `${(getAnsweredCount() / totalQuestions) * 100}%` }}
+              ></div>
+            </div>
+            <div className="text-center text-xs mt-2">
+              {Math.round((getAnsweredCount() / totalQuestions) * 100)}% complete
+            </div>
+          </div>
+        </div>
+      )}
 
-        .border-3 {
-          border-width: 3px;
-        }
-      `}</style>
+      {/* Stats Modal (Mobile Only) */}
+      {showStats && (
+        <div className="fixed z-50 inset-0 bg-black/40 flex items-end xl:hidden">
+          <div className="w-full bg-white rounded-t-2xl p-4 max-h-[65vh] overflow-y-auto">
+            <div className="flex items-center gap-2 mb-3">
+              <HiOutlineSparkles className="text-xl" />
+              <span className="font-bold text-lg">Subject Statistics</span>
+              <button onClick={() => setShowStats(false)} className="text-xl px-2 ml-auto">
+                &times;
+              </button>
+            </div>
+            <div className="space-y-2">
+              {selectedSubjects.map((subject) => {
+                const subjectQuestions = questionsData[subject]?.length || 0
+                const subjectAnswered = getAnsweredCountBySubject(subject)
+                const percentage = subjectQuestions > 0 ? Math.round((subjectAnswered / subjectQuestions) * 100) : 0
+                const SubjectIcon = subjectIcons[subject]?.icon || FaAtom
+                const config = subjectIcons[subject] || subjectIcons.Physics
+                return (
+                  <div key={subject} className="flex items-center gap-2">
+                    <div
+                      className={`w-7 h-7 rounded bg-gradient-to-br ${config.gradientFrom} ${config.gradientTo} flex items-center justify-center text-white`}
+                    >
+                      <SubjectIcon className="text-base" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">{subject}</span>
+                        <span className="text-xs text-gray-500">
+                          {subjectAnswered}/{subjectQuestions}
+                        </span>
+                      </div>
+                      <div className="bg-gray-200 rounded-full h-2 mt-1">
+                        <div
+                          className={`h-full rounded-full bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Particle FX */}
+
     </div>
   )
 }
 
 export default TestInterface
+
+

@@ -2,28 +2,28 @@ import Image from "next/image";
 
 const features = [
   {
-    title: "Time & Accuracy Tracker",
-    description: "Monitor how efficiently you're solving questions",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg", // Replace with actual image path
+    title: "Real-Time Leaderboard",
+    description: "Rankings update instantly after every test",
+    image: "/top1.png", // Replace with actual image path
   },
   {
-    title: "Subject-Wise Breakdown",
-    description: "Analyze how you're performing in each subject",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    title: "Motivation Through Recognition",
+    description: "Top scorers are acknowledged and appreciated",
+    image: "/top2.png",
   },
   {
-    title: "Growth Graphs",
-    description: "See trends and improvement over multiple tests",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    title: "Push Beyond Limits",
+    description: "Competition inspires consistent improvement",
+    image: "/top3.png",
   },
   {
-    title: "All Results in One Place",
-    description: "Access all your performance data easily anytime",
-    image: "https://static.vecteezy.com/system/resources/previews/026/375/249/non_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg",
+    title: "Build Exam Pressure Endurance",
+    description: "Competing regularly sharpens focus and control",
+    image: "/top4.png",
   },
 ];
 
-export default function FeaturesSection() {
+export default function FeaturesPerformance() {
   return (
     <section className="bg-gradient-to-br from-[#0f3b63] to-[#079ba1] rounded-[40px] py-16 px-6 md:px-12 max-w-6xl mx-auto">
       {/* Header */}

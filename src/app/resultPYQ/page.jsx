@@ -156,7 +156,7 @@ const ResultPage = () => {
           >
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/review-mistakeCT")}
+              onClick={() => router.push("/review-mistake")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

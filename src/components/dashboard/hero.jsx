@@ -111,7 +111,7 @@ const Hero = () => {
   }
 
   return (
-    <div className="flex items-end justify-center w-full">
+    <div className="flex items-end justify-center mt-16 w-full">
       <div
         className="w-full h-[120px] md:h-[262px] mx-4 rounded-lg p-6 md:p-8 flex flex-row items-center justify-between my-5 shadow-lg"
         style={{

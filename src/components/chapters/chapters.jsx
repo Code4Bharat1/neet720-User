@@ -107,14 +107,14 @@ const Chapters = () => {
   };
 
   return (
-    <div className="rounded-tl-lg rounded-bl-lg flex flex-row w-full h-[19rem] bg-white shadow-md">
+    <div className="rounded-tl-lg rounded-bl-lg flex flex-row w-full h-[19rem] bg-white shadow-md max-sm:flex-col max-sm:h-[30rem] max-sm:-mt-10">
       {/* Subjects */}
-      <div className="flex w-1/2 flex-col mt-1 border-r-4 overflow-y-auto">
+      <div className="flex w-1/2 flex-col mt-1 border-r-4 overflow-y-auto max-sm:flex max-sm:flex-wrap max-sm:h-full max-sm:w-full">
         {selectedSubjects.map((subject) => (
           <button
             key={subject}
             onClick={() => handleSubjectClick(subject)}
-            className={`w-full px-2 py-7 text-xl flex items-center gap-2 ${
+            className={`w-full px-2 py-7 text-xl flex items-center gap-2 max-sm:text-sm max-sm:py-2 max-sm:w-1/2 ${
               selectedSubject === subject
                 ? "text-white bg-gradient-to-r from-[#54ADD3] to-[#3184A6]"
                 : "bg-white text-gray-800"
@@ -125,9 +125,9 @@ const Chapters = () => {
           </button>
         ))}
       </div>
-
+        <span className="hidden max-sm:block"><hr className="h-2 w-full m-2" /></span>
       {/* Chapters */}
-      <div className="flex flex-col w-1/2 overflow-y-auto gap-4 px-1">
+      <div className="flex flex-col w-1/2 overflow-y-auto gap-4 px-1 max-sm:w-fit">
         {selectedSubject && chapters[selectedSubject] && (
           <div className="p-2">
             <div className="flex justify-between items-center mb-2 gap-2">
@@ -141,31 +141,55 @@ const Chapters = () => {
 
             <div className="flex flex-col gap-3 text-sm">
               {chapters[selectedSubject]?.map((chapter) => (
-                <div
-                  key={chapter.id}
-                  className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#54ADD3] to-[#3184A6] p-3 text-white"
-                >
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={chapter.selected}
-                      onChange={() => handleChapterToggle(chapter.id)}
-                    />
-                    <span>{chapter.name}</span>
-                  </div>
-                  <input
-                    type="number"
-                    min="1"
-                    disabled={!chapter.selected}
-                    className="w-16 text-gray-900 px-2 py-1 rounded"
-                    value={chapter.numQuestions ?? ""}
-                    placeholder="Qty"
-                    onChange={e =>
-                      handleNumQuestionsChange(chapter.id, e.target.value.replace(/^0+/, ""))
-                    }
-                  />
-                </div>
-              ))}
+  <div
+    key={chapter.id}
+    onClick={() => handleChapterToggle(chapter.id)}
+    title="click here to select chapters"
+    className={`flex items-center justify-between rounded-lg p-3 cursor-pointer transition-all duration-200
+      ${
+        chapter.selected
+          ? "bg-[#195d78] text-white ring-2 ring-[#3184A6]"
+          : "bg-gradient-to-r from-[#54ADD3] to-[#3184A6] text-white hover:opacity-90"
+      }`}
+  >
+    {/* Left: Chapter Name */}
+    <div className="flex items-center gap-3">
+      <span className="font-medium">{chapter.name}</span>
+    </div>
+
+    {/* Right: Number Input */}
+    <input
+  type="number"
+  min="1"
+  disabled={!chapter.selected}
+  className={`
+    w-16 sm:w-20 md:w-24
+    px-3 py-2
+    rounded-md
+    text-sm sm:text-base
+    text-gray-900
+    bg-white
+    border-2 border-transparent
+    focus:outline-none focus:ring-2 focus:ring-[#3184A6] focus:border-[#3184A6]
+    disabled:opacity-50 disabled:cursor-not-allowed
+    shadow-sm
+    transition duration-200
+  `}
+  value={chapter.numQuestions ?? ""}
+  placeholder="Qty"
+  onClick={(e) => e.stopPropagation()}
+  onChange={(e) =>
+    handleNumQuestionsChange(
+      chapter.id,
+      e.target.value.replace(/^0+/, "")
+    )
+  }
+/>
+
+  </div>
+))}
+
+
             </div>
           </div>
         )}

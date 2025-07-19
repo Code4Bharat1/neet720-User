@@ -2,6 +2,7 @@
 import WelcomePage from '@/components/a1/welcome';
 import Head from 'next/head';
 import React from 'react';
+import CoreFeatureComponent from "../components/home/CoreFeaturesCard.jsx"
 
 
 
@@ -32,6 +33,7 @@ const Page = () => {
       </Head>
       
       <WelcomePage />
+     <CoreFeatureComponent />
     </>
   )
 }

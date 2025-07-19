@@ -194,7 +194,7 @@ const GreetingCard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen mt-10 bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Card */}
         <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 text-white rounded-2xl shadow-xl p-8 overflow-hidden">
