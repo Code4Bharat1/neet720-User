@@ -12,28 +12,34 @@ const subjectImages = {
   History: "/a+.png",
 };
 
-function PYQCard({ title, description, year, subject , text2 }) {
+function PYQCard({ title, description, year, subject, text2 }) {
   return (
-    <Card className="group w-full max-w-sm overflow-hidden bg-white shadow-lg transition duration-300 hover:shadow-xl relative">
+    <Card className="group w-full max-w-sm overflow-hidden bg-white shadow-lg transition-all duration-500 hover:shadow-2xl relative hover:scale-[1.02]">
       {/* Image Section */}
-      <div className="h-48 bg-[#F9FAFB] flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-white">
+      <div className="h-48 bg-[#F9FAFB] flex items-center justify-center p-6 transition-all duration-500 group-hover:bg-white group-hover:opacity-90">
         <img
           src={subjectImages[subject] || "/images/pyq-illustration.png"}
           alt={`${subject} PYQ Illustration`}
-          className="w-full h-full object-contain transition duration-300 group-hover:opacity-0"
+          className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105"
         />
       </div>
 
       {/* Footer Section */}
-      <div className="bg-[#129EA0] px-4 py-3 transition-all duration-300 group-hover:bg-white relative h-14">
-        {/* Original text hidden */}
-        <h2 className="text-white text-xl font-bold text-center opacity-100 group-hover:opacity-0 transition duration-300">
-          {title}
-        </h2>
+      <div className="bg-[#129EA0] px-4 py-3 transition-all duration-500 group-hover:bg-white relative h-14 overflow-hidden">
+        {/* Original text */}
+        <div className="absolute inset-0 flex items-center justify-center transition-all duration-500 transform group-hover:-translate-y-full">
+          <h2 className="text-white text-lg sm:text-xl font-bold text-center">
+            {title}
+          </h2>
+        </div>
+        
+        {/* Hover text */}
+        <div className="absolute inset-0 flex items-center justify-center transition-all duration-500 transform translate-y-full group-hover:translate-y-0">
+          <span className="text-[#129EA0] text-base sm:text-lg font-semibold px-2">
+            {text2}
+          </span>
+        </div>
       </div>
-      <span className="absolute inset-0 flex items-center justify-center text-[#129EA0] text-2xl font-semibold opacity-0 group-hover:opacity-100 transition duration-300">
-        {text2} 
-      </span>
     </Card>
   );
 }
@@ -87,14 +93,14 @@ export default function CoreFeatureComponent() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#103F5D] p-6">
+    <div className="min-h-screen bg-[#103F5D] p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-5xl font-bold text-center mb-8 text-white pt-5 pb-10">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 sm:mb-8 text-white pt-4 sm:pt-5 pb-8 sm:pb-10">
           Previous Year Questions Collection
         </h1>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 text-center md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 text-center md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {pyqData.map((item, index) => (
             <PYQCard
               key={index}

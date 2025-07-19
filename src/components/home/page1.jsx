@@ -8,32 +8,32 @@ export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = useMemo(() => [
-    // Slide 1
+    // Slide 1 - Updated for mobile responsiveness
     <section
       key="slide-1"
-      className="w-full h-[85vh] flex flex-col md:flex-row items-center justify-between px-8 py-12 bg-gradient-to-br from-[#D8D5F5] via-[#A9A1F2] to-[#7F7ADF] relative overflow-hidden transition-all duration-700 ease-in-out"
+      className="w-full h-[90vh] md:h-[85vh] flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-8 md:py-12 bg-gradient-to-br from-[#D8D5F5] via-[#A9A1F2] to-[#7F7ADF] relative overflow-hidden transition-all duration-700 ease-in-out"
     >
       <div className="absolute -left-20 top-10 w-[300px] h-[300px] bg-purple-500 opacity-30 rounded-full blur-3xl"></div>
       <div className="absolute -right-10 top-20 w-[200px] h-[400px] bg-indigo-400 opacity-30 rounded-full blur-2xl"></div>
       <div className="absolute left-40 bottom-10 w-[150px] h-[150px] bg-purple-300 opacity-30 rounded-full blur-2xl"></div>
 
-      <div className="md:w-1/2 space-y-4 z-10 text-center md:text-left">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-white drop-shadow">
+      <div className="md:w-1/2 space-y-4 z-10 text-center md:text-left px-2 md:px-0">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white drop-shadow">
           Crack NEET with Confidence and Clarity.
         </h1>
-        <p className="text-base md:text-lg text-white drop-shadow">
+        <p className="text-sm sm:text-base md:text-lg text-white drop-shadow">
           Join a structured learning journey with expert guidance, smart
           practice tools, and personalized support — everything you need to
           succeed in NEET.
         </p>
-        <button className="bg-[#00425A] text-white px-5 py-2.5 rounded hover:bg-[#00334a]">
+        <button className="bg-[#00425A] text-white px-5 py-2.5 rounded hover:bg-[#00334a] text-sm sm:text-base">
           Schedule A Demo Now
         </button>
       </div>
 
-      <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-end z-10 relative">
+      <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-center md:justify-end z-10 relative w-full md:w-auto">
         <div
-          className="w-[500px] h-[500px] overflow-hidden"
+          className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] overflow-hidden"
           style={{ clipPath: "ellipse(70% 100% at 40% 50%)" }}
         >
           <Image
@@ -42,34 +42,35 @@ export default function HomePage() {
             width={400}
             height={400}
             className="object-cover w-full h-full"
+            priority
           />
         </div>
         <Image
           src="/Rectangle 6926.png"
           width={500}
           height={500}
-          className="absolute top-[-60px] left-[290px] rotate-[100.4deg] opacity-70"
+          className="hidden md:block absolute top-[-60px] left-[290px] rotate-[100.4deg] opacity-70"
           style={{ filter: "blur(4px)" }}
           alt="Blurred Accent"
         />
       </div>
     </section>,
 
-    // Slide 2
+    // Slide 2 - Updated for mobile responsiveness
     <section
       key="slide-2"
-      className="w-full h-[85vh] relative bg-[#a6e3f7] px-6 md:px-20 py-12 flex flex-col md:flex-row items-center justify-between overflow-hidden transition-all duration-700 ease-in-out"
+      className="w-full h-[90vh] md:h-[85vh] relative bg-[#a6e3f7] px-4 md:px-20 py-8 md:py-12 flex flex-col md:flex-row items-center justify-between overflow-hidden transition-all duration-700 ease-in-out"
     >
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle,_rgba(0,0,0,0.1)_1px,_transparent_1px)] bg-[length:30px_30px] pointer-events-none" />
       </div>
 
-      <div className="relative z-10 w-full md:w-1/2 text-center md:text-left">
-        <h1 className="text-4xl md:text-3xl font-bold text-[#001f54]">
+      <div className="relative z-10 w-full md:w-1/2 text-center md:text-left px-2 md:px-0">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#001f54]">
           Crack NEET with Confidence{" "}
           <span className="block md:inline">— Let AI Guide You.</span>
         </h1>
-        <p className="mt-4 text-[#1a1a1a] text-sm md:text-base leading-relaxed">
+        <p className="mt-4 text-[#1a1a1a] text-sm sm:text-base md:text-base leading-relaxed">
           Get ready to conquer NEET with the power of AI by your side. Our
           intelligent assistant provides personalized guidance, smart study
           plans, instant doubt-solving, and performance tracking — all tailored
@@ -77,18 +78,19 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="relative z-10 w-full md:w-2/5 mt-8 md:mt-0 flex justify-end">
+      <div className="relative z-10 w-full md:w-2/5 mt-8 md:mt-0 flex justify-center md:justify-end">
         <Image
           src="/image 2.png"
           alt="AI Guide"
           width={400}
           height={260}
-          className="rounded-2xl"
+          className="rounded-2xl w-[90%] sm:w-[80%] md:w-full max-w-[400px]"
+          priority
         />
       </div>
 
-      {/* Floating Ellipses */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* Floating Ellipses - Hidden on mobile */}
+      <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
         <Image
           src="/Ellipse 2.png"
           width={200}
@@ -132,20 +134,20 @@ export default function HomePage() {
       </div>
     </section>,
 
-    // Slide 3
+    // Slide 3 - Updated for mobile responsiveness
     <section
       key="slide-3"
-      className="w-full h-[85vh] relative flex flex-col md:flex-row items-center justify-between bg-[#9EE5F6] overflow-hidden px-6 md:px-20 py-16 transition-all duration-700 ease-in-out"
+      className="w-full h-[90vh] md:h-[85vh] relative flex flex-col md:flex-row items-center justify-between bg-[#9EE5F6] overflow-hidden px-4 md:px-20 py-8 md:py-16 transition-all duration-700 ease-in-out"
     >
-      {/* Grid Squares Background */}
-      <div className="absolute inset-0 z-0 grid grid-cols-8 grid-rows-6 gap-4 px-10 py-10 opacity-40">
+      {/* Grid Squares Background - Hidden on mobile */}
+      <div className="absolute inset-0 z-0 grid grid-cols-8 grid-rows-6 gap-4 px-10 py-10 opacity-40 hidden md:grid">
         {Array.from({ length: 48 }).map((_, i) => (
           <div key={i} className="bg-black/50 w-5 h-3 md:w-8 md:h-4" />
         ))}
       </div>
 
-      {/* SVG Arc Background */}
-      <div className="absolute inset-0 z-0">
+      {/* SVG Arc Background - Hidden on mobile */}
+      <div className="absolute inset-0 z-0 hidden md:block">
         <svg
           viewBox="0 0 512 512"
           className="w-full h-full"
@@ -163,24 +165,26 @@ export default function HomePage() {
       </div>
 
       {/* Text */}
-      <div className="relative z-10 md:w-2/3 text-left space-y-4 text-[#00425A]">
-        <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+      <div className="relative z-10 md:w-2/3 text-center md:text-left space-y-4 text-[#00425A] px-2 md:px-0">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
           All Previous Year Questions
         </h2>
-        <p className="text-base md:text-lg font-medium">
-          Access a complete collection of NEET Previous Year Questions, <br />
+        <p className="text-sm sm:text-base md:text-lg font-medium">
+          Access a complete collection of NEET Previous Year Questions,{" "}
+          <span className="hidden md:inline"><br /></span>
           organized year-wise and chapter-wise to strengthen your foundation.
         </p>
       </div>
 
       {/* Image */}
-      <div className="relative z-20 mt-12 md:mt-0 md:w-1/2 flex justify-center">
+      <div className="relative z-20 mt-8 md:mt-0 md:w-1/2 flex justify-center">
         <Image
           src="/rectangle_3.png"
           alt="Student with Book"
           width={800}
           height={860}
-          className="rounded-xl"
+          className="rounded-xl w-[90%] sm:w-[80%] md:w-full max-w-[500px]"
+          priority
         />
       </div>
     </section>
@@ -199,8 +203,8 @@ export default function HomePage() {
         <title>Crack NEET with AI</title>
       </Head>
 
-      <main className="relative min-h-[85vh] overflow-hidden">
-        <div className="w-full h-[85vh] transition-all duration-700 ease-in-out">
+      <main className="relative min-h-[90vh] md:min-h-[85vh] overflow-hidden">
+        <div className="w-full h-[90vh] md:h-[85vh] transition-all duration-700 ease-in-out">
           {slides[currentSlide]}
         </div>
 
@@ -210,7 +214,7 @@ export default function HomePage() {
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`h-3 w-3 rounded-full transition-all duration-300 ${
+              className={`h-2 w-2 sm:h-3 sm:w-3 rounded-full transition-all duration-300 ${
                 index === currentSlide
                   ? "bg-black"
                   : "bg-white border border-gray-400"
@@ -224,12 +228,17 @@ export default function HomePage() {
           href="https://wa.me/1234567890"
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 bg-green-500 rounded-full p-3 shadow-lg z-20"
+          className="fixed bottom-6 right-6 bg-green-500 rounded-full p-2 sm:p-3 shadow-lg z-20"
         >
-          <Image src="/image 4.png" alt="WhatsApp" width={40} height={40} />
+          <Image 
+            src="/image 4.png" 
+            alt="WhatsApp" 
+            width={30} 
+            height={30} 
+            className="w-6 h-6 sm:w-8 sm:h-8"
+          />
         </a>
       </main>
     </>
   );
 }
-
