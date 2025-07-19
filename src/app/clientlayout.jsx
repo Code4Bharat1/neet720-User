@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
+import NavBar from "@/components/layout/navbar/navbar";
+import Footer from "../components/footer";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -32,7 +32,7 @@ export default function ClientLayout({ children }) {
 
   return (
     <>
-      {showHeaderFooter && <Navbar />}
+      {showHeaderFooter && <NavBar />}
       {children}
       {showHeaderFooter && <Footer />}
     </>
