@@ -112,12 +112,12 @@ const ResultPage = () => {
   const isGoodPerformance = percentage >= 70;
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-100 relative">
+    <div className="h-screen max-sm:h-full w-screen overflow-hidden max-sm:overflow-auto  flex items-center max-sm:flex-col justify-center bg-gray-100 relative">
       {/* Confetti */}
       {showConfetti && <Confetti width={width} height={height} numberOfPieces={300} recycle={false} />}
 
       {/* Main Content */}
-      <div className="w-full h-full max-w-6xl mx-auto p-6 grid grid-cols-2 gap-6">
+      <div className="w-full h-full max-w-6xl mx-auto p-6 grid grid-cols-2 max-sm:grid-cols-1 gap-6">
         {/* Left Side - Score Display */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -210,13 +210,13 @@ const ResultPage = () => {
             <h2 className="text-lg font-bold mb-4 text-gray-800">What's Next?</h2>
             <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={() => router.push("/review-mistakeCT")}
+                onClick={() => router.push("/review-mistake")}
                 className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 Review Mistakes
               </button>
               <button
-                onClick={() => router.push("/viewanalyticsCT")}
+                onClick={() => router.push("/viewanalytics")}
                 className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors font-medium"
               >
                 View Analytics

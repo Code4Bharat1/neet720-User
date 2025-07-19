@@ -120,7 +120,7 @@ const NeetPrep = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen md:-mt-16 relative p-4">
+    <div className="flex items-center justify-center max-sm:-mt-40 min-h-screen md:-mt-16 relative p-4">
       <motion.div
         className="w-full max-w-6xl bg-white rounded-3xl shadow-lg shadow-blue-400 p-8"
         initial="hidden"
@@ -227,7 +227,7 @@ const NeetPrep = () => {
 
         {/* Girl Image */}
         <motion.div
-          className="absolute left-4 top-[-70px] w-40 md:w-60"
+          className="absolute left-4 top-[-70px] w-40 md:w-60 max-sm:hidden"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -237,7 +237,7 @@ const NeetPrep = () => {
             alt="Girl studying"
             width={600}
             height={600}
-            className="w-full h-auto"
+            className="w-full h-auto max-sm:hidden"
           />
         </motion.div>
       </motion.div>

@@ -6,6 +6,8 @@ import axios from "axios";
 import Sidebar from "@/components/layout/sidebar/sidebar";
 import NavBar from "@/components/layout/navbar/navbar";
 import Head from "next/head";
+import BottomNavbar from "@/components/layout/bottomnav/bottomnav";
+import ToggleBar from "@/components/layout/togglebar/togglebar";
 
 const NoticesPage = () => {
   const [notices, setNotices] = useState([]);
@@ -73,9 +75,11 @@ const NoticesPage = () => {
 
         <link rel="canonical" href="https://neet720.com/notice" />
       </Head>
+      <ToggleBar />
       <div className="md:flex min-h-screen relative bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <Sidebar />
-        <div className="w-full md:w-5/6 flex flex-col min-h-screen">
+        <BottomNavbar />
+        <div className="w-full mt-16 md:w-5/6 flex flex-col min-h-screen">
           <NavBar />
           <div className="flex-1 p-6">
             <div className="max-w-6xl mx-auto">

@@ -175,7 +175,7 @@ const PastTest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8">
+    <div className="min-h-screen mt-14 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8">
       {/* Header Section */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}

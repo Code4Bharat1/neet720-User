@@ -292,7 +292,7 @@ const TestInterface = () => {
     <div className="min-h-screen w-full bg-gray-50 flex flex-col pb-28">
       {/* Header */}
       <div className="sticky top-0 z-30 bg-white py-3 px-4 shadow-sm flex items-center justify-between">
-        <img src="/nexcore-logo-pc.png" alt="Logo" className="h-12" />
+        <img src="/neet720_logo.jpg" alt="Logo" className="h-12" />
         <div className="flex items-center gap-3">
           {/* Timer */}
           <div className="flex items-center space-x-2">

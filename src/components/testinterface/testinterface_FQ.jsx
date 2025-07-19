@@ -400,7 +400,7 @@ const QuizInterface = () => {
             <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-6 animate-bounce">
               <Trophy className="w-10 h-10 md:w-12 md:h-12 text-white" />
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            <h1 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
               Quiz Complete!
             </h1>
             <p className="text-lg md:text-xl text-slate-600">Let's see how you performed against the AI Bot</p>
@@ -582,10 +582,10 @@ const QuizInterface = () => {
 
   // Main Quiz Interface
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 md:p-6 select-none">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 md:p-6 select-none max-sm:*:text-sm">
       <div className="max-w-7xl mx-auto">
         {/* Enhanced Header */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 mb-6 shadow-xl border border-white/50">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-1 md:p-6 mb-6 shadow-xl border border-white/50">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div
@@ -655,11 +655,11 @@ const QuizInterface = () => {
 
         {/* Main Quiz Content */}
         {questions.length > 0 && !quizCompleted && (
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-6 max-sm:gap-3 max-sm:*:text-sm">
             {/* Quiz Content Area */}
             <div className="lg:col-span-2 space-y-6">
               {/* Timer and Progress Card */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/50">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 max-sm:p-2 shadow-xl border border-white/50">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <div
@@ -753,7 +753,7 @@ const QuizInterface = () => {
           checked={selectedAnswer === optionText}
           readOnly
         />
-        <span className="flex items-center justify-center mr-4 w-10 h-10 rounded-full border-2 text-indigo-600 font-bold text-lg border-indigo-300 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 transition-all duration-300 shadow-md">
+        <span className="flex items-center justify-center mr-4 w-10 h-10 max-sm:h-7 max-sm:w-7 rounded-full border-2 text-indigo-600 font-bold text-lg border-indigo-300 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 transition-all duration-300 shadow-md">
           {serialLetter[idx]}
         </span>
         <span className="flex-1 font-medium text-slate-700">
@@ -763,8 +763,8 @@ const QuizInterface = () => {
 
       {/* ✅ Correct Answer */}
       {showResult && optionText === correctAnswer && (
-        <div className="ml-28 -mr-14 w-1/2 mt-1 flex items-center flex-wrap gap-1 text-green-600 text-sm font-medium">
-          ✅ Correct Answer
+        <div className="ml-28 -mr-14 w-1/2 max-sm:w-fit max-sm:ml-20 max-sm:mr-0 mt-1 flex items-center flex-wrap gap-1 text-green-600 text-sm font-medium">
+          ✅ <span className="max-sm:hidden">Correct Answer</span>
         </div>
       )}
 
@@ -772,8 +772,8 @@ const QuizInterface = () => {
       {showResult &&
         selectedAnswer === optionText &&
         optionText !== correctAnswer && (
-          <div className="ml-56 w-1/2 mt-1 flex items-center gap-1 text-red-600 text-sm font-medium">
-            ❌ Your Answer
+          <div className="ml-56 w-1/2 max-sm:w-fit max-sm:ml-20 mt-1 flex items-center gap-1 text-red-600 text-sm font-medium">
+            ❌ <span className="max-sm:hidden">Your Answer</span>
           </div>
         )}
 
@@ -781,9 +781,9 @@ const QuizInterface = () => {
       {showResult &&
         currentAnswer?.isAutoAnswered &&
         optionText === correctAnswer && (
-          <div className="ml-5 -mr-10 w-1/2 mt-1 flex items-center gap-1 text-green-700 text-xs font-bold">
+          <div className="ml-5 -mr-10 w-1/2 max-sm:w-fit max-sm:mr-0 mt-1 flex items-center gap-1 text-green-700 text-xs font-bold">
             <Bot className="w-4 h-4" />
-            Bot's Answer
+            <span className="max-sm:hidden">Bot's Answer</span>
           </div>
         )}
     </div>
@@ -821,7 +821,7 @@ const QuizInterface = () => {
                   )}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col max-sm:flex-row gap-3">
                   <button
                     onClick={() => handleAddMoreQuestions(5)}
                     className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
@@ -843,7 +843,7 @@ const QuizInterface = () => {
                   {currentQuestionIndex < questions.length - 1 ? (
                     <button
                       onClick={() => handleNavigation("next")}
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      className="flex items-center max-sm:justify-center max-sm:px-3 gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
                     >
                       Next
                       <ChevronRight className="w-5 h-5" />
@@ -851,7 +851,7 @@ const QuizInterface = () => {
                   ) : (
                     <button
                       onClick={handleSubmitTest}
-                      className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-medium hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      className="flex items-center gap-2 px-8 max-sm:p-3 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-medium hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl"
                     >
                       <Flag className="w-5 h-5" />
                       Finish Quiz

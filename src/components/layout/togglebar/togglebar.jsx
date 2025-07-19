@@ -93,9 +93,9 @@ const ToggleBar = () => {
   };
 
   return (
-    <div>
+    <div className="fixed top-0 w-full z-50 md:hidden bg-white shadow-2xl ">
       {/* Top Bar */}
-      <div className="sm:flex md:hidden w-full p-4 h-[110px]">
+      <div className="sm:flex md:hidden w-full p-4 h-[65px]">
         <div className="flex items-center justify-between w-full">
           {/* Toggle Button */}
           <button className="text-gray-600" onClick={() => setMenuOpen(true)}>
@@ -108,7 +108,7 @@ const ToggleBar = () => {
           {/* Profile Picture */}
           <div className="w-8 h-8 rounded-full overflow-hidden" ref={profileRef} onClick={toggleProfileMenu}>
             <img
-              src={profileImage}
+              src={"/neet720_logo.jpg" || profileImage}
               alt="Profile"
               className="w-full h-full object-cover"
             />
@@ -149,7 +149,7 @@ const ToggleBar = () => {
           <div className="flex flex-col items-center py-4 border-b">
             <div className="w-16 h-16 rounded-full overflow-hidden mb-2">
               <img
-                src={profileImage}
+                src={"neet720_logo.jpg" || profileImage}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
