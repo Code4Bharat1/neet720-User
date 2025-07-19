@@ -225,7 +225,7 @@ const NavBar = () => {
         {/* Profile Dropdown */}
         <div className="relative" ref={profileRef}>
           <img
-            src={profileImage}
+            src="neet720_logo.jpg"
             alt="Profile"
             className="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer"
             onClick={toggleProfileMenu}

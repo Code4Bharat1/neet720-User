@@ -66,7 +66,7 @@ export default function Navbar() {
                 <div className="flex flex-col space-y-0 px-6 py-4">
                   {[
                     { href: "/fulltest", text: "Full Test" },
-                    { href: "/fastquiz", text: "Fast Quiz" },
+                    { href: "/fastquizfeature", text: "Fast Quiz" },
                     { href: "/landing", text: "Create Test" },
                     { href: "/subjectwise", text: "Subject-wise Marks Analysis" },
                     { href: "/chatbot", text: "Chatbot" },
