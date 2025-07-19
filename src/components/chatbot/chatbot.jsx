@@ -26,7 +26,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch('https://chatbot.neet720.com/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
