@@ -1,8 +1,5 @@
 'use client'
-
-import HomePage from '@/components/home/page1';
-import BenefitsSection from '@/components/home/benefit';
-import Home from '@/components/home/neet'
+import WelcomePage from '@/components/a1/welcome';
 import Head from 'next/head';
 import React from 'react';
 
@@ -34,11 +31,7 @@ const Page = () => {
         <link rel="canonical" href="https://neet720.com/" />
       </Head>
       
-     <HomePage/>
-     
-     <BenefitsSection/>
-     <Home/>
-
+      <WelcomePage />
     </>
   )
 }
