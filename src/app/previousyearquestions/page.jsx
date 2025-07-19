@@ -5,6 +5,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, Clock, X } from "lucide-react";
 import Head from "next/head";
+import ToggleBar from "@/components/layout/togglebar/togglebar";
+import BottomNavbar from "@/components/layout/bottomnav/bottomnav";
 
 const PreviousYearList = () => {
   const [years, setYears] = useState([]);
@@ -75,7 +77,9 @@ const PreviousYearList = () => {
 
         <link rel="canonical" href="https://neet720.com/previousyearquestions" />
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <ToggleBar />
+      <div className="min-h-screen mt-10 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <BottomNavbar />
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">

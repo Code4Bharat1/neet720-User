@@ -120,7 +120,7 @@ const VerifyYourEmail = () => {
     <div className="flex min-h-screen">
       {/* Left Blue Panel */}
       <div className="w-1/3 bg-gradient-to-b from-[#0077B6] to-[#ADE8F4] flex flex-col items-center justify-center">
-        <img src="/nexcore-logo-pc.png" alt="Nexcore Alliance Logo" className="h-24" />
+        <img src="/neet720_logo.jpg" alt="Nexcore Alliance Logo" className="h-24" />
       </div>
 
       {/* Right Form Panel */}

@@ -386,7 +386,7 @@ const TestInterface = () => {
       {/* Header Section */}
       <div className="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
         <div className="flex items-center">
-          <img src="/nexcore-logo-pc.png" alt="Logo" className="h-20 mr-4" />
+          <img src="/neet720_logo.jpg" alt="Logo" className="h-20 mr-4" />
           
         </div>
         

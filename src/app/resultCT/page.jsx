@@ -10,15 +10,15 @@ const Page = () => {
   return (
     <div>
       {/* Desktop View (TestInterface will be visible) */}
-      <div className="hidden md:block overflow-x-hidden">
+      <div className="block">
         <ResultPage/>
       </div>
 
       {/* Mobile View (TestInterfaceMobile will be visible) */}
-      <div className="block md:hidden">
+      {/* <div className="block md:hidden">
        <ResultMobile />
         
-      </div>
+      </div> */}
       <div className='mt-48 md:hidden'><BottomNavbar/></div>
     </div>
   );

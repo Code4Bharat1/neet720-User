@@ -93,8 +93,8 @@ const ForgotPassword = () => {
       {/* Left Section */}
       <div className="hidden md:flex md:w-[40%] bg-[#1977F3] items-center justify-center">
         <Image
-          src="/nexcore-logo-pc.png"
-          alt="Nexcore Logo"
+          src="/neet720_logo.jpg"
+          alt="Neet720 Logo"
           width={300}
           height={200}
           className="object-contain"
@@ -106,8 +106,8 @@ const ForgotPassword = () => {
         {/* Logo Section for Mobile */}
         <div className="md:hidden flex justify-center mb-6">
           <Image
-            src="/nexcore-logo-pc.jpg"
-            alt="Nexcore Logo"
+            src="/neet720_logo.jpg"
+            alt="Neet720 Logo"
             width={160}
             height={40}
             className="object-contain"

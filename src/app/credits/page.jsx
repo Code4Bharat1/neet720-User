@@ -25,6 +25,8 @@ import {
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Head from 'next/head';
+import BottomNavbar from '@/components/layout/bottomnav/bottomnav';
+import ToggleBar from '@/components/layout/togglebar/togglebar';
 
 const Page = () => {
   const [results, setResults] = useState(null);
@@ -266,9 +268,11 @@ const Page = () => {
         <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/scholarship" />
         <link rel="canonical" href="https://neet720.com/credits" />
       </Head>
-
+      <ToggleBar className="fixed top-0" />
       <div className='flex min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50'>
         <Sidebar className="hidden md:block w-64 shadow-md z-10" />
+        
+        <BottomNavbar />
         <div className='w-full'>
           <NavBar />
           <div className="flex-1 p-6 md:p-8">
@@ -456,7 +460,7 @@ const Page = () => {
             {/* Tab Content */}
             {activeTab === 'results' ? (
               <div className="flex flex-col gap-6">
-                <div className='flex gap-10 justify-center'>
+                <div className="flex gap-10 max-sm:flex-col justify-center">
                   <div className=''>
                     <Image src="/scholarship-Image.png" className='w-[800px] h-[410px] rounded-md shadow-md max-w-800' alt='Scholarship Image' height={800} width={800} />
                   </div>

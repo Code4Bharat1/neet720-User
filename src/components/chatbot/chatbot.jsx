@@ -26,7 +26,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch('https://chatbot.neet720.com/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,14 +61,14 @@ const Chatbot = () => {
       {/* Floating Chat Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full p-4 text-xl shadow-2xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 z-50 border-2 border-white/20"
+        className="fixed bottom-6 right-6 max-sm:bottom-24 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full p-4 text-xl shadow-2xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 z-50 border-2 border-white/20"
       >
         <span className="drop-shadow-lg">💬</span>
       </button>
 
       {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-24 right-6 w-96 h-[520px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white rounded-2xl shadow-2xl flex flex-col z-40 border border-blue-400/30 backdrop-blur-sm">
+        <div className="fixed bottom-24 max-sm:right-0 max-sm:bottom-40 right-6 w-96 h-[520px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white rounded-2xl shadow-2xl flex flex-col z-40 border border-blue-400/30 backdrop-blur-sm">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 px-5 py-3 rounded-t-2xl font-semibold text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>

@@ -5,7 +5,7 @@ import Sidebar from "@/components/layout/sidebar/sidebar";
 import NavBar from "@/components/layout/navbar/navbar";
 import BottomNavbar from "@/components/layout/bottomnav/bottomnav";
 import ToggleBar from "@/components/layout/togglebar/togglebar";
-import ReviewMistake from "@/components/review-mistake/review-mistakeCT";
+import ReviewMistake from "@/components/review-mistake/review-mistake";
 
 const Page = () => {
   return (

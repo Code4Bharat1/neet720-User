@@ -397,15 +397,15 @@ const TestInterface = () => {
   return (
     <div className="min-h-screen w-full bg-gray-100 flex flex-col">
       {/* Header with Timer */}
-      <div className="bg-white shadow-md py-4 sticky top-0 z-10">
+      <div className="bg-white shadow-md py-4 max-sm:py-1 sticky top-0 z-10">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2 md:mb-0">
+          <h1 className="text-2xl max-sm:text-xl font-bold text-gray-800 mb-2 md:mb-0">
             NEET FULL TEST
           </h1>
 
           <div className="flex flex-wrap gap-4 items-center">
             {/* Timer Display */}
-            <div className="bg-blue-50 p-3 rounded-lg shadow">
+            <div className="bg-blue-50 p-3 max-sm:p-1 max-sm:bg-transparent rounded-lg shadow">
               <div className="flex items-center gap-2 mb-1">
                 <FaClock className="text-blue-600" />
                 <span className="font-medium text-blue-700">Time Left</span>
@@ -430,7 +430,7 @@ const TestInterface = () => {
 
             <button
               onClick={handleSubmit}
-              className="px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition flex items-center gap-2"
+              className="px-6 max-sm:px-2 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition flex items-center max-sm:justify-end gap-2"
             >
               <FaCheck /> Submit Test
             </button>
