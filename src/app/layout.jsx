@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import ClientLayout from "./clientLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,7 +55,9 @@ export const metadata = {
     title: "NEET720 – Smart NEET Exam Portal & AI Rank Predictor",
     description:
       "Explore NEET test analytics, AI-powered rank prediction, and college guidance with NEET720.",
-    images: ["https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/NEET720.jpeg"],
+    images: [
+      "https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/NEET720.jpeg",
+    ],
     site: "@neet720",
   },
   icons: {
@@ -69,18 +70,20 @@ export const metadata = {
     follow: true,
   },
   other: {
-    "keywords": "NEET720, NEET rank predictor, NEET2026 portal, NEET AI analysis, best NEET preparation platform",
+    keywords:
+      "NEET720, NEET rank predictor, NEET2026 portal, NEET AI analysis, best NEET preparation platform",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Toaster position="top-center" reverseOrder={false} />
-     
-       <ClientLayout>{children}</ClientLayout>
 
+        {children}
       </body>
     </html>
   );

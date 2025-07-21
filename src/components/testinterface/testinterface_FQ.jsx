@@ -794,7 +794,7 @@ const QuizInterface = () => {
                 </div>
 
                 {/* Clear Response Button */}
-                {showResult && !currentAnswer?.isAutoAnswered && (
+                {/* {showResult && !currentAnswer?.isAutoAnswered && (
                   <div className="mt-6 text-center">
                     <button
                       onClick={handleClearResponse}
@@ -804,7 +804,7 @@ const QuizInterface = () => {
                       Clear & Retry
                     </button>
                   </div>
-                )}
+                )} */}
               </div>
 
               {/* Navigation Controls */}
