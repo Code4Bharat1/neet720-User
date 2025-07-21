@@ -794,17 +794,7 @@ const QuizInterface = () => {
                 </div>
 
                 {/* Clear Response Button */}
-                {/* {showResult && !currentAnswer?.isAutoAnswered && (
-                  <div className="mt-6 text-center">
-                    <button
-                      onClick={handleClearResponse}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 rounded-xl font-medium hover:from-slate-300 hover:to-slate-400 transition-all duration-300"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                      Clear & Retry
-                    </button>
-                  </div>
-                )} */}
+      
               </div>
 
               {/* Navigation Controls */}
