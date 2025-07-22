@@ -86,6 +86,7 @@ const QuizInterface = () => {
   const [botThinking, setBotThinking] = useState(false)
   const [addingQuestions, setAddingQuestions] = useState(false)
   const [noMoreQuestions, setNoMoreQuestions] = useState(false)
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
   const serialLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
   const timerRef = useRef(null)
@@ -173,6 +174,23 @@ const QuizInterface = () => {
     }
   }
 
+
+  useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowLeft" && currentQuestionIndex > 0) {
+      handleNavigation("prev");
+    } else if (
+      event.key === "ArrowRight" &&
+      currentQuestionIndex < questions.length - 1
+    ) {
+      handleNavigation("next");
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentQuestionIndex, questions.length]);
+
   const handleAddMoreQuestions = async (count = 5) => {
     setAddingQuestions(true)
     setError("")
@@ -237,6 +255,30 @@ const QuizInterface = () => {
       clearInterval(thinkingRef.current)
     }
   }
+
+  useEffect(() => {
+  const handleArrowKeyNavigation = (e) => {
+    if (showResult) return;
+
+    const optionCount = currentQuestion.options.length;
+
+    if (e.key === "ArrowDown") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === optionCount - 1 ? 0 : prev + 1
+      );
+    } else if (e.key === "ArrowUp") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === 0 ? optionCount - 1 : prev - 1
+      );
+    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+      const selectedOption = currentQuestion.options[focusedOptionIndex];
+      handleOptionSelect(currentQuestion.id, selectedOption.option_text);
+    }
+  };
+
+  window.addEventListener("keydown", handleArrowKeyNavigation);
+  return () => window.removeEventListener("keydown", handleArrowKeyNavigation);
+}, [focusedOptionIndex, currentQuestion, showResult]);
 
   const startTimer = () => {
     setTimeLeft(difficultySettings[difficulty].timeLimit)
@@ -735,7 +777,9 @@ const QuizInterface = () => {
   return (
     <div
       key={opt.id}
-      className={getOptionClasses(opt.option_text)}
+      className={`${getOptionClasses(opt.option_text)} ${
+  focusedOptionIndex === idx ? "ring-2 ring-indigo-400" : ""
+}`}
       onClick={() =>
         !showResult && handleOptionSelect(currentQuestion.id, opt.option_text)
       }

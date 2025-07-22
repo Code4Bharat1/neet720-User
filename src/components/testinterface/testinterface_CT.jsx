@@ -79,6 +79,7 @@ const TestInterface = () => {
   const [showNavGrid, setShowNavGrid] = useState(false)
   const [showProgress, setShowProgress] = useState(false)
   const [showStats, setShowStats] = useState(false)
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
   // Use ref to track if the timer has been initialized
   const timerInitialized = useRef(false)
@@ -386,6 +387,47 @@ const TestInterface = () => {
     return { minutes, seconds }
   }
 
+  useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowLeft" && currentQuestion > 0) {
+      handleNavigation("prev");
+    } else if (event.key === "ArrowRight") {
+      handleNavigation("next");
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [currentQuestion]);
+
+
+  useEffect(() => {
+  const handleKeyDown = (e) => {
+    const totalOptions = currentQuestionData?.options?.length;
+    if (!totalOptions) return;
+
+    if (e.key === "ArrowDown") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === totalOptions - 1 ? 0 : prev + 1
+      );
+    } else if (e.key === "ArrowUp") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === 0 ? totalOptions - 1 : prev - 1
+      );
+    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+      handleOptionClick(focusedOptionIndex);
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [focusedOptionIndex, currentQuestion]);
+
+useEffect(() => {
+  setFocusedOptionIndex(null);
+}, [currentQuestion]);
+
+  
   const getAnsweredCount = () => {
     return Object.keys(answers).length
   }
@@ -666,10 +708,13 @@ const TestInterface = () => {
                     onMouseEnter={() => setHoveredOption(index)}
                     onMouseLeave={() => setHoveredOption(null)}
                     className={`w-full text-left py-3 px-4 rounded-xl border-2 transition-all relative overflow-hidden
-                    ${isSelected
-                        ? "border-blue-500 bg-blue-50 text-blue-900 font-semibold"
-                        : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50"
-                      }`}
+${isSelected
+  ? "border-blue-500 bg-blue-50 text-blue-900 font-semibold"
+  : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50"
+}
+${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
+`}
+
                   >
                     <div className="flex items-center gap-3">
                       <div

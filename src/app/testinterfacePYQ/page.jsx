@@ -58,6 +58,7 @@ const TestInterface = () => {
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(3 * 60 * 60); // 3 hours
   const [submitted, setSubmitted] = useState(false);
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -195,6 +196,51 @@ const TestInterface = () => {
     setSubmitted(true);
     router.push("/resultPYQ");
   };
+  useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowLeft" && currentQuestion > 0) {
+      handleNavigation("prev");
+    } else if (event.key === "ArrowRight") {
+      handleNavigation("next");
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [currentQuestion]);
+
+
+useEffect(() => {
+  const handleKeyDown = (e) => {
+    const options = Object.entries(currentQuestion?.options || []);
+    if (!options.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === options.length - 1 ? 0 : prev + 1
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === 0 ? options.length - 1 : prev - 1
+      );
+    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+      const [key] = options[focusedOptionIndex];
+      handleOptionClick(currentSubject, currentQuestion, key);
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [focusedOptionIndex, currentQuestion, currentSubject, currentQuestion]);
+
+
+
+useEffect(() => {
+  setFocusedOptionIndex(null);
+}, [currentQuestion]);
+
 
   if (loading) {
     return (
@@ -419,13 +465,12 @@ const TestInterface = () => {
                           />
                           <label
                             htmlFor={`${inputName}-${key}`}
-                            className={`
-    flex items-center cursor-pointer w-full p-5 rounded-xl border-2 transition-all hover:scale-[1.01] relative overflow-hidden
-    select-none
-    mb-0
-    border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50
-    peer-checked:border-blue-500 peer-checked:bg-gradient-to-r peer-checked:from-blue-50 peer-checked:to-indigo-50 peer-checked:text-blue-900
-  `}
+                            className={`flex items-center cursor-pointer w-full p-5 rounded-xl border-2 transition-all hover:scale-[1.01] relative overflow-hidden select-none mb-0
+  border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50
+  peer-checked:border-blue-500 peer-checked:bg-gradient-to-r peer-checked:from-blue-50 peer-checked:to-indigo-50 peer-checked:text-blue-900
+  ${focusedOptionIndex === idx ? "ring-2 ring-blue-400" : ""}
+`}
+
                           >
                             <span
                               className={`

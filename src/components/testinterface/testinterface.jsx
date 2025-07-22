@@ -52,6 +52,7 @@ const TestInterface = () => {
     Biology: 90,
   });
   const [testName, setTestName] = useState("");
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
   // Calculate total time based on question count (1 min per question)
   const totalQuestions =
@@ -251,6 +252,46 @@ const TestInterface = () => {
     delete currentAnswers[`${currentSubject}-${currentQuestion}`];
     localStorage.setItem("testAnswers", JSON.stringify(currentAnswers));
   };
+
+  useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowLeft" && currentQuestion > 0) {
+      handleNavigation("prev");
+    } else if (event.key === "ArrowRight") {
+      handleNavigation("next");
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [currentQuestion]);
+
+useEffect(() => {
+  const handleKeyDown = (e) => {
+    const options = questionsData[currentSubject]?.[currentQuestion]?.options;
+    if (!options) return;
+
+    if (e.key === "ArrowDown") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === options.length - 1 ? 0 : prev + 1
+      );
+    } else if (e.key === "ArrowUp") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === 0 ? options.length - 1 : prev - 1
+      );
+    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+      handleOptionClick(focusedOptionIndex);
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [focusedOptionIndex, currentSubject, currentQuestion, questionsData]);
+
+useEffect(() => {
+  setFocusedOptionIndex(null);
+}, [currentQuestion]);
+
 
   const handleSubmit = async () => {
     const confirmSubmit = window.confirm(
@@ -511,9 +552,12 @@ const TestInterface = () => {
                           className="peer hidden"
                         />
                         <label
-                          htmlFor={`option-${questionKey}-${index}`}
-                          className="flex items-center cursor-pointer select-none"
-                        >
+  htmlFor={`option-${questionKey}-${index}`}
+  className={`flex items-center cursor-pointer select-none transition-all duration-200
+    ${focusedOptionIndex === index ? "ring-2 ring-blue-400 rounded-md" : ""}
+  `}
+>
+
                           <span
                             className={`
               w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold text-lg mr-4

@@ -34,6 +34,8 @@ const TestInterface = () => {
   const [startTime, setStartTime] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredOption, setHoveredOption] = useState(null);
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
+
 
   const numQuestions = questionsData[currentSubject]?.length || 0;
 
@@ -149,6 +151,33 @@ const TestInterface = () => {
     seconds: String(timer % 60).padStart(2, '0'),
   };
 
+ useEffect(() => {
+  const handleKeyDown = (e) => {
+    const totalOptions = currentQuestionData?.options.length;
+    if (!totalOptions) return;
+
+    if (e.key === 'ArrowDown') {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === totalOptions - 1 ? 0 : prev + 1
+      );
+    } else if (e.key === 'ArrowUp') {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === 0 ? totalOptions - 1 : prev - 1
+      );
+    } else if (e.key === 'Enter' && focusedOptionIndex !== null) {
+      handleOptionClick(focusedOptionIndex);
+    }
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [focusedOptionIndex, currentQuestionData]);
+
+useEffect(() => {
+  setFocusedOptionIndex(null);
+}, [currentQuestion]);
+
+
   const handleOptionClick = (index) => {
     const questionData = questionsData[currentSubject][currentQuestion];
     const selectedAnswer = questionData.options[index];
@@ -204,6 +233,20 @@ const TestInterface = () => {
   
     setStartTime(newStartTime);
   };
+
+  useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowLeft" && currentQuestion > 0) {
+      handleNavigation("prev");
+    } else if (event.key === "ArrowRight") {
+      handleNavigation("next");
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [currentQuestion]);
+
 
   const handleNavigation = (direction) => {
     const totalQuestions = numQuestions;
@@ -490,10 +533,11 @@ const TestInterface = () => {
                       onMouseEnter={() => setHoveredOption(index)}
                       onMouseLeave={() => setHoveredOption(null)}
                       className={`w-full text-left p-5 rounded-xl border-2 transition-all transform hover:scale-[1.01] relative overflow-hidden ${
-                        isSelected 
-                          ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900' 
-                          : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50'
-                      }`}
+  isSelected 
+    ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900' 
+    : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50'
+} ${focusedOptionIndex === index ? 'ring-2 ring-blue-400' : ''}`}
+
                     >
                       <div className="flex items-center gap-4">
                         <div className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
