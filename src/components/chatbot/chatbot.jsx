@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import ReactMarkdown from 'react-markdown';
 const Chatbot = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -7,10 +7,10 @@ const Chatbot = () => {
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
-  useEffect(()=> {
+  useEffect(() => {
     const saved = localStorage.getItem("chatHistory");
     if (saved) setMessages(JSON.parse(saved));
-  },[])
+  }, [])
 
   useEffect(() => {
     localStorage.setItem("chatHistory", JSON.stringify(messages));
@@ -33,7 +33,7 @@ const Chatbot = () => {
         },
         body: JSON.stringify({ message: input })
       });
-      
+
       const data = await response.json();
 
       const botMsg = {
@@ -86,11 +86,10 @@ const Chatbot = () => {
                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
               >
                 <div
-                  className={`px-4 py-3 rounded-2xl max-w-[85%] text-sm whitespace-pre-wrap shadow-lg ${
-                    msg.sender === 'user'
+                  className={`px-4 py-3 rounded-2xl max-w-[85%] text-sm whitespace-pre-wrap shadow-lg ${msg.sender === 'user'
                       ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white ml-4 rounded-br-md'
                       : 'bg-gradient-to-r from-slate-700 to-slate-600 text-white mr-4 rounded-bl-md border border-blue-400/20'
-                  }`}
+                    }`}
                 >
                   {msg.sender === 'bot' && (
                     <div className="flex items-center space-x-2 mb-2 text-blue-300">
@@ -98,11 +97,14 @@ const Chatbot = () => {
                       <span className="text-xs font-semibold uppercase tracking-wide">Guruji's Response</span>
                     </div>
                   )}
-                  <div className="leading-relaxed">{msg.text}</div>
+                  <div className="leading-relaxed prose prose-sm prose-invert max-w-none">
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  </div>
+
                 </div>
               </div>
             ))}
-            
+
             {/* Typing Indicator */}
             {isTyping && (
               <div className="flex justify-start animate-fadeIn">
@@ -113,8 +115,8 @@ const Chatbot = () => {
                   </div>
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>

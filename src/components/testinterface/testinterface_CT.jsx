@@ -94,7 +94,7 @@ const TestInterface = () => {
         !document.msFullscreenElement &&
         !document.mozFullScreenElement
       ) {
-        router.push("/testselection")
+        // router.push("/testselection")
       }
     }
     document.addEventListener("fullscreenchange", handleFullScreenChange)
@@ -148,38 +148,38 @@ const TestInterface = () => {
           Chemistry: [],
           Biology: [],
         }
-       const subjectCounts = {
-  Physics: 0,
-  Chemistry: 0,
-  Biology: 0,
-};
+        const subjectCounts = {
+          Physics: 0,
+          Chemistry: 0,
+          Biology: 0,
+        };
 
-const limits = {}; // assume you calculate this from selectedChapters
+        const limits = {}; // assume you calculate this from selectedChapters
 
-storedSubjects.forEach((subject) => {
-  const chapters = storedSelectedChapters[subject];
-  const total = Object.values(chapters).reduce(
-    (sum, chapter) => sum + (Number(chapter.numQuestions) || 0),
-    0
-  );
-  limits[subject] = total;
-});
+        storedSubjects.forEach((subject) => {
+          const chapters = storedSelectedChapters[subject];
+          const total = Object.values(chapters).reduce(
+            (sum, chapter) => sum + (Number(chapter.numQuestions) || 0),
+            0
+          );
+          limits[subject] = total;
+        });
 
-data.questions.forEach((item) => {
-  const subject = item.question.subject;
-  if (
-    subjectWiseQuestions[subject] &&
-    subjectCounts[subject] < (limits[subject] || Infinity)
-  ) {
-    subjectWiseQuestions[subject].push({
-      id: item.question.id,
-      question: item.question.question_text,
-      options: item.options.map((opt) => opt.option_text),
-      correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
-    });
-    subjectCounts[subject]++;
-  }
-});
+        data.questions.forEach((item) => {
+          const subject = item.question.subject;
+          if (
+            subjectWiseQuestions[subject] &&
+            subjectCounts[subject] < (limits[subject] || Infinity)
+          ) {
+            subjectWiseQuestions[subject].push({
+              id: item.question.id,
+              question: item.question.question_text,
+              options: item.options.map((opt) => opt.option_text),
+              correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
+            });
+            subjectCounts[subject]++;
+          }
+        });
 
         setQuestionsData(subjectWiseQuestions)
         setLoading(false)
@@ -232,9 +232,11 @@ data.questions.forEach((item) => {
   // 2. TIMER EFFECT
   useEffect(() => {
     if (!timerInitialized.current) return
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
     }
+
     intervalRef.current = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 0) {
@@ -245,6 +247,7 @@ data.questions.forEach((item) => {
         return prev - 1
       })
     }, 1000)
+
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
@@ -396,42 +399,51 @@ data.questions.forEach((item) => {
   }
 
   const handleSubmit = async () => {
-    if (!window.confirm("Confirm submit?")) return
+    if (!window.confirm("Are you sure you want to submit the test?")) return
+
     if (isSubmitting) return
     setIsSubmitting(true)
+
     try {
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
       }
+
       const testAnswers = JSON.parse(localStorage.getItem("testAnswers")) || []
       const authToken = localStorage.getItem("authToken") || sessionStorage.getItem("authToken")
-      const testName = JSON.parse(localStorage.getItem("testName") || '""')
+      const testName = localStorage.getItem("testName") || []
 
       if (!authToken) {
         alert("No authentication token found!")
         return
       }
+
       const correctAnswers = []
       const wrongAnswers = []
       const notAttempted = []
+
       const subjectWiseMarks = {
         Physics: 0,
         Chemistry: 0,
         Biology: 0,
       }
+
       const endTime = new Date()
       let total_marks = 0
+
       const totalTimePerSubject = {
         Physics: calculateTotalTime("Physics"),
         Chemistry: calculateTotalTime("Chemistry"),
         Biology: calculateTotalTime("Biology"),
       }
+
       testAnswers.forEach((answerObj) => {
-        const { subject, selectedAnswer, correctAnswer } = answerObj
-        const chapter = answerObj.chapterName || "General"
-        const questionId = answerObj.question_id
+        const { subject, question, selectedAnswer, correctAnswer } = answerObj
+
+        const chapter = "General"
+        const questionId = question
         const marks = selectedAnswer === correctAnswer ? 4 : -1
-        const timeSpent = answerObj.timeTaken
+        const timeSpent = "N/A"
 
         if (selectedAnswer === correctAnswer) {
           subjectWiseMarks[subject] += 4
@@ -439,18 +451,10 @@ data.questions.forEach((item) => {
           subjectWiseMarks[subject] -= 1
         }
 
-        const answerPayload = {
-          questionId,
-          subject,
-          chapter,
-          selectedAnswer,
-          correctAnswer,
-          marks,
-          timeSpent,
-        }
+        const answerPayload = [questionId, subject, chapter, selectedAnswer, correctAnswer, marks, timeSpent]
 
         if (!selectedAnswer) {
-          notAttempted.push(answerPayload)
+          notAttempted.push([questionId, subject, chapter])
         } else if (selectedAnswer === correctAnswer) {
           correctAnswers.push(answerPayload)
           total_marks += 4
@@ -460,6 +464,7 @@ data.questions.forEach((item) => {
           }
         }
       })
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/submit-test`,
         {
@@ -480,6 +485,7 @@ data.questions.forEach((item) => {
           },
         },
       )
+
       toast.success(response.data.message, {
         duration: 5000,
       })
@@ -488,6 +494,7 @@ data.questions.forEach((item) => {
       toast.error("Error submitting test!", {
         duration: 5000,
       })
+      console.error(error)
     } finally {
       setIsSubmitting(false)
     }
@@ -564,9 +571,8 @@ data.questions.forEach((item) => {
                   setCurrentSubject(subject)
                   setCurrentQuestion(0)
                 }}
-                className={`flex flex-col items-center px-1 py-0.5 rounded ${
-                  isActive ? "bg-gradient-to-r from-blue-400 to-indigo-500 text-white" : "bg-white text-gray-600 border"
-                } mx-0.5`}
+                className={`flex flex-col items-center px-1 py-0.5 rounded ${isActive ? "bg-gradient-to-r from-blue-400 to-indigo-500 text-white" : "bg-white text-gray-600 border"
+                  } mx-0.5`}
               >
                 <SubjectIcon className={`text-base ${isActive ? "text-white" : config.color}`} />
                 <span className="text-xs font-medium">{subject[0]}</span>
@@ -588,11 +594,10 @@ data.questions.forEach((item) => {
                   setCurrentSubject(subject)
                   setCurrentQuestion(0)
                 }}
-                className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${
-                  isActive
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${isActive
                     ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-xl`
                     : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white shadow-md border border-gray-200"
-                }`}
+                  }`}
               >
                 <Icon className={`text-xl ${isActive ? "text-white" : config.color}`} />
                 <span className="font-semibold">{subject}</span>
@@ -661,11 +666,10 @@ data.questions.forEach((item) => {
                     onMouseEnter={() => setHoveredOption(index)}
                     onMouseLeave={() => setHoveredOption(null)}
                     className={`w-full text-left py-3 px-4 rounded-xl border-2 transition-all relative overflow-hidden
-                    ${
-                      isSelected
+                    ${isSelected
                         ? "border-blue-500 bg-blue-50 text-blue-900 font-semibold"
                         : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -705,11 +709,10 @@ data.questions.forEach((item) => {
                 </button>
                 <button
                   onClick={handleReviewLater}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                    markedForReview[`${currentSubject}-${currentQuestion}`]
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${markedForReview[`${currentSubject}-${currentQuestion}`]
                       ? "bg-pink-500 text-white hover:bg-pink-600"
                       : "bg-yellow-500 text-white hover:bg-yellow-600"
-                  }`}
+                    }`}
                 >
                   <FaFlag className="text-lg" />
                   {markedForReview[`${currentSubject}-${currentQuestion}`] ? "Unmark" : "Mark for Review"}
@@ -1076,7 +1079,7 @@ data.questions.forEach((item) => {
       )}
 
       {/* Particle FX */}
-      
+
     </div>
   )
 }
