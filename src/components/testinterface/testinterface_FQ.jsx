@@ -720,7 +720,7 @@ const QuizInterface = () => {
                       </span>
                     )}
                   </div>
-                  <h2 className="text-lg md:text-xl font-bold text-slate-800 leading-relaxed">
+                  <h2 className="text-sm md:text-xl font-bold text-slate-800 leading-relaxed">
                     {currentQuestion.question_text}
                   </h2>
                 </div>
@@ -792,19 +792,6 @@ const QuizInterface = () => {
 
 
                 </div>
-
-                {/* Clear Response Button */}
-                {showResult && !currentAnswer?.isAutoAnswered && (
-                  <div className="mt-6 text-center">
-                    <button
-                      onClick={handleClearResponse}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 rounded-xl font-medium hover:from-slate-300 hover:to-slate-400 transition-all duration-300"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                      Clear & Retry
-                    </button>
-                  </div>
-                )}
               </div>
 
               {/* Navigation Controls */}
@@ -821,7 +808,7 @@ const QuizInterface = () => {
                   )}
                 </div>
 
-                <div className="flex flex-col max-sm:flex-row gap-3">
+                <div className="flex max-sm:flex-row gap-3">
                   <button
                     onClick={() => handleAddMoreQuestions(5)}
                     className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"

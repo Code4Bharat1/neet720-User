@@ -79,8 +79,8 @@ const UpcomingActivitiesCard = () => {
   }
 
   return (
-    <div className="pt-4 flex flex-col items-center justify-center sm:w-full sm:h-auto md:flex-row md:items-start md:justify-center">
-      <div className="bg-white rounded-2xl p-4 shadow-lg sm:w-full sm:mb-4 md:w-[450px] h-96 overflow-hidden">
+    <div className="pt-4 flex flex-col items-center justify-center max-sm:w-full max-sm:h-auto md:flex-row md:items-start md:justify-center">
+      <div className="bg-white rounded-2xl p-4 shadow-lg max-sm:w-full max-sm:mb-4 md:w-[450px] h-96 max-sm:h-auto overflow-hidden">
         {/* Header Section */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-center md:text-left">
