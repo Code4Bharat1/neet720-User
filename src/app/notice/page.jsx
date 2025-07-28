@@ -30,6 +30,7 @@ const NoticesPage = () => {
       );
 
       setNotices(res.data.notices);
+      console.log(res.data.notices,res.data.adminId, studentId)
       setAdminId(res.data.adminId);
     } catch (err) {
       console.error(err);

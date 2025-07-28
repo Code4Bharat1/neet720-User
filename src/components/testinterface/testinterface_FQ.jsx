@@ -86,6 +86,7 @@ const QuizInterface = () => {
   const [botThinking, setBotThinking] = useState(false)
   const [addingQuestions, setAddingQuestions] = useState(false)
   const [noMoreQuestions, setNoMoreQuestions] = useState(false)
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
   const serialLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
   const timerRef = useRef(null)
@@ -173,6 +174,23 @@ const QuizInterface = () => {
     }
   }
 
+
+  useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowLeft" && currentQuestionIndex > 0) {
+      handleNavigation("prev");
+    } else if (
+      event.key === "ArrowRight" &&
+      currentQuestionIndex < questions.length - 1
+    ) {
+      handleNavigation("next");
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentQuestionIndex, questions.length]);
+
   const handleAddMoreQuestions = async (count = 5) => {
     setAddingQuestions(true)
     setError("")
@@ -237,6 +255,30 @@ const QuizInterface = () => {
       clearInterval(thinkingRef.current)
     }
   }
+
+  useEffect(() => {
+  const handleArrowKeyNavigation = (e) => {
+    if (showResult) return;
+
+    const optionCount = currentQuestion.options.length;
+
+    if (e.key === "ArrowDown") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === optionCount - 1 ? 0 : prev + 1
+      );
+    } else if (e.key === "ArrowUp") {
+      setFocusedOptionIndex((prev) =>
+        prev === null || prev === 0 ? optionCount - 1 : prev - 1
+      );
+    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+      const selectedOption = currentQuestion.options[focusedOptionIndex];
+      handleOptionSelect(currentQuestion.id, selectedOption.option_text);
+    }
+  };
+
+  window.addEventListener("keydown", handleArrowKeyNavigation);
+  return () => window.removeEventListener("keydown", handleArrowKeyNavigation);
+}, [focusedOptionIndex, currentQuestion, showResult]);
 
   const startTimer = () => {
     setTimeLeft(difficultySettings[difficulty].timeLimit)
@@ -720,7 +762,7 @@ const QuizInterface = () => {
                       </span>
                     )}
                   </div>
-                  <h2 className="text-lg md:text-xl font-bold text-slate-800 leading-relaxed">
+                  <h2 className="text-sm md:text-xl font-bold text-slate-800 leading-relaxed">
                     {currentQuestion.question_text}
                   </h2>
                 </div>
@@ -735,7 +777,9 @@ const QuizInterface = () => {
   return (
     <div
       key={opt.id}
-      className={getOptionClasses(opt.option_text)}
+      className={`${getOptionClasses(opt.option_text)} ${
+  focusedOptionIndex === idx ? "ring-2 ring-indigo-400" : ""
+}`}
       onClick={() =>
         !showResult && handleOptionSelect(currentQuestion.id, opt.option_text)
       }
@@ -792,9 +836,6 @@ const QuizInterface = () => {
 
 
                 </div>
-
-                {/* Clear Response Button */}
-      
               </div>
 
               {/* Navigation Controls */}
@@ -811,7 +852,7 @@ const QuizInterface = () => {
                   )}
                 </div>
 
-                <div className="flex flex-col max-sm:flex-row gap-3">
+                <div className="flex max-sm:flex-row gap-3">
                   <button
                     onClick={() => handleAddMoreQuestions(5)}
                     className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"

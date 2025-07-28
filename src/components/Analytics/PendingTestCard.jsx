@@ -142,7 +142,7 @@ const PendingTestCard = ({ selectedFilter }) => {
   }
 
   return (
-    <Card className="w-full max-w-md h-96 overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+    <Card className="w-full max-w-md h-96 max-sm:h-auto overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
       <CardHeader className="text-center pb-2">
         <CardTitle className="text-lg font-semibold text-[#333B69] flex items-center gap-2 justify-center">
           <FaClipboardList className="text-blue-500" />

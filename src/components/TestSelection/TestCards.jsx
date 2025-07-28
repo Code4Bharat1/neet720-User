@@ -255,7 +255,7 @@ const TestCards = () => {
       </div>
 
       {/* Card Grid */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 max-sm:grid-cols-1 gap-4">
         {cards.map((card, index) => (
           <div
             key={index}
