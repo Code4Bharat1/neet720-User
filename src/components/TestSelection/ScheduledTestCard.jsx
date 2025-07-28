@@ -1,15 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FaClipboardList } from "react-icons/fa";
+import { FaClipboardList, FaUsers } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Clock, X, CheckCircle } from "lucide-react"; // npm install lucide-react
+import { AlertTriangle, Clock, X, CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
 
 const ScheduledTestCard = () => {
-  const [tests, setTests] = useState([]);
+  const [batchData, setBatchData] = useState([]);
   const [showInstructions, setShowInstructions] = useState(false);
   const [timer, setTimer] = useState(60);
   const [selectedTestId, setSelectedTestId] = useState(null);
+  const [expandedBatches, setExpandedBatches] = useState({});
   const router = useRouter();
 
   const bgColors = [
@@ -21,55 +22,96 @@ const ScheduledTestCard = () => {
     "bg-orange-400",
   ];
 
+  const batchColors = [
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-purple-500",
+    "bg-orange-500",
+    "bg-red-500",
+    "bg-indigo-500",
+  ];
+
   useEffect(() => {
-    const fetchTests = async () => {
+    const fetchTestsByBatch = async () => {
       try {
         const token = localStorage.getItem("authToken");
         if (!token) return;
 
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        const studentId = decodedToken.id;
+        const email = decodedToken.email;
 
         const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/test-data`,
-          { studentId }
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/getStudentTestDetails`,
+          { email },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
         );
 
-        const rawTests = res.data.tests;
+        const { batches, tests } = res.data;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const upcomingTests = rawTests
-          .map((test, index) => {
-            const startDate = new Date(test.exam_start_date);
-            startDate.setHours(0, 0, 0, 0);
+        // Group tests by batch
+        const batchTestData = batches.map((batch, batchIndex) => {
+          const batchTests = tests
+            .filter(test => test.batchId === batch.batchId)
+            .map((test, testIndex) => {
+              const startDate = new Date(test.exam_start_date);
+              startDate.setHours(0, 0, 0, 0);
 
-            const endDate = new Date(test.exam_end_date);
-            endDate.setHours(23, 59, 59, 999);
+              const endDate = new Date(test.exam_end_date);
+              endDate.setHours(23, 59, 59, 999);
 
-            if (today > endDate) return null;
+              if (today > endDate) return null;
 
-            return {
-              id: test.id,
-              name: test.testname,
-              questions: `${test.no_of_questions} QUESTIONS`,
-              date: startDate.toLocaleDateString("en-GB"),
-              rawStartDate: startDate,
-              rawEndDate: endDate,
-              isActive: today >= startDate && today <= endDate,
-              bgColor: bgColors[index % bgColors.length],
-            };
-          })
-          .filter(Boolean)
-          .sort((a, b) => a.rawStartDate - b.rawStartDate);
+              return {
+                id: test.id,
+                name: test.testname,
+                questions: `${test.no_of_questions} QUESTIONS`,
+                date: startDate.toLocaleDateString("en-GB"),
+                rawStartDate: startDate,
+                rawEndDate: endDate,
+                isActive: today >= startDate && today <= endDate,
+                bgColor: bgColors[testIndex % bgColors.length],
+                subject: test.subject,
+                duration: test.duration,
+                marks: test.marks,
+                difficulty: test.difficulty,
+              };
+            })
+            .filter(Boolean)
+            .sort((a, b) => a.rawStartDate - b.rawStartDate);
 
-        setTests(upcomingTests);
+          return {
+            batchId: batch.batchId,
+            batchName: batch.batchName,
+            batchColor: batchColors[batchIndex % batchColors.length],
+            tests: batchTests,
+            testCount: batchTests.length,
+            studentCount: batch.no_of_students,
+          };
+        }).filter(batch => batch.tests.length > 0);
+
+        setBatchData(batchTestData);
+
+        // Auto-expand batches with active tests
+        const initialExpanded = {};
+        batchTestData.forEach(batch => {
+          const hasActiveTests = batch.tests.some(test => test.isActive);
+          initialExpanded[batch.batchId] = hasActiveTests;
+        });
+        setExpandedBatches(initialExpanded);
+
       } catch (error) {
         console.error("Failed to fetch test data:", error);
       }
     };
 
-    fetchTests();
+    fetchTestsByBatch();
   }, []);
 
   useEffect(() => {
@@ -81,9 +123,10 @@ const ScheduledTestCard = () => {
     }
   }, [showInstructions, timer, selectedTestId, router]);
 
-  const handleStartTest = (testId) => {
+  const handleStartTest = (testId, testName) => {
     setSelectedTestId(testId);
     localStorage.setItem("testid", testId);
+    localStorage.setItem("testName", testName);
     setShowInstructions(true);
     setTimer(60);
   };
@@ -96,6 +139,13 @@ const ScheduledTestCard = () => {
 
   const handleProceedNow = () => {
     router.push("/testinterfaceGT");
+  };
+
+  const toggleBatchExpansion = (batchId) => {
+    setExpandedBatches(prev => ({
+      ...prev,
+      [batchId]: !prev[batchId]
+    }));
   };
 
   return (
@@ -165,64 +215,166 @@ const ScheduledTestCard = () => {
       )}
 
       <div className="border-2 rounded-md bg-gray-50 text-gray-700 text-lg md:text-2xl font-bold text-center py-5">
-        Teacher Generated Test
+        Teacher Generated Test - Batch Wise
       </div>
 
-      {tests.map((test, index) => (
-        <div
-          key={index}
-          className="flex flex-col md:flex-row items-center md:justify-between bg-white shadow-md rounded-lg p-4"
-        >
-          {/* Desktop Icon */}
-          <div className={`hidden md:flex items-center justify-center w-12 h-12 rounded-md ${test.bgColor}`}>
-            <FaClipboardList className="text-white text-lg" />
-          </div>
-
-          <div className="flex flex-col md:flex-row flex-1 md:items-center justify-between w-full md:pl-4 mt-2 md:mt-0">
-            {/* Mobile Header */}
-            <div className="flex flex-col flex-1 text-left">
-              <div className="flex items-center justify-between space-x-2">
-                <div
-                  className={`flex items-center justify-center h-10 w-10 md:hidden rounded-md ${test.bgColor}`}
-                >
-                  <FaClipboardList className="text-white" />
+      {batchData.map((batch) => (
+        <div key={batch.batchId} className="bg-white shadow-lg rounded-lg overflow-hidden">
+          {/* Batch Header */}
+          <div 
+            className={`${batch.batchColor} text-white p-4 cursor-pointer hover:opacity-90 transition-opacity`}
+            onClick={() => toggleBatchExpansion(batch.batchId)}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <FaUsers className="text-lg" />
+                <div>
+                  <h3 className="text-lg font-semibold">{batch.batchName}</h3>
+                  <p className="text-sm opacity-90">
+                    {batch.testCount} test{batch.testCount !== 1 ? 's' : ''} available • {batch.studentCount} students
+                  </p>
                 </div>
-                <span className="text-[11px] md:text-lg font-semibold text-gray-800">
-                  {test.name}
-                </span>
-                <div className="md:hidden h-6 border-l border-gray-300 mx-4" />
-                <button
-                  onClick={() => test.isActive && handleStartTest(test.id)}
-                  className={`text-[9px] px-1 py-2 rounded-md text-center md:hidden mt-1 w-[120px] ${
-                    test.isActive
-                      ? "bg-red-500 text-white"
-                      : "bg-[#718EBF] text-white"
-                  }`}
-                >
-                  {test.isActive ? "Start Test" : `Scheduled on ${test.date}`}
-                </button>
+              </div>
+              <div className="flex items-center space-x-2">
+                {batch.tests.some(test => test.isActive) && (
+                  <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold animate-pulse">
+                    ACTIVE
+                  </div>
+                )}
+                {expandedBatches[batch.batchId] ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
               </div>
             </div>
-
-            {/* Desktop Elements */}
-            <div className="hidden md:block h-6 border-l border-gray-300 mx-4" />
-            <div className="h-5 flex-1">
-              <span className="ml-16 md:ml-10 text-gray-600 text-[10px] md:text-[15px] font-semibold text-left">
-                {test.questions}
-              </span>
-            </div>
-            <div className="hidden md:block h-6 border-l border-gray-300 mx-4" />
-            <button
-              onClick={() => test.isActive && handleStartTest(test.id)}
-              className={`hidden md:block px-4 py-2 rounded-md text-center w-[250px] ${
-                test.isActive ? "bg-red-500 text-white" : "bg-[#718EBF] text-white"
-              }`}
-            >
-              {test.isActive ? "Start Test" : `Scheduled on ${test.date}`}
-            </button>
           </div>
+
+          {/* Tests List */}
+          {expandedBatches[batch.batchId] && (
+            <div className="divide-y divide-gray-200">
+              {batch.tests.map((test, testIndex) => (
+                <div
+                  key={testIndex}
+                  className="bg-gray-50 p-4 hover:bg-gray-100 transition-colors"
+                >
+                  {/* Desktop Icon */}
+                  <div className={`hidden md:flex items-center justify-center w-12 h-12 rounded-md ${test.bgColor}`}>
+                    <FaClipboardList className="text-white text-lg" />
+                  </div>
+
+                  <div className="flex flex-col w-full md:pl-4">
+                    {/* Mobile Layout */}
+                    <div className="md:hidden">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className={`flex items-center justify-center h-10 w-10 rounded-md ${test.bgColor}`}>
+                          <FaClipboardList className="text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-gray-800">{test.name}</h4>
+                          <p className="text-xs text-gray-600">{test.questions}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-3 space-y-1">
+                        <div className="text-xs text-blue-600 font-medium">{test.subject}</div>
+                        <div className="flex items-center space-x-3 text-xs text-gray-600">
+                          <span>⏱️ {test.duration} min</span>
+                          <span>📊 {test.marks} marks</span>
+                          <span className={`px-2 py-1 rounded-full text-white text-xs ${
+                            test.difficulty === 'Easy' ? 'bg-green-500' :
+                            test.difficulty === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}>
+                            {test.difficulty}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        {test.isActive && (
+                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
+                            Available Now
+                          </span>
+                        )}
+                        <button
+                          onClick={() => test.isActive && handleStartTest(test.id, test.name)}
+                          className={`px-3 py-2 rounded-md text-xs font-medium ${
+                            test.isActive
+                              ? "bg-red-500 text-white hover:bg-red-600"
+                              : "bg-[#718EBF] text-white"
+                          }`}
+                        >
+                          {test.isActive ? "Start Test" : `Scheduled ${test.date}`}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Desktop Layout */}
+                    <div className="hidden md:flex md:items-center md:justify-between w-full">
+                      <div className="flex-1">
+                        <h4 className="text-lg font-semibold text-gray-800">{test.name}</h4>
+                      </div>
+
+                      <div className="h-6 border-l border-gray-300 mx-4" />
+                      <div className="flex-1">
+                        <div className="text-gray-600 text-sm space-y-1">
+                          <div className="font-semibold">{test.questions}</div>
+                          <div className="text-blue-600">{test.subject}</div>
+                          <div className="flex space-x-3 text-xs">
+                            <span>⏱️ {test.duration} min</span>
+                            <span>📊 {test.marks} marks</span>
+                            <span className={`px-2 py-1 rounded-full text-white text-xs ${
+                              test.difficulty === 'Easy' ? 'bg-green-500' :
+                              test.difficulty === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}>
+                              {test.difficulty}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="h-6 border-l border-gray-300 mx-4" />
+                      <div className="flex items-center space-x-3">
+                        {test.isActive && (
+                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
+                            Available Now
+                          </span>
+                        )}
+                        <button
+                          onClick={() => test.isActive && handleStartTest(test.id, test.name)}
+                          className={`px-4 py-2 rounded-md text-center w-[200px] transition-colors ${
+                            test.isActive 
+                              ? "bg-red-500 text-white hover:bg-red-600" 
+                              : "bg-[#718EBF] text-white"
+                          }`}
+                        >
+                          {test.isActive ? "Start Test" : `Scheduled ${test.date}`}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {expandedBatches[batch.batchId] && batch.tests.length === 0 && (
+            <div className="p-8 text-center text-gray-500">
+              <FaClipboardList className="mx-auto text-4xl mb-4 opacity-50" />
+              <p>No tests available for this batch</p>
+            </div>
+          )}
         </div>
       ))}
+
+      {/* Empty State for No Batches */}
+      {batchData.length === 0 && (
+        <div className="bg-white shadow-md rounded-lg p-8 text-center">
+          <FaUsers className="mx-auto text-6xl text-gray-300 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">No Tests Available</h3>
+          <p className="text-gray-500">You don't have any scheduled tests at the moment.</p>
+        </div>
+      )}
     </div>
   );
 };
