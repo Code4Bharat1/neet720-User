@@ -4,13 +4,12 @@ import HomePage from '@/components/HomePage/HomePage'
 import BenefitsPage from '@/components/HomePage/benefit'
 import CoreFeatureComponent from '@/components/HomePage/CoreFeaturesCard'
 import Home from '@/components/HomePage/neet'
-import Navbar from '@/components/navbar'
 
 
 export default function page() {
   return (
     <div>
-     <Navbar/>
+     
     <HomePage/>
     <BenefitsPage/>
     <CoreFeatureComponent/>

@@ -1,6 +1,6 @@
 // import React from 'react';
 
-import CreateTestPage from "@/components/landing/createtest";
+import CreateTestPage from "@/components/LP_createtest/createtest";
 
 // const CreateTestPage = () => (
 //   <div>
