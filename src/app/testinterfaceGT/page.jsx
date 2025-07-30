@@ -1,3 +1,5 @@
+"use client";
+export const dynamic = 'force-dynamic';
 import React from "react";
 import TestInterface from "@/components/testinterface/testinterface_GT";
 import TestInterfaceMobile from '@/components/testInterfaceMobileView/testInterface_GT'
