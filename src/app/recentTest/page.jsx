@@ -1,4 +1,4 @@
-import FeatureTest from '@/components/RecentTest/FeatureTest'
+import FeatureTest from '@/components/recentTest/FeatureTest'
 import RecentTest from '@/components/recentTest/RecentTest'
 import React from 'react'
 
