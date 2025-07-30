@@ -1,23 +1,29 @@
-"use client";
-export const dynamic = 'force-dynamic';
+// app/testinterfaceGT/page.js
 import React from "react";
-import TestInterface from "@/components/testinterface/testinterface_GT";
-import TestInterfaceMobile from '@/components/testInterfaceMobileView/testInterface_GT'
+import dynamic from "next/dynamic";
 
-const Page = () => {
-  return (
-    <div>
-      {/* Desktop View (TestInterface will be visible) */}
-      <div className="hidden md:block">
-        <TestInterface />
-      </div>
+// Dynamically load these client‑only components in the browser only:
+const TestInterface = dynamic(
+  () => import("@/components/testinterface/testinterface_GT"),
+  { ssr: false }
+);
+const TestInterfaceMobile = dynamic(
+  () => import('@/components/testInterfaceMobileView/testInterface_GT'),
+  { ssr: false }
+);
 
-      {/* Mobile View (TestInterfaceMobile will be visible) */}
-      <div className="block md:hidden">
-        <TestInterfaceMobile />
-      </div>
+const Page = () => (
+  <div>
+    {/* Desktop View */}
+    <div className="hidden md:block">
+      <TestInterface />
     </div>
-  );
-};
+
+    {/* Mobile View */}
+    <div className="block md:hidden">
+      <TestInterfaceMobile />
+    </div>
+  </div>
+);
 
 export default Page;
