@@ -275,7 +275,7 @@ const TestInterface = () => {
           <div className="text-red-500 text-5xl mb-4">
             <FaTimesCircle className="mx-auto" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Error Loading Test</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2"> No Tests Found</h2>
           <p className="text-red-500">{error}</p>
           <button 
             onClick={() => window.location.reload()}
