@@ -2,9 +2,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { TfiTimer } from "react-icons/tfi";
-import { FaFlask, FaAtom, FaDna, FaCheck, FaFlag, FaChevronLeft, FaChevronRight, FaEraser, FaClock, FaBolt, FaFire } from "react-icons/fa";
+import {
+  FaFlask,
+  FaAtom,
+  FaDna,
+  FaCheck,
+  FaFlag,
+  FaChevronLeft,
+  FaChevronRight,
+  FaEraser,
+  FaClock,
+  FaBolt,
+  FaFire,
+} from "react-icons/fa";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
-import { MdOutlineRemoveDone, MdDone, MdFlag, MdVisibility } from "react-icons/md";
+import {
+  MdOutlineRemoveDone,
+  MdDone,
+  MdFlag,
+  MdVisibility,
+} from "react-icons/md";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { RiQuestionnaireFill } from "react-icons/ri";
 import toast from "react-hot-toast";
@@ -12,13 +29,36 @@ import Loading from "../Loading/Loading";
 import { useRouter } from "next/navigation";
 
 const subjectIcons = {
-  Physics: { icon: FaAtom, color: "text-blue-600", bgColor: "bg-blue-500", bgLight: "bg-blue-50", borderColor: "border-blue-300", gradientFrom: "from-blue-400", gradientTo: "to-blue-600" },
-  Chemistry: { icon: FaFlask, color: "text-green-600", bgColor: "bg-green-500", bgLight: "bg-green-50", borderColor: "border-green-300", gradientFrom: "from-green-400", gradientTo: "to-green-600" },
-  Biology: { icon: FaDna, color: "text-red-600", bgColor: "bg-red-500", bgLight: "bg-red-50", borderColor: "border-red-300", gradientFrom: "from-red-400", gradientTo: "to-red-600" },
+  Physics: {
+    icon: FaAtom,
+    color: "text-blue-600",
+    bgColor: "bg-blue-500",
+    bgLight: "bg-blue-50",
+    borderColor: "border-blue-300",
+    gradientFrom: "from-blue-400",
+    gradientTo: "to-blue-600",
+  },
+  Chemistry: {
+    icon: FaFlask,
+    color: "text-green-600",
+    bgColor: "bg-green-500",
+    bgLight: "bg-green-50",
+    borderColor: "border-green-300",
+    gradientFrom: "from-green-400",
+    gradientTo: "to-green-600",
+  },
+  Biology: {
+    icon: FaDna,
+    color: "text-red-600",
+    bgColor: "bg-red-500",
+    bgLight: "bg-red-50",
+    borderColor: "border-red-300",
+    gradientFrom: "from-red-400",
+    gradientTo: "to-red-600",
+  },
 };
 
 const TestInterface = () => {
-
   const router = useRouter();
 
   const [selectedSubjects, setSelectedSubjects] = useState([]);
@@ -36,8 +76,9 @@ const TestInterface = () => {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
-
   const numQuestions = questionsData[currentSubject]?.length || 0;
+  const currentQuestionData = questionsData[currentSubject]?.[currentQuestion];
+  const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -82,26 +123,40 @@ const TestInterface = () => {
   }, []);
 
   //useEffect to control the escape screen
-    useEffect (() => {
-      const handleFullScreenChange = () =>{
-        if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement && !document.mozFullscreenElement) {
-          //push the page 
-          router.push("/testselection")
-        }
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (
+        !document.fullscreenElement &&
+        !document.webkitFullscreenElement &&
+        !document.msFullscreenElement &&
+        !document.mozFullscreenElement
+      ) {
+        //push the page
+        router.push("/testselection");
       }
-  
-      document.addEventListener("fullscreenchange", handleFullScreenChange);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
     document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
     document.addEventListener("mozfullscreenchange", handleFullScreenChange);
     document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-  
+
     return () => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullScreenChange
+      );
     };
-    },[])
+  }, []);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -122,68 +177,70 @@ const TestInterface = () => {
     const fetchChapterNames = async () => {
       const testid = localStorage.getItem("testid");
       if (!testid) return;
-  
+
       try {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/test-data-by-id`,
           { testid }
         );
-  
+
         const testDetails = response.data?.test;
         if (testDetails?.duration) {
           setTimer(testDetails.duration * 60);
         }
-  
+
         if (testDetails?.topic_name) {
-          localStorage.setItem("selectedChapters", JSON.stringify(testDetails.topic_name));
+          localStorage.setItem(
+            "selectedChapters",
+            JSON.stringify(testDetails.topic_name)
+          );
         }
       } catch (error) {
         console.error("Error fetching test details:", error);
       }
     };
-  
+
     fetchChapterNames();
   }, []);
 
   const formattedTime = {
-    hours: String(Math.floor(timer / 3600)).padStart(2, '0'),
-    minutes: String(Math.floor((timer % 3600) / 60)).padStart(2, '0'),
-    seconds: String(timer % 60).padStart(2, '0'),
+    hours: String(Math.floor(timer / 3600)).padStart(2, "0"),
+    minutes: String(Math.floor((timer % 3600) / 60)).padStart(2, "0"),
+    seconds: String(timer % 60).padStart(2, "0"),
   };
 
- useEffect(() => {
-  const handleKeyDown = (e) => {
-    const totalOptions = currentQuestionData?.options.length;
-    if (!totalOptions) return;
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const totalOptions = currentQuestionData?.options.length;
+      if (!totalOptions) return;
 
-    if (e.key === 'ArrowDown') {
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === totalOptions - 1 ? 0 : prev + 1
-      );
-    } else if (e.key === 'ArrowUp') {
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === 0 ? totalOptions - 1 : prev - 1
-      );
-    } else if (e.key === 'Enter' && focusedOptionIndex !== null) {
-      handleOptionClick(focusedOptionIndex);
-    }
-  };
+      if (e.key === "ArrowDown") {
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === totalOptions - 1 ? 0 : prev + 1
+        );
+      } else if (e.key === "ArrowUp") {
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === 0 ? totalOptions - 1 : prev - 1
+        );
+      } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+        handleOptionClick(focusedOptionIndex);
+      }
+    };
 
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [focusedOptionIndex, currentQuestionData]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [focusedOptionIndex, currentQuestionData]);
 
-useEffect(() => {
-  setFocusedOptionIndex(null);
-}, [currentQuestion]);
-
+  useEffect(() => {
+    setFocusedOptionIndex(null);
+  }, [currentQuestion]);
 
   const handleOptionClick = (index) => {
     const questionData = questionsData[currentSubject][currentQuestion];
     const selectedAnswer = questionData.options[index];
     const correctAnswer = questionData.correctAnswer;
     const isCorrect = selectedAnswer === correctAnswer;
-  
+
     const answerData = {
       subject: currentSubject,
       question: questionData.question,
@@ -192,7 +249,7 @@ useEffect(() => {
       isCorrect,
       correctAnswer,
     };
-  
+
     let savedAnswers = [];
     try {
       const stored = localStorage.getItem("testAnswers");
@@ -201,58 +258,59 @@ useEffect(() => {
     } catch {
       savedAnswers = [];
     }
-  
+
     const currentTime = new Date();
     const timeTakenInSeconds = (currentTime - startTime) / 1000;
     const minutes = Math.floor(timeTakenInSeconds / 60);
     const seconds = Math.floor(timeTakenInSeconds % 60);
-  
+
     const answerWithTime = {
       ...answerData,
       timeTaken: { minutes, seconds },
       timestamp: currentTime.toISOString(),
     };
-  
+
     savedAnswers.push(answerWithTime);
     localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
-  
+
     setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index });
     setVisitedQuestions({
       ...visitedQuestions,
       [`${currentSubject}-${currentQuestion}`]: true,
     });
-  
+
     const previousTime = JSON.parse(localStorage.getItem("questionTime")) || {};
     previousTime[`${currentSubject}-${currentQuestion}`] = timeTakenInSeconds;
     localStorage.setItem("questionTime", JSON.stringify(previousTime));
-  
-    const savedTimeForCurrentQuestion = previousTime[`${currentSubject}-${currentQuestion}`];
+
+    const savedTimeForCurrentQuestion =
+      previousTime[`${currentSubject}-${currentQuestion}`];
     const newStartTime = savedTimeForCurrentQuestion
       ? new Date(new Date() - savedTimeForCurrentQuestion * 1000)
       : currentTime;
-  
+
     setStartTime(newStartTime);
   };
 
   useEffect(() => {
-  const handleKeyDown = (event) => {
-    if (event.key === "ArrowLeft" && currentQuestion > 0) {
-      handleNavigation("prev");
-    } else if (event.key === "ArrowRight") {
-      handleNavigation("next");
-    }
-  };
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft" && currentQuestion > 0) {
+        handleNavigation("prev");
+      } else if (event.key === "ArrowRight") {
+        handleNavigation("next");
+      }
+    };
 
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [currentQuestion]);
-
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentQuestion]);
 
   const handleNavigation = (direction) => {
     const totalQuestions = numQuestions;
     if (direction === "next" && currentQuestion >= totalQuestions - 1) {
       const currentSubjectIndex = selectedSubjects.indexOf(currentSubject);
-      const nextSubjectIndex = (currentSubjectIndex + 1) % selectedSubjects.length;
+      const nextSubjectIndex =
+        (currentSubjectIndex + 1) % selectedSubjects.length;
       setCurrentSubject(selectedSubjects[nextSubjectIndex]);
       setCurrentQuestion(0);
     } else if (direction === "prev" && currentQuestion > 0) {
@@ -265,7 +323,8 @@ useEffect(() => {
   const handleReviewLater = () => {
     setMarkedForReview({
       ...markedForReview,
-      [`${currentSubject}-${currentQuestion}`]: !markedForReview[`${currentSubject}-${currentQuestion}`],
+      [`${currentSubject}-${currentQuestion}`]:
+        !markedForReview[`${currentSubject}-${currentQuestion}`],
     });
   };
 
@@ -281,35 +340,39 @@ useEffect(() => {
 
     try {
       const testAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
-      const selectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || [];
+      const selectedChapters =
+        JSON.parse(localStorage.getItem("selectedChapters")) || [];
       const testid = localStorage.getItem("testid");
       const testname = localStorage.getItem("testName");
-  
+
       const token = localStorage.getItem("authToken");
       if (!token) throw new Error("No auth token found");
-  
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const decodedToken = JSON.parse(atob(base64));
       const studentId = decodedToken?.id || decodedToken?.studentId;
       if (!studentId) throw new Error("Student ID not found in token");
-  
-      const totalquestions = parseInt(localStorage.getItem("totalQuestions")) || testAnswers.length;
-  
-      const correctAnswers = testAnswers.filter(a => a.isCorrect).length;
-      const incorrectAnswers = testAnswers.filter(a => !a.isCorrect && a.selectedAnswer !== null).length;
+
+      const totalquestions =
+        parseInt(localStorage.getItem("totalQuestions")) || testAnswers.length;
+
+      const correctAnswers = testAnswers.filter((a) => a.isCorrect).length;
+      const incorrectAnswers = testAnswers.filter(
+        (a) => !a.isCorrect && a.selectedAnswer !== null
+      ).length;
       const attempted = correctAnswers + incorrectAnswers;
       const unattempted = totalquestions - attempted;
-  
-      const score = (correctAnswers * 4) - incorrectAnswers;
+
+      const score = correctAnswers * 4 - incorrectAnswers;
       const overallmarks = totalquestions * 4;
-  
+
       const simplifiedAnswers = testAnswers.map((ans) => ({
         subject: ans.subject,
         question: ans.question,
         correctAnswer: ans.correctAnswer,
       }));
-  
+
       const subjectWiseMarks = {};
       testAnswers.forEach((ans) => {
         const subject = ans.subject;
@@ -320,7 +383,7 @@ useEffect(() => {
           subjectWiseMarks[subject] -= 1;
         }
       });
-  
+
       const payload = {
         studentId,
         testid,
@@ -335,18 +398,19 @@ useEffect(() => {
         overallmarks,
         subjectWiseMarks,
       };
-  
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/save-test`,
         payload
       );
-  
+
       console.log("Test result submitted:", response.data);
       toast.success("Test submitted successfully! 🎉", { duration: 5000 });
-  
     } catch (error) {
       console.error("Error submitting test result:", error);
-      toast.error("Failed to submit test. Please try again. ❌", { duration: 5000 });
+      toast.error("Failed to submit test. Please try again. ❌", {
+        duration: 5000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -354,15 +418,15 @@ useEffect(() => {
 
   const getQuestionStats = () => {
     const total = numQuestions;
-    const answered = Object.keys(answers)
-      .filter(key => key.startsWith(`${currentSubject}-`))
-      .length;
-    const marked = Object.keys(markedForReview)
-      .filter(key => key.startsWith(`${currentSubject}-`) && markedForReview[key])
-      .length;
-    const visited = Object.keys(visitedQuestions)
-      .filter(key => key.startsWith(`${currentSubject}-`))
-      .length;
+    const answered = Object.keys(answers).filter((key) =>
+      key.startsWith(`${currentSubject}-`)
+    ).length;
+    const marked = Object.keys(markedForReview).filter(
+      (key) => key.startsWith(`${currentSubject}-`) && markedForReview[key]
+    ).length;
+    const visited = Object.keys(visitedQuestions).filter((key) =>
+      key.startsWith(`${currentSubject}-`)
+    ).length;
     const notVisited = total - visited;
     return { total, answered, marked, visited, notVisited };
   };
@@ -390,9 +454,6 @@ useEffect(() => {
       </div>
     );
   }
-
-  const currentQuestionData = questionsData[currentSubject]?.[currentQuestion];
-  const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
   const stats = getQuestionStats();
   const isLowTime = timer < 300; // Less than 5 minutes
 
@@ -405,19 +466,39 @@ useEffect(() => {
             {/* Animated Timer Section */}
             <div className="relative">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${isLowTime ? 'bg-red-100 animate-pulse' : 'bg-blue-100'} transition-all`}>
-                  <FaClock className={`text-xl ${isLowTime ? 'text-red-600' : 'text-blue-600'}`} />
+                <div
+                  className={`p-2 rounded-full ${
+                    isLowTime ? "bg-red-100 animate-pulse" : "bg-blue-100"
+                  } transition-all`}
+                >
+                  <FaClock
+                    className={`text-xl ${
+                      isLowTime ? "text-red-600" : "text-blue-600"
+                    }`}
+                  />
                 </div>
                 <div className="flex gap-1">
-                  <div className={`${isLowTime ? 'bg-red-600 animate-pulse' : 'bg-gray-900'} text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}>
+                  <div
+                    className={`${
+                      isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}
+                  >
                     {formattedTime.hours}
                   </div>
                   <span className="text-gray-600 self-center font-bold">:</span>
-                  <div className={`${isLowTime ? 'bg-red-600 animate-pulse' : 'bg-gray-900'} text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}>
+                  <div
+                    className={`${
+                      isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}
+                  >
                     {formattedTime.minutes}
                   </div>
                   <span className="text-gray-600 self-center font-bold">:</span>
-                  <div className={`${isLowTime ? 'bg-red-600 animate-pulse' : 'bg-gray-900'} text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}>
+                  <div
+                    className={`${
+                      isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}
+                  >
                     {formattedTime.seconds}
                   </div>
                 </div>
@@ -436,7 +517,7 @@ useEffect(() => {
                 const SubjectIcon = subjectIcons[subject]?.icon || FaAtom;
                 const isActive = currentSubject === subject;
                 const config = subjectIcons[subject] || subjectIcons.Physics;
-                
+
                 return (
                   <button
                     key={subject}
@@ -445,14 +526,22 @@ useEffect(() => {
                       setCurrentQuestion(0);
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all transform hover:scale-105 ${
-                      isActive 
-                        ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-lg` 
-                        : 'bg-white/80 text-gray-700 hover:bg-white/90 shadow border border-gray-200'
+                      isActive
+                        ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-lg`
+                        : "bg-white/80 text-gray-700 hover:bg-white/90 shadow border border-gray-200"
                     }`}
                   >
-                    <SubjectIcon className={`text-lg ${isActive ? 'text-white' : config.color}`} />
+                    <SubjectIcon
+                      className={`text-lg ${
+                        isActive ? "text-white" : config.color
+                      }`}
+                    />
                     <span className="font-medium">{subject}</span>
-                    <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : config.bgColor}`} />
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        isActive ? "bg-white" : config.bgColor
+                      }`}
+                    />
                   </button>
                 );
               })}
@@ -483,22 +572,32 @@ useEffect(() => {
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 relative overflow-hidden">
             {/* Animated Background Effect */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100/20 to-purple-100/20 rounded-full filter blur-3xl -translate-y-20 translate-x-20"></div>
-            
+
             {/* Question Header with Animation */}
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${subjectConfig.gradientFrom} ${subjectConfig.gradientTo} flex items-center justify-center text-white shadow-lg`}>
+                    <div
+                      className={`w-10 h-10 rounded-lg bg-gradient-to-br ${subjectConfig.gradientFrom} ${subjectConfig.gradientTo} flex items-center justify-center text-white shadow-lg`}
+                    >
                       <RiQuestionnaireFill className="text-xl" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className={`font-semibold ${subjectConfig.color}`}>{currentSubject}</span>
+                        <span
+                          className={`font-semibold ${subjectConfig.color}`}
+                        >
+                          {currentSubject}
+                        </span>
                         <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                        <span className="text-gray-500">Question {currentQuestion + 1} of {numQuestions}</span>
+                        <span className="text-gray-500">
+                          Question {currentQuestion + 1} of {numQuestions}
+                        </span>
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">Total Score: {stats.total * 4} marks</div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        Total Score: {stats.total * 4} marks
+                      </div>
                     </div>
                   </div>
                   <h2 className="text-2xl font-medium text-gray-900 leading-relaxed">
@@ -510,12 +609,18 @@ useEffect(() => {
                     onClick={handleReviewLater}
                     className={`p-3 rounded-xl transition-all transform hover:scale-110 ${
                       markedForReview[`${currentSubject}-${currentQuestion}`]
-                        ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                     title="Mark for review"
                   >
-                    <MdFlag className={markedForReview[`${currentSubject}-${currentQuestion}`] ? 'animate-pulse' : ''} />
+                    <MdFlag
+                      className={
+                        markedForReview[`${currentSubject}-${currentQuestion}`]
+                          ? "animate-pulse"
+                          : ""
+                      }
+                    />
                   </button>
                 </div>
               </div>
@@ -523,9 +628,10 @@ useEffect(() => {
               {/* Enhanced Options with Hover Effects */}
               <div className="space-y-4 mb-8">
                 {currentQuestionData?.options.map((option, index) => {
-                  const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index;
+                  const isSelected =
+                    answers[`${currentSubject}-${currentQuestion}`] === index;
                   const isHovered = hoveredOption === index;
-                  
+
                   return (
                     <button
                       key={index}
@@ -533,16 +639,23 @@ useEffect(() => {
                       onMouseEnter={() => setHoveredOption(index)}
                       onMouseLeave={() => setHoveredOption(null)}
                       className={`w-full text-left p-5 rounded-xl border-2 transition-all transform hover:scale-[1.01] relative overflow-hidden ${
-  isSelected 
-    ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900' 
-    : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50'
-} ${focusedOptionIndex === index ? 'ring-2 ring-blue-400' : ''}`}
-
+                        isSelected
+                          ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900"
+                          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50"
+                      } ${
+                        focusedOptionIndex === index
+                          ? "ring-2 ring-blue-400"
+                          : ""
+                      }`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                          isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
-                        }`}>
+                        <div
+                          className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                            isSelected
+                              ? "border-blue-500 bg-blue-500"
+                              : "border-gray-300"
+                          }`}
+                        >
                           {isSelected && (
                             <IoMdCheckmark className="text-white text-sm" />
                           )}
@@ -551,7 +664,9 @@ useEffect(() => {
                           )}
                         </div>
                         <span className="text-base leading-relaxed">
-                          <span className="font-medium text-gray-600 mr-2">({String.fromCharCode(65 + index)})</span>
+                          <span className="font-medium text-gray-600 mr-2">
+                            ({String.fromCharCode(65 + index)})
+                          </span>
                           {option}
                         </span>
                       </div>
@@ -574,7 +689,7 @@ useEffect(() => {
                 <FaEraser className="text-sm" />
                 Clear Response
               </button>
-              
+
               <div className="flex gap-3">
                 <button
                   onClick={() => handleNavigation("prev")}
@@ -612,7 +727,9 @@ useEffect(() => {
                     <MdDone className="text-green-300" />
                     <span className="text-sm">Answered</span>
                   </div>
-                  <div className="text-2xl font-bold">{stats.answered}/{stats.total}</div>
+                  <div className="text-2xl font-bold">
+                    {stats.answered}/{stats.total}
+                  </div>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
@@ -623,7 +740,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="mt-4 bg-white/20 rounded-full h-2">
-                <div 
+                <div
                   className="h-full bg-yellow-300 rounded-full transition-all duration-500"
                   style={{ width: `${(stats.answered / stats.total) * 100}%` }}
                 ></div>
@@ -645,24 +762,31 @@ useEffect(() => {
             <div className="grid grid-cols-5 gap-2">
               {questionsData[currentSubject]?.map((_, index) => {
                 const isCurrentQuestion = currentQuestion === index;
-                const isAnswered = answers[`${currentSubject}-${index}`] !== undefined;
+                const isAnswered =
+                  answers[`${currentSubject}-${index}`] !== undefined;
                 const isMarked = markedForReview[`${currentSubject}-${index}`];
-                const isVisited = visitedQuestions[`${currentSubject}-${index}`];
-                
-                let buttonClass = 'w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 relative ';
-                
+                const isVisited =
+                  visitedQuestions[`${currentSubject}-${index}`];
+
+                let buttonClass =
+                  "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 relative ";
+
                 if (isCurrentQuestion) {
-                  buttonClass += 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg scale-110';
+                  buttonClass +=
+                    "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg scale-110";
                 } else if (isMarked) {
-                  buttonClass += 'bg-gradient-to-br from-red-500 to-pink-500 text-white';
+                  buttonClass +=
+                    "bg-gradient-to-br from-red-500 to-pink-500 text-white";
                 } else if (isAnswered) {
-                  buttonClass += 'bg-gradient-to-br from-green-500 to-emerald-500 text-white';
+                  buttonClass +=
+                    "bg-gradient-to-br from-green-500 to-emerald-500 text-white";
                 } else if (isVisited) {
-                  buttonClass += 'bg-gradient-to-br from-orange-400 to-pink-400 text-white';
+                  buttonClass +=
+                    "bg-gradient-to-br from-orange-400 to-pink-400 text-white";
                 } else {
-                  buttonClass += 'bg-gray-100 text-gray-600 hover:bg-gray-200';
+                  buttonClass += "bg-gray-100 text-gray-600 hover:bg-gray-200";
                 }
-                
+
                 return (
                   <button
                     key={index}
@@ -677,7 +801,7 @@ useEffect(() => {
                 );
               })}
             </div>
-            
+
             {/* Legend */}
             <div className="grid grid-cols-2 gap-3 mt-6 text-xs">
               <div className="flex items-center gap-2">
@@ -737,15 +861,24 @@ useEffect(() => {
       {/* Custom CSS Animations */}
       <style jsx>{`
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
         }
-        
+
         @keyframes shimmer {
-          0% { transform: translateX(-100%) skewX(-12deg); }
-          100% { transform: translateX(100%) skewX(-12deg); }
+          0% {
+            transform: translateX(-100%) skewX(-12deg);
+          }
+          100% {
+            transform: translateX(100%) skewX(-12deg);
+          }
         }
-        
+
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
