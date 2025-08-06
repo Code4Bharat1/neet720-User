@@ -1,22 +1,29 @@
 "use client";
-import React from "react";
-import TestInterface from "@/components/testinterface/testinterface_GT";
-import TestInterfaceMobile from '@/components/testInterfaceMobileView/testInterface_GT'
 
-const Page = () => {
+import React from "react";
+import dynamic from "next/dynamic";
+
+// Dynamically load these heavy, browser‑only components in the client only
+const TestInterface = dynamic(
+  () => import("@/components/testinterface/testinterface_GT"),
+  { ssr: false }
+);
+const TestInterfaceMobile = dynamic(
+  () => import("@/components/testInterfaceMobileView/testInterface_GT"),
+  { ssr: false }
+);
+
+export default function Page() {
   return (
     <div>
-      {/* Desktop View (TestInterface will be visible) */}
+      {/* Desktop View */}
       <div className="hidden md:block">
         <TestInterface />
       </div>
-
-      {/* Mobile View (TestInterfaceMobile will be visible) */}
+      {/* Mobile View */}
       <div className="block md:hidden">
         <TestInterfaceMobile />
       </div>
     </div>
   );
-};
-
-export default Page;
+}

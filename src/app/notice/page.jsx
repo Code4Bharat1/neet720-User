@@ -120,9 +120,9 @@ const NoticesPage = () => {
               {error && (
                 <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-6 shadow-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="text-red-500 text-2xl">⚠️</div>
+                    <div className="text-red-500 text-2xl"></div>
                     <div>
-                      <h3 className="text-red-800 font-semibold">Error Loading Notices</h3>
+                      <h3 className="text-red-800 font-semibold">No Notices Yet</h3>
                       <p className="text-red-600">{error}</p>
                     </div>
                   </div>

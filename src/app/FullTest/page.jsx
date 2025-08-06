@@ -1,5 +1,5 @@
-import FeatureTest from '@/components/fulltest/FeatureTest'
-import FullTest from '@/components/fulltest/FullTest'
+import FeatureTest from '@/components/FullTest/FeatureTest'
+import FullTest from '@/components/FullTest/FullTest'
 import React from 'react'
 
 const Page = () => {

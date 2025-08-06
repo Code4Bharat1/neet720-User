@@ -30,19 +30,31 @@ export default function HomePage() {
         </div>
 
         <div className="md:w-1/2 mt-8 md:mt-[-60px] md:mr-[-20px] flex justify-center md:justify-end z-10">
-          <div
-            className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] overflow-hidden"
-            style={{ clipPath: 'ellipse(70% 100% at 40% 50%)' }}
-          >
-            <Image
-              src="/Ellipse 16.png"
-              alt="Teacher and Student"
-              width={400}
-              height={400}
-              className="object-cover w-full h-full"
-              priority
-            />
-          </div>
+<div
+  className={`
+    w-[300px] h-[300px] 
+    md:w-[500px] md:h-[500px] 
+    mx-auto md:mx-0
+    overflow-hidden 
+    rounded-full md:rounded-none 
+    shadow-lg border-4 border-white 
+    md:border-none md:shadow-none 
+    md:[clip-path:ellipse(70%_100%_at_40%_50%)]
+  `}
+>
+  <Image
+    src="/Ellipse 16.png"
+    alt="Teacher and Student"
+    width={500}
+    height={500}
+    className="object-cover w-full h-full"
+    priority
+  />
+</div>
+
+
+
+
         </div>
       </section>
     ),
@@ -62,6 +74,11 @@ export default function HomePage() {
             Get ready to conquer NEET with the power of AI by your side.
             Our intelligent assistant provides personalized guidance, smart study plans, instant doubt-solving, and performance tracking — all tailored to your needs.
           </p>
+              <button
+          onClick={() => window.location.href = '/signup'}
+          className="bg-[#00425A] text-white px-5 py-2.5 mt-4 rounded hover:bg-[#00334a] text-sm md:text-base">
+            Schedule A Demo Now
+          </button>
         </div>
 
         <div className="relative z-10 w-full md:w-2/5 mt-8 md:mt-0 flex justify-center">
@@ -120,6 +137,11 @@ export default function HomePage() {
             Access a complete collection of NEET Previous Year Questions, <br className="hidden md:block" />
             organized year-wise and chapter-wise to strengthen your foundation.
           </p>
+           <button
+          onClick={() => window.location.href = '/signup'}
+          className="bg-[#00425A] text-white px-5 py-2.5 mt-4 rounded hover:bg-[#00334a] text-sm md:text-base">
+            Schedule A Demo Now
+          </button>
         </div>
 
         {/* Image Section */}
