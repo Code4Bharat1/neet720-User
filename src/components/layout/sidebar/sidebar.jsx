@@ -13,9 +13,10 @@ import {
   FaUniversity,
   FaMedal,
   FaTablets,
-  FaBook,
+  FaBook
 } from 'react-icons/fa';
 import axios from 'axios';
+import { Layers } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -66,6 +67,7 @@ const Sidebar = ({ isOpen }) => {
     { href: '/credits', icon: FaMedal, label: 'Scholarship' },
     { href: '/previousyearquestions', icon: FaTablets, label: 'PYQs' },
     { href: '/notice', icon: FaBook, label: 'View Notice' },
+    { href: '/test-series', icon: Layers, label: 'Test Series' },
   ];
 
   return (
