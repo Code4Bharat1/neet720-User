@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
@@ -13,8 +13,13 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Maximize,
+  Minimize,
+  Flag,
+  Eraser,
+  Eye,
 } from "lucide-react";
-import toast from "react-hot-toast"; // 💡 Add this at the top
+import toast from "react-hot-toast";
 
 export default function TakeTest() {
   const router = useRouter();
@@ -27,13 +32,113 @@ export default function TakeTest() {
   const [testCompleted, setTestCompleted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [markedForReview, setMarkedForReview] = useState(new Set());
   const [timeLeft, setTimeLeft] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(null);
   const [showNavigator, setShowNavigator] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenExited, setFullscreenExited] = useState(false);
 
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+  // ========================================
+  // FULLSCREEN FUNCTIONALITY
+  // ========================================
+  const enterFullscreen = useCallback(() => {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+  }, []);
+
+  const exitFullscreen = useCallback(() => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  }, []);
+
+  // Handle fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        document.mozFullScreenElement ||
+        document.webkitFullscreenElement ||
+        document.msFullscreenElement
+      );
+
+      setIsFullscreen(isCurrentlyFullscreen);
+
+      // If user exits fullscreen during test, end the test
+      if (!isCurrentlyFullscreen && testStarted && !testCompleted) {
+        setFullscreenExited(true);
+        // Use setTimeout to defer toast to avoid render conflicts
+        setTimeout(() => {
+          toast.error("Test ended due to fullscreen exit!", {
+            duration: 5000,
+          });
+        }, 0);
+        handleSubmitTest();
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("mozfullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+      document.removeEventListener("MSFullscreenChange", handleFullscreenChange);
+    };
+  }, [testStarted, testCompleted]);
+
+  // Prevent right-click and key shortcuts during test
+  useEffect(() => {
+    if (testStarted && !testCompleted) {
+      const handleContextMenu = (e) => e.preventDefault();
+      const handleKeyDown = (e) => {
+        // Prevent F12, Ctrl+Shift+I, Ctrl+U, etc.
+        if (
+          e.key === "F12" ||
+          (e.ctrlKey && e.shiftKey && e.key === "I") ||
+          (e.ctrlKey && e.shiftKey && e.key === "C") ||
+          (e.ctrlKey && e.key === "u")
+        ) {
+          e.preventDefault();
+          // Use setTimeout to defer toast to avoid render conflicts
+          setTimeout(() => toast.error("Developer tools are disabled during test!"), 0);
+        }
+      };
+
+      document.addEventListener("contextmenu", handleContextMenu);
+      document.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        document.removeEventListener("contextmenu", handleContextMenu);
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [testStarted, testCompleted]);
+
+  // ========================================
+  // ORIGINAL FUNCTIONALITY
+  // ========================================
   useEffect(() => {
     if (!testId) return;
 
@@ -96,6 +201,7 @@ export default function TakeTest() {
 
   const startTest = () => {
     setTestStarted(true);
+    enterFullscreen();
   };
 
   const handleAnswerSelect = (questionId, answer) => {
@@ -105,9 +211,38 @@ export default function TakeTest() {
     }));
   };
 
+  // ========================================
+  // NEW FUNCTIONALITY
+  // ========================================
+  const toggleMarkForReview = (questionId) => {
+    setMarkedForReview((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+        // Use setTimeout to defer toast to next tick
+        setTimeout(() => toast.success("Removed from review list"), 0);
+      } else {
+        newSet.add(questionId);
+        // Use setTimeout to defer toast to next tick
+        setTimeout(() => toast.success("Marked for review"), 0);
+      }
+      return newSet;
+    });
+  };
+
+  const clearResponse = (questionId) => {
+    setAnswers((prev) => {
+      const newAnswers = { ...prev };
+      delete newAnswers[questionId];
+      return newAnswers;
+    });
+    // Use setTimeout to defer toast to next tick
+    setTimeout(() => toast.success("Response cleared"), 0);
+  };
+
   const goToQuestion = (index) => {
     setCurrentQuestionIndex(index);
-    setShowNavigator(false); // Close navigator on mobile after selection
+    setShowNavigator(false);
   };
 
   const nextQuestion = () => {
@@ -139,16 +274,14 @@ export default function TakeTest() {
 
   const handleSubmitTest = async () => {
     setTestCompleted(true);
+    exitFullscreen();
     const results = calculateScore();
     setScore(results);
     setShowResults(true);
 
     try {
-      // 🔐 Get studentId from localStorage (or cookie or context, based on your auth system)
       const token = localStorage.getItem("authToken");
-
       const decode = jwtDecode(token);
-
       const studentId = decode.id;
 
       if (!studentId) {
@@ -169,16 +302,30 @@ export default function TakeTest() {
         unattempted: questions.length - Object.keys(answers).length,
         timeTaken: test.durationMinutes * 60 - timeLeft,
       });
-      toast.success("Test submitted successfully!");
+      
+      if (!fullscreenExited) {
+        // Use setTimeout to defer toast to avoid render conflicts
+        setTimeout(() => toast.success("Test submitted successfully!"), 0);
+      }
     } catch (err) {
       console.error("Error submitting test:", err);
+      setTimeout(() => toast.error("Error submitting test results"), 0);
     }
   };
 
   const getAnswerStatus = (questionId) => {
-    return answers[questionId] ? "answered" : "unanswered";
+    const hasAnswer = answers[questionId];
+    const isMarked = markedForReview.has(questionId);
+    
+    if (hasAnswer && isMarked) return "answered-marked";
+    if (hasAnswer) return "answered";
+    if (isMarked) return "marked";
+    return "unanswered";
   };
 
+  // ========================================
+  // LOADING AND ERROR STATES
+  // ========================================
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -232,12 +379,19 @@ export default function TakeTest() {
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 sm:p-8 max-w-2xl w-full">
           <div className="text-center mb-6 sm:mb-8">
-            <CheckCircle className="w-16 h-16 sm:w-20 sm:h-20 text-green-500 mx-auto mb-4" />
+            {fullscreenExited ? (
+              <AlertCircle className="w-16 h-16 sm:w-20 sm:h-20 text-red-500 mx-auto mb-4" />
+            ) : (
+              <CheckCircle className="w-16 h-16 sm:w-20 sm:h-20 text-green-500 mx-auto mb-4" />
+            )}
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Test Completed!
+              {fullscreenExited ? "Test Terminated" : "Test Completed!"}
             </h2>
             <p className="text-gray-600 text-sm sm:text-base">
-              Here are your results for {test.testName}
+              {fullscreenExited 
+                ? "Test was ended due to fullscreen exit"
+                : `Here are your results for ${test.testName}`
+              }
             </p>
           </div>
 
@@ -273,8 +427,7 @@ export default function TakeTest() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Accuracy:</span>
                 <span className="font-semibold">
-                  {((score.correctAnswers / questions.length) * 100).toFixed(1)}
-                  %
+                  {((score.correctAnswers / questions.length) * 100).toFixed(1)}%
                 </span>
               </div>
               <div className="flex justify-between">
@@ -286,6 +439,10 @@ export default function TakeTest() {
                 <span className="font-semibold">
                   {Object.keys(answers).length}
                 </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Marked for Review:</span>
+                <span className="font-semibold">{markedForReview.size}</span>
               </div>
             </div>
           </div>
@@ -368,20 +525,31 @@ export default function TakeTest() {
                   <li className="flex items-start gap-2">
                     <span className="text-yellow-600 mt-1">•</span>
                     <span>
-                      You have {test.durationMinutes} minutes to complete this
-                      test
+                      You have {test.durationMinutes} minutes to complete this test
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-yellow-600 mt-1">•</span>
                     <span>
-                      You can navigate between questions freely during the test
+                      The test will start in fullscreen mode and must remain fullscreen
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-yellow-600 mt-1">•</span>
                     <span>
-                      Make sure to submit your test before time runs out
+                      Exiting fullscreen will automatically end the test
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-yellow-600 mt-1">•</span>
+                    <span>
+                      You can mark questions for review and clear responses
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-yellow-600 mt-1">•</span>
+                    <span>
+                      Navigate between questions freely during the test
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -396,7 +564,7 @@ export default function TakeTest() {
                   onClick={startTest}
                   className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold text-base sm:text-lg"
                 >
-                  Start Test
+                  Start Test (Fullscreen)
                 </button>
               </div>
             </div>
@@ -445,6 +613,19 @@ export default function TakeTest() {
                   {formatTime(timeLeft)}
                 </span>
               </div>
+
+              {/* Fullscreen Toggle */}
+              <button
+                onClick={isFullscreen ? exitFullscreen : enterFullscreen}
+                className="p-1 sm:p-2 hover:bg-gray-100 rounded-lg text-gray-600"
+                title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+              >
+                {isFullscreen ? (
+                  <Minimize className="w-4 h-4 sm:w-5 sm:h-5" />
+                ) : (
+                  <Maximize className="w-4 h-4 sm:w-5 sm:h-5" />
+                )}
+              </button>
 
               <button
                 onClick={handleSubmitTest}
@@ -538,6 +719,47 @@ export default function TakeTest() {
                 </div>
               </div>
 
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3 mb-6 border-t border-gray-200 pt-6">
+                <button
+                  onClick={() => toggleMarkForReview(currentQuestion.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                    markedForReview.has(currentQuestion.id)
+                      ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  <Flag className="w-4 h-4" />
+                  {markedForReview.has(currentQuestion.id)
+                    ? "Unmark Review"
+                    : "Mark for Review"
+                  }
+                </button>
+
+                <button
+                  onClick={() => clearResponse(currentQuestion.id)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
+                  disabled={!answers[currentQuestion.id]}
+                >
+                  <Eraser className="w-4 h-4" />
+                  Clear Response
+                </button>
+
+                <button
+                  onClick={() => {
+                    if (currentQuestionIndex < questions.length - 1) {
+                      toggleMarkForReview(currentQuestion.id);
+                      nextQuestion();
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium text-sm"
+                  disabled={currentQuestionIndex === questions.length - 1}
+                >
+                  <Flag className="w-4 h-4" />
+                  Mark & Next
+                </button>
+              </div>
+
               {/* Navigation */}
               <div className="flex items-center justify-between border-t border-gray-200 pt-4 sm:pt-6">
                 <button
@@ -583,15 +805,22 @@ export default function TakeTest() {
                     <button
                       key={index}
                       onClick={() => goToQuestion(index)}
-                      className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
+                      className={`w-10 h-10 rounded-lg text-sm font-medium transition-all relative ${
                         isCurrentQuestion
                           ? "bg-indigo-600 text-white ring-2 ring-indigo-300"
                           : status === "answered"
                           ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : status === "marked"
+                          ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                          : status === "answered-marked"
+                          ? "bg-purple-100 text-purple-700 hover:bg-purple-200"
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
                       {index + 1}
+                      {markedForReview.has(questions[index].id) && (
+                        <Flag className="w-3 h-3 absolute -top-1 -right-1 text-orange-600" />
+                      )}
                     </button>
                   );
                 })}
@@ -602,6 +831,25 @@ export default function TakeTest() {
                   <div className="w-4 h-4 bg-green-100 rounded border"></div>
                   <span className="text-gray-600">
                     Answered ({Object.keys(answers).length})
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-orange-100 rounded border relative">
+                    <Flag className="w-2 h-2 absolute top-0 right-0 text-orange-600" />
+                  </div>
+                  <span className="text-gray-600">
+                    Marked for Review ({markedForReview.size})
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-purple-100 rounded border relative">
+                    <Flag className="w-2 h-2 absolute top-0 right-0 text-purple-600" />
+                  </div>
+                  <span className="text-gray-600">
+                    Answered & Marked (
+                    {
+                      Array.from(markedForReview).filter(id => answers[id]).length
+                    })
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -617,7 +865,15 @@ export default function TakeTest() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
+                <div className="text-sm text-gray-600">
+                  <div className="flex justify-between">
+                    <span>Total Progress:</span>
+                    <span className="font-semibold">
+                      {Math.round((Object.keys(answers).length / questions.length) * 100)}%
+                    </span>
+                  </div>
+                </div>
                 <button
                   onClick={handleSubmitTest}
                   className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
@@ -655,15 +911,22 @@ export default function TakeTest() {
                   <button
                     key={index}
                     onClick={() => goToQuestion(index)}
-                    className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
+                    className={`w-10 h-10 rounded-lg text-sm font-medium transition-all relative ${
                       isCurrentQuestion
                         ? "bg-indigo-600 text-white ring-2 ring-indigo-300"
                         : status === "answered"
                         ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        : status === "marked"
+                        ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                        : status === "answered-marked"
+                        ? "bg-purple-100 text-purple-700 hover:bg-purple-200"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
                     {index + 1}
+                    {markedForReview.has(questions[index].id) && (
+                      <Flag className="w-3 h-3 absolute -top-1 -right-1 text-orange-600" />
+                    )}
                   </button>
                 );
               })}
@@ -677,24 +940,48 @@ export default function TakeTest() {
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-4 h-4 bg-gray-100 rounded border"></div>
+                <div className="w-4 h-4 bg-orange-100 rounded border relative">
+                  <Flag className="w-2 h-2 absolute top-0 right-0 text-orange-600" />
+                </div>
                 <span className="text-gray-600">
-                  Not Answered ({questions.length - Object.keys(answers).length}
-                  )
+                  Marked for Review ({markedForReview.size})
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-4 h-4 bg-indigo-600 rounded border"></div>
-                <span className="text-gray-600">Current Question</span>
+                <div className="w-4 h-4 bg-purple-100 rounded border relative">
+                  <Flag className="w-2 h-2 absolute top-0 right-0 text-purple-600" />
+                </div>
+                <span className="text-gray-600">
+                  Answered & Marked (
+                  {
+                    Array.from(markedForReview).filter(id => answers[id]).length
+                  })
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 bg-gray-100 rounded border"></div>
+                <span className="text-gray-600">
+                  Not Answered ({questions.length - Object.keys(answers).length})
+                </span>
               </div>
             </div>
 
-            <button
-              onClick={handleSubmitTest}
-              className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-            >
-              Submit Test
-            </button>
+            <div className="space-y-3">
+              <div className="text-sm text-gray-600">
+                <div className="flex justify-between">
+                  <span>Progress:</span>
+                  <span className="font-semibold">
+                    {Math.round((Object.keys(answers).length / questions.length) * 100)}%
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={handleSubmitTest}
+                className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              >
+                Submit Test
+              </button>
+            </div>
           </div>
         </div>
       )}

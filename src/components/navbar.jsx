@@ -88,7 +88,7 @@ export default function Navbar() {
         </li>
 
         <li>
-          <Link href="/demo" className="hover:text-blue-600 transition">
+          <Link href="/signup" className="hover:text-blue-600 transition">
             Demo
           </Link>
         </li>
