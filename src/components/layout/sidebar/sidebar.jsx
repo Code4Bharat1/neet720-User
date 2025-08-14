@@ -15,6 +15,7 @@ import {
   FaTablets,
   FaBook,
 } from 'react-icons/fa';
+import { RiGeminiFill } from "react-icons/ri";
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
@@ -66,6 +67,7 @@ const Sidebar = ({ isOpen }) => {
     { href: '/credits', icon: FaMedal, label: 'Scholarship' },
     { href: '/previousyearquestions', icon: FaTablets, label: 'PYQs' },
     { href: '/notice', icon: FaBook, label: 'View Notice' },
+    {href: '/coachAi', icon:RiGeminiFill, label:'AI Coach'}
   ];
 
   return (

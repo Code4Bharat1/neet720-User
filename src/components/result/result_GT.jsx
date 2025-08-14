@@ -9,22 +9,42 @@ import { FaFlask, FaAtom, FaDna, FaEye } from "react-icons/fa";
 
 // Icon and background color mappings for subjects
 const subjectMapping = {
-  Physics: {
-    icon: <FaAtom className="text-red-500 text-xl" />,
-    bgColor: "bg-red-100",
-  },
-  Chemistry: {
-    icon: <FaFlask className="text-yellow-500 text-xl" />,
-    bgColor: "bg-yellow-100",
-  },
-  Biology: {
-    icon: <FaDna className="text-green-500 text-xl" />,
-    bgColor: "bg-green-100",
-  },
-  Botany: {
-    icon: <FaEye className="text-purple-500 text-xl" />,
-    bgColor: "bg-purple-100",
-  },
+  Physics: { icon: <FaAtom className="text-red-500 text-xl" />, bgColor: "bg-red-100" },
+  Chemistry: { icon: <FaFlask className="text-yellow-500 text-xl" />, bgColor: "bg-yellow-100" },
+  Biology: { icon: <FaDna className="text-green-500 text-xl" />, bgColor: "bg-green-100" },
+  Botany: { icon: <FaEye className="text-purple-500 text-xl" />, bgColor: "bg-purple-100" },
+};
+
+// -------- helpers ----------
+const readJSON = (key, fallback) => {
+  try {
+    const s = localStorage.getItem(key);
+    return s ? JSON.parse(s) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+// convert milliseconds to "mm:ss"
+const msToClock = (ms) => {
+  if (!ms || ms < 0) return "00:00";
+  const sec = Math.round(ms / 1000);
+  const m = String(Math.floor(sec / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  return `${m}:${s}`;
+};
+
+// keep latest attempt per (subject + question)
+const dedupeAnswers = (answers) => {
+  const byKey = new Map();
+  for (const a of answers) {
+    const key = `${a.subject}::${a.question}`;
+    const prev = byKey.get(key);
+    if (!prev || new Date(a.timestamp) > new Date(prev.timestamp)) {
+      byKey.set(key, a);
+    }
+  }
+  return Array.from(byKey.values());
 };
 
 const ResultPage = () => {
@@ -34,73 +54,101 @@ const ResultPage = () => {
   const [score, setScore] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [subjects, setSubjects] = useState([]);
-  const [testAnswers, setTestAnswers] = useState([]);
   const [totalPossibleMarks, setTotalPossibleMarks] = useState(0);
+  const [timeTakenStr, setTimeTakenStr] = useState("00:00");
 
   useEffect(() => {
-    const storedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
-    setTestAnswers(storedAnswers);
+    // 1) Read all storages
+    const rawAnswers = readJSON("testAnswers", []);
+    const answers = dedupeAnswers(Array.isArray(rawAnswers) ? rawAnswers : []);
 
-    // Get the selected chapters data from localStorage
-    const selectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {};
-    
-    // Calculate total possible marks from selected chapters
-    let totalMarks = 0;
-    Object.values(selectedChapters).forEach(subjectChapters => {
-      subjectChapters.forEach(chapter => {
-        totalMarks += (Number(chapter.numQuestions) || 0) * 4;
-      });
-    });
-    setTotalPossibleMarks(totalMarks);
+    const timeSpentObj = readJSON("timeSpent", {}); // { "Physics-0": 1755..., ... }
+    // handle either key: "visitedQuestions" or "visited questions"
+    const visitedObj =
+      readJSON("visitedQuestions", null) ??
+      readJSON("visited questions", {}) ??
+      {};
 
-    // Calculate overall score: +4 for correct, -1 for incorrect
-    let totalScore = 0;
-    storedAnswers.forEach((answer) => {
-      totalScore += answer.isCorrect ? 4 : -1;
-    });
+    // marks per correct question (you shared 5)
+    let marksPerQuestion = 4;
+    const storedTM = localStorage.getItem("totalMarks");
+    if (storedTM !== null) {
+      const n = Number(storedTM);
+      marksPerQuestion = Number.isFinite(n) && n > 0 ? n : 4;
+    }
+
+    // 2) Time taken (first to last interaction)
+    const ts = Object.values(timeSpentObj)
+      .map(Number)
+      .filter((v) => Number.isFinite(v));
+    const totalDuration = ts.length >= 2 ? Math.max(...ts) - Math.min(...ts) : 0;
+    setTimeTakenStr(msToClock(totalDuration));
+
+    // 3) Overall score (+marksPerQuestion / -1)
+    const totalScore = answers.reduce(
+      (s, a) => s + (a.isCorrect ? marksPerQuestion : -1),
+      0
+    );
     setScore(totalScore);
 
-    // Calculate subject-wise scores
-    const subjectsObj = {};
-    storedAnswers.forEach((answer) => {
-      if (!subjectsObj[answer.subject]) {
-        subjectsObj[answer.subject] = { score: 0, count: 0 };
-      }
-      subjectsObj[answer.subject].score += answer.isCorrect ? 4 : -1;
-      subjectsObj[answer.subject].count += 1;
+    // 4) Per-subject aggregates
+    const answeredCountBySubj = {};
+    const scoreBySubj = {};
+    for (const a of answers) {
+      answeredCountBySubj[a.subject] = (answeredCountBySubj[a.subject] || 0) + 1;
+      scoreBySubj[a.subject] =
+        (scoreBySubj[a.subject] || 0) + (a.isCorrect ? marksPerQuestion : -1);
+    }
+
+    const visitedCountBySubj = {};
+    Object.entries(visitedObj).forEach(([key, v]) => {
+      if (!v) return;
+      const subj = key.split("-")[0];
+      visitedCountBySubj[subj] = (visitedCountBySubj[subj] || 0) + 1;
     });
 
-    // Calculate subject-wise maximum possible marks from selected chapters
-    const subjectMaxMarks = {};
-    Object.entries(selectedChapters).forEach(([subject, chapters]) => {
-      subjectMaxMarks[subject] = chapters.reduce((total, chapter) => {
-        return total + (Number(chapter.numQuestions) || 0) * 4;
-      }, 0);
-    });
+    // Prefer selectedSubjects if present
+    const selectedSubjects = readJSON("selectedSubjects", []);
+    const allSubjects = (selectedSubjects.length
+      ? selectedSubjects
+      : Array.from(
+          new Set([
+            ...Object.keys(answeredCountBySubj),
+            ...Object.keys(visitedCountBySubj),
+          ])
+        )
+    ).filter(Boolean);
 
-    // Retrieve selected subjects from localStorage
-    const selectedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || [];
-    const computedSubjects = selectedSubjects.map((subj) => {
-      const subjectData = subjectMapping[subj];
-      const subjectScore = subjectsObj[subj]?.score || 0;
-      const subjectMax = subjectMaxMarks[subj] || 0;
-      
+    const subjectRows = allSubjects.map((subj) => {
+      const qCount = Math.max(
+        visitedCountBySubj[subj] || 0,
+        answeredCountBySubj[subj] || 0
+      );
+      const map = subjectMapping[subj] || {};
       return {
         name: subj,
-        score: subjectScore,
-        max: subjectMax,
-        icon: subjectData?.icon || <FaAtom className="text-gray-500 text-xl" />,
-        bgColor: subjectData?.bgColor || "bg-gray-100",
+        score: scoreBySubj[subj] || 0,
+        max: qCount * marksPerQuestion,
+        icon: map.icon || <FaAtom className="text-gray-500 text-xl" />,
+        bgColor: map.bgColor || "bg-gray-100",
       };
     });
-    setSubjects(computedSubjects);
+    setSubjects(subjectRows);
 
-    // Show confetti if overall percentage is 70% or higher
-    if (totalMarks > 0 && (totalScore / totalMarks) * 100 >= 70) {
+    // 5) Overall max marks
+    const totalVisited = Object.values(visitedObj).filter(Boolean).length;
+    const totalAnswered = answers.length;
+    const totalQuestions = Math.max(totalVisited, totalAnswered);
+    const overallMax = totalQuestions * marksPerQuestion;
+    setTotalPossibleMarks(overallMax);
+
+    // 6) Confetti
+    let timer;
+    if (overallMax > 0 && (totalScore / overallMax) * 100 >= 70) {
       setShowConfetti(true);
-      const timer = setTimeout(() => setShowConfetti(false), 6000);
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => setShowConfetti(false), 6000);
     }
+    return () => timer && clearTimeout(timer);
   }, []);
 
   const handleRetakeTest = () => {
@@ -112,12 +160,7 @@ const ResultPage = () => {
     <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-100 relative">
       {/* Confetti Animation (Only if overall percentage >= 70%) */}
       {showConfetti && (
-        <Confetti
-          width={width}
-          height={height}
-          numberOfPieces={500}
-          recycle={false}
-        />
+        <Confetti width={width} height={height} numberOfPieces={500} recycle={false} />
       )}
 
       <div className="w-full h-full flex flex-col md:flex-row bg-white shadow-lg">
@@ -136,9 +179,7 @@ const ResultPage = () => {
             transition={{ duration: 0.5, type: "spring" }}
           >
             <motion.span className="text-4xl font-bold">{score}</motion.span>
-            <motion.span className="text-lg">
-              of {totalPossibleMarks}
-            </motion.span>
+            <motion.span className="text-lg">of {totalPossibleMarks}</motion.span>
           </motion.div>
           <motion.h3 className="text-xl font-semibold mt-4">
             {totalPossibleMarks > 0 && (score / totalPossibleMarks) * 100 >= 70
@@ -147,10 +188,9 @@ const ResultPage = () => {
           </motion.h3>
           <motion.p className="text-sm text-center px-6 mt-2">
             Your percentage:{" "}
-            {totalPossibleMarks > 0
-              ? Math.round((score / totalPossibleMarks) * 100)
-              : 0}%
+            {totalPossibleMarks > 0 ? Math.round((score / totalPossibleMarks) * 100) : 0}%
           </motion.p>
+          <motion.p className="text-sm opacity-90 mt-1">Time taken: {timeTakenStr}</motion.p>
         </motion.div>
 
         {/* Right Section - Subject Summary and Actions */}
@@ -160,25 +200,21 @@ const ResultPage = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <motion.h2 className="text-4xl font-bold text-gray-700 mb-4">
-            Summary
-          </motion.h2>
+          <motion.h2 className="text-4xl font-bold text-gray-700 mb-4">Summary</motion.h2>
 
           {/* Render Subject Scores */}
           {subjects.map((subject, index) => (
             <motion.div
-              key={index}
+              key={subject.name || index}
               className={`w-20 md:w-3/4 p-4 mb-2 rounded-3xl ${subject.bgColor} shadow-sm mx-auto`}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
+              transition={{ delay: index * 0.15, duration: 0.45 }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {subject.icon}
-                  <span className="font-semibold text-gray-700">
-                    {subject.name}
-                  </span>
+                  <span className="font-semibold text-gray-700">{subject.name}</span>
                 </div>
                 <span className="font-bold">
                   {subject.score} / {subject.max}
@@ -192,7 +228,7 @@ const ResultPage = () => {
             className="flex flex-col gap-3 mt-6 items-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.5 }}
+            transition={{ delay: 1.2, duration: 0.5 }}
           >
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"

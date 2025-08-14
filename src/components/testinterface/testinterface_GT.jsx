@@ -36,6 +36,11 @@ const TestInterface = () => {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
+  // Derived values (must be above effects that reference them)
+const currentQuestionData =
+  questionsData[currentSubject]?.[currentQuestion] ?? null;
+const currentOptionsLength = currentQuestionData?.options?.length ?? 0;
+
 
   const numQuestions = questionsData[currentSubject]?.length || 0;
 
@@ -343,6 +348,7 @@ useEffect(() => {
   
       console.log("Test result submitted:", response.data);
       toast.success("Test submitted successfully! 🎉", { duration: 5000 });
+      router.push('/resultGT')
   
     } catch (error) {
       console.error("Error submitting test result:", error);
@@ -391,7 +397,7 @@ useEffect(() => {
     );
   }
 
-  const currentQuestionData = questionsData[currentSubject]?.[currentQuestion];
+
   const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
   const stats = getQuestionStats();
   const isLowTime = timer < 300; // Less than 5 minutes
