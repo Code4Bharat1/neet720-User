@@ -7,10 +7,12 @@ import { AlertTriangle, Clock, X, CheckCircle, ChevronDown, ChevronUp } from "lu
 
 const ScheduledTestCard = () => {
   const [batchData, setBatchData] = useState([]);
+  const [submittedTestIds, setSubmittedTestIds] = useState(new Set());
   const [showInstructions, setShowInstructions] = useState(false);
   const [timer, setTimer] = useState(60);
   const [selectedTestId, setSelectedTestId] = useState(null);
   const [expandedBatches, setExpandedBatches] = useState({});
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const bgColors = [
@@ -31,27 +33,73 @@ const ScheduledTestCard = () => {
     "bg-indigo-500",
   ];
 
+  // Fetch submitted tests by email
+  const fetchSubmittedTests = async (email, token) => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/getUserSubmittedTestsByEmail`,
+        { email },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      console.log("Submitted tests response:", res.data); // Debug log
+
+      if (res.data.tests && res.data.tests.length > 0) {
+        // Extract test IDs from submitted tests - check multiple possible field names
+        const submittedIds = new Set(
+          res.data.tests.map(test => {
+            // Try different possible field names for test ID
+            return test.testId || test.id || test.test_id || test.generateTestId;
+          }).filter(id => id !== undefined && id !== null)
+        );
+        
+        console.log("Extracted submitted test IDs:", Array.from(submittedIds)); // Debug log
+        setSubmittedTestIds(submittedIds);
+      } else {
+        console.log("No submitted tests found for user"); // Debug log
+        setSubmittedTestIds(new Set());
+      }
+    } catch (error) {
+      console.error("Failed to fetch submitted tests:", error);
+      // Set empty set on error so tests can still be shown
+      setSubmittedTestIds(new Set());
+    }
+  };
+
   useEffect(() => {
     const fetchTestsByBatch = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("authToken");
         if (!token) return;
 
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
         const email = decodedToken.email;
 
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/getStudentTestDetails`,
-          { email },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
+        // Fetch both scheduled tests and submitted tests
+        const [testsResponse] = await Promise.all([
+          axios.post(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/getStudentTestDetails`,
+            { email },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
             }
-          }
-        );
+          ),
+          fetchSubmittedTests(email, token)
+        ]);
 
-        const { batches, tests } = res.data;
+        const { batches, tests } = testsResponse.data;
+        console.log("Available tests:", tests); // Debug log
+        console.log("Current submitted test IDs:", Array.from(submittedTestIds)); // Debug log
+        
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -68,6 +116,17 @@ const ScheduledTestCard = () => {
 
               if (today > endDate) return null;
 
+              // Convert test ID to string for consistent comparison
+              const testId = String(test.id);
+              const isSubmitted = submittedTestIds.has(testId) || submittedTestIds.has(test.id);
+              const isActive = today >= startDate && today <= endDate && !isSubmitted;
+
+              console.log(`Test ${test.testname} (ID: ${testId}):`, {
+                isSubmitted,
+                isActive,
+                submittedIds: Array.from(submittedTestIds)
+              }); // Debug log
+
               return {
                 id: test.id,
                 name: test.testname,
@@ -75,7 +134,9 @@ const ScheduledTestCard = () => {
                 date: startDate.toLocaleDateString("en-GB"),
                 rawStartDate: startDate,
                 rawEndDate: endDate,
-                isActive: today >= startDate && today <= endDate,
+                isActive: isActive,
+                isSubmitted: isSubmitted,
+                isScheduled: today < startDate && !isSubmitted,
                 bgColor: bgColors[testIndex % bgColors.length],
                 subject: test.subject,
                 duration: test.duration,
@@ -108,6 +169,8 @@ const ScheduledTestCard = () => {
 
       } catch (error) {
         console.error("Failed to fetch test data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -147,6 +210,67 @@ const ScheduledTestCard = () => {
       [batchId]: !prev[batchId]
     }));
   };
+
+  const getTestStatus = (test) => {
+    if (test.isSubmitted) {
+      return {
+        label: "Completed",
+        className: "bg-green-100 text-green-800",
+        icon: <CheckCircle className="w-4 h-4" />
+      };
+    } else if (test.isActive) {
+      return {
+        label: "Available Now",
+        className: "bg-blue-100 text-blue-800 animate-pulse",
+        icon: <Clock className="w-4 h-4" />
+      };
+    } else if (test.isScheduled) {
+      return {
+        label: "Scheduled",
+        className: "bg-gray-100 text-gray-600",
+        icon: <Clock className="w-4 h-4" />
+      };
+    }
+    return null;
+  };
+
+  const getButtonConfig = (test) => {
+    if (test.isSubmitted) {
+      return {
+        text: "Test Completed",
+        className: "bg-green-500 text-white cursor-not-allowed",
+        disabled: true,
+        onClick: null
+      };
+    } else if (test.isActive) {
+      return {
+        text: "Start Test",
+        className: "bg-red-500 text-white hover:bg-red-600",
+        disabled: false,
+        onClick: () => handleStartTest(test.id, test.name)
+      };
+    } else {
+      return {
+        text: `Scheduled ${test.date}`,
+        className: "bg-[#718EBF] text-white cursor-not-allowed",
+        disabled: true,
+        onClick: null
+      };
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-4 p-4">
+        <div className="border-2 rounded-md bg-gray-50 text-gray-700 text-lg md:text-2xl font-bold text-center py-5">
+          Teacher Generated Test - Batch Wise
+        </div>
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 p-4">
@@ -241,6 +365,11 @@ const ScheduledTestCard = () => {
                     ACTIVE
                   </div>
                 )}
+                {batch.tests.some(test => test.isSubmitted) && (
+                  <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                    COMPLETED
+                  </div>
+                )}
                 {expandedBatches[batch.batchId] ? (
                   <ChevronUp className="w-5 h-5" />
                 ) : (
@@ -253,74 +382,50 @@ const ScheduledTestCard = () => {
           {/* Tests List */}
           {expandedBatches[batch.batchId] && (
             <div className="divide-y divide-gray-200">
-              {batch.tests.map((test, testIndex) => (
-                <div
-                  key={testIndex}
-                  className="bg-gray-50 p-4 hover:bg-gray-100 transition-colors"
-                >
-                  {/* Desktop Icon */}
-                  <div className={`hidden md:flex items-center justify-center w-12 h-12 rounded-md ${test.bgColor}`}>
-                    <FaClipboardList className="text-white text-lg" />
-                  </div>
+              {batch.tests.map((test, testIndex) => {
+                const status = getTestStatus(test);
+                const buttonConfig = getButtonConfig(test);
 
-                  <div className="flex flex-col w-full md:pl-4">
-                    {/* Mobile Layout */}
-                    <div className="md:hidden">
-                      <div className="flex items-center space-x-3 mb-3">
-                        <div className={`flex items-center justify-center h-10 w-10 rounded-md ${test.bgColor}`}>
-                          <FaClipboardList className="text-white" />
+                return (
+                  <div
+                    key={testIndex}
+                    className={`p-4 transition-colors ${
+                      test.isSubmitted ? 'bg-green-50' : 
+                      test.isActive ? 'bg-blue-50 hover:bg-blue-100' : 
+                      'bg-gray-50 hover:bg-gray-100'
+                    }`}
+                  >
+                    {/* Desktop Icon */}
+                    <div className={`hidden md:flex items-center justify-center w-12 h-12 rounded-md ${test.bgColor} relative`}>
+                      <FaClipboardList className="text-white text-lg" />
+                      {test.isSubmitted && (
+                        <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1">
+                          <CheckCircle className="w-4 h-4 text-white" />
                         </div>
-                        <div className="flex-1">
-                          <h4 className="text-sm font-semibold text-gray-800">{test.name}</h4>
-                          <p className="text-xs text-gray-600">{test.questions}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="mb-3 space-y-1">
-                        <div className="text-xs text-blue-600 font-medium">{test.subject}</div>
-                        <div className="flex items-center space-x-3 text-xs text-gray-600">
-                          <span>⏱️ {test.duration} min</span>
-                          <span>📊 {test.marks} marks</span>
-                          <span className={`px-2 py-1 rounded-full text-white text-xs ${
-                            test.difficulty === 'Easy' ? 'bg-green-500' :
-                            test.difficulty === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}>
-                            {test.difficulty}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        {test.isActive && (
-                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
-                            Available Now
-                          </span>
-                        )}
-                        <button
-                          onClick={() => test.isActive && handleStartTest(test.id, test.name)}
-                          className={`px-3 py-2 rounded-md text-xs font-medium ${
-                            test.isActive
-                              ? "bg-red-500 text-white hover:bg-red-600"
-                              : "bg-[#718EBF] text-white"
-                          }`}
-                        >
-                          {test.isActive ? "Start Test" : `Scheduled ${test.date}`}
-                        </button>
-                      </div>
+                      )}
                     </div>
 
-                    {/* Desktop Layout */}
-                    <div className="hidden md:flex md:items-center md:justify-between w-full">
-                      <div className="flex-1">
-                        <h4 className="text-lg font-semibold text-gray-800">{test.name}</h4>
-                      </div>
-
-                      <div className="h-6 border-l border-gray-300 mx-4" />
-                      <div className="flex-1">
-                        <div className="text-gray-600 text-sm space-y-1">
-                          <div className="font-semibold">{test.questions}</div>
-                          <div className="text-blue-600">{test.subject}</div>
-                          <div className="flex space-x-3 text-xs">
+                    <div className="flex flex-col w-full md:pl-4">
+                      {/* Mobile Layout */}
+                      <div className="md:hidden">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className={`flex items-center justify-center h-10 w-10 rounded-md ${test.bgColor} relative`}>
+                            <FaClipboardList className="text-white" />
+                            {test.isSubmitted && (
+                              <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-0.5">
+                                <CheckCircle className="w-3 h-3 text-white" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-sm font-semibold text-gray-800">{test.name}</h4>
+                            <p className="text-xs text-gray-600">{test.questions}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-3 space-y-1">
+                          <div className="text-xs text-blue-600 font-medium">{test.subject}</div>
+                          <div className="flex items-center space-x-3 text-xs text-gray-600">
                             <span>⏱️ {test.duration} min</span>
                             <span>📊 {test.marks} marks</span>
                             <span className={`px-2 py-1 rounded-full text-white text-xs ${
@@ -331,29 +436,68 @@ const ScheduledTestCard = () => {
                             </span>
                           </div>
                         </div>
+
+                        <div className="flex items-center justify-between">
+                          {status && (
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${status.className}`}>
+                              {status.icon}
+                              {status.label}
+                            </span>
+                          )}
+                          <button
+                            onClick={buttonConfig.onClick}
+                            disabled={buttonConfig.disabled}
+                            className={`px-3 py-2 rounded-md text-xs font-medium transition-colors ${buttonConfig.className}`}
+                          >
+                            {buttonConfig.text}
+                          </button>
+                        </div>
                       </div>
-                      <div className="h-6 border-l border-gray-300 mx-4" />
-                      <div className="flex items-center space-x-3">
-                        {test.isActive && (
-                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
-                            Available Now
-                          </span>
-                        )}
-                        <button
-                          onClick={() => test.isActive && handleStartTest(test.id, test.name)}
-                          className={`px-4 py-2 rounded-md text-center w-[200px] transition-colors ${
-                            test.isActive 
-                              ? "bg-red-500 text-white hover:bg-red-600" 
-                              : "bg-[#718EBF] text-white"
-                          }`}
-                        >
-                          {test.isActive ? "Start Test" : `Scheduled ${test.date}`}
-                        </button>
+
+                      {/* Desktop Layout */}
+                      <div className="hidden md:flex md:items-center md:justify-between w-full">
+                        <div className="flex-1">
+                          <h4 className="text-lg font-semibold text-gray-800">{test.name}</h4>
+                        </div>
+
+                        <div className="h-6 border-l border-gray-300 mx-4" />
+                        <div className="flex-1">
+                          <div className="text-gray-600 text-sm space-y-1">
+                            <div className="font-semibold">{test.questions}</div>
+                            <div className="text-blue-600">{test.subject}</div>
+                            <div className="flex space-x-3 text-xs">
+                              <span>⏱️ {test.duration} min</span>
+                              <span>📊 {test.marks} marks</span>
+                              <span className={`px-2 py-1 rounded-full text-white text-xs ${
+                                test.difficulty === 'Easy' ? 'bg-green-500' :
+                                test.difficulty === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'
+                              }`}>
+                                {test.difficulty}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="h-6 border-l border-gray-300 mx-4" />
+                        <div className="flex items-center space-x-3">
+                          {status && (
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${status.className}`}>
+                              {status.icon}
+                              {status.label}
+                            </span>
+                          )}
+                          <button
+                            onClick={buttonConfig.onClick}
+                            disabled={buttonConfig.disabled}
+                            className={`px-4 py-2 rounded-md text-center w-[200px] transition-colors ${buttonConfig.className}`}
+                          >
+                            {buttonConfig.text}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 

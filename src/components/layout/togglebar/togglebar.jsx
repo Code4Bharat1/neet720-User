@@ -16,6 +16,7 @@ import {
   FaBook,
   FaTablets,
 } from "react-icons/fa";
+import { BookText } from "lucide-react";
 import axios from "axios";
 
 const sidebarLinks = [
@@ -28,6 +29,7 @@ const sidebarLinks = [
   { name: "Credits", path: "/credits", icon: <FaCookie /> },
   { name: "PYQs", path: "/previousyearquestions", icon: <FaTablets /> },
   { name: "View Notice", path: "/notice", icon: <FaBook /> },
+  { name: "Test Series", path: "/test-series", icon: <BookText /> },
 ];
 
 const ToggleBar = () => {
@@ -106,24 +108,33 @@ const ToggleBar = () => {
           <h1 className="text-lg font-semibold text-gray-700">Menu</h1>
 
           {/* Profile Picture */}
-          <div className="w-8 h-8 rounded-full overflow-hidden" ref={profileRef} onClick={toggleProfileMenu}>
-            <img
-              src={"/neet720_logo.jpg" || profileImage}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+          <div className="relative" ref={profileRef}>
+            <div className="w-8 h-8 rounded-full overflow-hidden cursor-pointer" onClick={toggleProfileMenu}>
+              <img
+                src={"/neet720_logo.jpg" || profileImage}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
             {/* Profile Dropdown */}
             {profileMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border">
                 <button
-                  onClick={() => router.push("/personaldata")}
-                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full"
+                  onClick={() => {
+                    router.push("/personaldata");
+                    setProfileMenu(false);
+                  }}
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
                 >
                   Personal Data
                 </button>
                 <button
-                  onClick={() => router.push("/login")}
-                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full"
+                  onClick={() => {
+                    router.push("/login");
+                    setProfileMenu(false);
+                  }}
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
                 >
                   Log Out
                 </button>
@@ -141,12 +152,12 @@ const ToggleBar = () => {
       >
         <div
           ref={menuRef}
-          className={`bg-white w-[75%] max-w-sm p-4 h-full flex flex-col transform transition-transform duration-300 ${
+          className={`bg-white w-[75%] max-w-sm h-full flex flex-col transform transition-transform duration-300 ${
             menuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          {/* Profile Section */}
-          <div className="flex flex-col items-center py-4 border-b">
+          {/* Profile Section - Fixed at top */}
+          <div className="flex-shrink-0 flex flex-col items-center py-4 px-4 border-b border-gray-200 bg-white">
             <div className="w-16 h-16 rounded-full overflow-hidden mb-2">
               <img
                 src={"neet720_logo.jpg" || profileImage}
@@ -154,25 +165,35 @@ const ToggleBar = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <h2 className="text-lg font-semibold">{firstName}</h2>
-            <p className="text-sm text-gray-500">{email}</p>
+            <h2 className="text-lg font-semibold text-gray-800 truncate max-w-full">{firstName}</h2>
+            <p className="text-sm text-gray-500 truncate max-w-full">{email}</p>
           </div>
 
-          {/* Sidebar Navigation (Same as Desktop) */}
-          <div className="mt-10 space-y-6">
-            {sidebarLinks.map((item) => (
-              <button
-                key={item.name}
-                className="w-full text-left flex items-center gap-3 text-gray-700 font-bold hover:text-blue-600 text-base"
-                onClick={() => {
-                  router.push(item.path);
-                  setMenuOpen(false);
-                }}
-              >
-                <span className="text-xl text-gray-500">{item.icon}</span>
-                {item.name}
-              </button>
-            ))}
+          {/* Scrollable Navigation Section */}
+          <div className="flex-1 overflow-y-auto px-4 py-6">
+            <nav className="space-y-2">
+              {sidebarLinks.map((item) => (
+                <button
+                  key={item.name}
+                  className="w-full text-left flex items-center gap-3 text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50 rounded-lg px-3 py-3 transition-all duration-200 text-base"
+                  onClick={() => {
+                    router.push(item.path);
+                    setMenuOpen(false);
+                  }}
+                >
+                  <span className="text-xl text-gray-500 flex-shrink-0">{item.icon}</span>
+                  <span className="truncate">{item.name}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* Footer Section - Fixed at bottom (optional) */}
+          <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-gray-50">
+            <div className="text-xs text-gray-500 text-center">
+              <p>Version 1.0.0</p>
+              <p className="mt-1">© 2024 NEET720</p>
+            </div>
           </div>
         </div>
       </div>

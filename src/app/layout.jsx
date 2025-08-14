@@ -79,13 +79,42 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Toaster position="top-center" reverseOrder={false} />
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {/* ✅ Toast Notifications */}
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: "#ffffff",
+              color: "#1e293b", // slate-800
+              fontWeight: "500",
+              border: "1px solid #e2e8f0", // gray-200
+              padding: "12px 16px",
+              borderRadius: "12px",
+              fontSize: "14px",
+            },
+            success: {
+              iconTheme: {
+                primary: "#16a34a", // green-600
+                secondary: "#ecfdf5", // green-50
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: "#dc2626", // red-600
+                secondary: "#fee2e2", // red-50
+              },
+            },
+          }}
+        />
 
-        {/* ✅ Wrap the children with ClientLayout */}
+        {/* ✅ Your app layout */}
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
-    
   );
 }
