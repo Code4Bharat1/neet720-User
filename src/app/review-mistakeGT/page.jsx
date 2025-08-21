@@ -5,7 +5,8 @@ import Sidebar from "@/components/layout/sidebar/sidebar";
 import NavBar from "@/components/layout/navbar/navbar";
 import BottomNavbar from "@/components/layout/bottomnav/bottomnav";
 import ToggleBar from "@/components/layout/togglebar/togglebar";
-import ReviewMistakeCT from "@/components/review-mistake/review-mistakeCT";
+import ReviewMistakeGT from "@/components/review-mistake/review-mistakeGT";
+
 const Page = () => {
   return (
     <div className="md:flex min-h-screen relative">
@@ -20,7 +21,7 @@ const Page = () => {
         {/* Content Section (fixing overflow issue) */}
         <div className="flex-grow overflow-auto md:pb-0 pb-[60px]">
         <Suspense fallback={<div>loading</div>}>
-          <ReviewMistakeCT />
+          <ReviewMistakeGT />
           </Suspense>
         </div>
 

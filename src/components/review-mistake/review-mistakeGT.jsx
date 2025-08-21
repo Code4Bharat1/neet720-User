@@ -48,7 +48,7 @@ const subjectConfig = {
   },
 };
 
-const ReviewMistake = () => {
+const ReviewMistakeGT = () => {
   const [mistakes, setMistakes] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [solutions, setSolutions] = useState({});
@@ -333,4 +333,4 @@ const ReviewMistake = () => {
   );
 };
 
-export default ReviewMistake;
+export default ReviewMistakeGT;

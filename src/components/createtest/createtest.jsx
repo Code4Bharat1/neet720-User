@@ -66,6 +66,15 @@ const Createtest = () => {
     setSelectedChapters(savedChapters);
   }, []);
 
+  useEffect(() => {
+    if (Object.keys(selectedChapters).length > 0) {
+      localStorage.setItem(
+        "selectedChapters",
+        JSON.stringify(selectedChapters)
+      );
+    }
+  }, [selectedChapters]); // This will run whenever selectedChapters changes
+
   // Function to handle subject selection
   const handleSubjectSelection = (subject) => {
     setSelectedSubjects((prevSelectedSubjects) => {
