@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { Bar } from "react-chartjs-2";
@@ -15,100 +15,128 @@ import {
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const SpeedCard = ({ changeDate }) => {
-  console.log(changeDate); // Logging to check the prop value
-  const [marks, setMarks] = useState({
-    Physics: 0,
-    Chemistry: 0,
-    Biology: 0,
-    overallAverage: 0,
-    testCount: 0,
-  }); 
-  const [prevAvg, setPrevAvg] = useState(40);
+  const [daily, setDaily] = useState([]); // [{ date:'YYYY-MM-DD', Physics, Chemistry, Biology, overall }]
+  const [loading, setLoading] = useState(false);
+
+  // Helpers for time windows
+  const now = useMemo(() => new Date(), []);
+  const isSameYear = (d) => new Date(d).getFullYear() === now.getFullYear();
+  const isSameMonth = (d) =>
+    isSameYear(d) && new Date(d).getMonth() === now.getMonth();
+  const isSameWeek = (d) => {
+    const dt = new Date(d);
+    const weekStart = new Date(now);
+    weekStart.setHours(0, 0, 0, 0);
+    weekStart.setDate(now.getDate() - weekStart.getDay()); // Sun start (adjust if Mon needed)
+    return dt >= weekStart;
+  };
+
+  // Format date -> YYYY-MM-DD (local midnight safe)
+  const asISODate = (d) => {
+    const x = new Date(d);
+    const yyyy = x.getFullYear();
+    const mm = String(x.getMonth() + 1).padStart(2, "0");
+    const dd = String(x.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
 
   useEffect(() => {
     const fetchAverageMarks = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("authToken");
         if (!token) {
           console.warn("No token found in localStorage");
+          setDaily([]);
           return;
         }
 
-        const response = await axios.get(
+        const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/average`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const chartData = response.data;
-        const currentDate = new Date();
+        console.log("response :", res.data)
 
-        // Time comparison functions
-        const isSameYear = (date) =>
-          new Date(date).getFullYear() === currentDate.getFullYear();
-        const isSameMonth = (date) =>
-          isSameYear(date) && new Date(date).getMonth() === currentDate.getMonth();
-        const isSameWeek = (date) => {
-          const testDate = new Date(date);
-          const weekStart = new Date(currentDate);
-          weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-          return testDate >= weekStart;
-        };
-
-        // Apply date filter based on the changeDate prop
-        const filtered = chartData.filter((test) => {
-          if (!test.updatedAt) return false;
-          if (changeDate === "This Year") return isSameYear(test.updatedAt);
-          if (changeDate === "This Month") return isSameMonth(test.updatedAt);
-          if (changeDate === "This Week") return isSameWeek(test.updatedAt);
-          return true;
+        const raw = Array.isArray(res.data) ? res.data : [];
+        const filtered = raw.filter((t) => {
+          if (!t?.updatedAt) return false;
+          if (changeDate === "This Year") return isSameYear(t.updatedAt);
+          if (changeDate === "This Month") return isSameMonth(t.updatedAt);
+          if (changeDate === "This Week") return isSameWeek(t.updatedAt);
+          return true; // default: no filter / all time
         });
 
-        // Calculate averages
-        const totals = { Physics: 0, Chemistry: 0, Biology: 0 };
-        filtered.forEach((item) => {
-          totals.Physics += item.Physics || 0;
-          totals.Chemistry += item.Chemistry || 0;
-          totals.Biology += item.Biology || 0;
-        });
+        // Group by day
+        const byDay = new Map();
+        for (const item of filtered) {
+          const key = asISODate(item.updatedAt);
+          const acc = byDay.get(key) || {
+            PhysicsSum: 0,
+            ChemistrySum: 0,
+            BiologySum: 0,
+            count: 0,
+          };
+          acc.PhysicsSum += item.Physics || 0;
+          acc.ChemistrySum += item.Chemistry || 0;
+          acc.BiologySum += item.Biology || 0;
+          acc.count += 1;
+          byDay.set(key, acc);
+        }
 
-        const count = filtered.length;
-        const avg = {
-          Physics: count ? +(totals.Physics / count).toFixed(2) : 0,
-          Chemistry: count ? +(totals.Chemistry / count).toFixed(2) : 0,
-          Biology: count ? +(totals.Biology / count).toFixed(2) : 0,
-        };
+        // Build daily rows sorted asc by date
+        const rows = Array.from(byDay.entries())
+          .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+          .map(([date, v]) => {
+            const Physics = v.count ? +(v.PhysicsSum / v.count).toFixed(2) : 0;
+            const Chemistry = v.count ? +(v.ChemistrySum / v.count).toFixed(2) : 0;
+            const Biology = v.count ? +(v.BiologySum / v.count).toFixed(2) : 0;
+            const overall = +(((Physics + Chemistry + Biology) / 3) || 0).toFixed(2);
+            return { date, Physics, Chemistry, Biology, overall };
+          });
 
-        const overall =
-          count !== 0
-            ? +(
-                (avg.Physics + avg.Chemistry + avg.Biology) / 3
-              ).toFixed(2)
-            : 0;
-
-        setMarks({ ...avg, overallAverage: overall, testCount: count });
-      } catch (error) {
-        console.error("Error fetching average marks:", error);
+        setDaily(rows);
+      } catch (e) {
+        console.error("Error fetching average marks:", e);
+        setDaily([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchAverageMarks();
-  }, [changeDate]); // Now it depends on the `changeDate` prop
+  }, [changeDate]);
 
-  const currentAvg = marks.overallAverage.toFixed(2);
-  const isImproving = currentAvg > prevAvg;
+  // Derive headline + trend from last two days
+  const last = daily.length ? daily[daily.length - 1] : null;
+  const prev = daily.length > 1 ? daily[daily.length - 2] : null;
+  const currentAvg = last ? last.overall.toFixed(2) : "0.00";
+  const prevAvg = prev ? prev.overall : 0;
+  const isImproving = last && last.overall >= prevAvg;
   const trendColor = isImproving ? "text-green-500" : "text-red-500";
   const TrendIcon = isImproving ? FaArrowUp : FaArrowDown;
 
+  // Chart.js dataset: daily bars per subject
   const chartData = {
-    labels: ["Physics", "Chemistry", "Biology"],
+    labels: daily.map((r) => r.date), // e.g. 2025-08-01
     datasets: [
       {
-        label: "Average Marks",
-        data: [marks.Physics, marks.Chemistry, marks.Biology],
-        backgroundColor: ["#16DBCC", "#FFBB38", "#FE5C73"],
-        borderRadius: 8,
+        label: "Physics",
+        data: daily.map((r) => r.Physics),
+        backgroundColor: "#16DBCC",
+        borderRadius: 6,
+      },
+      {
+        label: "Chemistry",
+        data: daily.map((r) => r.Chemistry),
+        backgroundColor: "#FFBB38",
+        borderRadius: 6,
+      },
+      {
+        label: "Biology",
+        data: daily.map((r) => r.Biology),
+        backgroundColor: "#FE5C73",
+        borderRadius: 6,
       },
     ],
   };
@@ -117,44 +145,63 @@ const SpeedCard = ({ changeDate }) => {
     <div className="w-full max-w-sm p-5 bg-white rounded-2xl shadow-md">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-bold text-gray-500">
-          AVERAGE MARKS  {/* Using changeDate directly */}
-        </h3>
-        
+        <h3 className="text-sm font-bold text-gray-500">AVERAGE MARKS (Day-by-Day)</h3>
         <span className={`flex items-center text-sm font-medium ${trendColor}`}>
           <TrendIcon className="mr-1" />
           {isImproving ? "Improved" : "Dropped"}
         </span>
       </div>
 
-      {/* Avg display */}
+      {/* Latest day's overall */}
       <h2 className="text-2xl font-bold mt-2">{currentAvg}%</h2>
+      <p className="text-xs text-gray-500">
+        {last ? `Latest: ${last.date}` : "No data"}
+      </p>
 
       {/* Chart */}
       <div className="w-full h-48 mt-4">
-  <Bar
-    data={chartData}
-    options={{
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 100,
-          ticks: {
-            callback: function (value) {
-              return value + '%';
+        <Bar
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                  callback: (v) => v + "%",
+                },
+              },
+              x: {
+                ticks: {
+                  maxRotation: 0,
+                  autoSkip: true,
+                  autoSkipPadding: 8,
+                },
+              },
             },
-          },
-        },
-      },
-      plugins: {
-        legend: { display: false },
-      },
-    }}
-  />
-</div>
+            plugins: {
+              legend: { display: true, position: "bottom" },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}%`,
+                },
+              },
+              title: { display: false },
+            },
+          }}
+        />
+      </div>
 
+      {/* Loading state */}
+      {loading && (
+        <p className="mt-2 text-xs text-gray-500">Loading day-by-day data…</p>
+      )}
+      {!loading && daily.length === 0 && (
+        <p className="mt-2 text-xs text-gray-500">No records in this period.</p>
+      )}
     </div>
   );
 };

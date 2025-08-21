@@ -30,6 +30,7 @@ const AccuracyCard = ({ selectedFilter }) => {
             },
           }
         );
+        console.log("response :", response.data);
 
         const rawData = response.data;
         const currentDate = new Date();
@@ -192,39 +193,40 @@ const AccuracyCard = ({ selectedFilter }) => {
         </span>
       </div>
 
-<h2 className="text-2xl font-bold mt-2">{avgAccuracy}%</h2>
+      <h2 className="text-2xl font-bold mt-2">{avgAccuracy}%</h2>
 
-<div className="w-full h-48 mt-4"> {/* Increased height */}
-  <ResponsiveContainer width="100%" height="100%">
-    <LineChart data={data}>
-      <CartesianGrid strokeDasharray="3 3" vertical={false} />
-      <XAxis dataKey="label" />
-      <Tooltip />
-      <Line
-        type="monotone"
-        dataKey="physics"
-        stroke="#0E5FD9"
-        strokeWidth={3}
-        dot={false}
-      />
-      <Line
-        type="monotone"
-        dataKey="chemistry"
-        stroke="#0FAF62"
-        strokeWidth={3}
-        dot={false}
-      />
-      <Line
-        type="monotone"
-        dataKey="biology"
-        stroke="#E84646"
-        strokeWidth={3}
-        dot={false}
-      />
-    </LineChart>
-  </ResponsiveContainer>
-</div>
-
+      <div className="w-full h-48 mt-4">
+        {" "}
+        {/* Increased height */}
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="label" />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="physics"
+              stroke="#0E5FD9"
+              strokeWidth={3}
+              dot={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="chemistry"
+              stroke="#0FAF62"
+              strokeWidth={3}
+              dot={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="biology"
+              stroke="#E84646"
+              strokeWidth={3}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

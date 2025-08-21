@@ -101,8 +101,21 @@ const SignUpPage = () => {
   // Submit Sign Up
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, lastName, emailAddress, mobileNumber, password, confirmPassword } = formData;
-    if (!firstName || !emailAddress || !mobileNumber || !password || !confirmPassword) {
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      mobileNumber,
+      password,
+      confirmPassword,
+    } = formData;
+    if (
+      !firstName ||
+      !emailAddress ||
+      !mobileNumber ||
+      !password ||
+      !confirmPassword
+    ) {
       toast.error("All fields are required.");
       return;
     }
@@ -155,7 +168,9 @@ const SignUpPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
             <div className="flex gap-4">
               <div className="w-1/2">
-                <label className="block mb-1 text-sm font-bold">First Name</label>
+                <label className="block mb-1 text-sm font-bold">
+                  First Name
+                </label>
                 <div className="relative">
                   <AiOutlineUser className="absolute left-3 top-3 text-gray-500 text-xl" />
                   <input
@@ -169,7 +184,9 @@ const SignUpPage = () => {
                 </div>
               </div>
               <div className="w-1/2">
-                <label className="block mb-1 text-sm font-bold">Last Name</label>
+                <label className="block mb-1 text-sm font-bold">
+                  Last Name
+                </label>
                 <div className="relative">
                   <AiOutlineUser className="absolute left-3 top-3 text-gray-500 text-xl" />
                   <input
@@ -207,7 +224,9 @@ const SignUpPage = () => {
               )}
             </div>
             <div>
-              <label className="block mb-1 text-sm font-bold">Mobile Number</label>
+              <label className="block mb-1 text-sm font-bold">
+                Mobile Number
+              </label>
               <div className="relative">
                 <AiOutlineMail className="absolute left-3 top-3 text-gray-500 text-xl" />
                 <input
@@ -236,12 +255,18 @@ const SignUpPage = () => {
                   onClick={() => togglePasswordVisibility("password")}
                   className="absolute right-3 top-3 cursor-pointer"
                 >
-                  {showPassword.password ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+                  {showPassword.password ? (
+                    <AiOutlineEye />
+                  ) : (
+                    <AiOutlineEyeInvisible />
+                  )}
                 </span>
               </div>
             </div>
             <div>
-              <label className="block mb-1 text-sm font-bold">Confirm Password</label>
+              <label className="block mb-1 text-sm font-bold">
+                Confirm Password
+              </label>
               <div className="relative">
                 <AiOutlineLock className="absolute left-3 top-3 text-gray-500 text-xl" />
                 <input
@@ -256,7 +281,11 @@ const SignUpPage = () => {
                   onClick={() => togglePasswordVisibility("confirmPassword")}
                   className="absolute right-3 top-3 cursor-pointer"
                 >
-                  {showPassword.confirmPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+                  {showPassword.confirmPassword ? (
+                    <AiOutlineEye />
+                  ) : (
+                    <AiOutlineEyeInvisible />
+                  )}
                 </span>
               </div>
             </div>
@@ -271,7 +300,8 @@ const SignUpPage = () => {
         ) : (
           <div className="w-full max-w-sm space-y-4">
             <p className="text-center text-gray-700">
-              Enter the 6-digit OTP sent to <strong>{formData.emailAddress}</strong>
+              Enter the 6-digit OTP sent to{" "}
+              <strong>{formData.emailAddress}</strong>
             </p>
             <input
               type="text"
