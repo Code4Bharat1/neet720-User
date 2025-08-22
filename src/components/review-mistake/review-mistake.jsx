@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { 
-  FaCheckCircle, 
-  FaTimesCircle, 
-  FaLightbulb, 
-  FaAtom, 
-  FaFlask, 
-  FaDna, 
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaLightbulb,
+  FaAtom,
+  FaFlask,
+  FaDna,
   FaEye,
   FaChevronDown,
   FaChevronUp,
@@ -21,135 +21,166 @@ import {
   FaClipboardList,
   FaClock,
   FaTrophy,
-  FaBrain
+  FaBrain,
 } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
 
 // Subject configuration with icons and colors
 const subjectConfig = {
-  Physics: { 
-    icon: <FaAtom />, 
-    color: "text-blue-600", 
-    bgColor: "bg-blue-50", 
+  Physics: {
+    icon: <FaAtom />,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
     borderColor: "border-blue-300",
     hoverBg: "hover:bg-blue-100",
     gradientFrom: "from-blue-400",
-    gradientTo: "to-blue-600"
+    gradientTo: "to-blue-600",
   },
-  Chemistry: { 
-    icon: <FaFlask />, 
-    color: "text-green-600", 
-    bgColor: "bg-green-50", 
+  Chemistry: {
+    icon: <FaFlask />,
+    color: "text-green-600",
+    bgColor: "bg-green-50",
     borderColor: "border-green-300",
     hoverBg: "hover:bg-green-100",
     gradientFrom: "from-green-400",
-    gradientTo: "to-green-600"
+    gradientTo: "to-green-600",
   },
-  Biology: { 
-    icon: <FaDna />, 
-    color: "text-red-600", 
-    bgColor: "bg-red-50", 
+  Biology: {
+    icon: <FaDna />,
+    color: "text-red-600",
+    bgColor: "bg-red-50",
     borderColor: "border-red-300",
     hoverBg: "hover:bg-red-100",
     gradientFrom: "from-red-400",
-    gradientTo: "to-red-600"
+    gradientTo: "to-red-600",
   },
-  Botany: { 
-    icon: <FaEye />, 
-    color: "text-purple-600", 
-    bgColor: "bg-purple-50", 
+  Botany: {
+    icon: <FaEye />,
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
     borderColor: "border-purple-300",
     hoverBg: "hover:bg-purple-100",
     gradientFrom: "from-purple-400",
-    gradientTo: "to-purple-600"
+    gradientTo: "to-purple-600",
   },
 };
 
 const ReviewMistake = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const testId = searchParams.get("test-id");
-  
+
   const [mistakes, setMistakes] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [activeSubject, setActiveSubject] = useState(null);
   const [expandedCards, setExpandedCards] = useState(new Set());
-  const [filterType, setFilterType] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [testId, setTestId] = useState(null);
+
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedId = localStorage.getItem("currentTestID"); // 👈 whatever key you used when storing
+      if (savedId) {
+        setTestId(savedId);
+        console.log("Saved ID:", savedId);
+      } else {
+        setError("No test ID found in local storage.");
+        setLoading(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Prefer the state value; fall back to localStorage if it's missing
+    const id =
+      testId ||
+      (typeof window !== "undefined" && localStorage.getItem("currentTestID"));
+
+    if (!id) {
+      setError("Test ID not provided (missing in state and localStorage).");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    const controller = new AbortController();
+
     const fetchMistakes = async () => {
       try {
-        const authToken = typeof window !== "undefined" && localStorage.getItem("authToken");
+        if (typeof window === "undefined")
+          throw new Error("Window not available");
+        const authToken = localStorage.getItem("authToken");
         if (!authToken) throw new Error("User not authenticated");
 
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/fulltest/review`,
           {
             headers: { Authorization: `Bearer ${authToken}` },
-            params: { testId },
+            params: { testId: id }, // ✅ use resolved id
+            signal: controller.signal, // ✅ abort on unmount
           }
         );
 
-        const { correctAnswers = [], wrongAnswers = [], unanswered = [] } = response.data.reviewData || {};
-        
+        const reviewData = response.data?.reviewData || {};
+        // Some backends send "notAttempted" instead of "unanswered" — support both.
+        const correctAnswers = reviewData.correctAnswers || [];
+        const wrongAnswers = reviewData.wrongAnswers || [];
+        const unanswered =
+          reviewData.unanswered ?? reviewData.notAttempted ?? [];
+
         const formattedMistakes = [
-          ...correctAnswers.map((item) => ({ 
-            ...item, 
+          ...correctAnswers.map((item) => ({
+            ...item,
             isCorrect: true,
             question: item.questionText,
             correctAnswer: item.correctAnswer,
             selectedAnswer: item.yourAnswer,
-            subject: item.subject || 'General',
-            question_id: item.questionId
+            subject: item.subject || "General",
+            question_id: item.questionId,
           })),
-          ...wrongAnswers.map((item) => ({ 
-            ...item, 
+          ...wrongAnswers.map((item) => ({
+            ...item,
             isCorrect: false,
             question: item.questionText,
             correctAnswer: item.correctAnswer,
             selectedAnswer: item.yourAnswer,
-            subject: item.subject || 'General',
-            question_id: item.questionId
+            subject: item.subject || "General",
+            question_id: item.questionId,
           })),
-          ...unanswered.map((item) => ({ 
-            ...item, 
+          ...unanswered.map((item) => ({
+            ...item,
             isCorrect: false,
             question: item.questionText,
             correctAnswer: item.correctAnswer,
             selectedAnswer: "Not Answered",
-            subject: item.subject || 'General',
-            question_id: item.questionId
+            subject: item.subject || "General",
+            question_id: item.questionId,
           })),
         ];
-        
+
         setMistakes(formattedMistakes);
-        
-        // Extract unique subjects
-        const subjects = [...new Set(formattedMistakes.map(item => item.subject))];
+
+        const subjects = [...new Set(formattedMistakes.map((x) => x.subject))];
         setSelectedSubjects(subjects);
-        
-        // Set first subject as active by default
-        if (subjects.length > 0) {
-          setActiveSubject(subjects[0]);
-        }
-        
+        if (subjects.length > 0)
+          setActiveSubject((prev) => prev ?? subjects[0]);
       } catch (err) {
+        if (axios.isCancel?.(err)) return;
         console.error("❌ Error fetching review mistakes:", err);
-        setError("Failed to load review mistakes. Please check the test ID or try again.");
+        setError(
+          err?.response?.status === 404
+            ? "No review found for this test."
+            : "Failed to load review mistakes. Please check the test ID or try again."
+        );
       } finally {
         setLoading(false);
       }
     };
 
-    if (testId) {
-      fetchMistakes();
-    } else {
-      setError("Test ID not provided.");
-      setLoading(false);
-    }
+    fetchMistakes();
+    return () => controller.abort();
   }, [testId]);
 
   // Handle card expansion
@@ -166,39 +197,46 @@ const ReviewMistake = () => {
   // Filter and search logic
   const filteredMistakes = mistakes.filter((item) => {
     const subjectMatch = activeSubject ? item.subject === activeSubject : true;
-    const filterMatch = 
-      filterType === 'all' ? true :
-      filterType === 'correct' ? item.isCorrect :
-      filterType === 'incorrect' ? !item.isCorrect :
-      true;
-    const searchMatch = searchQuery === '' || 
+    const filterMatch =
+      filterType === "all"
+        ? true
+        : filterType === "correct"
+        ? item.isCorrect
+        : filterType === "incorrect"
+        ? !item.isCorrect
+        : true;
+    const searchMatch =
+      searchQuery === "" ||
       item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.selectedAnswer.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.correctAnswer.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     return subjectMatch && filterMatch && searchMatch;
   });
 
   // Calculate statistics
   const getStats = () => {
     const totalAll = mistakes.length;
-    const correctAll = mistakes.filter(item => item.isCorrect).length;
+    const correctAll = mistakes.filter((item) => item.isCorrect).length;
     const incorrectAll = totalAll - correctAll;
-    
+
     const totalFiltered = filteredMistakes.length;
-    const correctFiltered = filteredMistakes.filter(item => item.isCorrect).length;
+    const correctFiltered = filteredMistakes.filter(
+      (item) => item.isCorrect
+    ).length;
     const incorrectFiltered = totalFiltered - correctFiltered;
-    
-    const scorePercentage = totalAll > 0 ? Math.round((correctAll / totalAll) * 100) : 0;
-    
-    return { 
-      totalAll, 
-      correctAll, 
-      incorrectAll, 
-      totalFiltered, 
-      correctFiltered, 
-      incorrectFiltered, 
-      scorePercentage 
+
+    const scorePercentage =
+      totalAll > 0 ? Math.round((correctAll / totalAll) * 100) : 0;
+
+    return {
+      totalAll,
+      correctAll,
+      incorrectAll,
+      totalFiltered,
+      correctFiltered,
+      incorrectFiltered,
+      scorePercentage,
     };
   };
 
@@ -246,15 +284,20 @@ const ReviewMistake = () => {
                   <FaClipboardList className="text-blue-600" />
                   Review Your Test
                 </h1>
-                <p className="text-sm text-gray-600">Test ID: {testId} • Analyze your performance and learn from mistakes</p>
+                <p className="text-sm text-gray-600">
+                  Test ID: {testId} • Analyze your performance and learn from
+                  mistakes
+                </p>
               </div>
             </div>
-            
+
             {/* Score Card */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg px-6 py-3 shadow-lg">
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{stats.scorePercentage}%</div>
+                  <div className="text-2xl font-bold">
+                    {stats.scorePercentage}%
+                  </div>
                   <div className="text-xs opacity-80">Overall Score</div>
                 </div>
                 <div className="flex items-center gap-4 text-sm">
@@ -276,36 +319,41 @@ const ReviewMistake = () => {
       </div>
 
       {/* Summary Footer */}
-        <div className="mt-12 mx-4 bg-white rounded-xl shadow-sm border p-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-800">{stats.totalAll}</div>
-                <div className="text-sm text-gray-500">Total Questions</div>
+      <div className="mt-12 mx-4 bg-white rounded-xl shadow-sm border p-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-800">
+                {stats.totalAll}
               </div>
-              <div className="w-px h-12 bg-gray-200"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{stats.correctAll}</div>
-                <div className="text-sm text-gray-500">Correct</div>
-              </div>
-              <div className="w-px h-12 bg-gray-200"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-red-600">{stats.incorrectAll}</div>
-                <div className="text-sm text-gray-500">Incorrect</div>
-              </div>
+              <div className="text-sm text-gray-500">Total Questions</div>
             </div>
-            
-            <div className="flex gap-3">
-              
-              <button 
-                onClick={() => router.back()}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Back to Tests
-              </button>
+            <div className="w-px h-12 bg-gray-200"></div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">
+                {stats.correctAll}
+              </div>
+              <div className="text-sm text-gray-500">Correct</div>
+            </div>
+            <div className="w-px h-12 bg-gray-200"></div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-red-600">
+                {stats.incorrectAll}
+              </div>
+              <div className="text-sm text-gray-500">Incorrect</div>
             </div>
           </div>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.back()}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+            >
+              Back to Tests
+            </button>
+          </div>
         </div>
+      </div>
 
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto px-4 py-6">
@@ -322,7 +370,7 @@ const ReviewMistake = () => {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             {/* Filter Dropdown */}
             <select
               value={filterType}
@@ -330,13 +378,15 @@ const ReviewMistake = () => {
               className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-auto"
             >
               <option value="all">All Answers ({stats.totalFiltered})</option>
-              <option value="correct">Correct Only ({stats.correctFiltered})</option>
-              <option value="incorrect">Incorrect Only ({stats.incorrectFiltered})</option>
+              <option value="correct">
+                Correct Only ({stats.correctFiltered})
+              </option>
+              <option value="incorrect">
+                Incorrect Only ({stats.incorrectFiltered})
+              </option>
             </select>
           </div>
         </div>
-
-        
 
         {/* Questions List */}
         <div className="space-y-4">
@@ -344,7 +394,8 @@ const ReviewMistake = () => {
             {filteredMistakes.map((item, index) => {
               const isCorrect = item.isCorrect;
               const isExpanded = expandedCards.has(index);
-              const subjectConf = subjectConfig[item.subject] || subjectConfig.Physics;
+              const subjectConf =
+                subjectConfig[item.subject] || subjectConfig.Physics;
 
               return (
                 <motion.div
@@ -353,32 +404,48 @@ const ReviewMistake = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ 
+                  transition={{
                     layout: { duration: 0.2 },
                     duration: 0.3,
-                    delay: index * 0.02
+                    delay: index * 0.02,
                   }}
                   className={`bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow ${
-                    isCorrect ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'
+                    isCorrect
+                      ? "border-green-200 hover:border-green-300"
+                      : "border-red-200 hover:border-red-300"
                   }`}
                 >
                   {/* Question Header */}
-                  <div 
+                  <div
                     className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => toggleCard(index)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3 flex-1">
-                        <div className={`w-10 h-10 rounded-lg ${subjectConf.bgColor} ${subjectConf.borderColor} border flex items-center justify-center flex-shrink-0`}>
-                          <span className={subjectConf.color}>{subjectConf.icon}</span>
+                        <div
+                          className={`w-10 h-10 rounded-lg ${subjectConf.bgColor} ${subjectConf.borderColor} border flex items-center justify-center flex-shrink-0`}
+                        >
+                          <span className={subjectConf.color}>
+                            {subjectConf.icon}
+                          </span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-medium text-gray-600">{item.subject}</span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full ${
-                              isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                            }`}>
-                              {isCorrect ? 'Correct' : item.selectedAnswer === "Not Answered" ? 'Unanswered' : 'Incorrect'}
+                            <span className="text-sm font-medium text-gray-600">
+                              {item.subject}
+                            </span>
+                            <span
+                              className={`text-xs px-2 py-0.5 rounded-full ${
+                                isCorrect
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
+                              {isCorrect
+                                ? "Correct"
+                                : item.selectedAnswer === "Not Answered"
+                                ? "Unanswered"
+                                : "Incorrect"}
                             </span>
                           </div>
                           <p className="text-sm text-gray-800 mt-1 line-clamp-2">
@@ -392,10 +459,11 @@ const ReviewMistake = () => {
                         ) : (
                           <FaTimesCircle className="text-red-500 text-lg" />
                         )}
-                        {isExpanded ? 
-                          <FaChevronUp className="text-gray-400" /> : 
+                        {isExpanded ? (
+                          <FaChevronUp className="text-gray-400" />
+                        ) : (
                           <FaChevronDown className="text-gray-400" />
-                        }
+                        )}
                       </div>
                     </div>
                   </div>
@@ -405,7 +473,7 @@ const ReviewMistake = () => {
                     {isExpanded && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
+                        animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
@@ -419,7 +487,9 @@ const ReviewMistake = () => {
                                 Question
                               </h3>
                               <div className="bg-gray-100 rounded-lg p-4">
-                                <p className="text-gray-800 leading-relaxed">{item.question}</p>
+                                <p className="text-gray-800 leading-relaxed">
+                                  {item.question}
+                                </p>
                               </div>
                             </div>
 
@@ -428,18 +498,26 @@ const ReviewMistake = () => {
                               <div>
                                 <h4 className="text-sm font-medium text-gray-600 mb-2 flex items-center gap-1">
                                   Your Answer
-                                  {item.selectedAnswer === "Not Answered" && <span className="text-xs text-orange-600">(Skipped)</span>}
+                                  {item.selectedAnswer === "Not Answered" && (
+                                    <span className="text-xs text-orange-600">
+                                      (Skipped)
+                                    </span>
+                                  )}
                                 </h4>
-                                <div className={`p-4 rounded-lg border ${
-                                  isCorrect 
-                                    ? 'bg-green-50 border-green-300 text-green-900' 
-                                    : 'bg-red-50 border-red-300 text-red-900'
-                                }`}>
+                                <div
+                                  className={`p-4 rounded-lg border ${
+                                    isCorrect
+                                      ? "bg-green-50 border-green-300 text-green-900"
+                                      : "bg-red-50 border-red-300 text-red-900"
+                                  }`}
+                                >
                                   {item.selectedAnswer}
                                 </div>
                               </div>
                               <div>
-                                <h4 className="text-sm font-medium text-gray-600 mb-2">Correct Answer</h4>
+                                <h4 className="text-sm font-medium text-gray-600 mb-2">
+                                  Correct Answer
+                                </h4>
                                 <div className="p-4 rounded-lg border bg-blue-50 border-blue-300 text-blue-900">
                                   {item.correctAnswer}
                                 </div>
@@ -450,13 +528,17 @@ const ReviewMistake = () => {
                             <div>
                               <div className="flex items-center gap-2 mb-3">
                                 <FaLightbulb className="text-yellow-500" />
-                                <h4 className="font-medium text-gray-700">Explanation</h4>
+                                <h4 className="font-medium text-gray-700">
+                                  Explanation
+                                </h4>
                               </div>
                               <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
                                 <p className="text-gray-700 leading-relaxed">
                                   {item.explanation || (
                                     <span className="italic text-gray-500">
-                                      Explanation not available for this question. Review the correct answer above to understand the solution.
+                                      Explanation not available for this
+                                      question. Review the correct answer above
+                                      to understand the solution.
                                     </span>
                                   )}
                                 </p>
@@ -485,25 +567,22 @@ const ReviewMistake = () => {
           </AnimatePresence>
 
           {filteredMistakes.length === 0 && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="text-center py-12"
             >
               <FaBook className="text-4xl text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500">
-                {searchQuery 
-                  ? "No questions found matching your search." 
-                  : filterType !== 'all' 
-                    ? `No ${filterType} answers in this subject.`
-                    : "No questions found for the selected filter."
-                }
+                {searchQuery
+                  ? "No questions found matching your search."
+                  : filterType !== "all"
+                  ? `No ${filterType} answers in this subject.`
+                  : "No questions found for the selected filter."}
               </p>
             </motion.div>
           )}
         </div>
-
-        
       </div>
     </div>
   );

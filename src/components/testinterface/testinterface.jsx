@@ -384,6 +384,8 @@ useEffect(() => {
         }
       );
 
+      console.log("response : ", response.data.testResult.id)
+      localStorage.setItem("currentTestID" , response.data.testResult.id)
       if (response.status === 201) {
         toast.success("Test submitted successfully!", { duration: 5000 });
         window.location.href = "/result";

@@ -103,9 +103,10 @@ const Createtest = () => {
   const handleNext = () => {
     if (activeStep === 2) {
       // Check if any chapters are selected across all subjects
-      const hasSelectedChapters = Object.keys(selectedChapters).some(
-        (subject) => Object.keys(selectedChapters[subject]).length > 0
+      const hasSelectedChapters = Object.values(selectedChapters).some(
+        (chaptersById) => Object.keys(chaptersById).length > 0
       );
+
       if (hasSelectedChapters) {
         setShowPopup(true);
       } else {

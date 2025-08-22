@@ -70,7 +70,7 @@ const ResultPage = () => {
   }, []);
 
   const handleRetakeTest = () => {
-    router.push("/testinterfaceplan?subject=Physics&chapter=Motion&allocatedQuestions=45");
+    router.push("/testinterface");
   };
 
   return (
@@ -168,11 +168,11 @@ const ResultPage = () => {
             </motion.button>
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.push("/testselection")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Continue
+              Exit
             </motion.button>
           </motion.div>
         </motion.div>
