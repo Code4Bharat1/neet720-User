@@ -99,13 +99,13 @@ const Createtest = () => {
     });
   };
 
+  const hasSelectedChapters = Object.values(selectedChapters).some(
+    (chaptersById) => Object.keys(chaptersById).length > 0
+  );
   // Show Popup if going from Step 2 to Step 3
   const handleNext = () => {
     if (activeStep === 2) {
       // Check if any chapters are selected across all subjects
-      const hasSelectedChapters = Object.values(selectedChapters).some(
-        (chaptersById) => Object.keys(chaptersById).length > 0
-      );
 
       if (hasSelectedChapters) {
         setShowPopup(true);
@@ -256,7 +256,7 @@ const Createtest = () => {
             onClick={handleNext}
             disabled={
               (activeStep === 1 && selectedSubjects.length === 0) ||
-              (activeStep === 2 && Object.keys(selectedChapters).length === 0) // Check if any chapter is selected
+              (activeStep === 2 && !hasSelectedChapters) // Check if any chapter is selected
             }
             className="px-6 py-2 bg-[#54ADD3] text-white rounded-md hover:bg-[#3184A6] disabled:opacity-50"
           >
