@@ -19,7 +19,7 @@ import { RiGeminiFill } from "react-icons/ri";
 import axios from 'axios';
 import { Layers } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
-
+import { LuNotebookText } from "react-icons/lu";
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const Sidebar = ({ isOpen }) => {
@@ -68,6 +68,7 @@ const Sidebar = ({ isOpen }) => {
     { href: '/credits', icon: FaMedal, label: 'Scholarship' },
     { href: '/previousyearquestions', icon: FaTablets, label: 'PYQs' },
     { href: '/notice', icon: FaBook, label: 'View Notice' },
+    {href : "/test-series" , icon : LuNotebookText , label : "Test Series"},
     {href: '/coachAi', icon:RiGeminiFill, label:'AI Coach'}
   ];
 
