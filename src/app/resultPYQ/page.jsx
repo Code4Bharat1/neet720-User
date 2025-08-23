@@ -35,41 +35,88 @@ const ResultPage = () => {
   const [totalPossibleMarks, setTotalPossibleMarks] = useState(0);
 
   useEffect(() => {
-    // Get marks per subject
-    const marks = JSON.parse(localStorage.getItem("marks")) || {};
-    // To get total possible marks, you need to know how many questions per subject
-    // Here, we try to get from your previous session: you can adapt this logic
-    const questionsData = JSON.parse(localStorage.getItem("questionsData")) || {};
-    let totalMarks = 0;
-    let subjArr = [];
-    Object.entries(marks).forEach(([subject, subjScore]) => {
-      // Assume each question = 4 marks
-      let numQuestions = 0;
-      if (questionsData[subject]) numQuestions = questionsData[subject].length;
-      const max = numQuestions * 4;
-      totalMarks += max;
-      subjArr.push({
-        name: subject,
-        score: subjScore,
-        max: max,
-        icon: subjectMapping[subject]?.icon || <FaAtom className="text-gray-500 text-xl" />,
-        bgColor: subjectMapping[subject]?.bgColor || "bg-gray-100",
-      });
-    });
-    setSubjects(subjArr);
-    setScore(Object.values(marks).reduce((a, b) => a + b, 0));
-    setTotalPossibleMarks(totalMarks);
+    // NEW: preferred keys written on submit
+    const summary = JSON.parse(localStorage.getItem("scoreSummary") || "null");
+    const finalMarks = JSON.parse(localStorage.getItem("finalMarks") || "{}");
 
-    // Confetti if >= 70%
-    if (totalMarks > 0 && (Object.values(marks).reduce((a, b) => a + b, 0) / totalMarks) * 100 >= 70) {
+    if (summary) {
+      // Totals
+      setScore(Number(summary.total || 0));
+      setTotalPossibleMarks(Number(summary.max || 0));
+
+      // Per-subject rows
+      const subjArr = Object.keys(summary.bySubject || {}).map((name) => {
+        const s = summary.bySubject[name] || {};
+        const score = Number(finalMarks[name] || 0);
+        return {
+          name,
+          score,
+          max: Number(s.max || s.questions * 4 || 0),
+          icon: subjectMapping[name]?.icon || (
+            <FaAtom className="text-gray-500 text-xl" />
+          ),
+          bgColor: subjectMapping[name]?.bgColor || "bg-gray-100",
+        };
+      });
+
+      // Keep original subject order if you want (optional):
+      // subjArr.sort((a, b) => a.name.localeCompare(b.name));
+
+      setSubjects(subjArr);
+
+      // Confetti based on percentage
+      const pct =
+        summary.max > 0
+          ? (Number(summary.total) / Number(summary.max)) * 100
+          : 0;
+      if (pct >= 70) {
+        setShowConfetti(true);
+        const t = setTimeout(() => setShowConfetti(false), 6000);
+        return () => clearTimeout(t);
+      }
+      return;
+    }
+
+    // ---- Fallback for older runs (when only "marks" existed) ----
+    const marksLegacy = JSON.parse(localStorage.getItem("marks") || "{}");
+    const questionsData = JSON.parse(
+      localStorage.getItem("questionsData") || "{}"
+    );
+
+    const subjArrLegacy = Object.entries(marksLegacy).map(([name, sc]) => {
+      const max = (questionsData?.[name]?.length || 0) * 4;
+      return {
+        name,
+        score: Number(sc || 0),
+        max,
+        icon: subjectMapping[name]?.icon || (
+          <FaAtom className="text-gray-500 text-xl" />
+        ),
+        bgColor: subjectMapping[name]?.bgColor || "bg-gray-100",
+      };
+    });
+
+    const totalScoreLegacy = Object.values(marksLegacy).reduce(
+      (a, b) => Number(a) + Number(b),
+      0
+    );
+    const totalMaxLegacy = subjArrLegacy.reduce((s, r) => s + r.max, 0);
+
+    setSubjects(subjArrLegacy);
+    setScore(totalScoreLegacy);
+    setTotalPossibleMarks(totalMaxLegacy);
+
+    const pctLegacy =
+      totalMaxLegacy > 0 ? (totalScoreLegacy / totalMaxLegacy) * 100 : 0;
+    if (pctLegacy >= 70) {
       setShowConfetti(true);
-      const timer = setTimeout(() => setShowConfetti(false), 6000);
-      return () => clearTimeout(timer);
+      const t = setTimeout(() => setShowConfetti(false), 6000);
+      return () => clearTimeout(t);
     }
   }, []);
 
   const handleRetakeTest = () => {
-    router.push("/testinterface");
+    router.push("/testinterfacePYQ");
     localStorage.removeItem("marks");
   };
 
@@ -112,7 +159,8 @@ const ResultPage = () => {
             Your percentage:{" "}
             {totalPossibleMarks > 0
               ? Math.round((score / totalPossibleMarks) * 100)
-              : 0}%
+              : 0}
+            %
           </motion.p>
         </motion.div>
         {/* Right Section - Subject Summary and Actions */}
@@ -156,7 +204,7 @@ const ResultPage = () => {
           >
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/review-mistake")}
+              onClick={() => router.push("/review-mistakePYQ")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -172,19 +220,11 @@ const ResultPage = () => {
             </motion.button>
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/viewanalyticsCT")}
+              onClick={() => router.push("/previousyearquestions")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              View Analytics
-            </motion.button>
-            <motion.button
-              className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/dashboard")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Continue
+              Exit
             </motion.button>
           </motion.div>
         </motion.div>

@@ -85,6 +85,10 @@ const TestInterface = () => {
 
     // Clear marks at start
     localStorage.removeItem("marks");
+    localStorage.removeItem("wrongQuestions"); // reset mistakes for a fresh test
+    localStorage.removeItem("scoreSummary"); // reset mistakes for a fresh test
+    localStorage.removeItem("scoreTotal"); // reset mistakes for a fresh test
+    localStorage.removeItem("scoreMax"); // reset mistakes for a fresh test
     fetchQuestions();
   }, []);
 
@@ -104,32 +108,93 @@ const TestInterface = () => {
     // eslint-disable-next-line
   }, [submitted]);
 
-  // Helper to store marks live (prevents double counting)
-  const updateMarks = (subject, qIdx, selectedKey, correctKey) => {
-    let marks = JSON.parse(localStorage.getItem("marks") || "{}");
-    let answerIndexKey = `${subject}-${qIdx}`;
-    let prevSelected = answers[answerIndexKey];
 
-    // Make sure marks[subject] is always a number
+  // --- Normalizers & resolver ---
+  const canonical = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
+
+  const resolveCorrectKey = (options, correctAnswer) => {
+    // 1) If API gives a letter (A/B/C/D)
+    const ca = canonical(correctAnswer);
+    if (/^[A-D]$/i.test(ca)) return ca.toLowerCase(); // "B" -> "b"
+
+    // 2) If API gives the FULL option text (with random spaces)
+    for (const [k, v] of Object.entries(options || {})) {
+      if (canonical(v) === ca) return k.toLowerCase(); // match by cleaned text
+    }
+
+    // 3) Couldn’t resolve (bad/missing data) → return null and skip scoring
+    return null;
+  };
+
+  // ---- Wrong answers storage helpers ----
+  const WRONG_KEY = "wrongQuestions";
+
+  const readWrong = () => {
+    try {
+      return JSON.parse(localStorage.getItem(WRONG_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  };
+
+  const writeWrong = (list) => {
+    localStorage.setItem(WRONG_KEY, JSON.stringify(list));
+  };
+
+  // Add or update a wrong-answer entry
+  const upsertWrong = ({
+    subject,
+    qIdx,
+    question,
+    options,
+    selectedKey,
+    correctKey,
+  }) => {
+    const list = readWrong();
+    const id = `${subject}-${qIdx}`;
+    const entry = {
+      id,
+      subject,
+      qIdx,
+      question,
+      options, // keep full options object for review screen
+      selectedKey, // what user chose
+      correctKey, // the correct option key
+      at: Date.now(), // timestamp for sorting
+    };
+    const i = list.findIndex((x) => x.id === id);
+    if (i >= 0) list[i] = entry;
+    else list.push(entry);
+    writeWrong(list);
+  };
+
+  // Remove an entry (e.g., if user corrected the answer or cleared it)
+  const removeWrong = (subject, qIdx) => {
+    const id = `${subject}-${qIdx}`;
+    writeWrong(readWrong().filter((x) => x.id !== id));
+  };
+
+  // Helper to store marks live (prevents double counting)
+  const updateMarks = (subject, qIdx, selectedKey) => {
+    const q = questionsData[subject][qIdx];
+    if (!q) return;
+
+    const correctKey = resolveCorrectKey(q.options, q.correctAnswer);
+    if (!correctKey) return; // skip if we can't resolve
+
+    const sel = (selectedKey || "").toLowerCase();
+    const key = `${subject}-${qIdx}`;
+    const prev = (answers[key] || "").toLowerCase();
+
+    let marks = JSON.parse(localStorage.getItem("marks") || "{}");
     if (!(subject in marks)) marks[subject] = 0;
 
-    // Undo the effect of the previous answer if it existed
-    if (prevSelected !== undefined) {
-      if (prevSelected === correctKey) {
-        // Previously correct, so remove +4
-        marks[subject] -= 4;
-      } else {
-        // Previously wrong, so remove -1 (i.e., add +1)
-        marks[subject] += 1;
-      }
+    // Undo previous effect
+    if (prev) {
+      marks[subject] += prev === correctKey ? -4 : +1;
     }
-
-    // Apply new answer's effect
-    if (selectedKey === correctKey) {
-      marks[subject] += 4;
-    } else {
-      marks[subject] -= 1;
-    }
+    // Apply new pick
+    marks[subject] += sel === correctKey ? +4 : -1;
 
     localStorage.setItem("marks", JSON.stringify(marks));
   };
@@ -138,6 +203,7 @@ const TestInterface = () => {
     if (submitted) return;
     const currentQ = questionsData[subject][qIdx];
     const correctKey = currentQ.correctAnswer;
+
     setAnswers((prev) => ({
       ...prev,
       [`${subject}-${qIdx}`]: selectedKey,
@@ -146,7 +212,24 @@ const TestInterface = () => {
       ...prev,
       [`${subject}-${qIdx}`]: true,
     }));
+
+    // marks update (your existing logic)
     updateMarks(subject, qIdx, selectedKey, correctKey);
+
+    // ---- wrong-answers bookkeeping ----
+    if (selectedKey !== correctKey) {
+      upsertWrong({
+        subject,
+        qIdx,
+        question: currentQ.question,
+        options: currentQ.options,
+        selectedKey,
+        correctKey,
+      });
+    } else {
+      // user corrected it to the right answer → remove from mistakes
+      removeWrong(subject, qIdx);
+    }
   };
 
   const handleNavigation = (direction) => {
@@ -177,7 +260,8 @@ const TestInterface = () => {
     const key = `${currentSubject}-${currentQuestion}`;
     const subject = currentSubject;
     const qIdx = currentQuestion;
-    // Remove answer and update marks
+
+    // adjust marks (your existing code)
     if (answers[key] !== undefined) {
       const currentQ = questionsData[subject][qIdx];
       let marks = JSON.parse(localStorage.getItem("marks") || "{}");
@@ -185,62 +269,149 @@ const TestInterface = () => {
       else marks[subject] += 1;
       localStorage.setItem("marks", JSON.stringify(marks));
     }
+
+    // remove stored answer
     setAnswers((prev) => {
       const copy = { ...prev };
       delete copy[key];
       return copy;
     });
+
+    // ---- also remove from mistakes store ----
+    removeWrong(subject, qIdx);
   };
 
   const handleSubmit = () => {
     setSubmitted(true);
+
+    const wrong = [];
+    const marksBySubject = {};
+    const countsBySubject = {};
+    let grandTotal = 0;
+    let totalQuestions = 0;
+    let totalAttempted = 0;
+    let totalCorrect = 0;
+    let totalWrong = 0;
+
+    for (const subject of selectedSubjects) {
+      const list = questionsData[subject] || [];
+      totalQuestions += list.length;
+
+      let subjMarks = 0;
+      let subjAttempted = 0;
+      let subjCorrect = 0;
+      let subjWrong = 0;
+
+      list.forEach((q, idx) => {
+        const picked = (answers[`${subject}-${idx}`] || "").toLowerCase();
+        const correctKey = resolveCorrectKey(q.options, q.correctAnswer);
+        if (!picked || !correctKey) return;
+
+        subjAttempted++;
+        if (picked === correctKey) {
+          subjCorrect++;
+          subjMarks += 4;
+        } else {
+          subjWrong++;
+          subjMarks -= 1;
+          // Blind storage: don't include the correct answer here
+          wrong.push({
+            id: `${subject}-${idx}`,
+            subject,
+            qIdx: idx,
+            question: q.question,
+            options: q.options,
+            chosen: picked,
+            at: Date.now(),
+          });
+        }
+      });
+
+      marksBySubject[subject] = subjMarks;
+      countsBySubject[subject] = {
+        attempted: subjAttempted,
+        correct: subjCorrect,
+        wrong: subjWrong,
+        unattempted: list.length - subjAttempted,
+        questions: list.length,
+        max: list.length * 4,
+      };
+
+      grandTotal += subjMarks;
+      totalAttempted += subjAttempted;
+      totalCorrect += subjCorrect;
+      totalWrong += subjWrong;
+    }
+
+    const maxMarks = totalQuestions * 4;
+
+    // Store everything for /resultPYQ
+    localStorage.setItem("wrongQuestions", JSON.stringify(wrong));
+    localStorage.setItem("finalMarks", JSON.stringify(marksBySubject));
+    localStorage.setItem(
+      "scoreSummary",
+      JSON.stringify({
+        total: grandTotal,
+        max: maxMarks,
+        totalQuestions,
+        attempted: totalAttempted,
+        correct: totalCorrect,
+        wrong: totalWrong,
+        unattempted: totalQuestions - totalAttempted,
+        bySubject: countsBySubject,
+      })
+    );
+
+    // (Optional) simple keys if you prefer:
+    localStorage.setItem("scoreTotal", String(grandTotal));
+    localStorage.setItem("scoreMax", String(maxMarks));
+
     router.push("/resultPYQ");
   };
+
   useEffect(() => {
-  const handleKeyDown = (event) => {
-    if (event.key === "ArrowLeft" && currentQuestion > 0) {
-      handleNavigation("prev");
-    } else if (event.key === "ArrowRight") {
-      handleNavigation("next");
-    }
-  };
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft" && currentQuestion > 0) {
+        handleNavigation("prev");
+      } else if (event.key === "ArrowRight") {
+        handleNavigation("next");
+      }
+    };
 
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [currentQuestion]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentQuestion]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const optsObj =
+        questionsData[currentSubject]?.[currentQuestion]?.options || {};
+      const entries = Object.entries(optsObj);
+      if (!entries.length) return;
 
-useEffect(() => {
-  const handleKeyDown = (e) => {
-    const options = Object.entries(currentQuestion?.options || []);
-    if (!options.length) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === entries.length - 1 ? 0 : prev + 1
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === 0 ? entries.length - 1 : prev - 1
+        );
+      } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+        const [key] = entries[focusedOptionIndex];
+        handleOptionClick(currentSubject, currentQuestion, key);
+      }
+    };
 
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === options.length - 1 ? 0 : prev + 1
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === 0 ? options.length - 1 : prev - 1
-      );
-    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
-      const [key] = options[focusedOptionIndex];
-      handleOptionClick(currentSubject, currentQuestion, key);
-    }
-  };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [focusedOptionIndex, currentQuestion, currentSubject, questionsData]);
 
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [focusedOptionIndex, currentQuestion, currentSubject, currentQuestion]);
-
-
-
-useEffect(() => {
-  setFocusedOptionIndex(null);
-}, [currentQuestion]);
-
+  useEffect(() => {
+    setFocusedOptionIndex(null);
+  }, [currentQuestion]);
 
   if (loading) {
     return (
@@ -288,6 +459,14 @@ useEffect(() => {
     return { total, answered, marked, visited, notVisited };
   };
   const stats = getQuestionStats();
+
+  // --- overall max marks across all subjects (safe to show) ---
+const totalQuestionsAll = Object.values(questionsData).reduce(
+  (sum, arr) => sum + ((arr && arr.length) || 0),
+  0
+);
+const totalMaxMarks = totalQuestionsAll * 4; // NEET pattern: +4 per question
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50">
@@ -470,7 +649,6 @@ useEffect(() => {
   peer-checked:border-blue-500 peer-checked:bg-gradient-to-r peer-checked:from-blue-50 peer-checked:to-indigo-50 peer-checked:text-blue-900
   ${focusedOptionIndex === idx ? "ring-2 ring-blue-400" : ""}
 `}
-
                           >
                             <span
                               className={`
@@ -566,6 +744,10 @@ useEffect(() => {
               </div>
               <p className="text-xs text-center mt-2">
                 {Math.round((stats.answered / stats.total) * 100)}% complete
+              </p>
+              <p className="text-[11px] text-center mt-1 opacity-90">
+                Max Marks (All Subjects):{" "}
+                <span className="font-semibold">{totalMaxMarks}</span>
               </p>
             </div>
           </div>

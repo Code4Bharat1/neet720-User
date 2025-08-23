@@ -17,9 +17,24 @@ const PreviousYearList = () => {
   const router = useRouter();
 
   useEffect(() => {
+    // clear all PYQ-related storage keys on page load
+    const keysToClear = [
+      "marks",
+      "wrongQuestions",
+      "scoreSummary",
+      "scoreTotal",
+      "scoreMax",
+      "finalMarks",
+    ];
+    keysToClear.forEach((key) => localStorage.removeItem(key));
+  }, []);
+
+  useEffect(() => {
     const fetchYears = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/years`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/years`
+        );
         setYears(response.data.years);
       } catch (error) {
         console.error("Failed to fetch years:", error);
@@ -58,24 +73,56 @@ const PreviousYearList = () => {
   return (
     <>
       <Head>
-        <title>NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online</title>
-        <meta name="description" content="Practice NEET previous year question papers from 2005 to 2024 on NEET720. Start timed mock tests and boost your NEET exam preparation for free." />
-        <meta name="keywords" content="NEET720 previous year papers, NEET PYQs, NEET question paper 2024, NEET past year questions, NEET mock test, NEET online practice" />
+        <title>
+          NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online
+        </title>
+        <meta
+          name="description"
+          content="Practice NEET previous year question papers from 2005 to 2024 on NEET720. Start timed mock tests and boost your NEET exam preparation for free."
+        />
+        <meta
+          name="keywords"
+          content="NEET720 previous year papers, NEET PYQs, NEET question paper 2024, NEET past year questions, NEET mock test, NEET online practice"
+        />
         <meta name="robots" content="index, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <meta property="og:title" content="NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online" />
-        <meta property="og:description" content="Access and practice NEET PYQs from 2005 to 2024 on NEET720. Take full-length online tests year-wise and improve your performance." />
-        <meta property="og:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/pyqs.png" />
-        <meta property="og:url" content="https://neet720.com/previousyearquestions" />
+        <meta
+          property="og:title"
+          content="NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online"
+        />
+        <meta
+          property="og:description"
+          content="Access and practice NEET PYQs from 2005 to 2024 on NEET720. Take full-length online tests year-wise and improve your performance."
+        />
+        <meta
+          property="og:image"
+          content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/pyqs.png"
+        />
+        <meta
+          property="og:url"
+          content="https://neet720.com/previousyearquestions"
+        />
         <meta property="og:type" content="website" />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online" />
-        <meta name="twitter:description" content="NEET720 helps you prepare better with official previous year NEET papers from 2005 to 2024. Start practicing full tests online for free." />
-        <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/pyqs.png" />
+        <meta
+          name="twitter:title"
+          content="NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online"
+        />
+        <meta
+          name="twitter:description"
+          content="NEET720 helps you prepare better with official previous year NEET papers from 2005 to 2024. Start practicing full tests online for free."
+        />
+        <meta
+          name="twitter:image"
+          content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/pyqs.png"
+        />
 
-        <link rel="canonical" href="https://neet720.com/previousyearquestions" />
+        <link
+          rel="canonical"
+          href="https://neet720.com/previousyearquestions"
+        />
       </Head>
       <ToggleBar />
       <div className="min-h-screen mt-10 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -84,16 +131,26 @@ const PreviousYearList = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6 shadow-lg">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
                 </svg>
               </div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
                 Previous Year Question Papers
               </h1>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                Test your knowledge with carefully curated question papers from previous years.
-                Choose a year and start your practice session.
+                Test your knowledge with carefully curated question papers from
+                previous years. Choose a year and start your practice session.
               </p>
             </div>
 
@@ -104,14 +161,24 @@ const PreviousYearList = () => {
                   className="group relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100"
                   style={{
                     animationDelay: `${index * 0.1}s`,
-                    animation: "fadeInUp 0.6s ease-out forwards"
+                    animation: "fadeInUp 0.6s ease-out forwards",
                   }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative p-6">
                     <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 mb-4">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        ></path>
                       </svg>
                       Year {year}
                     </div>
@@ -133,8 +200,12 @@ const PreviousYearList = () => {
 
             {years.length === 0 && (
               <div className="text-center py-16">
-                <h3 className="text-xl font-semibold text-gray-600 mb-2">No Question Papers Available</h3>
-                <p className="text-gray-500">Question papers will appear here once they're loaded.</p>
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                  No Question Papers Available
+                </h3>
+                <p className="text-gray-500">
+                  Question papers will appear here once they're loaded.
+                </p>
               </div>
             )}
           </div>
@@ -162,8 +233,12 @@ const PreviousYearList = () => {
                 <div className="text-center">
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 border border-red-300 rounded-lg">
                     <Clock className="w-5 h-5 text-red-600" />
-                    <span className="text-gray-700 font-medium">Test begins in</span>
-                    <div className="text-xl font-bold text-white bg-red-500 px-3 py-1 rounded-lg">{timer}</div>
+                    <span className="text-gray-700 font-medium">
+                      Test begins in
+                    </span>
+                    <div className="text-xl font-bold text-white bg-red-500 px-3 py-1 rounded-lg">
+                      {timer}
+                    </div>
                     <span className="text-gray-700 font-medium">seconds</span>
                   </div>
                 </div>
@@ -177,8 +252,11 @@ const PreviousYearList = () => {
                   <button
                     onClick={handleProceedNow}
                     disabled={timer > 0}
-                    className={`w-1/2 px-4 py-2 rounded-lg font-semibold text-white ${timer > 0 ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
-                      }`}
+                    className={`w-1/2 px-4 py-2 rounded-lg font-semibold text-white ${
+                      timer > 0
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-green-500 hover:bg-green-600"
+                    }`}
                   >
                     Start Test
                   </button>
@@ -195,17 +273,17 @@ const PreviousYearList = () => {
         )}
 
         <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+        `}</style>
       </div>
     </>
   );
