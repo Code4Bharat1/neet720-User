@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image"; // Keep Next.js Image component for optimization
 import Chapters from "../chapters/chapters"; // Import Chapters component
 import Preview from "../preview/preview"; // Import Preview component
-
+import { useMemo } from "react";
 const Createtest = () => {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(1);
@@ -99,9 +99,6 @@ const Createtest = () => {
     });
   };
 
-  const hasSelectedChapters = Object.values(selectedChapters).some(
-    (chaptersById) => Object.keys(chaptersById).length > 0
-  );
   // Show Popup if going from Step 2 to Step 3
   const handleNext = () => {
     if (activeStep === 2) {
@@ -135,7 +132,22 @@ const Createtest = () => {
       setActiveStep(3); // Move to preview page
     }
   };
-
+  const hasSelectedChapters = useMemo(() => {
+    const obj = selectedChapters || {};
+    // obj = { Physics: { ch1: {...}, ch2: {...} }, Chemistry: {...} }
+    return Object.values(obj).some((chaptersById) => {
+      if (!chaptersById) return false;
+      const list = Array.isArray(chaptersById)
+        ? chaptersById
+        : Object.values(chaptersById);
+      return list.some((ch) => {
+        if (!ch) return false;
+        const n = parseInt(String(ch.numQuestions ?? 0), 10) || 0;
+        // consider selected if has any data (or you can require n > 0)
+        return n > 0 || Object.keys(ch).length > 0;
+      });
+    });
+  }, [selectedChapters]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 p-4 flex flex-col items-center">
       {/* Header */}

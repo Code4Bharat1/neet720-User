@@ -486,7 +486,9 @@ export default function AiCoachPlan() {
                               }
                               
                               // Get text without parentheses for description
-                              const description = text.replace(/\([^)]+\)/g, '').replace(/\s+/g, ' ').trim();
+                              const description = typeof text === "string"
+                                ? text.replace(/\([^)]+\)/g, '').replace(/\s+/g, ' ').trim()
+                                : "";
                               
                               return (
                                 <>

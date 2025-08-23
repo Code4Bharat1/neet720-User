@@ -7,6 +7,7 @@ import { AlertTriangle, Clock, X } from "lucide-react";
 import Head from "next/head";
 import ToggleBar from "@/components/layout/togglebar/togglebar";
 import BottomNavbar from "@/components/layout/bottomnav/bottomnav";
+import { FaArrowLeft } from "react-icons/fa";
 
 const PreviousYearList = () => {
   const [years, setYears] = useState([]);
@@ -125,10 +126,16 @@ const PreviousYearList = () => {
         />
       </Head>
       <ToggleBar />
-      <div className="min-h-screen mt-10 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <BottomNavbar />
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white hover:bg-gray-50 text-sm text-gray-700 shadow-sm"
+            >
+              <FaArrowLeft className="text-gray-600" /> Back
+            </button>
             <div className="text-center mb-12">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6 shadow-lg">
                 <svg
