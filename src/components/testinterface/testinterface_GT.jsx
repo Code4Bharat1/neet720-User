@@ -77,14 +77,13 @@ const TestInterface = () => {
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
   // Derived values (must be above effects that reference them)
-const currentQuestionData =
-  questionsData[currentSubject]?.[currentQuestion] ?? null;
-const currentOptionsLength = currentQuestionData?.options?.length ?? 0;
-
+  // const currentQuestionData =
+  //   questionsData[currentSubject]?.[currentQuestion] ?? null;
+  // const currentOptionsLength = currentQuestionData?.options?.length ?? 0;
 
   const numQuestions = questionsData[currentSubject]?.length || 0;
   const currentQuestionData = questionsData[currentSubject]?.[currentQuestion];
-  const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
+  // const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -412,8 +411,7 @@ const currentOptionsLength = currentQuestionData?.options?.length ?? 0;
 
       console.log("Test result submitted:", response.data);
       toast.success("Test submitted successfully! 🎉", { duration: 5000 });
-      router.push('/resultGT')
-  
+      router.push("/resultGT");
     } catch (error) {
       console.error("Error submitting test result:", error);
       toast.error("Failed to submit test. Please try again. ❌", {
@@ -462,7 +460,6 @@ const currentOptionsLength = currentQuestionData?.options?.length ?? 0;
       </div>
     );
   }
-
 
   const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
   const stats = getQuestionStats();
