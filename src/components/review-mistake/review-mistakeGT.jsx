@@ -65,7 +65,7 @@ const subjectConfig = {
   },
 };
 
-const ReviewMistake = () => {
+const ReviewMistakeGT = () => {
   const router = useRouter();
 
   const [mistakes, setMistakes] = useState([]);
@@ -81,7 +81,7 @@ const ReviewMistake = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedId = localStorage.getItem("currentTestID") ; // 👈 whatever key you used when storing
+      const savedId = localStorage.getItem("testid") ; // 👈 whatever key you used when storing
       if (savedId) {
         setTestId(savedId);
         console.log("Saved ID:", savedId);
@@ -588,4 +588,4 @@ const ReviewMistake = () => {
   );
 };
 
-export default ReviewMistake;
+export default ReviewMistakeGT;

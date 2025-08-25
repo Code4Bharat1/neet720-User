@@ -152,7 +152,7 @@ const ResultPage = () => {
   }, []);
 
   const handleRetakeTest = () => {
-    router.push("/testinterface");
+    router.push("/testinterfaceGT");
     localStorage.removeItem("testAnswers");
   };
 
@@ -230,14 +230,14 @@ const ResultPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.5 }}
           >
-            <motion.button
+            {/* <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
               onClick={() => router.push("/review-mistake")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               Review Mistake
-            </motion.button>
+            </motion.button> */}
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
               onClick={handleRetakeTest}
@@ -246,17 +246,17 @@ const ResultPage = () => {
             >
               Retake Test
             </motion.button>
-            <motion.button
+            {/* <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/viewanalyticsCT")}
+              onClick={() => router.push("/viewanalytics")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               View Analytics
-            </motion.button>
+            </motion.button> */}
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.push("/testselection")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
