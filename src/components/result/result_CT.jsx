@@ -5,17 +5,31 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
-import { 
-  FaFlask, FaAtom, FaDna, FaEye, FaTrophy, 
-  FaCheckCircle, FaTimesCircle, FaBook
+import {
+  FaFlask,
+  FaAtom,
+  FaDna,
+  FaEye,
+  FaTrophy,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaBook,
 } from "react-icons/fa";
 
 // Simple subject configuration
 const subjectConfig = {
   Physics: { icon: <FaAtom />, color: "text-blue-600", bgColor: "bg-blue-100" },
-  Chemistry: { icon: <FaFlask />, color: "text-green-600", bgColor: "bg-green-100" },
+  Chemistry: {
+    icon: <FaFlask />,
+    color: "text-green-600",
+    bgColor: "bg-green-100",
+  },
   Biology: { icon: <FaDna />, color: "text-red-600", bgColor: "bg-red-100" },
-  Botany: { icon: <FaEye />, color: "text-purple-600", bgColor: "bg-purple-100" },
+  Botany: {
+    icon: <FaEye />,
+    color: "text-purple-600",
+    bgColor: "bg-purple-100",
+  },
 };
 
 const ResultPage = () => {
@@ -26,19 +40,28 @@ const ResultPage = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [totalPossibleMarks, setTotalPossibleMarks] = useState(0);
-  const [stats, setStats] = useState({ correct: 0, incorrect: 0, unattempted: 0 });
+  const [stats, setStats] = useState({
+    correct: 0,
+    incorrect: 0,
+    unattempted: 0,
+  });
+
+  // Replace the useEffect in your ResultPage component with this:
 
   useEffect(() => {
     const storedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
-    
+
     // Get the selected chapters data
-    const selectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {};
-    
-    // Calculate total marks
+    const selectedChapters =
+      JSON.parse(localStorage.getItem("selectedChapters")) || {};
+
+    // Calculate total marks - FIX: Use Object.values() instead of forEach
     let totalMarks = 0;
     let totalQuestions = 0;
-    Object.values(selectedChapters).forEach(subjectChapters => {
-      subjectChapters.forEach(chapter => {
+
+    Object.values(selectedChapters).forEach((subjectChapters) => {
+      // subjectChapters is an object with numbered keys, not an array
+      Object.values(subjectChapters).forEach((chapter) => {
         const questions = Number(chapter.numQuestions) || 0;
         totalMarks += questions * 4;
         totalQuestions += questions;
@@ -50,7 +73,7 @@ const ResultPage = () => {
     let totalScore = 0;
     let correct = 0;
     let incorrect = 0;
-    
+
     storedAnswers.forEach((answer) => {
       if (answer.isCorrect) {
         totalScore += 4;
@@ -60,12 +83,12 @@ const ResultPage = () => {
         incorrect++;
       }
     });
-    
+
     setScore(totalScore);
     setStats({
       correct,
       incorrect,
-      unattempted: totalQuestions - storedAnswers.length
+      unattempted: totalQuestions - storedAnswers.length,
     });
 
     // Calculate subject-wise scores
@@ -77,26 +100,30 @@ const ResultPage = () => {
       subjectsObj[answer.subject].score += answer.isCorrect ? 4 : -1;
     });
 
-    // Get subject max marks
+    // Get subject max marks - FIX: Use Object.values() for chapters
     const subjectMaxMarks = {};
     Object.entries(selectedChapters).forEach(([subject, chapters]) => {
-      subjectMaxMarks[subject] = chapters.reduce((total, chapter) => {
-        return total + (Number(chapter.numQuestions) || 0) * 4;
-      }, 0);
+      subjectMaxMarks[subject] = Object.values(chapters).reduce(
+        (total, chapter) => {
+          return total + (Number(chapter.numQuestions) || 0) * 4;
+        },
+        0
+      );
     });
 
     // Build subjects array
-    const selectedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || [];
+    const selectedSubjects =
+      JSON.parse(localStorage.getItem("selectedSubjects")) || [];
     const computedSubjects = selectedSubjects.map((subj) => {
       const config = subjectConfig[subj] || subjectConfig.Physics;
       const subjectScore = subjectsObj[subj]?.score || 0;
       const subjectMax = subjectMaxMarks[subj] || 0;
-      
+
       return {
         name: subj,
         score: subjectScore,
         max: subjectMax,
-        ...config
+        ...config,
       };
     });
     setSubjects(computedSubjects);
@@ -108,13 +135,21 @@ const ResultPage = () => {
     }
   }, []);
 
-  const percentage = totalPossibleMarks > 0 ? Math.round((score / totalPossibleMarks) * 100) : 0;
+  const percentage =
+    totalPossibleMarks > 0 ? Math.round((score / totalPossibleMarks) * 100) : 0;
   const isGoodPerformance = percentage >= 70;
 
   return (
     <div className="h-screen max-sm:h-full w-screen overflow-hidden max-sm:overflow-auto  flex items-center max-sm:flex-col justify-center bg-gray-100 relative">
       {/* Confetti */}
-      {showConfetti && <Confetti width={width} height={height} numberOfPieces={300} recycle={false} />}
+      {showConfetti && (
+        <Confetti
+          width={width}
+          height={height}
+          numberOfPieces={300}
+          recycle={false}
+        />
+      )}
 
       {/* Main Content */}
       <div className="w-full h-full max-w-6xl mx-auto p-6 grid grid-cols-2 max-sm:grid-cols-1 gap-6">
@@ -128,20 +163,22 @@ const ResultPage = () => {
           <div className="absolute top-0 right-0 opacity-10 text-9xl">
             {isGoodPerformance ? <FaTrophy /> : <FaBook />}
           </div>
-          
+
           <div className="relative z-10">
             <h2 className="text-2xl font-bold mb-6">Your Result</h2>
-            
+
             {/* Score Circle */}
             <div className="w-56 h-56 mx-auto bg-white/20 rounded-full flex flex-col items-center justify-center mb-6">
               <span className="text-5xl font-bold">{percentage}%</span>
-              <span className="text-lg opacity-80">{score} / {totalPossibleMarks}</span>
+              <span className="text-lg opacity-80">
+                {score} / {totalPossibleMarks}
+              </span>
             </div>
-            
+
             <h3 className="text-xl font-semibold text-center">
               {isGoodPerformance ? "Excellent Job! 🎉" : "Keep Practicing! 💪"}
             </h3>
-            
+
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mt-6">
               <div className="text-center">
@@ -172,8 +209,10 @@ const ResultPage = () => {
         >
           {/* Subject Breakdown */}
           <div className="bg-white rounded-2xl p-6 shadow-lg mb-6 flex-1">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">Subject Performance</h2>
-            
+            <h2 className="text-xl font-bold mb-4 text-gray-800">
+              Subject Performance
+            </h2>
+
             <div className="space-y-3">
               {subjects.map((subject, index) => (
                 <motion.div
@@ -184,15 +223,22 @@ const ResultPage = () => {
                   className={`flex items-center justify-between p-3 rounded-lg ${subject.bgColor}`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={`text-xl ${subject.color}`}>{subject.icon}</span>
-                    <span className="font-medium text-gray-800">{subject.name}</span>
+                    <span className={`text-xl ${subject.color}`}>
+                      {subject.icon}
+                    </span>
+                    <span className="font-medium text-gray-800">
+                      {subject.name}
+                    </span>
                   </div>
                   <div className="text-right">
                     <div className="font-bold text-gray-800">
                       {subject.score}/{subject.max}
                     </div>
                     <div className="text-sm text-gray-600">
-                      {subject.max > 0 ? Math.round((subject.score / subject.max) * 100) : 0}%
+                      {subject.max > 0
+                        ? Math.round((subject.score / subject.max) * 100)
+                        : 0}
+                      %
                     </div>
                   </div>
                 </motion.div>
@@ -207,7 +253,9 @@ const ResultPage = () => {
             transition={{ delay: 0.5 }}
             className="bg-white rounded-2xl p-6 shadow-lg"
           >
-            <h2 className="text-lg font-bold mb-4 text-gray-800">What's Next?</h2>
+            <h2 className="text-lg font-bold mb-4 text-gray-800">
+              What's Next?
+            </h2>
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => router.push("/review-mistakeCT")}

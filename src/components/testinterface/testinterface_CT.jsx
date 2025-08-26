@@ -1,6 +1,6 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import axios from "axios"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import {
   FaFlask,
   FaAtom,
@@ -12,13 +12,13 @@ import {
   FaClock,
   FaBolt,
   FaFlag,
-} from "react-icons/fa"
-import { IoMdCheckmark, IoMdClose } from "react-icons/io"
-import { MdVisibility } from "react-icons/md"
-import { HiOutlineSparkles } from "react-icons/hi"
-import { RiQuestionnaireFill } from "react-icons/ri"
-import toast from "react-hot-toast"
-import { useRouter } from "next/navigation"
+} from "react-icons/fa";
+import { IoMdCheckmark, IoMdClose } from "react-icons/io";
+import { MdVisibility } from "react-icons/md";
+import { HiOutlineSparkles } from "react-icons/hi";
+import { RiQuestionnaireFill } from "react-icons/ri";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const subjectIcons = {
   Physics: {
@@ -42,49 +42,49 @@ const subjectIcons = {
     gradientFrom: "from-red-400",
     gradientTo: "to-red-600",
   },
-}
+};
 
 const TestInterface = () => {
   // State management
-  const [selectedSubjects, setSelectedSubjects] = useState([])
-  const [selectedChapters, setSelectedChapters] = useState({})
-  const [questionsData, setQuestionsData] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)  
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [selectedChapters, setSelectedChapters] = useState({});
+  const [questionsData, setQuestionsData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentSubject, setCurrentSubject] = useState(() => {
     if (typeof window !== "undefined") {
-      const storedSubjects = localStorage.getItem("selectedSubjects")
+      const storedSubjects = localStorage.getItem("selectedSubjects");
       if (storedSubjects) {
         try {
-          const parsedSubjects = JSON.parse(storedSubjects)
-          return parsedSubjects[0] || "Physics" // fallback to "Physics" if empty array
+          const parsedSubjects = JSON.parse(storedSubjects);
+          return parsedSubjects[0] || "Physics"; // fallback to "Physics" if empty array
         } catch (error) {
-          console.error("Failed to parse subjects from localStorage:", error)
+          console.error("Failed to parse subjects from localStorage:", error);
         }
       }
     }
-    return "Physics" // default if nothing found
-  })
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState({})
-  const [visitedQuestions, setVisitedQuestions] = useState({})
-  const [markedForReview, setMarkedForReview] = useState({})
-  const [timer, setTimer] = useState(0)
-  const [startTime, setStartTime] = useState(new Date())
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [hoveredOption, setHoveredOption] = useState(null)
-  const [totalQuestions, setTotalQuestions] = useState(0)
+    return "Physics"; // default if nothing found
+  });
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [visitedQuestions, setVisitedQuestions] = useState({});
+  const [markedForReview, setMarkedForReview] = useState({});
+  const [timer, setTimer] = useState(0);
+  const [startTime, setStartTime] = useState(new Date());
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hoveredOption, setHoveredOption] = useState(null);
+  const [totalQuestions, setTotalQuestions] = useState(0);
 
   // Mobile Sheet/Modal state
-  const [showNavGrid, setShowNavGrid] = useState(false)
-  const [showProgress, setShowProgress] = useState(false)
-  const [showStats, setShowStats] = useState(false)
+  const [showNavGrid, setShowNavGrid] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
   // Use ref to track if the timer has been initialized
-  const timerInitialized = useRef(false)
-  const intervalRef = useRef(null)
-  const router = useRouter()
+  const timerInitialized = useRef(false);
+  const intervalRef = useRef(null);
+  const router = useRouter();
 
   // useEffect to control the escape screen
   useEffect(() => {
@@ -97,69 +97,104 @@ const TestInterface = () => {
       ) {
         // router.push("/testselection")
       }
-    }
-    document.addEventListener("fullscreenchange", handleFullScreenChange)
-    document.addEventListener("webkitfullscreenchange", handleFullScreenChange)
-    document.addEventListener("mozfullscreenchange", handleFullScreenChange)
-    document.addEventListener("MSFullscreenChange", handleFullScreenChange)
+    };
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
     return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange)
-      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange)
-      document.removeEventListener("mozfullscreenchange", handleFullScreenChange)
-      document.removeEventListener("MSFullscreenChange", handleFullScreenChange)
-    }
-  }, [router])
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullScreenChange
+      );
+    };
+  }, [router]);
 
   // 1. INITIALIZATION EFFECT
   useEffect(() => {
-    if (typeof window === "undefined") return // SSR
-    
-    const storedSelectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {}
-    setSelectedChapters(storedSelectedChapters)
-    const storedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || []
-    setSelectedSubjects(storedSubjects)
+    if (typeof window === "undefined") return; // SSR
+
+    const storedSelectedChapters =
+      JSON.parse(localStorage.getItem("selectedChapters")) || {};
+    setSelectedChapters(storedSelectedChapters);
+    const storedSubjects =
+      JSON.parse(localStorage.getItem("selectedSubjects")) || [];
+    setSelectedSubjects(storedSubjects);
     // console.log(storedSubjects)
 
-    let totalQuestionsCount = 0
+    let totalQuestionsCount = 0;
     storedSubjects.forEach((subject) => {
-      const subjectChapters = storedSelectedChapters[subject]
+      const subjectChapters = storedSelectedChapters[subject];
       if (subjectChapters) {
         totalQuestionsCount += Object.values(subjectChapters).reduce(
           (total, chapter) => total + (Number(chapter.numQuestions) || 0),
-          0,
-        )
+          0
+        );
       }
-    })
-    setTotalQuestions(totalQuestionsCount)
+    });
+    setTotalQuestions(totalQuestionsCount);
 
     if (totalQuestionsCount > 0 && !timerInitialized.current) {
-      setTimer(totalQuestionsCount * 60)
-      timerInitialized.current = true
+      setTimer(totalQuestionsCount * 60);
+      timerInitialized.current = true;
     }
 
-
+    // Replace the fetchQuestions function in your useEffect with this:
     const fetchQuestions = async () => {
       try {
-        
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/fetch-questions`, {
+        // Transform the data structure to match your desired API format
+        const transformedSelectedChapters = {};
+
+        // Convert from localStorage format to API format
+        Object.keys(storedSelectedChapters).forEach((subject) => {
+          transformedSelectedChapters[subject] = [];
+
+          // storedSelectedChapters[subject] is an object with chapter IDs as keys
+          Object.values(storedSelectedChapters[subject]).forEach((chapter) => {
+            transformedSelectedChapters[subject].push({
+              name: chapter.chapterName,
+            });
+          });
+        });
+
+        console.log("Transformed data for API:", {
           selectedSubjects: storedSubjects,
-          selectedChapters: storedSelectedChapters,
+          selectedChapters: transformedSelectedChapters,
           numQuestions: totalQuestionsCount,
-        })
-        const data = response.data
+        });
+
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/fetch-questions`,
+          {
+            selectedSubjects: storedSubjects,
+            selectedChapters: transformedSelectedChapters, // Use transformed structure
+            numQuestions: totalQuestionsCount,
+          }
+        );
+
+        const data = response.data;
         const subjectWiseQuestions = {
           Physics: [],
           Chemistry: [],
           Biology: [],
-        }
+        };
         const subjectCounts = {
           Physics: 0,
           Chemistry: 0,
           Biology: 0,
         };
 
-        const limits = {}; // assume you calculate this from selectedChapters
-
+        // Calculate limits using the original localStorage structure
+        const limits = {};
         storedSubjects.forEach((subject) => {
           const chapters = storedSelectedChapters[subject];
           const total = Object.values(chapters).reduce(
@@ -179,25 +214,31 @@ const TestInterface = () => {
               id: item.question.id,
               question: item.question.question_text,
               options: item.options.map((opt) => opt.option_text),
-              correctAnswer: item.correctAnswer ? item.correctAnswer.option_text : null,
+              correctAnswer: item.correctAnswer
+                ? item.correctAnswer.option_text
+                : null,
             });
             subjectCounts[subject]++;
           }
         });
 
-        setQuestionsData(subjectWiseQuestions)
-        setLoading(false)
+        setQuestionsData(subjectWiseQuestions);
+        setLoading(false);
 
         // Set initial subject to the first one with questions, if any
         if (storedSubjects.length > 0) {
-          const firstSubjectWithQuestions = storedSubjects.find((subject) => subjectWiseQuestions[subject]?.length > 0)
+          const firstSubjectWithQuestions = storedSubjects.find(
+            (subject) => subjectWiseQuestions[subject]?.length > 0
+          );
           if (firstSubjectWithQuestions) {
-            setCurrentSubject(firstSubjectWithQuestions)
+            setCurrentSubject(firstSubjectWithQuestions);
           } else {
-            setError("No questions available for the selected subjects/chapters.")
+            setError(
+              "No questions available for the selected subjects/chapters."
+            );
           }
         } else {
-          setError("No subjects selected for the test.")
+          setError("No subjects selected for the test.");
         }
 
         // Store chapter info
@@ -205,87 +246,103 @@ const TestInterface = () => {
           chapterId: item.question.chapterId,
           chapterName: item.question.chapter,
           questionIds: item.question.id,
-        }))
-        localStorage.setItem("questionInfo", JSON.stringify(questionInfo))
+        }));
+        localStorage.setItem("questionInfo", JSON.stringify(questionInfo));
       } catch (err) {
-        setError("Failed to load questions")
-        setLoading(false)
+        console.error("Error fetching questions:", err);
+        setError("Failed to load questions");
+        setLoading(false);
       }
-    }
-    fetchQuestions()
+    };
+    fetchQuestions();
 
     return () => {
       if (intervalRef.current) {
-        clearInterval(intervalRef.current)
+        clearInterval(intervalRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   // Prevent reload on F5 or Ctrl+R
   useEffect(() => {
     const handleBeforeUnload = (event) => {
-      event.preventDefault()
-      event.returnValue = ""
-    }
-    window.addEventListener("beforeunload", handleBeforeUnload)
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-    }
-  }, [])
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   // 2. TIMER EFFECT
   useEffect(() => {
-    if (!timerInitialized.current) return
+    if (!timerInitialized.current) return;
 
     if (intervalRef.current) {
-      clearInterval(intervalRef.current)
+      clearInterval(intervalRef.current);
     }
 
     intervalRef.current = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 0) {
-          clearInterval(intervalRef.current)
-          handleSubmit()
-          return 0
+          clearInterval(intervalRef.current);
+          handleSubmit();
+          return 0;
         }
-        return prev - 1
-      })
-    }, 1000)
+        return prev - 1;
+      });
+    }, 1000);
 
     return () => {
       if (intervalRef.current) {
-        clearInterval(intervalRef.current)
+        clearInterval(intervalRef.current);
       }
-    }
-  }, [timerInitialized.current])
+    };
+  }, [timerInitialized.current]);
+  const isLowTime = timer <= 300; // Last 5 minutes (300 seconds)
+
+  const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
+
+  // 3. Add currentQuestionData calculation (add this after questionsData state)
+  const currentQuestionData = questionsData[currentSubject]?.[currentQuestion];
 
   // Calculate the actual number of questions for the current subject
-  const currentSubjectActualQuestionCount = questionsData[currentSubject]?.length || 0
+  const currentSubjectActualQuestionCount =
+    questionsData[currentSubject]?.length || 0;
 
   const formattedTime = {
     hours: String(Math.floor(timer / 3600)).padStart(2, "0"),
     minutes: String(Math.floor((timer % 3600) / 60)).padStart(2, "0"),
     seconds: String(timer % 60).padStart(2, "0"),
-  }
+  };
 
   const handleOptionClick = (index) => {
-    if (!questionsData[currentSubject] || !questionsData[currentSubject][currentQuestion]) return
-    const questionData = questionsData[currentSubject][currentQuestion]
-    const selectedAnswer = questionData.options[index]
-    const correctAnswer = questionData.correctAnswer
-    const isCorrect = selectedAnswer === correctAnswer
+    if (
+      !questionsData[currentSubject] ||
+      !questionsData[currentSubject][currentQuestion]
+    )
+      return;
+    const questionData = questionsData[currentSubject][currentQuestion];
+    const selectedAnswer = questionData.options[index];
+    const correctAnswer = questionData.correctAnswer;
+    const isCorrect = selectedAnswer === correctAnswer;
 
     const answerSnapshot = {
       question_id: questionData.id,
       selectedAnswer,
       correctAnswer,
-    }
-    localStorage.setItem("lastAnswerClicked", JSON.stringify(answerSnapshot))
+    };
+    localStorage.setItem("lastAnswerClicked", JSON.stringify(answerSnapshot));
 
-    const questionId = questionData.id
-    const questionInfo = JSON.parse(localStorage.getItem("questionInfo")) || []
-    const chapterInfo = questionInfo.find((item) => item.questionIds === questionId)
-    const chapterName = chapterInfo ? chapterInfo.chapterName : "Unknown Chapter"
+    const questionId = questionData.id;
+    const questionInfo = JSON.parse(localStorage.getItem("questionInfo")) || [];
+    const chapterInfo = questionInfo.find(
+      (item) => item.questionIds === questionId
+    );
+    const chapterName = chapterInfo
+      ? chapterInfo.chapterName
+      : "Unknown Chapter";
 
     const answerData = {
       subject: currentSubject,
@@ -295,220 +352,243 @@ const TestInterface = () => {
       selectedAnswer,
       isCorrect,
       correctAnswer,
-    }
+    };
 
-    const savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || []
+    const savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
     const existingIndex = savedAnswers.findIndex(
-      (answer) => answer.question_id === questionData.id && answer.subject === currentSubject,
-    )
+      (answer) =>
+        answer.question_id === questionData.id &&
+        answer.subject === currentSubject
+    );
 
-    const currentTime = new Date()
-    const timeTakenInSeconds = (currentTime - startTime) / 1000
-    const minutes = Math.floor(timeTakenInSeconds / 60)
-    const seconds = Math.floor(timeTakenInSeconds % 60)
-    const answerWithTime = { ...answerData, timeTaken: { minutes, seconds } }
+    const currentTime = new Date();
+    const timeTakenInSeconds = (currentTime - startTime) / 1000;
+    const minutes = Math.floor(timeTakenInSeconds / 60);
+    const seconds = Math.floor(timeTakenInSeconds % 60);
+    const answerWithTime = { ...answerData, timeTaken: { minutes, seconds } };
 
     if (existingIndex >= 0) {
-      savedAnswers[existingIndex] = answerWithTime
+      savedAnswers[existingIndex] = answerWithTime;
     } else {
-      savedAnswers.push(answerWithTime)
+      savedAnswers.push(answerWithTime);
     }
-    localStorage.setItem("testAnswers", JSON.stringify(savedAnswers))
+    localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
 
-    setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index })
+    setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index });
     setVisitedQuestions({
       ...visitedQuestions,
       [`${currentSubject}-${currentQuestion}`]: true,
-    })
+    });
 
-    const previousTime = JSON.parse(localStorage.getItem("questionTime")) || {}
-    previousTime[`${currentSubject}-${currentQuestion}`] = timeTakenInSeconds
-    localStorage.setItem("questionTime", JSON.stringify(previousTime))
+    const previousTime = JSON.parse(localStorage.getItem("questionTime")) || {};
+    previousTime[`${currentSubject}-${currentQuestion}`] = timeTakenInSeconds;
+    localStorage.setItem("questionTime", JSON.stringify(previousTime));
 
-    const savedTimeForCurrentQuestion = previousTime[`${currentSubject}-${currentQuestion}`]
+    const savedTimeForCurrentQuestion =
+      previousTime[`${currentSubject}-${currentQuestion}`];
     const newStartTime = savedTimeForCurrentQuestion
       ? new Date(new Date() - savedTimeForCurrentQuestion * 1000)
-      : currentTime
-    setStartTime(newStartTime)
-  }
+      : currentTime;
+    setStartTime(newStartTime);
+  };
 
   const handleNavigation = (direction) => {
-    const totalQuestionsInCurrentSubject = currentSubjectActualQuestionCount
+    const totalQuestionsInCurrentSubject = currentSubjectActualQuestionCount;
 
-    if (direction === "next" && currentQuestion >= totalQuestionsInCurrentSubject - 1) {
-      const currentSubjectIndex = selectedSubjects.indexOf(currentSubject)
-      const nextSubjectIndex = (currentSubjectIndex + 1) % selectedSubjects.length
-      setCurrentSubject(selectedSubjects[nextSubjectIndex])
-      setCurrentQuestion(0)
+    if (
+      direction === "next" &&
+      currentQuestion >= totalQuestionsInCurrentSubject - 1
+    ) {
+      const currentSubjectIndex = selectedSubjects.indexOf(currentSubject);
+      const nextSubjectIndex =
+        (currentSubjectIndex + 1) % selectedSubjects.length;
+      setCurrentSubject(selectedSubjects[nextSubjectIndex]);
+      setCurrentQuestion(0);
     } else if (direction === "prev" && currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1)
-    } else if (direction === "next" && currentQuestion < totalQuestionsInCurrentSubject - 1) {
-      setCurrentQuestion(currentQuestion + 1)
+      setCurrentQuestion(currentQuestion - 1);
+    } else if (
+      direction === "next" &&
+      currentQuestion < totalQuestionsInCurrentSubject - 1
+    ) {
+      setCurrentQuestion(currentQuestion + 1);
     } else if (direction === "prev" && currentQuestion === 0) {
-      const currentSubjectIndex = selectedSubjects.indexOf(currentSubject)
+      const currentSubjectIndex = selectedSubjects.indexOf(currentSubject);
       if (currentSubjectIndex > 0) {
-        const prevSubject = selectedSubjects[currentSubjectIndex - 1]
-        setCurrentSubject(prevSubject)
-        const prevSubjectActualQuestionCount = questionsData[prevSubject]?.length || 0
-        setCurrentQuestion(Math.max(prevSubjectActualQuestionCount - 1, 0))
+        const prevSubject = selectedSubjects[currentSubjectIndex - 1];
+        setCurrentSubject(prevSubject);
+        const prevSubjectActualQuestionCount =
+          questionsData[prevSubject]?.length || 0;
+        setCurrentQuestion(Math.max(prevSubjectActualQuestionCount - 1, 0));
       }
     }
-  }
+  };
 
   const handleReviewLater = () => {
     setMarkedForReview({
       ...markedForReview,
-      [`${currentSubject}-${currentQuestion}`]: !markedForReview[`${currentSubject}-${currentQuestion}`],
-    })
-  }
+      [`${currentSubject}-${currentQuestion}`]:
+        !markedForReview[`${currentSubject}-${currentQuestion}`],
+    });
+  };
 
   const handleClearResponse = () => {
-    const updatedAnswers = { ...answers }
-    delete updatedAnswers[`${currentSubject}-${currentQuestion}`]
-    setAnswers(updatedAnswers)
+    const updatedAnswers = { ...answers };
+    delete updatedAnswers[`${currentSubject}-${currentQuestion}`];
+    setAnswers(updatedAnswers);
 
-    let savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || []
+    let savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
     savedAnswers = savedAnswers.filter(
       (answer) =>
         !(
-          answer.question_id === questionsData[currentSubject][currentQuestion]?.id && answer.subject === currentSubject
-        ),
-    )
-    localStorage.setItem("testAnswers", JSON.stringify(savedAnswers))
-  }
+          answer.question_id ===
+            questionsData[currentSubject][currentQuestion]?.id &&
+          answer.subject === currentSubject
+        )
+    );
+    localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
+  };
 
   const calculateTotalTime = (subject) => {
-    const questionTime = JSON.parse(localStorage.getItem("questionTime")) || {}
-    let totalTimeInSeconds = 0
+    const questionTime = JSON.parse(localStorage.getItem("questionTime")) || {};
+    let totalTimeInSeconds = 0;
     Object.keys(questionTime).forEach((key) => {
       if (key.startsWith(subject)) {
-        totalTimeInSeconds += questionTime[key]
+        totalTimeInSeconds += questionTime[key];
       }
-    })
-    const minutes = Math.floor(totalTimeInSeconds / 60)
-    const seconds = Math.floor(totalTimeInSeconds % 60)
-    return { minutes, seconds }
-  }
-
-  useEffect(() => {
-  const handleKeyDown = (event) => {
-    if (event.key === "ArrowLeft" && currentQuestion > 0) {
-      handleNavigation("prev");
-    } else if (event.key === "ArrowRight") {
-      handleNavigation("next");
-    }
+    });
+    const minutes = Math.floor(totalTimeInSeconds / 60);
+    const seconds = Math.floor(totalTimeInSeconds % 60);
+    return { minutes, seconds };
   };
 
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [currentQuestion]);
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft" && currentQuestion > 0) {
+        handleNavigation("prev");
+      } else if (event.key === "ArrowRight") {
+        handleNavigation("next");
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentQuestion]);
 
   useEffect(() => {
-  const handleKeyDown = (e) => {
-    const totalOptions = currentQuestionData?.options?.length;
-    if (!totalOptions) return;
+    const handleKeyDown = (e) => {
+      const totalOptions = currentQuestionData?.options?.length;
+      if (!totalOptions) return;
 
-    if (e.key === "ArrowDown") {
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === totalOptions - 1 ? 0 : prev + 1
-      );
-    } else if (e.key === "ArrowUp") {
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === 0 ? totalOptions - 1 : prev - 1
-      );
-    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
-      handleOptionClick(focusedOptionIndex);
-    }
-  };
+      if (e.key === "ArrowDown") {
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === totalOptions - 1 ? 0 : prev + 1
+        );
+      } else if (e.key === "ArrowUp") {
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === 0 ? totalOptions - 1 : prev - 1
+        );
+      } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+        handleOptionClick(focusedOptionIndex);
+      }
+    };
 
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [focusedOptionIndex, currentQuestion]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [focusedOptionIndex, currentQuestion]);
 
-useEffect(() => {
-  setFocusedOptionIndex(null);
-}, [currentQuestion]);
+  useEffect(() => {
+    setFocusedOptionIndex(null);
+  }, [currentQuestion]);
 
-  
   const getAnsweredCount = () => {
-    return Object.keys(answers).length
-  }
+    return Object.keys(answers).length;
+  };
 
   const getMarkedCount = () => {
-    return Object.values(markedForReview).filter(Boolean).length
-  }
+    return Object.values(markedForReview).filter(Boolean).length;
+  };
 
   const getAnsweredCountBySubject = (subject) => {
-    return Object.keys(answers).filter((key) => key.startsWith(`${subject}-`)).length
-  }
+    return Object.keys(answers).filter((key) => key.startsWith(`${subject}-`))
+      .length;
+  };
 
   const handleSubmit = async () => {
-    if (!window.confirm("Are you sure you want to submit the test?")) return
+    if (!window.confirm("Are you sure you want to submit the test?")) return;
 
-    if (isSubmitting) return
-    setIsSubmitting(true)
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     try {
       if (intervalRef.current) {
-        clearInterval(intervalRef.current)
+        clearInterval(intervalRef.current);
       }
 
-      const testAnswers = JSON.parse(localStorage.getItem("testAnswers")) || []
-      const authToken = localStorage.getItem("authToken") || sessionStorage.getItem("authToken")
-      const testName = localStorage.getItem("testName") || []
+      const testAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
+      const authToken =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+      const testName = localStorage.getItem("testName") || [];
 
       if (!authToken) {
-        alert("No authentication token found!")
-        return
+        alert("No authentication token found!");
+        return;
       }
 
-      const correctAnswers = []
-      const wrongAnswers = []
-      const notAttempted = []
+      const correctAnswers = [];
+      const wrongAnswers = [];
+      const notAttempted = [];
 
       const subjectWiseMarks = {
         Physics: 0,
         Chemistry: 0,
         Biology: 0,
-      }
+      };
 
-      const endTime = new Date()
-      let total_marks = 0
+      const endTime = new Date();
+      let total_marks = 0;
 
       const totalTimePerSubject = {
         Physics: calculateTotalTime("Physics"),
         Chemistry: calculateTotalTime("Chemistry"),
         Biology: calculateTotalTime("Biology"),
-      }
+      };
 
       testAnswers.forEach((answerObj) => {
-        const { subject, question, selectedAnswer, correctAnswer } = answerObj
+        const { subject, question, selectedAnswer, correctAnswer } = answerObj;
 
-        const chapter = "General"
-        const questionId = question
-        const marks = selectedAnswer === correctAnswer ? 4 : -1
-        const timeSpent = "N/A"
+        const chapter = "General";
+        const questionId = question;
+        const marks = selectedAnswer === correctAnswer ? 4 : -1;
+        const timeSpent = "N/A";
 
         if (selectedAnswer === correctAnswer) {
-          subjectWiseMarks[subject] += 4
+          subjectWiseMarks[subject] += 4;
         } else if (selectedAnswer !== null && selectedAnswer !== "") {
-          subjectWiseMarks[subject] -= 1
+          subjectWiseMarks[subject] -= 1;
         }
 
-        const answerPayload = [questionId, subject, chapter, selectedAnswer, correctAnswer, marks, timeSpent]
+        const answerPayload = [
+          questionId,
+          subject,
+          chapter,
+          selectedAnswer,
+          correctAnswer,
+          marks,
+          timeSpent,
+        ];
 
         if (!selectedAnswer) {
-          notAttempted.push([questionId, subject, chapter])
+          notAttempted.push([questionId, subject, chapter]);
         } else if (selectedAnswer === correctAnswer) {
-          correctAnswers.push(answerPayload)
-          total_marks += 4
+          correctAnswers.push(answerPayload);
+          total_marks += 4;
         } else {
           if (selectedAnswer !== "") {
-            wrongAnswers.push(answerPayload)
+            wrongAnswers.push(answerPayload);
           }
         }
-      })
+      });
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/submit-test`,
@@ -528,22 +608,22 @@ useEffect(() => {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        },
-      )
+        }
+      );
 
       toast.success(response.data.message, {
         duration: 5000,
-      })
-      router.push("/resultCT")
+      });
+      router.push("/resultCT");
     } catch (error) {
       toast.error("Error submitting test!", {
         duration: 5000,
-      })
-      console.error(error)
+      });
+      console.error(error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -553,7 +633,7 @@ useEffect(() => {
           <p className="text-lg text-gray-600">Loading your test...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -566,9 +646,8 @@ useEffect(() => {
           <p className="text-red-600 text-lg font-medium">{error}</p>
         </div>
       </div>
-    )
+    );
   }
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 flex flex-col">
@@ -576,24 +655,38 @@ useEffect(() => {
       <div className="sticky top-0 z-30 bg-white/90 backdrop-blur flex justify-between items-center px-4 py-3 shadow-sm">
         {/* Timer */}
         <div className="flex items-center gap-2">
-          <div className={`p-2 rounded-full ${isLowTime ? "bg-red-100 animate-pulse" : "bg-blue-100"} transition-all`}>
-            <FaClock className={`text-lg ${isLowTime ? "text-red-600" : "text-blue-600"}`} />
+          <div
+            className={`p-2 rounded-full ${
+              isLowTime ? "bg-red-100 animate-pulse" : "bg-blue-100"
+            } transition-all`}
+          >
+            <FaClock
+              className={`text-lg ${
+                isLowTime ? "text-red-600" : "text-blue-600"
+              }`}
+            />
           </div>
           <div className="flex gap-0.5 text-xs font-mono">
             <span
-              className={`${isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"} text-white px-2 py-0.5 rounded`}
+              className={`${
+                isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+              } text-white px-2 py-0.5 rounded`}
             >
               {formattedTime.hours}
             </span>
             <span className="text-gray-500 font-bold px-0.5">:</span>
             <span
-              className={`${isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"} text-white px-2 py-0.5 rounded`}
+              className={`${
+                isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+              } text-white px-2 py-0.5 rounded`}
             >
               {formattedTime.minutes}
             </span>
             <span className="text-gray-500 font-bold px-0.5">:</span>
             <span
-              className={`${isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"} text-white px-2 py-0.5 rounded`}
+              className={`${
+                isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
+              } text-white px-2 py-0.5 rounded`}
             >
               {formattedTime.seconds}
             </span>
@@ -603,51 +696,65 @@ useEffect(() => {
         {/* Subjects selector - compact for mobile, full for desktop */}
         <div className="flex gap-1 xl:hidden">
           {selectedSubjects.map((subject) => {
-            const SubjectIcon = subjectIcons[subject]?.icon || FaAtom
-            const isActive = currentSubject === subject
-            const config = subjectIcons[subject] || subjectIcons.Physics
+            const SubjectIcon = subjectIcons[subject]?.icon || FaAtom;
+            const isActive = currentSubject === subject;
+            const config = subjectIcons[subject] || subjectIcons.Physics;
             return (
               <button
                 key={subject}
                 onClick={() => {
-                  setCurrentSubject(subject)
-                  setCurrentQuestion(0)
+                  setCurrentSubject(subject);
+                  setCurrentQuestion(0);
                 }}
-                className={`flex flex-col items-center px-1 py-0.5 rounded ${isActive ? "bg-gradient-to-r from-blue-400 to-indigo-500 text-white" : "bg-white text-gray-600 border"
-                  } mx-0.5`}
+                className={`flex flex-col items-center px-1 py-0.5 rounded ${
+                  isActive
+                    ? "bg-gradient-to-r from-blue-400 to-indigo-500 text-white"
+                    : "bg-white text-gray-600 border"
+                } mx-0.5`}
               >
-                <SubjectIcon className={`text-base ${isActive ? "text-white" : config.color}`} />
+                <SubjectIcon
+                  className={`text-base ${
+                    isActive ? "text-white" : config.color
+                  }`}
+                />
                 <span className="text-xs font-medium">{subject[0]}</span>
               </button>
-            )
+            );
           })}
         </div>
 
         {/* Subject Tabs (Desktop) */}
         <div className="hidden xl:flex flex-wrap gap-3 justify-center">
           {selectedSubjects.map((subject) => {
-            const isActive = currentSubject === subject
-            const config = subjectIcons[subject] || subjectIcons.Physics
-            const Icon = config.icon
+            const isActive = currentSubject === subject;
+            const config = subjectIcons[subject] || subjectIcons.Physics;
+            const Icon = config.icon;
             return (
               <button
                 key={subject}
                 onClick={() => {
-                  setCurrentSubject(subject)
-                  setCurrentQuestion(0)
+                  setCurrentSubject(subject);
+                  setCurrentQuestion(0);
                 }}
-                className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${isActive
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all transform hover:scale-105 shadow-lg ${
+                  isActive
                     ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-xl`
                     : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white shadow-md border border-gray-200"
-                  }`}
+                }`}
               >
-                <Icon className={`text-xl ${isActive ? "text-white" : config.color}`} />
+                <Icon
+                  className={`text-xl ${
+                    isActive ? "text-white" : config.color
+                  }`}
+                />
                 <span className="font-semibold">{subject}</span>
                 <div
-                  className={`w-3 h-3 rounded-full ${isActive ? "bg-white/80" : `${config.bgColor} animate-pulse`}`}
+                  className={`w-3 h-3 rounded-full ${
+                    isActive ? "bg-white/80" : `${config.bgColor} animate-pulse`
+                  }`}
                 />
               </button>
-            )
+            );
           })}
         </div>
 
@@ -683,11 +790,14 @@ useEffect(() => {
               >
                 <RiQuestionnaireFill className="text-lg" />
               </div>
-              <span className={`font-semibold text-sm ${subjectConfig.color}`}>{currentSubject}</span>
+              <span className={`font-semibold text-sm ${subjectConfig.color}`}>
+                {currentSubject}
+              </span>
               <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
               {/* Updated Question Number Display */}
               <span className="text-xs text-gray-500">
-                Question {currentQuestion + 1} of {currentSubjectActualQuestionCount}
+                Question {currentQuestion + 1} of{" "}
+                {currentSubjectActualQuestionCount}
               </span>
             </div>
 
@@ -699,8 +809,9 @@ useEffect(() => {
             {/* Options */}
             <div className="space-y-3 relative z-10">
               {currentQuestionData?.options.map((option, index) => {
-                const isSelected = answers[`${currentSubject}-${currentQuestion}`] === index
-                const isHovered = hoveredOption === index
+                const isSelected =
+                  answers[`${currentSubject}-${currentQuestion}`] === index;
+                const isHovered = hoveredOption === index;
                 return (
                   <button
                     key={index}
@@ -708,37 +819,48 @@ useEffect(() => {
                     onMouseEnter={() => setHoveredOption(index)}
                     onMouseLeave={() => setHoveredOption(null)}
                     className={`w-full text-left py-3 px-4 rounded-xl border-2 transition-all relative overflow-hidden
-${isSelected
-  ? "border-blue-500 bg-blue-50 text-blue-900 font-semibold"
-  : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50"
+${
+  isSelected
+    ? "border-blue-500 bg-blue-50 text-blue-900 font-semibold"
+    : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50"
 }
 ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
 `}
-
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center
-                        ${isSelected ? "border-blue-500 bg-blue-500" : "border-gray-300"}`}
+                        ${
+                          isSelected
+                            ? "border-blue-500 bg-blue-500"
+                            : "border-gray-300"
+                        }`}
                       >
-                        {isSelected && <IoMdCheckmark className="text-white text-sm" />}
+                        {isSelected && (
+                          <IoMdCheckmark className="text-white text-sm" />
+                        )}
                         {isHovered && !isSelected && (
                           <div className="absolute inset-0 bg-blue-100 rounded-full scale-75 opacity-50"></div>
                         )}
                       </div>
                       <span className="text-base">
-                        <span className="font-medium text-gray-500 mr-2">({String.fromCharCode(65 + index)})</span>
+                        <span className="font-medium text-gray-500 mr-2">
+                          ({String.fromCharCode(65 + index)})
+                        </span>
                         {option}
                       </span>
                     </div>
                   </button>
-                )
+                );
               })}
             </div>
             <div className="hidden xl:flex justify-between items-center mt-6 p-4 bg-white/95 rounded-2xl shadow border border-gray-100">
               <button
                 onClick={() => handleNavigation("prev")}
-                disabled={currentQuestion === 0 && selectedSubjects.indexOf(currentSubject) === 0}
+                disabled={
+                  currentQuestion === 0 &&
+                  selectedSubjects.indexOf(currentSubject) === 0
+                }
                 className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
               >
                 <FaChevronLeft className="text-lg" />
@@ -754,20 +876,24 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
                 </button>
                 <button
                   onClick={handleReviewLater}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${markedForReview[`${currentSubject}-${currentQuestion}`]
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    markedForReview[`${currentSubject}-${currentQuestion}`]
                       ? "bg-pink-500 text-white hover:bg-pink-600"
                       : "bg-yellow-500 text-white hover:bg-yellow-600"
-                    }`}
+                  }`}
                 >
                   <FaFlag className="text-lg" />
-                  {markedForReview[`${currentSubject}-${currentQuestion}`] ? "Unmark" : "Mark for Review"}
+                  {markedForReview[`${currentSubject}-${currentQuestion}`]
+                    ? "Unmark"
+                    : "Mark for Review"}
                 </button>
               </div>
               <button
                 onClick={() => handleNavigation("next")}
                 disabled={
                   currentQuestion === currentSubjectActualQuestionCount - 1 &&
-                  selectedSubjects.indexOf(currentSubject) === selectedSubjects.length - 1
+                  selectedSubjects.indexOf(currentSubject) ===
+                    selectedSubjects.length - 1
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
               >
@@ -786,7 +912,8 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 -translate-x-16"></div>
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-6">
-                <FaCheck className="text-2xl" /> {/* Using FaCheck for progress icon */}
+                <FaCheck className="text-2xl" />{" "}
+                {/* Using FaCheck for progress icon */}
                 <h3 className="font-bold text-xl">Test Progress</h3>
               </div>
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -810,11 +937,14 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
               <div className="bg-white/20 rounded-full h-3 mb-2">
                 <div
                   className="h-full bg-gradient-to-r from-yellow-300 to-orange-400 rounded-full transition-all duration-700"
-                  style={{ width: `${(getAnsweredCount() / totalQuestions) * 100}%` }}
+                  style={{
+                    width: `${(getAnsweredCount() / totalQuestions) * 100}%`,
+                  }}
                 ></div>
               </div>
               <p className="text-center text-sm font-medium">
-                {Math.round((getAnsweredCount() / totalQuestions) * 100)}% Complete
+                {Math.round((getAnsweredCount() / totalQuestions) * 100)}%
+                Complete
               </p>
             </div>
           </div>
@@ -827,36 +957,52 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
               >
                 <MdVisibility className="w-5 h-5" />
               </div>
-              <h3 className="font-bold text-gray-900 text-lg">{currentSubject} Questions</h3>
+              <h3 className="font-bold text-gray-900 text-lg">
+                {currentSubject} Questions
+              </h3>
             </div>
             <div className="grid grid-cols-5 gap-3 mb-6">
-              {Array.from({ length: currentSubjectActualQuestionCount }).map((_, index) => {
-                const isCurrentQuestion = currentQuestion === index
-                const isAnswered = answers[`${currentSubject}-${index}`] !== undefined
-                const isMarked = markedForReview[`${currentSubject}-${index}`]
-                const isVisited = visitedQuestions[`${currentSubject}-${index}`]
-                let buttonClass =
-                  "w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 shadow-lg relative "
-                if (isCurrentQuestion) {
-                  buttonClass += "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-blue-300 scale-110"
-                } else if (isMarked) {
-                  buttonClass += "bg-gradient-to-br from-red-500 to-pink-500 text-white shadow-red-300"
-                } else if (isAnswered) {
-                  buttonClass += "bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-green-300"
-                } else if (isVisited) {
-                  buttonClass += "bg-gradient-to-br from-orange-400 to-pink-400 text-white shadow-orange-300"
-                } else {
-                  buttonClass += "bg-gray-100 text-gray-600 hover:bg-gray-200 shadow-gray-200"
+              {Array.from({ length: currentSubjectActualQuestionCount }).map(
+                (_, index) => {
+                  const isCurrentQuestion = currentQuestion === index;
+                  const isAnswered =
+                    answers[`${currentSubject}-${index}`] !== undefined;
+                  const isMarked =
+                    markedForReview[`${currentSubject}-${index}`];
+                  const isVisited =
+                    visitedQuestions[`${currentSubject}-${index}`];
+                  let buttonClass =
+                    "w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 shadow-lg relative ";
+                  if (isCurrentQuestion) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-blue-300 scale-110";
+                  } else if (isMarked) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-red-500 to-pink-500 text-white shadow-red-300";
+                  } else if (isAnswered) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-green-300";
+                  } else if (isVisited) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-orange-400 to-pink-400 text-white shadow-orange-300";
+                  } else {
+                    buttonClass +=
+                      "bg-gray-100 text-gray-600 hover:bg-gray-200 shadow-gray-200";
+                  }
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentQuestion(index)}
+                      className={buttonClass}
+                    >
+                      {index + 1}
+                      {isCurrentQuestion && (
+                        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-white/30 to-transparent animate-pulse"></div>
+                      )}
+                    </button>
+                  );
                 }
-                return (
-                  <button key={index} onClick={() => setCurrentQuestion(index)} className={buttonClass}>
-                    {index + 1}
-                    {isCurrentQuestion && (
-                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-white/30 to-transparent animate-pulse"></div>
-                    )}
-                  </button>
-                )
-              })}
+              )}
             </div>
             {/* Legend */}
             <div className="grid grid-cols-2 gap-3 text-xs">
@@ -887,11 +1033,14 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
             </h3>
             <div className="space-y-4">
               {selectedSubjects.map((subject) => {
-                const subjectQuestions = questionsData[subject]?.length || 0
-                const subjectAnswered = getAnsweredCountBySubject(subject)
-                const percentage = subjectQuestions > 0 ? Math.round((subjectAnswered / subjectQuestions) * 100) : 0
-                const Icon = subjectIcons[subject]?.icon || FaAtom
-                const config = subjectIcons[subject] || subjectIcons.Physics
+                const subjectQuestions = questionsData[subject]?.length || 0;
+                const subjectAnswered = getAnsweredCountBySubject(subject);
+                const percentage =
+                  subjectQuestions > 0
+                    ? Math.round((subjectAnswered / subjectQuestions) * 100)
+                    : 0;
+                const Icon = subjectIcons[subject]?.icon || FaAtom;
+                const config = subjectIcons[subject] || subjectIcons.Physics;
                 return (
                   <div key={subject} className="flex items-center gap-4">
                     <div
@@ -901,7 +1050,9 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold text-gray-800">{subject}</span>
+                        <span className="font-semibold text-gray-800">
+                          {subject}
+                        </span>
                         <span className="text-sm text-gray-500 font-medium">
                           {subjectAnswered}/{subjectQuestions}
                         </span>
@@ -912,10 +1063,12 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
                           style={{ width: `${percentage}%` }}
                         ></div>
                       </div>
-                      <div className="text-right text-xs text-gray-500 mt-1">{percentage}%</div>
+                      <div className="text-right text-xs text-gray-500 mt-1">
+                        {percentage}%
+                      </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -926,23 +1079,39 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
       <div className="fixed z-40 left-0 right-0 bottom-0 w-full bg-white/95 backdrop-blur border-t border-gray-200 flex justify-between items-center px-2 py-2 shadow-md xl:hidden">
         <button
           onClick={() => handleNavigation("prev")}
-          disabled={currentQuestion === 0 && selectedSubjects.indexOf(currentSubject) === 0}
+          disabled={
+            currentQuestion === 0 &&
+            selectedSubjects.indexOf(currentSubject) === 0
+          }
           className="flex flex-col items-center px-2 py-1 text-xs disabled:opacity-50"
         >
           <FaChevronLeft className="text-lg" />
           Prev
         </button>
-        <button onClick={() => setShowNavGrid(true)} className="flex flex-col items-center px-2 py-1 text-xs">
+        <button
+          onClick={() => setShowNavGrid(true)}
+          className="flex flex-col items-center px-2 py-1 text-xs"
+        >
           <MdVisibility className="text-lg" />
           Questions
         </button>
-        <button onClick={handleReviewLater} className="flex flex-col items-center px-2 py-1 text-xs">
+        <button
+          onClick={handleReviewLater}
+          className="flex flex-col items-center px-2 py-1 text-xs"
+        >
           <FaFlag
-            className={`text-lg ${markedForReview[`${currentSubject}-${currentQuestion}`] ? "text-pink-500" : ""}`}
+            className={`text-lg ${
+              markedForReview[`${currentSubject}-${currentQuestion}`]
+                ? "text-pink-500"
+                : ""
+            }`}
           />
           Mark
         </button>
-        <button onClick={() => setShowStats(true)} className="flex flex-col items-center px-2 py-1 text-xs">
+        <button
+          onClick={() => setShowStats(true)}
+          className="flex flex-col items-center px-2 py-1 text-xs"
+        >
           <HiOutlineSparkles className="text-lg" />
           Stats
         </button>
@@ -950,7 +1119,8 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
           onClick={() => handleNavigation("next")}
           disabled={
             currentQuestion === currentSubjectActualQuestionCount - 1 &&
-            selectedSubjects.indexOf(currentSubject) === selectedSubjects.length - 1
+            selectedSubjects.indexOf(currentSubject) ===
+              selectedSubjects.length - 1
           }
           className="flex flex-col items-center px-2 py-1 text-xs disabled:opacity-50"
         >
@@ -977,43 +1147,57 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
           <div className="w-full bg-white rounded-t-2xl p-4 max-h-[70vh] overflow-y-auto">
             <div className="flex items-center mb-2">
               <MdVisibility className="text-xl mr-1" />
-              <span className="font-bold text-gray-900 text-lg flex-1">{currentSubject} Questions</span>
-              <button onClick={() => setShowNavGrid(false)} className="text-xl px-2">
+              <span className="font-bold text-gray-900 text-lg flex-1">
+                {currentSubject} Questions
+              </span>
+              <button
+                onClick={() => setShowNavGrid(false)}
+                className="text-xl px-2"
+              >
                 &times;
               </button>
             </div>
             <div className="grid grid-cols-6 gap-2">
-              {Array.from({ length: currentSubjectActualQuestionCount }).map((_, index) => {
-                const isCurrentQuestion = currentQuestion === index
-                const isAnswered = answers[`${currentSubject}-${index}`] !== undefined
-                const isMarked = markedForReview[`${currentSubject}-${index}`]
-                const isVisited = visitedQuestions[`${currentSubject}-${index}`]
-                let buttonClass =
-                  "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all "
-                if (isCurrentQuestion) {
-                  buttonClass += "bg-gradient-to-br from-blue-600 to-indigo-700 text-white scale-110"
-                } else if (isMarked) {
-                  buttonClass += "bg-gradient-to-br from-red-500 to-pink-500 text-white"
-                } else if (isAnswered) {
-                  buttonClass += "bg-gradient-to-br from-green-500 to-emerald-500 text-white"
-                } else if (isVisited) {
-                  buttonClass += "bg-gradient-to-br from-orange-400 to-pink-400 text-white"
-                } else {
-                  buttonClass += "bg-gray-100 text-gray-600"
+              {Array.from({ length: currentSubjectActualQuestionCount }).map(
+                (_, index) => {
+                  const isCurrentQuestion = currentQuestion === index;
+                  const isAnswered =
+                    answers[`${currentSubject}-${index}`] !== undefined;
+                  const isMarked =
+                    markedForReview[`${currentSubject}-${index}`];
+                  const isVisited =
+                    visitedQuestions[`${currentSubject}-${index}`];
+                  let buttonClass =
+                    "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all ";
+                  if (isCurrentQuestion) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-blue-600 to-indigo-700 text-white scale-110";
+                  } else if (isMarked) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-red-500 to-pink-500 text-white";
+                  } else if (isAnswered) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-green-500 to-emerald-500 text-white";
+                  } else if (isVisited) {
+                    buttonClass +=
+                      "bg-gradient-to-br from-orange-400 to-pink-400 text-white";
+                  } else {
+                    buttonClass += "bg-gray-100 text-gray-600";
+                  }
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setCurrentQuestion(index);
+                        setShowNavGrid(false);
+                      }}
+                      className={buttonClass}
+                    >
+                      {index + 1}
+                    </button>
+                  );
                 }
-                return (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setCurrentQuestion(index)
-                      setShowNavGrid(false)
-                    }}
-                    className={buttonClass}
-                  >
-                    {index + 1}
-                  </button>
-                )
-              })}
+              )}
             </div>
             {/* Legend */}
             <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
@@ -1045,7 +1229,10 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
             <div className="flex items-center gap-2 mb-4">
               <HiOutlineSparkles className="text-xl" />
               <span className="font-bold text-lg">Test Progress</span>
-              <button onClick={() => setShowProgress(false)} className="text-xl px-2 ml-auto">
+              <button
+                onClick={() => setShowProgress(false)}
+                className="text-xl px-2 ml-auto"
+              >
                 &times;
               </button>
             </div>
@@ -1060,17 +1247,22 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
               </div>
               <div className="flex-1 text-center bg-green-100 rounded p-2">
                 <div className="text-xs text-green-900">Remaining</div>
-                <div className="text-lg font-bold">{totalQuestions - getAnsweredCount()}</div>
+                <div className="text-lg font-bold">
+                  {totalQuestions - getAnsweredCount()}
+                </div>
               </div>
             </div>
             <div className="mt-2 bg-gray-200 rounded-full h-2">
               <div
                 className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
-                style={{ width: `${(getAnsweredCount() / totalQuestions) * 100}%` }}
+                style={{
+                  width: `${(getAnsweredCount() / totalQuestions) * 100}%`,
+                }}
               ></div>
             </div>
             <div className="text-center text-xs mt-2">
-              {Math.round((getAnsweredCount() / totalQuestions) * 100)}% complete
+              {Math.round((getAnsweredCount() / totalQuestions) * 100)}%
+              complete
             </div>
           </div>
         </div>
@@ -1083,17 +1275,23 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
             <div className="flex items-center gap-2 mb-3">
               <HiOutlineSparkles className="text-xl" />
               <span className="font-bold text-lg">Subject Statistics</span>
-              <button onClick={() => setShowStats(false)} className="text-xl px-2 ml-auto">
+              <button
+                onClick={() => setShowStats(false)}
+                className="text-xl px-2 ml-auto"
+              >
                 &times;
               </button>
             </div>
             <div className="space-y-2">
               {selectedSubjects.map((subject) => {
-                const subjectQuestions = questionsData[subject]?.length || 0
-                const subjectAnswered = getAnsweredCountBySubject(subject)
-                const percentage = subjectQuestions > 0 ? Math.round((subjectAnswered / subjectQuestions) * 100) : 0
-                const SubjectIcon = subjectIcons[subject]?.icon || FaAtom
-                const config = subjectIcons[subject] || subjectIcons.Physics
+                const subjectQuestions = questionsData[subject]?.length || 0;
+                const subjectAnswered = getAnsweredCountBySubject(subject);
+                const percentage =
+                  subjectQuestions > 0
+                    ? Math.round((subjectAnswered / subjectQuestions) * 100)
+                    : 0;
+                const SubjectIcon = subjectIcons[subject]?.icon || FaAtom;
+                const config = subjectIcons[subject] || subjectIcons.Physics;
                 return (
                   <div key={subject} className="flex items-center gap-2">
                     <div
@@ -1116,7 +1314,7 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
                       </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -1124,11 +1322,8 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
       )}
 
       {/* Particle FX */}
-
     </div>
-  )
-}
+  );
+};
 
-export default TestInterface
-
-
+export default TestInterface;

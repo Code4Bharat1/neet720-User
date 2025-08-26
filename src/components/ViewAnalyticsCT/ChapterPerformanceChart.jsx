@@ -36,13 +36,16 @@ const ChapterPerformanceChart = () => {
   };
 
   // Fetch subjects and chapters from localStorage (only on the client-side)
-  const [selectedChaptersFromStorage, setSelectedChaptersFromStorage] = useState({});
+  const [selectedChaptersFromStorage, setSelectedChaptersFromStorage] =
+    useState({});
   const [testAnswers, setTestAnswers] = useState([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {};
-      const storedTestAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
+      const storedChapters =
+        JSON.parse(localStorage.getItem("selectedChapters")) || {};
+      const storedTestAnswers =
+        JSON.parse(localStorage.getItem("testAnswers")) || [];
       setSelectedChaptersFromStorage(storedChapters);
       setTestAnswers(storedTestAnswers);
     }
@@ -54,7 +57,8 @@ const ChapterPerformanceChart = () => {
 
   useEffect(() => {
     if (selectedSubject && selectedChaptersFromStorage[selectedSubject]) {
-      const sectionChapters = selectedChaptersFromStorage[selectedSubject] || [];
+      const sectionChapters =
+        selectedChaptersFromStorage[selectedSubject] || [];
       const sectionAnswers = testAnswers.filter(
         (answer) => answer.subject === selectedSubject
       );
@@ -65,9 +69,9 @@ const ChapterPerformanceChart = () => {
       let chapterData = [];
 
       // Loop through the chapters and calculate correct, incorrect, and skipped questions
-      sectionChapters.forEach((chapter) => {
-        const chapterName = chapter.name;
-        const numQuestions = chapter.numQuestions || 0;
+      Object.values(sectionChapters).forEach((chapter) => {
+        const chapterName = chapter.chapterName; // Note: property is 'chapterName', not 'name'
+        const numQuestions = parseInt(chapter.numQuestions) || 0; // Convert string to number
 
         // Filter answers for this chapter
         const chapterAnswers = sectionAnswers.filter(
