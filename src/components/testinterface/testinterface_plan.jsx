@@ -42,27 +42,27 @@ const TestInterface = () => {
   const [testEndTime, setTestEndTime] = useState(null);
 
   //use effect to handle the full screen escape
-  useEffect (()=>{
-    const handleFullScreenChange = () =>{
-      if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullscreenElement && !document.msFullscreenElement) {
-        //push the page if the full screen exits
-        router.push("/testselection");
-      }
-    }
+  // useEffect (()=>{
+  //   const handleFullScreenChange = () =>{
+  //     if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullscreenElement && !document.msFullscreenElement) {
+  //       //push the page if the full screen exits
+  //       router.push("/testselection");
+  //     }
+  //   }
 
-    document.addEventListener("FullscreenElement", handleFullScreenChange);
-    document.addEventListener("webkitFullscreenElement", handleFullScreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-    document.addEventListener("mozFullscreenElement", handleFullScreenChange);
+  //   document.addEventListener("FullscreenElement", handleFullScreenChange);
+  //   document.addEventListener("webkitFullscreenElement", handleFullScreenChange);
+  //   document.addEventListener("MSFullscreenChange", handleFullScreenChange);
+  //   document.addEventListener("mozFullscreenElement", handleFullScreenChange);
     
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
-    }
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullScreenChange);
+  //     document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
+  //     document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
+  //     document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
+  //   }
 
-  },[])
+  // },[])
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -324,7 +324,7 @@ const TestInterface = () => {
         toast.success("Test submitted successfully!", {
           duration: 5000
         });
-        window.location.href = "/result";
+        window.location.href = "/test-plan-result";
       } else {
         toast.error("Failed to submit test.", {
           duration: 5000

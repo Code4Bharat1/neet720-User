@@ -16,7 +16,7 @@ const Hero = () => {
 
   const [colors, setColors] = useState({
     sidebarColor: "#0077B6", // fallback sidebar color
-    textColor: "#ffffff", // fallback text color
+    textColor: "white", // fallback text color
   });
 
   useEffect(() => {

@@ -50,7 +50,7 @@ const TestInterface = () => {
   const [selectedChapters, setSelectedChapters] = useState({})
   const [questionsData, setQuestionsData] = useState({})
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null)  
   const [currentSubject, setCurrentSubject] = useState(() => {
     if (typeof window !== "undefined") {
       const storedSubjects = localStorage.getItem("selectedSubjects")
@@ -113,11 +113,12 @@ const TestInterface = () => {
   // 1. INITIALIZATION EFFECT
   useEffect(() => {
     if (typeof window === "undefined") return // SSR
-
+    
     const storedSelectedChapters = JSON.parse(localStorage.getItem("selectedChapters")) || {}
     setSelectedChapters(storedSelectedChapters)
     const storedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || []
     setSelectedSubjects(storedSubjects)
+    // console.log(storedSubjects)
 
     let totalQuestionsCount = 0
     storedSubjects.forEach((subject) => {
@@ -136,8 +137,10 @@ const TestInterface = () => {
       timerInitialized.current = true
     }
 
+
     const fetchQuestions = async () => {
       try {
+        
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/createtest/fetch-questions`, {
           selectedSubjects: storedSubjects,
           selectedChapters: storedSelectedChapters,
@@ -566,9 +569,6 @@ useEffect(() => {
     )
   }
 
-  const currentQuestionData = questionsData[currentSubject]?.[currentQuestion]
-  const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics
-  const isLowTime = timer < 300
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 flex flex-col">

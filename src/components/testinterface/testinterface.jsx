@@ -73,7 +73,7 @@ const TestInterface = () => {
         !document.msFullscreenElement
       ) {
         // User exited fullscreen mode
-        router.push("/testselection");
+        // router.push("/testselection");
       }
     };
 
