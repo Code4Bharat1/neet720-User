@@ -9,12 +9,7 @@ import {
   FaShieldVirus,
   FaDownload,
 } from "react-icons/fa";
-import {
-  AlertTriangle,
-  Clock,
-  X,
-  CheckCircle,
-} from "lucide-react"; // install with: npm install lucide-react
+import { AlertTriangle, Clock, X, CheckCircle } from "lucide-react"; // install with: npm install lucide-react
 
 const OMRDownloadButton = () => {
   const logoUrl =
@@ -166,9 +161,21 @@ const TestCards = () => {
   };
 
   const cards = [
-    { title: "FAST QUIZ", icon: <FaShieldAlt className="w-5 h-5" />, route: "/fastquiz" },
-    { title: "START TEST", icon: <FaShoppingBag className="w-5 h-5" />, route: "/testinterface" },
-    { title: "CREATE TEST", icon: <FaShieldVirus className="w-5 h-5" />, route: "/createtest" },
+    {
+      title: "FAST QUIZ",
+      icon: <FaShieldAlt className="w-5 h-5" />,
+      route: "/fastquiz",
+    },
+    {
+      title: "START TEST",
+      icon: <FaShoppingBag className="w-5 h-5" />,
+      route: "/testinterface",
+    },
+    {
+      title: "CREATE TEST",
+      icon: <FaShieldVirus className="w-5 h-5" />,
+      route: "/createtest",
+    },
   ];
 
   return (
@@ -184,7 +191,10 @@ const TestCards = () => {
                   <AlertTriangle className="w-7 h-7" />
                   <h2 className="text-xl font-bold">Test Instructions</h2>
                 </div>
-                <button onClick={handleCancel} className="hover:bg-white/10 p-1 rounded-full">
+                <button
+                  onClick={handleCancel}
+                  className="hover:bg-white/10 p-1 rounded-full"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -209,7 +219,9 @@ const TestCards = () => {
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-100 border border-red-300 rounded-lg">
                   <Clock className="w-5 h-5 text-red-600" />
-                  <span className="text-gray-700 font-medium">Test will begin in</span>
+                  <span className="text-gray-700 font-medium">
+                    Test will begin in
+                  </span>
                   <div className="text-xl font-bold text-white bg-red-500 px-3 py-1 rounded-lg">
                     {timer}
                   </div>
@@ -250,8 +262,11 @@ const TestCards = () => {
       )}
 
       {/* Top Button Row */}
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-start mb-2 items-center">
         <OMRDownloadButton />
+        <span className="ml-2 text-gray-600 flex items-center">
+          Download OMR Sheet
+        </span>
       </div>
 
       {/* Card Grid */}
