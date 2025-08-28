@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IoCameraOutline } from "react-icons/io5";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -84,6 +85,19 @@ const PersonalData = () => {
 
   const handleUpdateClick = async () => {
     setIsUpdating(true);
+
+    // Validate mobile number
+    const mobileNumber = formData.mobileNumber.trim();
+    const mobileRegex = /^[6-9]\d{9}$/; // Validates 10-digit number starting with 6-9
+
+    if (!mobileRegex.test(mobileNumber)) {
+      toast.error(
+        "Please enter a valid 10-digit mobile number starting with 6-9."
+      );
+      setIsUpdating(false);
+      return;
+    }
+
     try {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) {
@@ -130,7 +144,7 @@ const PersonalData = () => {
         fullAddress: formData.fullAddress,
       };
 
-      console.log("Sending data :", requestData);
+      console.log("Sending data:", requestData);
 
       const response = await axios.post(
         `${apiBaseUrl}/students/newdata`,
@@ -147,10 +161,16 @@ const PersonalData = () => {
         setShowPopup(true);
         setIsEditable(false);
         setTimeout(() => setShowPopup(false), 3000);
+        toast.success("User updated successfully!");
       }
     } catch (error) {
-      console.error("Error updating personal data:", error);
-      alert(`Update failed: ${error.message}`);
+      if (error.status === 409) {
+        console.log("error : ", error.response.data.message);
+        toast.error(error.response.data.message);
+      } else {
+        console.error("Error updating personal data:", error);
+        toast.error("Something went wrong on the server");
+      }
     } finally {
       setIsUpdating(false);
     }
@@ -203,12 +223,6 @@ const PersonalData = () => {
           Format should be in <b>.jpeg, .png</b> at least <b>800x800px</b> and
           less than <b>5MB</b>.
         </p>
-      )}
-
-      {showPopup && (
-        <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
-          ✅ Updated Successfully!
-        </div>
       )}
 
       <form>
