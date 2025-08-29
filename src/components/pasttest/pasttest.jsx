@@ -53,6 +53,7 @@ const PastTest = () => {
             },
           }
         );
+        console.log(response.data)
 
         // console.log(response.data.generatedTests);
         // console.log(response.data.meTests);
@@ -496,7 +497,8 @@ const PastTest = () => {
                       {/* Action Buttons */}
                       <div className="mt-6 grid grid-cols-2 gap-3">
                         <Link
-                          href={`/review-mistake?test-id=${test.testId}`}
+                          href={`/review-mistake`}
+                          onClick={()=>{localStorage.setItem("currentTestID" , test.testId)}}
                           className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                         >
                           Review Mistakes

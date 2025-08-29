@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import ConfirmationModal from "../Buttons/ConfirmationModal";
 import axios from "axios";
 import {
   FaFlask,
@@ -46,6 +47,7 @@ const subjectIcons = {
 
 const TestInterface = () => {
   // State management
+  const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedChapters, setSelectedChapters] = useState({});
   const [questionsData, setQuestionsData] = useState({});
@@ -513,9 +515,11 @@ const TestInterface = () => {
       .length;
   };
 
-  const handleSubmit = async () => {
-    if (!window.confirm("Are you sure you want to submit the test?")) return;
+  const handleSubmitConformation = ()=>{
+    setIsModalVisible(true)
+  }
 
+  const handleSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
@@ -760,7 +764,7 @@ const TestInterface = () => {
 
         {/* Submit Button (Desktop) */}
         <button
-          onClick={handleSubmit}
+          onClick={handleSubmitConformation}
           disabled={isSubmitting}
           className="hidden xl:flex relative overflow-hidden px-8 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-2xl hover:from-red-600 hover:to-pink-700 transition-all transform hover:scale-105 shadow-xl disabled:opacity-50 items-center gap-3 font-semibold"
         >
@@ -1322,6 +1326,12 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
       )}
 
       {/* Particle FX */}
+      <ConfirmationModal
+        show={isModalVisible}
+        message={"Are you sure you want to submit the test?"}
+        onClose={() => setIsModalVisible(false)} // Close the modal
+        onConfirm={handleSubmit} // Confirm submission
+      />
     </div>
   );
 };

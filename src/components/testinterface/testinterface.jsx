@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ConfirmationModal from "../Buttons/ConfirmationModal";
 import { TfiTimer } from "react-icons/tfi";
 import {
   FaFlask,
@@ -37,7 +38,7 @@ const subjects = [
 
 const TestInterface = () => {
   const router = useRouter();
-
+  const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
   const [questionsData, setQuestionsData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -292,13 +293,10 @@ useEffect(() => {
   setFocusedOptionIndex(null);
 }, [currentQuestion]);
 
-
+  const handleSubmitConformation = ()=>{
+    setIsModalVisible(true)
+  }
   const handleSubmit = async () => {
-    const confirmSubmit = window.confirm(
-      "Are you sure you want to submit your test?"
-    );
-    if (!confirmSubmit) return;
-
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       toast.error("Authentication failed! Please log in again.", {
@@ -472,7 +470,7 @@ useEffect(() => {
             </div>
 
             <button
-              onClick={handleSubmit}
+              onClick={handleSubmitConformation}
               className="px-6 max-sm:px-2 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition flex items-center max-sm:justify-end gap-2"
             >
               <FaCheck /> Submit Test
@@ -757,6 +755,12 @@ useEffect(() => {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        show={isModalVisible}
+        message={'Are you sure you want to submit your test?'}
+        onClose={() => setIsModalVisible(false)} // Close the modal
+        onConfirm={handleSubmit} // Confirm submission
+      />
     </div>
   );
 };

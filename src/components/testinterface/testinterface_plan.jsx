@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ConfirmationModal from "../Buttons/ConfirmationModal";
 import { 
   FaFlask, 
   FaAtom, 
@@ -25,7 +26,7 @@ const TestInterface = () => {
 
   //initailizing router
   const router = useRouter();
-
+  const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
   const [questionsData, setQuestionsData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -248,12 +249,11 @@ const TestInterface = () => {
     localStorage.setItem("examplan", JSON.stringify(updatedSavedAnswers));
   };
 
+  const handleSubmitConformation = ()=>{
+    setIsModalVisible(true)
+  }
+
   const handleSubmit = async () => {
-    if (isSubmitting) return; // Prevent multiple submissions
-    
-    const confirmSubmit = window.confirm("Are you sure you want to submit this test?");
-    if (!confirmSubmit) return;
-  
     setIsSubmitting(true);
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
@@ -664,7 +664,7 @@ const TestInterface = () => {
             
             <div className="p-4 bg-gray-50 border-t border-gray-200">
               <button
-                onClick={handleSubmit}
+                onClick={handleSubmitConformation}
                 disabled={isSubmitting}
                 className="w-full py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-lg shadow-sm hover:from-red-600 hover:to-red-700 transition-all flex items-center justify-center"
               >
@@ -684,6 +684,11 @@ const TestInterface = () => {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        show={isModalVisible}
+        onClose={() => setIsModalVisible(false)} // Close the modal
+        onConfirm={handleConfirmSubmit} // Confirm submission
+      />
     </div>
   );
 };

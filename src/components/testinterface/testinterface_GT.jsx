@@ -60,7 +60,7 @@ const subjectIcons = {
 
 const TestInterface = () => {
   const router = useRouter();
-
+  const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [questionsData, setQuestionsData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -339,6 +339,10 @@ const TestInterface = () => {
     setAnswers(updatedAnswers);
   };
 
+  const handleSubmitConformation = () => {
+    setIsModalVisible(true);
+  };
+
   const handleSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
@@ -557,7 +561,7 @@ const TestInterface = () => {
 
             {/* Gradient Submit Button */}
             <button
-              onClick={handleSubmit}
+              onClick={handleSubmitConformation}
               disabled={isSubmitting}
               className="relative overflow-hidden px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 flex items-center gap-2"
             >
@@ -865,6 +869,12 @@ const TestInterface = () => {
           </div>
         ))}
       </div>
+      <ConfirmationModal
+        show={isModalVisible}
+        onClose={() => setIsModalVisible(false)} // Close the modal
+        message={"Are you sure you want to submit the test?"}
+        onConfirm={handleSubmit} // Confirm submission
+      />
 
       {/* Custom CSS Animations */}
       <style jsx>{`
