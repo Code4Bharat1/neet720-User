@@ -97,49 +97,49 @@ const NavBar = () => {
   }, [router]);
 
   // Fetch notifications
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          router.push("/login");
-          return;
-        }
+  // useEffect(() => {
+  //   const fetchNotifications = async () => {
+  //     try {
+  //       const token = localStorage.getItem("authToken");
+  //       if (!token) {
+  //         router.push("/login");
+  //         return;
+  //       }
 
-        const response = await axios.get(
-          `${apiBaseUrl}/newadmin/upcomingtest-data`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const tests = response.data.tests;
-        const currentDate = new Date();
+  //       const response = await axios.get(
+  //         `${apiBaseUrl}/newadmin/upcomingtest-data`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+  //       const tests = response.data.tests;
+  //       const currentDate = new Date();
 
-        const newNotifications = [];
+  //       const newNotifications = [];
 
-        tests.forEach((test) => {
-          const start = new Date(test.exam_start_date);
-          const end = new Date(test.exam_end_date);
+  //       tests.forEach((test) => {
+  //         const start = new Date(test.exam_start_date);
+  //         const end = new Date(test.exam_end_date);
 
-          if (start.toDateString() === currentDate.toDateString()) {
-            newNotifications.push(`New test - ${test.testname}`);
-          }
+  //         if (start.toDateString() === currentDate.toDateString()) {
+  //           newNotifications.push(`New test - ${test.testname}`);
+  //         }
 
-          if (end.toDateString() === currentDate.toDateString()) {
-            newNotifications.push(`Last day for the test - ${test.testname}`);
-          }
-        });
+  //         if (end.toDateString() === currentDate.toDateString()) {
+  //           newNotifications.push(`Last day for the test - ${test.testname}`);
+  //         }
+  //       });
 
-        setNotifications(newNotifications);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
+  //       setNotifications(newNotifications);
+  //     } catch (error) {
+  //       console.error("Error fetching notifications:", error);
+  //     }
+  //   };
 
-    fetchNotifications();
-  }, []);
+  //   fetchNotifications();
+  // }, []);
 
   // Handle dropdowns
   const toggleProfileMenu = () => {

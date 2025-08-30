@@ -2,9 +2,9 @@
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  FaChevronRight, 
-  FaSpinner, 
+import {
+  FaChevronRight,
+  FaSpinner,
   FaExclamationCircle,
   FaSearch,
   FaFilter,
@@ -109,21 +109,25 @@ const PastTest = () => {
   };
 
   const filteredResults = testResults.filter((test) => {
-  const matchesSearch = searchQuery === "" || 
-    (test.testName && test.testName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (test.testId && test.testId.toString().toLowerCase().includes(searchQuery.toLowerCase()));
+    // Check for search query match
+    const matchesSearch = searchQuery === "" ||
+      (test.testName && test.testName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (test.testId && test.testId.toString().toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const matchesScoreFilter = (() => {
-    const score = calculateScore(test);
-    if (filterOption === "best") return score >= 80;
-    if (filterOption === "lowest") return score < 50;
-    return true;
-  })();
+    // Check for score filter match (Best or Lowest performance)
+    const matchesScoreFilter = (() => {
+      const score = calculateScore(test);
+      if (filterOption === "best") return score >= 80;
+      if (filterOption === "lowest") return score < 50;
+      return true;
+    })();
 
-  const matchesType = testTypeFilter === "all" || test.type === testTypeFilter;
+    // Check for testType match
+    const matchesType = testTypeFilter === "all" || test.type === testTypeFilter;
 
-  return matchesSearch && matchesScoreFilter && matchesType;
-});
+    return matchesSearch && matchesScoreFilter && matchesType;
+  });
+
 
 
   const sortedResults = [...filteredResults];
@@ -165,8 +169,8 @@ const PastTest = () => {
       <div className="flex flex-col items-center justify-center min-h-[400px] text-red-500">
         <FaExclamationCircle className="text-3xl mb-4" />
         <p className="text-lg font-medium">{error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
+        <button
+          onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
         >
           Try Again
@@ -178,7 +182,7 @@ const PastTest = () => {
   return (
     <div className="min-h-screen mt-14 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8">
       {/* Header Section */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -215,31 +219,30 @@ const PastTest = () => {
 
           {/* Filter Button */}
           <div className="relative">
-           <button onClick={() => {
-  setShowScoreFilter(prev => !prev);
-  setShowTypeFilter(false);
-}}
+            <button onClick={() => {
+              setShowScoreFilter(prev => !prev);
+              setShowTypeFilter(false);
+            }}
               className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <FaFilter className="text-gray-400" />
               <span className="text-gray-700">
-                {filterOption === "all" ? "All Tests" : 
-                 filterOption === "best" ? "Best Performance" : 
-                 "Lowest Performance"}
+                {filterOption === "all" ? "All Tests" :
+                  filterOption === "best" ? "Best Performance" :
+                    "Lowest Performance"}
               </span>
             </button>
 
             {/* Filter Dropdown */}
-            {showScoreFilter  && (
+            {showScoreFilter && (
               <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10 w-48">
                 <button
                   onClick={() => {
                     setFilterOption("all");
                     setShowFilter(false);
                   }}
-                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
-                    filterOption === "all" ? "bg-blue-50 text-blue-600" : "text-gray-700"
-                  }`}
+                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${filterOption === "all" ? "bg-blue-50 text-blue-600" : "text-gray-700"
+                    }`}
                 >
                   All Tests
                 </button>
@@ -248,9 +251,8 @@ const PastTest = () => {
                     setFilterOption("best");
                     setShowFilter(false);
                   }}
-                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
-                    filterOption === "best" ? "bg-blue-50 text-blue-600" : "text-gray-700"
-                  }`}
+                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${filterOption === "best" ? "bg-blue-50 text-blue-600" : "text-gray-700"
+                    }`}
                 >
                   Best Performance (80%+)
                 </button>
@@ -259,9 +261,8 @@ const PastTest = () => {
                     setFilterOption("lowest");
                     setShowFilter(false);
                   }}
-                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
-                    filterOption === "lowest" ? "bg-blue-50 text-blue-600" : "text-gray-700"
-                  }`}
+                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${filterOption === "lowest" ? "bg-blue-50 text-blue-600" : "text-gray-700"
+                    }`}
                 >
                   Lowest Performance (&lt;50%)
                 </button>
@@ -269,49 +270,49 @@ const PastTest = () => {
             )}
           </div>
           <div className="relative">
-<button onClick={() => {
-  setShowTypeFilter(prev => !prev);
-  setShowScoreFilter(false);
-}}
-    className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-  >
-    <FaFilter className="text-gray-400" />
-    <span className="text-gray-700">
-      {testTypeFilter === "all"
-        ? "All Test Types"
-        : testTypeFilter === "fullTest"
-        ? "Full Tests"
-        : testTypeFilter === "meTest"
-        ? "Me Tests"
-        : "Generated Tests"}
-    </span>
-  </button>
+            <button onClick={() => {
+              setShowTypeFilter(prev => !prev);
+              setShowScoreFilter(false);
+            }}
+              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <FaFilter className="text-gray-400" />
+              <span className="text-gray-700">
+                {testTypeFilter === "all"
+                  ? "All Test Types"
+                  : testTypeFilter === "fullTest"
+                    ? "Full Tests"
+                    : testTypeFilter === "meTest"
+                      ? "Me Tests"
+                      : "Generated Tests"}
+              </span>
+            </button>
 
-  {showTypeFilter  && (
-    <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10 w-48">
-      {["all", "fullTest", "meTest", "generatedTest"].map((type) => (
-        <button
-          key={type}
-          onClick={() => {
-            setTestTypeFilter(type);
-            setShowFilter(false);
-          }}
-          className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
-            testTypeFilter === type ? "bg-blue-50 text-blue-600" : "text-gray-700"
-          }`}
-        >
-          {type === "all"
-            ? "All Test Types"
-            : type === "fullTest"
-            ? "Full Tests"
-            : type === "meTest"
-            ? "Me Tests"
-            : "Generated Tests"}
-        </button>
-      ))}
-    </div>
-  )}
-</div>
+            {/* Test Type Filter Dropdown */}
+            {showTypeFilter && (
+              <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10 w-48">
+                {["all", "fullTest", "meTest", "generatedTest"].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => {
+                      setTestTypeFilter(type);
+                      setShowTypeFilter(false); // Close the dropdown after selecting a filter
+                    }}
+                    className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${testTypeFilter === type ? "bg-blue-50 text-blue-600" : "text-gray-700"}`}
+                  >
+                    {type === "all"
+                      ? "All Test Types"
+                      : type === "fullTest"
+                        ? "Full Tests"
+                        : type === "meTest"
+                          ? "Me Tests"
+                          : "Generated Tests"}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
 
         </div>
 
@@ -324,15 +325,15 @@ const PastTest = () => {
       {/* Test Cards Grid */}
       <div className="max-w-7xl mx-auto">
         {paginatedResults.length === 0 ? (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center py-12"
           >
             <div className="bg-white rounded-xl shadow-sm p-8 max-w-md mx-auto">
               <p className="text-gray-500 text-lg">
-                {searchQuery || filterOption !== "all" 
-                  ? "No tests match your search criteria." 
+                {searchQuery || filterOption !== "all"
+                  ? "No tests match your search criteria."
                   : "No past tests found."}
               </p>
               <p className="text-sm text-gray-400 mt-2">
@@ -348,9 +349,10 @@ const PastTest = () => {
               // Data calculation logic
               const hasMainData = test.correct !== undefined && test.incorrect !== undefined && test.unattempted !== undefined;
               const hasAltData = test.correctAnswersCount !== undefined && test.wrongAnswersCount !== undefined && test.notAttemptedCount !== undefined;
-              
+
               let correctValue, incorrectValue, unattemptedValue, totalQuestions;
-              
+
+
               if (hasMainData) {
                 correctValue = test.correct;
                 incorrectValue = test.incorrect;
@@ -391,13 +393,13 @@ const PastTest = () => {
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <CardTitle className="text-xl font-bold mb-1 flex flex-col">
-  <span>{test.testName || "Unnamed Test"}</span>
-  {test.createdAt && (
-    <span className="text-sm font-normal text-blue-100">
-      {formatDateTime(test.createdAt)}
-    </span>
-  )}
-</CardTitle>
+                            <span>{test.testName || "Unnamed Test"}</span>
+                            {test.createdAt && (
+                              <span className="text-sm font-normal text-blue-100">
+                                {formatDateTime(test.createdAt)}
+                              </span>
+                            )}
+                          </CardTitle>
 
                           <CardDescription className="text-blue-100">
                             {test.subjects ? test.subjects.join(", ") : "No subjects"}
@@ -497,8 +499,7 @@ const PastTest = () => {
                       {/* Action Buttons */}
                       <div className="mt-6 grid grid-cols-2 gap-3">
                         <Link
-                          href={`/review-mistake`}
-                          onClick={()=>{localStorage.setItem("currentTestID" , test.testId)}}
+                          href={`/review-test-mistake/${test.testType}/${test.testId}`}
                           className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                         >
                           Review Mistakes
@@ -522,7 +523,7 @@ const PastTest = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-12 flex justify-center items-center gap-4"
@@ -530,11 +531,10 @@ const PastTest = () => {
             <button
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${currentPage === 1
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                }`}
             >
               <FaChevronLeft className="text-sm" />
               Previous
@@ -552,11 +552,10 @@ const PastTest = () => {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`w-10 h-10 rounded-lg ${
-                        currentPage === page
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
-                      }`}
+                      className={`w-10 h-10 rounded-lg ${currentPage === page
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                        }`}
                     >
                       {page}
                     </button>
@@ -574,11 +573,10 @@ const PastTest = () => {
             <button
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${currentPage === totalPages
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                }`}
             >
               Next
               <FaChevronRight className="text-sm" />
