@@ -497,7 +497,7 @@ const PastTest = () => {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="mt-6 grid grid-cols-2 gap-3">
+                      <div className="mt-6 grid grid-cols-1 gap-3">
                         <Link
                           href={`/review-test-mistake/${test.testType}/${test.testId}`}
                           className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
@@ -505,13 +505,13 @@ const PastTest = () => {
                           Review Mistakes
                           <FaChevronRight className="text-xs" />
                         </Link>
-                        <Link
+                        {/* <Link
                           href="/analytics"
                           className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors"
                         >
                           View Analytics
                           <FaChevronRight className="text-xs" />
-                        </Link>
+                        </Link> */}
                       </div>
                     </CardContent>
                   </Card>
