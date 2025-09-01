@@ -687,7 +687,7 @@ const TestInterface = () => {
       <ConfirmationModal
         show={isModalVisible}
         onClose={() => setIsModalVisible(false)} // Close the modal
-        onConfirm={handleConfirmSubmit} // Confirm submission
+        onConfirm={handleSubmit} // Confirm submission
       />
     </div>
   );
