@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Atom,
@@ -31,7 +30,6 @@ import Sidebar from "../layout/sidebar/sidebar";
  * - Bold chapter names and structured content
  * - Modern card layouts with improved visual hierarchy
  */
-
 const SUBJECT_META = {
   Biology: {
     icon: Dna,
@@ -85,7 +83,6 @@ function showToast(message, type = 'success') {
 
 function useStudentAuth() {
   const [auth, setAuth] = useState({ id: null, token: null });
-
   useEffect(() => {
     try {
       if (typeof window === "undefined") return;
@@ -107,7 +104,6 @@ function useStudentAuth() {
       console.error("Token decode failed:", e);
     }
   }, []);
-
   return auth;
 }
 
@@ -146,14 +142,62 @@ function ProgressBar({ value, className = "" }) {
   );
 }
 
+// Transform API response to match component's expected structure
+function transformApiData(candidate) {
+  // If data is already in expected format, return as is
+  if (typeof candidate.summary === 'string') {
+    return candidate;
+  }
+
+  // Transform summary object to string
+  const summaryString = `Overall performance: ${candidate.summary.overall_last5}. Subjects: ${candidate.summary.subjects.map(s => `${s.name}: ${s.score} (last 5: ${s.last5})`).join(', ')}. Primary weak subjects: ${candidate.summary.primary_weak_subjects.join(', ')}.`;
+
+  // Transform focus array to object
+  const focusObject = {};
+  candidate.focus.forEach(item => {
+    const chaptersText = item.chapters.map(ch => `${ch.name} (${ch.why})`).join(', ');
+    focusObject[item.subject] = chaptersText;
+  });
+
+  // Transform plan to phases
+  const planObject = {
+    "Phase 1": {
+      duration: "1 week",
+      description: "Focus on the next 7 days plan. Complete daily learning and quiz blocks to improve your understanding."
+    },
+    "Phase 2": {
+      duration: "Until ready",
+      description: "Achieve the test readiness targets: " + candidate.plan.test_readiness_rules.map(rule => `${rule.metric} ${rule.op} ${rule.value}`).join(', ')
+    }
+  };
+
+  // Transform tasks to weeks structure
+  const tasksObject = {
+    week1: candidate.tasks.map(task => ({
+      subject: task.subject,
+      chapter: task.chapters.join(', '),
+      task: `Complete ${task.type} for ${task.chapters.join(', ')}. Target: ${task.target_percent}% after ${task.attempts_required} attempts. Status: ${task.status}.`
+    }))
+  };
+
+  // Transform coach notes to string
+  const coachNotes = candidate.tone_coach_notes.join('. ');
+
+  return {
+    summary: summaryString,
+    tone_coach_notes: coachNotes,
+    focus: focusObject,
+    plan: planObject,
+    tasks: tasksObject
+  };
+}
+
 export default function AiCoachPlan() {
   const { id: studentId, token } = useStudentAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [plan, setPlan] = useState(null);
-
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3085/api";
-
   const storageKey = useMemo(
     () => (studentId ? `ai_plan_progress_${studentId}` : null),
     [studentId]
@@ -185,16 +229,12 @@ export default function AiCoachPlan() {
         const response = await fetch(url, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const payload = await response.json();
         if (!payload) throw new Error("Empty AI plan response");
-
         let candidate = null;
-
         if (payload.ai_plan !== undefined) {
           if (typeof payload.ai_plan === "string" && payload.ai_plan.trim()) {
             try {
@@ -206,7 +246,6 @@ export default function AiCoachPlan() {
             candidate = payload.ai_plan;
           }
         }
-
         if (!candidate && payload.data?.ai_plan !== undefined) {
           const ap = payload.data.ai_plan;
           if (typeof ap === "string" && ap.trim()) {
@@ -219,17 +258,18 @@ export default function AiCoachPlan() {
             candidate = ap;
           }
         }
-
         if (!candidate && (payload.data?.summary || payload.data?.tasks)) {
           candidate = payload.data;
         }
         if (!candidate && (payload.summary || payload.tasks)) {
           candidate = payload;
         }
-
         if (!candidate) throw new Error("AI plan not found in API response");
-
-        setPlan(candidate);
+        
+        // Transform the data to match expected structure
+        const transformedCandidate = transformApiData(candidate);
+        setPlan(transformedCandidate);
+        console.log("Transformed AI Coach Plan:", transformedCandidate);
       } catch (err) {
         console.error(err);
         setError(err?.message || "Failed to load AI plan");
@@ -238,72 +278,13 @@ export default function AiCoachPlan() {
         setLoading(false);
       }
     };
-
+    
     // Demo data for testing
-    if (!studentId) {
-      setPlan({
-        summary: "Based on your recent performance, you should focus on strengthening your foundational concepts in Chemistry and Physics while maintaining your strong performance in Biology. Your analytical skills are excellent, but practice with complex problem-solving will help you excel in standardized tests.",
-        tone_coach_notes: "Keep up the excellent work! Your dedication is showing great results.",
-        focus: {
-          Biology: "Focus on cellular processes and genetics (Cell Structure and Function) (Genetics and Heredity) (Molecular Biology). Review protein synthesis and DNA replication mechanisms.",
-          Chemistry: "Strengthen your understanding of chemical bonding and stoichiometry (Atomic Structure) (Chemical Bonding) (Stoichiometry). Practice balancing equations and molecular geometry.",
-          Physics: "Work on mechanics and thermodynamics (Kinematics) (Forces and Motion) (Thermodynamics). Focus on problem-solving strategies for motion and energy conservation."
-        },
-        plan: {
-          "Phase 1": {
-            duration: "2 weeks",
-            description: "Foundation building phase. Review core concepts and identify knowledge gaps. Complete diagnostic assessments to establish baseline understanding."
-          },
-          "Phase 2": {
-            duration: "3 weeks", 
-            description: "Intensive practice phase. Focus on problem-solving techniques and application of concepts. Work through practice problems and past papers."
-          },
-          "Phase 3": {
-            duration: "2 weeks",
-            description: "Mastery and review phase. Focus on advanced topics and exam strategies. Complete mock tests and final reviews."
-          }
-        },
-        tasks: {
-          "week1": [
-            {
-              subject: "Biology",
-              chapter: "Cell Structure and Function",
-              task: "Review organelle functions and cellular processes. Complete practice questions on mitochondria and chloroplast structure. Study membrane transport mechanisms including active and passive transport."
-            },
-            {
-              subject: "Chemistry", 
-              chapter: "Atomic Structure",
-              task: "Practice electron configuration and periodic trends. Complete exercises on atomic radius, ionization energy, and electronegativity. Review quantum numbers and orbital shapes."
-            },
-            {
-              subject: "Physics",
-              chapter: "Kinematics",
-              task: "Solve motion problems involving displacement, velocity, and acceleration. Practice graphical analysis of motion. Work on projectile motion calculations and free fall problems."
-            }
-          ],
-          "week2": [
-            {
-              subject: "Biology",
-              chapter: "Genetics and Heredity",
-              task: "Study Mendelian genetics and inheritance patterns. Practice Punnett squares and probability calculations. Review DNA structure and gene expression mechanisms."
-            },
-            {
-              subject: "Chemistry",
-              chapter: "Chemical Bonding",
-              task: "Understand ionic, covalent, and metallic bonding. Practice Lewis structures and molecular geometry using VSEPR theory. Study intermolecular forces and their effects on properties."
-            },
-            {
-              subject: "Physics",
-              chapter: "Forces and Newton's Laws",
-              task: "Apply Newton's laws to solve force problems. Practice free body diagrams and equilibrium conditions. Work on friction, tension, and normal force calculations."
-            }
-          ]
-        }
-      });
-      setLoading(false);
-      return;
-    }
-
+    // if (!studentId) {
+    //   setPlan(candidate)
+    //   setLoading(false);
+    //   return;
+    // }
     fetchPlan();
   }, [studentId, token, API_BASE]);
 
@@ -389,7 +370,6 @@ export default function AiCoachPlan() {
             </div>
           </div>
         </div>
-
         {/* Loading State */}
         {loading && (
           <div className="flex items-center gap-3 text-gray-700 bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
@@ -397,7 +377,6 @@ export default function AiCoachPlan() {
             <span className="text-sm font-medium">Fetching your personalized AI plan…</span>
           </div>
         )}
-
         {/* Error State */}
         {!loading && error && (
           <div className="flex items-start gap-3 text-red-700 bg-red-50 border border-red-200 rounded-xl p-6 shadow-sm">
@@ -408,7 +387,6 @@ export default function AiCoachPlan() {
             </div>
           </div>
         )}
-
         {!loading && !error && plan && (
           <div className="space-y-8">
             
@@ -440,7 +418,6 @@ export default function AiCoachPlan() {
                 </div>
               </div>
             </section>
-
             {/* Enhanced Subject Focus */}
             {plan.focus && (
               <section className="space-y-6">
@@ -522,7 +499,6 @@ export default function AiCoachPlan() {
                 </div>
               </section>
             )}
-
             {/* Enhanced Phased Plan */}
             {plan.plan && (
               <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
@@ -573,7 +549,6 @@ export default function AiCoachPlan() {
                 </div>
               </section>
             )}
-
             {/* Enhanced Weekly Tasks */}
             <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="p-6 sm:p-8">
@@ -582,7 +557,6 @@ export default function AiCoachPlan() {
                   title="📋 Weekly Task Breakdown"
                   subtitle="Interactive checklist to track your daily progress"
                 />
-
                 <div className="space-y-4">
                   {weeks.map((w) => {
                     const completedTasks = progress[w.weekKey] ? Object.values(progress[w.weekKey]).filter(Boolean).length : 0;
@@ -679,7 +653,6 @@ export default function AiCoachPlan() {
                       </details>
                     );
                   })}
-
                   {!weeks.length && (
                     <div className="text-center py-12 text-gray-600">
                       <ClipboardList className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -690,7 +663,6 @@ export default function AiCoachPlan() {
                 </div>
               </div>
             </section>
-
             {/* Enhanced Footer Actions */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
               <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
@@ -729,5 +701,4 @@ export default function AiCoachPlan() {
     </div>
     </div>
   );
-  
 }
