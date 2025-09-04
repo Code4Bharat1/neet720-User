@@ -13,6 +13,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// ✅ Add this
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata = {
   title: "NEET720 – Smart NEET Exam Portal & AI Rank Predictor",
   description:
@@ -35,6 +41,7 @@ export const metadata = {
   alternates: {
     canonical: "https://neet720.com",
   },
+  
   openGraph: {
     title: "NEET720 – Smart NEET Exam Portal & AI Rank Predictor",
     description:
