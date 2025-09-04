@@ -113,14 +113,8 @@ const Hero = () => {
   return (
     <div className="flex items-end justify-center mt-16 w-full">
       <div
-        className="w-full h-[120px] md:h-[262px] mx-4 rounded-lg p-6 md:p-8 flex flex-row items-center justify-between my-5 shadow-lg"
-        style={{
-          background: `linear-gradient(to right, ${colors.sidebarColor}, ${shadeColor(
-            colors.sidebarColor,
-            30
-          )})`,
-          color: colors.textColor,
-        }}
+        className="w-full h-[120px] md:h-[262px] mx-4 rounded-lg p-6 md:p-8 flex flex-row items-center justify-between my-5 shadow-lg 
+             bg-gradient-to-r from-[#53ADD3] to-[#3e9ec7] text-white"
       >
         {/* Text Content */}
         <div className="flex-1 text-left mb-4 md:mb-0">
@@ -151,25 +145,25 @@ const Hero = () => {
   );
 };
 
-// Helper function to darken a hex color by percentage
-function shadeColor(color, percent) {
-  let R = parseInt(color.substring(1, 3), 16);
-  let G = parseInt(color.substring(3, 5), 16);
-  let B = parseInt(color.substring(5, 7), 16);
+// // Helper function to darken a hex color by percentage
+// function shadeColor(color, percent) {
+//   let R = parseInt(color.substring(1, 3), 16);
+//   let G = parseInt(color.substring(3, 5), 16);
+//   let B = parseInt(color.substring(5, 7), 16);
 
-  R = parseInt((R * (100 - percent)) / 100);
-  G = parseInt((G * (100 - percent)) / 100);
-  B = parseInt((B * (100 - percent)) / 100);
+//   R = parseInt((R * (100 - percent)) / 100);
+//   G = parseInt((G * (100 - percent)) / 100);
+//   B = parseInt((B * (100 - percent)) / 100);
 
-  R = R < 0 ? 0 : R;
-  G = G < 0 ? 0 : G;
-  B = B < 0 ? 0 : B;
+//   R = R < 0 ? 0 : R;
+//   G = G < 0 ? 0 : G;
+//   B = B < 0 ? 0 : B;
 
-  const RR = R.toString(16).padStart(2, "0");
-  const GG = G.toString(16).padStart(2, "0");
-  const BB = B.toString(16).padStart(2, "0");
+//   const RR = R.toString(16).padStart(2, "0");
+//   const GG = G.toString(16).padStart(2, "0");
+//   const BB = B.toString(16).padStart(2, "0");
 
-  return `#${RR}${GG}${BB}`;
-}
+//   return `#${RR}${GG}${BB}`;
+// }
 
 export default Hero;

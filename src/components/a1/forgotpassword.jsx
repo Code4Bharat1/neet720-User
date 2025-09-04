@@ -91,7 +91,7 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Section */}
-      <div className="hidden md:flex md:w-[40%] bg-[#1977F3] items-center justify-center">
+      <div className="hidden md:flex md:w-[40%] bg-gradient-to-b from-[#0077B6] to-[#ADE8F4]  items-center justify-center">
         <Image
           src="/neet720_logo.jpg"
           alt="Neet720 Logo"
@@ -118,9 +118,18 @@ const ForgotPassword = () => {
         <h2 className="text-center text-2xl md:text-3xl font-bold text-[#000] mb-4">
           Forgot Your Password?
         </h2>
-        <p className="mb-8 text-md text-gray-500 text-lg md:text-2xl md:py-6">
-          Enter your email address to receive an OTP for password reset.
-        </p>
+        {!isOtpSent && (
+          <p className="text-gray-600 text-center mb-6">
+            Enter your email address to receive an OTP for password reset.
+          </p>
+        )}
+
+        {isOtpSent && (
+          <p className="text-gray-600 text-center mb-6">
+            Enter the OTP sent to your email and reset your password.
+          </p>
+        )}
+
 
         {/* Form Section */}
         <form
@@ -204,17 +213,16 @@ const ForgotPassword = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className={`w-full py-3 bg-[#1977F3] text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all flex items-center justify-center ${
-              isLoading && 'opacity-75'
-            }`}
+            className={`w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#3e9ec7] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all flex items-center justify-center ${isLoading && 'opacity-75'
+              }`}
             disabled={isLoading}
           >
             <AiOutlineSend className="text-lg mr-2" />
             {isLoading
               ? 'Sending...'
               : isOtpSent
-              ? 'Reset Password'
-              : 'Send OTP'}
+                ? 'Reset Password'
+                : 'Send OTP'}
           </button>
         </form>
 
@@ -224,7 +232,7 @@ const ForgotPassword = () => {
             Remember your password?{' '}
             <button
               onClick={() => router.push('/login')}
-              className="font-bold text-[#1977F3] hover:text-blue-800 transition-all"
+              className="font-medium text-[#53ADD3] hover:text-[#3e9ec7] cursor-pointer"
             >
               Log in
             </button>

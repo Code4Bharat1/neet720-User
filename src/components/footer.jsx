@@ -31,20 +31,20 @@ export default function Footer() {
           <h3 className="font-semibold mb-3 text-lg">Useful Links</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="/HomePage" className="hover:underline">
+              <a href="/" className="hover:underline">
                 Home
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/signup" className="hover:underline">
                 Demo
               </a>
             </li>
-            <li>
-              <a href="/navbar" className="hover:underline">
+            {/* <li>
+              <a href="/features" className="hover:underline">
                 Features
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
 

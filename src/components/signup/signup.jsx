@@ -160,6 +160,18 @@ const SignUpPage = () => {
       </div>
       {/* Right */}
       <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white p-6 md:rounded-l-3xl">
+        {/* Logo Section (always visible on top) */}
+        {/* Logo Section (only visible on mobile) */}
+        <div className="flex justify-center mb-6 md:hidden">
+          <Image
+            src="/neet720_logo.jpg"
+            alt="Neet720 Logo"
+            width={160}
+            height={60}
+            className="object-contain"
+          />
+        </div>
+
         <h2 className="text-2xl md:text-3xl font-bold text-[#45A4CE] mb-6 text-center">
           {otpSent && !otpVerified ? "Enter OTP" : "Create an Account"}
         </h2>

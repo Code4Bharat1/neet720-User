@@ -30,12 +30,12 @@ const Login = () => {
         { emailAddress: formData.email, password: formData.password }
       );
       localStorage.setItem("authToken", response.data.token);
-      toast.success("✅ Login Successfully!!",{
+      toast.success("✅ Login Successfully!!", {
         duration: 5000
       });
       router.push("/dashboard"); // Redirect to dashboard after successful login
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to login.",{
+      toast.error(err.response?.data?.message || "Failed to login.", {
         duration: 5000
       });
     } finally {
@@ -152,6 +152,19 @@ const Login = () => {
             {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
+        {/* Sign Up Redirect */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Don’t have an account?{" "}
+            <a
+              onClick={() => router.push("/signup")}
+              className="font-medium text-[#53ADD3] hover:text-[#3e9ec7] cursor-pointer"
+            >
+              Sign Up
+            </a>
+          </p>
+        </div>
+
 
         {/* Error Message */}
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
