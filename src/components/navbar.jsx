@@ -58,7 +58,7 @@ export default function Navbar() {
       {/* Desktop Menu */}
       <ul className="hidden md:flex justify-center gap-12 mt-2 text-gray-700 font-medium text-xl relative">
         <li>
-          <Link href="/HomePage" className="hover:text-blue-600 transition">
+          <Link href="/" className="hover:text-blue-600 transition">
             Home
           </Link>
         </li>

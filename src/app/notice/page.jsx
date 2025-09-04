@@ -166,7 +166,7 @@ const NoticesPage = () => {
       <div className="md:flex min-h-screen relative bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <Sidebar />
         <BottomNavbar />
-        <div className="w-full mt-16 md:w-5/6 flex flex-col min-h-screen">
+        <div className="w-full md:w-5/6 flex flex-col min-h-screen">
           <NavBar />
           <div className="flex-1 p-6">
             <div className="max-w-7xl mx-auto">
