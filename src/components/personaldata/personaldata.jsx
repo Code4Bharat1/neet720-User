@@ -75,12 +75,49 @@ const PersonalData = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      localStorage.setItem("profileImage", reader.result);
-      setProfileImage(reader.result);
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please upload only JPEG or PNG images.");
+      e.target.value = ''; // Clear the input
+      return;
+    }
+
+    // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSizeInBytes) {
+      toast.error("Image size should be less than 5MB. Please choose a smaller image.");
+      e.target.value = ''; // Clear the input
+      return;
+    }
+
+    // Validate image dimensions (800x800px minimum)
+    const img = new Image();
+    img.onload = function () {
+      if (img.width < 800 || img.height < 800) {
+        toast.error("Image should be at least 800x800px. Please choose a larger image.");
+        e.target.value = ''; // Clear the input
+        return;
+      }
+
+      // If all validations pass, process the image
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem("profileImage", reader.result);
+        setProfileImage(reader.result);
+        toast.success("Profile image updated successfully!");
+      };
+      reader.readAsDataURL(file);
     };
-    reader.readAsDataURL(file);
+
+    img.onerror = function () {
+      toast.error("Invalid image file. Please choose a valid image.");
+      e.target.value = ''; // Clear the input
+      return;
+    };
+
+    // Create object URL to load image for dimension checking
+    img.src = URL.createObjectURL(file);
   };
 
   const handleUpdateClick = async () => {
@@ -208,11 +245,10 @@ const PersonalData = () => {
         </div>
         <button
           onClick={!isEditable ? () => setIsEditable(true) : handleUpdateClick}
-          className={`px-6 py-2 rounded text-white font-medium ${
-            isEditable
+          className={`px-6 py-2 rounded text-white font-medium ${isEditable
               ? "bg-[#0077B6] hover:bg-[#498fb5]"
               : "bg-[#45A4CE] hover:bg-[#3589ac]"
-          }`}
+            }`}
         >
           {isUpdating ? "Updating..." : isEditable ? "Update" : "Edit"}
         </button>
