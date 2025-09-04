@@ -9,95 +9,312 @@ import {
   FaShieldVirus,
   FaDownload,
 } from "react-icons/fa";
-import { AlertTriangle, Clock, X, CheckCircle } from "lucide-react"; // install with: npm install lucide-react
+import { AlertTriangle, Clock, X, CheckCircle } from "lucide-react";
 
 const OMRDownloadButton = () => {
   const logoUrl =
     "https://examportal-diagrams-new.s3.eu-north-1.amazonaws.com/1749384337445-nexcore-logo-pc.png";
 
-  const handleDownloadOMR = () => {
-    const allQuestions = Array.from({ length: 180 }, (_, i) => ({
-      number: i + 1,
-    }));
-    const renderOMRColumn = (columnQuestions) =>
-      columnQuestions
-        .map(
-          (q) => `
-          <div class="question-row">
-            <div class="question-number">${q.number}.</div>
-            <div class="options-bubbles">
-              ${["A", "B", "C", "D"]
-                .map((opt) => `<div class="bubble-option">${opt}</div>`)
-                .join("")}
+  const handleDownloadOMR = async () => {
+    try {
+      const allQuestions = Array.from({ length: 180 }, (_, i) => ({
+        number: i + 1,
+      }));
+      
+      const renderOMRColumn = (columnQuestions) =>
+        columnQuestions
+          .map(
+            (q) => `
+            <div class="question-row">
+              <div class="question-number">${q.number}.</div>
+              <div class="options-bubbles">
+                ${["A", "B", "C", "D"]
+                  .map((opt) => `<div class="bubble-option">${opt}</div>`)
+                  .join("")}
+              </div>
+            </div>`
+          )
+          .join("");
+
+      const col1 = allQuestions.slice(0, 45);
+      const col2 = allQuestions.slice(45, 90);
+      const col3 = allQuestions.slice(90, 135);
+      const col4 = allQuestions.slice(135, 180);
+
+      const html = `
+        <div class="omr-page">
+          <div class="omr-flex-header">
+            <div class="omr-left-info">
+              <div>Name: <span class="info-line">&nbsp;</span></div>
+              <div>Roll No: <span class="info-line">&nbsp;</span></div>
+              <div>Date: <span class="info-line">&nbsp;</span></div>
             </div>
-          </div>`
-        )
-        .join("");
+            <div class="omr-center-title">
+              <div class="omr-title">OMR QUESTION SHEET</div>
+              <div class="omr-subtitle">**Do not write anything on the OMR bubbles**</div>
+            </div>
+            <div style="min-width:80px">
+              <img src="${logoUrl}" class="logo-omr" crossorigin="anonymous" />
+            </div>
+          </div>
+          <div class="omr-table">
+            <div class="column">${renderOMRColumn(col1)}</div>
+            <div class="column">${renderOMRColumn(col2)}</div>
+            <div class="column">${renderOMRColumn(col3)}</div>
+            <div class="column">${renderOMRColumn(col4)}</div>
+          </div>
+        </div>
+      `;
 
-    const col1 = allQuestions.slice(0, 45);
-    const col2 = allQuestions.slice(45, 90);
-    const col3 = allQuestions.slice(90, 135);
-    const col4 = allQuestions.slice(135, 180);
+      const css = `
+        .omr-page { 
+          padding: 20px; 
+          background: white; 
+          width: 794px; 
+          min-height: 1123px; 
+          font-family: Arial, sans-serif; 
+          font-size: 12px; 
+          color: #000; 
+        }
+        .omr-flex-header {
+          display: flex; 
+          justify-content: space-between; 
+          align-items: center;
+          margin-bottom: 20px; 
+          padding: 10px 15px; 
+          border: 2px solid black;
+        }
+        .omr-left-info { 
+          display: flex; 
+          flex-direction: column; 
+          align-items: flex-start; 
+          min-width: 180px; 
+          gap: 8px; 
+        }
+        .logo-omr { 
+          max-width: 100px; 
+          max-height: 80px; 
+          margin-bottom: 6px; 
+          border-radius: 5px; 
+          border: 1px solid #ddd; 
+          background: #fff; 
+        }
+        .omr-center-title { 
+          text-align: center; 
+          flex: 1; 
+        }
+        .omr-title { 
+          font-size: 18px; 
+          font-weight: bold; 
+          margin-bottom: 6px; 
+        }
+        .omr-subtitle { 
+          font-size: 13px; 
+          color: #444; 
+          margin-bottom: 0; 
+        }
+        .omr-table { 
+          display: flex; 
+          justify-content: space-between; 
+          gap: 15px; 
+        }
+        .column { 
+          flex: 1; 
+          border: 2px solid black; 
+          padding: 12px; 
+        }
+        .question-row { 
+          display: flex; 
+          align-items: center; 
+          margin-bottom: 4px; 
+          font-size: 10px; 
+        }
+        .question-number { 
+          min-width: 25px; 
+          font-weight: bold; 
+        }
+        .options-bubbles { 
+          display: flex; 
+          gap: 12px; 
+          margin-left: 12px; 
+        }
+        .bubble-option { 
+          width: 16px; 
+          height: 16px; 
+          border: 2px solid #000; 
+          border-radius: 50%; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          font-size: 8px; 
+          font-weight: bold; 
+        }
+        .info-line { 
+          display: inline-block; 
+          width: 100px; 
+          margin-left: 5px; 
+          border-bottom: 1px dotted #aaa; 
+          min-height: 14px; 
+        }
+      `;
 
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-  <title>Blank OMR Sheet</title>
-  <style>
-    @page { size: A4; margin: 1.5cm; }
-    body { font-family: Arial, sans-serif; font-size: 10pt; background: white; color: #000; }
-    .omr-page { padding: 0; }
-    .omr-flex-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px; padding: 2px 10px; border: 1px solid black;
+      // Create a temporary div to render HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      tempDiv.setAttribute('style', `
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        width: 794px;
+        background: white;
+        padding: 20px;
+      `);
+
+      // Apply CSS styles
+      const styleSheet = document.createElement('style');
+      styleSheet.textContent = css;
+      document.head.appendChild(styleSheet);
+      document.body.appendChild(tempDiv);
+
+      // Wait for images to load
+      const images = tempDiv.getElementsByTagName('img');
+      const imageLoadPromises = Array.from(images).map(img => {
+        return new Promise((resolve) => {
+          if (img.complete) {
+            resolve();
+          } else {
+            img.onload = resolve;
+            img.onerror = resolve; // Continue even if image fails to load
+          }
+        });
+      });
+
+      await Promise.all(imageLoadPromises);
+
+      // Create canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas size (A4 dimensions at 150 DPI)
+      canvas.width = 1240;
+      canvas.height = 1754;
+      
+      // Fill white background
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Convert HTML to canvas using html2canvas alternative approach
+      // Since we can't use external libraries, we'll use a different approach
+      
+      // For now, let's create the OMR sheet programmatically on canvas
+      await drawOMROnCanvas(ctx, canvas.width, canvas.height, logoUrl);
+
+      // Convert canvas to JPG and download
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'OMR-sheet.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        toast.success('OMR Sheet downloaded successfully!');
+      }, 'image/jpeg', 0.95);
+
+      // Cleanup
+      document.body.removeChild(tempDiv);
+      document.head.removeChild(styleSheet);
+      
+    } catch (error) {
+      console.error('Error generating OMR sheet:', error);
+      toast.error('Failed to generate OMR sheet. Please try again.');
     }
-    .omr-left-info { display: flex; flex-direction: column; align-items: flex-start; min-width: 180px; gap: 6px; }
-    .logo-omr { max-width: 100px; max-height: 80px; margin-bottom: 6px; border-radius: 5px; border: 1px solid #ddd; background: #fff; }
-    .omr-center-title { text-align: center; flex: 1; }
-    .omr-title { font-size: 16pt; font-weight: bold; margin-bottom: 4px; }
-    .omr-subtitle { font-size: 11pt; color: #444; margin-bottom: 0; }
-    .omr-table { display: flex; justify-content: space-between; gap: 12px; }
-    .column { flex: 1; border: 1px solid black; padding: 10px; }
-    .question-row { display: flex; align-items: center; margin-bottom: 3px; font-size: 7pt; }
-    .question-number { min-width: 20px; font-weight: bold; }
-    .options-bubbles { display: flex; gap: 10px; margin-left: 10px; }
-    .bubble-option { width: 14px; height: 14px; border: 1px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 6pt; font-weight: bold; }
-    .info-line { display: inline-block; width: 100px; margin-left: 5px; border-bottom:1px dotted #aaa; min-height:12px; }
-  </style>
-</head>
-<body>
-  <div class="omr-page">
-    <div class="omr-flex-header">
-      <div class="omr-left-info">
-        <div>Name: <span class="info-line">&nbsp;</span></div>
-        <div>Roll No: <span class="info-line">&nbsp;</span></div>
-        <div>Date: <span class="info-line">&nbsp;</span></div>
-      </div>
-      <div class="omr-center-title">
-        <div class="omr-title">OMR QUESTION SHEET</div>
-        <div class="omr-subtitle">**Do not write anything on the OMR bubbles**</div>
-      </div>
-      <div style="min-width:80px">
-        <img src="${logoUrl}" class="logo-omr" />
-      </div>
-    </div>
-    <div class="omr-table">
-      <div class="column">${renderOMRColumn(col1)}</div>
-      <div class="column">${renderOMRColumn(col2)}</div>
-      <div class="column">${renderOMRColumn(col3)}</div>
-      <div class="column">${renderOMRColumn(col4)}</div>
-    </div>
-  </div>
-</body>
-</html>`;
+  };
 
-    const blob = new Blob([html], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "OMR-sheet.html";
-    a.click();
-    URL.revokeObjectURL(url);
+  // Function to draw OMR sheet directly on canvas
+  const drawOMROnCanvas = async (ctx, width, height, logoUrl) => {
+    const padding = 40;
+    const headerHeight = 120;
+    
+    // Set font
+    ctx.fillStyle = 'black';
+    ctx.font = '16px Arial';
+    
+    // Draw header border
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(padding, padding, width - 2 * padding, headerHeight);
+    
+    // Draw header content
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('OMR QUESTION SHEET', width / 2, padding + 40);
+    
+    ctx.font = '14px Arial';
+    ctx.fillText('**Do not write anything on the OMR bubbles**', width / 2, padding + 65);
+    
+    // Draw name, roll no, date fields
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'left';
+    const leftX = padding + 20;
+    ctx.fillText('Name: ________________________', leftX, padding + 90);
+    ctx.fillText('Roll No: ______________________', leftX, padding + 110);
+    ctx.fillText('Date: _________________________', leftX, padding + 130);
+    
+    // Try to load and draw logo
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        ctx.drawImage(img, width - padding - 100, padding + 20, 80, 60);
+      };
+      img.src = logoUrl;
+    } catch (e) {
+      console.log('Could not load logo');
+    }
+    
+    // Draw question columns
+    const startY = padding + headerHeight + 30;
+    const columnWidth = (width - 2 * padding - 60) / 4; // 4 columns with gaps
+    const questionHeight = 25;
+    
+    for (let col = 0; col < 4; col++) {
+      const startX = padding + col * (columnWidth + 15);
+      const startQ = col * 45 + 1;
+      const endQ = Math.min((col + 1) * 45, 180);
+      
+      // Draw column border
+      ctx.strokeRect(startX, startY, columnWidth, (endQ - startQ + 1) * questionHeight + 20);
+      
+      // Draw questions in this column
+      for (let q = startQ; q <= endQ; q++) {
+        const y = startY + 10 + (q - startQ) * questionHeight;
+        
+        // Question number
+        ctx.font = 'bold 12px Arial';
+        ctx.fillText(`${q}.`, startX + 10, y + 15);
+        
+        // Option bubbles
+        const options = ['A', 'B', 'C', 'D'];
+        for (let i = 0; i < options.length; i++) {
+          const bubbleX = startX + 50 + i * 30;
+          const bubbleY = y + 5;
+          
+          // Draw circle
+          ctx.beginPath();
+          ctx.arc(bubbleX, bubbleY + 8, 8, 0, 2 * Math.PI);
+          ctx.stroke();
+          
+          // Draw option letter
+          ctx.font = '10px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(options[i], bubbleX, bubbleY + 12);
+          ctx.textAlign = 'left';
+        }
+      }
+    }
   };
 
   return (

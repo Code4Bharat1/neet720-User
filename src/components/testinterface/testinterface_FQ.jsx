@@ -841,7 +841,7 @@ const QuizInterface = () => {
               {/* Navigation Controls */}
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
-                  {currentQuestionIndex > 0 && (
+                  {/* {currentQuestionIndex > 0 && (
                     <button
                       onClick={() => handleNavigation("prev")}
                       className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 rounded-xl font-medium hover:from-slate-300 hover:to-slate-400 transition-all duration-300 shadow-lg hover:shadow-xl"
@@ -849,7 +849,7 @@ const QuizInterface = () => {
                       <ChevronLeft className="w-5 h-5" />
                       Previous
                     </button>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="flex max-sm:flex-row gap-3">
