@@ -158,10 +158,25 @@ const OverallPerformanceCard = ({ selectedFilter = "This Year" }) => {
         <CardDescription>Performance trend over time</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data} margin={{ left: 12, right: 12 }}>
+        <ResponsiveContainer width="100%" height={350}>
+          <LineChart 
+            data={data} 
+            margin={{ 
+              left: 12, 
+              right: 12, 
+              top: 20, 
+              bottom: 30 
+            }}
+          >
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis dataKey="label" />
+            <XAxis 
+              dataKey="label" 
+              interval={0}
+              angle={selectedFilter === "This Year" ? -45 : 0}
+              textAnchor={selectedFilter === "This Year" ? "end" : "middle"}
+              height={selectedFilter === "This Year" ? 60 : 30}
+              tick={{ fontSize: 12 }}
+            />
             <Tooltip />
             <Line
               type="monotone"
