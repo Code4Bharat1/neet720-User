@@ -19,7 +19,7 @@ const Page = () => {
        <ResultMobile />
         
       </div> */}
-      <div className='mt-48'><BottomNavbar/></div>
+      {/* <div className='mt-48><BottomNavbar/></div> */}
     </div>
   );
 }
