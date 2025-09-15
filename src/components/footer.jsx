@@ -5,7 +5,7 @@ import { PiLinkSimpleBold } from "react-icons/pi";
 import {
   FaPhoneAlt,
   FaEnvelope,
-  FaWhatsapp,
+  FaWhatsapp, 
   FaInstagram,
   FaFacebookF,
 } from "react-icons/fa";
