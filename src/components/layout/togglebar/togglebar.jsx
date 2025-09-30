@@ -17,6 +17,7 @@ import {
   FaTablets,
 } from "react-icons/fa";
 import { BookText } from "lucide-react";
+import { RiGeminiFill } from "react-icons/ri";
 import axios from "axios";
 
 const sidebarLinks = [
@@ -24,12 +25,13 @@ const sidebarLinks = [
   { name: "Exam Plan", path: "/goalsetup", icon: <FaBullseye /> },
   { name: "Test", path: "/testselection", icon: <FaClipboardList /> },
   { name: "Result", path: "/pasttest", icon: <FaPoll /> },
-  { name: "Analytics", path: "/analytics", icon: <FaChartLine /> },
+  // { name: "Analytics", path: "/analytics", icon: <FaChartLine /> },
   { name: "Colleges", path: "/colleges", icon: <FaUniversity /> },
   { name: "Credits", path: "/credits", icon: <FaCookie /> },
   { name: "PYQs", path: "/previousyearquestions", icon: <FaTablets /> },
   { name: "View Notice", path: "/notice", icon: <FaBook /> },
   { name: "Test Series", path: "/test-series", icon: <BookText /> },
+  { name: "AI coach", path: "/coachAi", icon: <RiGeminiFill /> },
 ];
 
 const ToggleBar = () => {

@@ -63,7 +63,7 @@ const Sidebar = ({ isOpen }) => {
     { href: '/goalsetup', icon: FaBullseye, label: 'Exam Plan' },
     { href: '/testselection', icon: FaClipboardList, label: 'Test' },
     { href: '/pasttest', icon: FaPoll, label: 'Result' },
-    { href: '/analytics', icon: FaChartLine, label: 'Analytics' },
+    // { href: '/analytics', icon: FaChartLine, label: 'Analytics' },
     { href: '/colleges', icon: FaUniversity, label: 'Colleges' },
     { href: '/credits', icon: FaMedal, label: 'Scholarship' },
     { href: '/previousyearquestions', icon: FaTablets, label: 'PYQs' },
