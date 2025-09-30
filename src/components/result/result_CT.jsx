@@ -263,12 +263,12 @@ const ResultPage = () => {
               >
                 Review Mistakes
               </button>
-              <button
+              {/* <button
                 onClick={() => router.push("/viewanalyticsCT")}
                 className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors font-medium"
               >
                 View Analytics
-              </button>
+              </button> */}
               <button
                 onClick={() => {
                   localStorage.removeItem("testAnswers");
