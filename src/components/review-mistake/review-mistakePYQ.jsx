@@ -20,7 +20,7 @@ import {
   FaArrowUp,
   FaArrowLeft,
 } from "react-icons/fa";
-
+import useRouter from 'next/navigation';
 // ---------- Subject icon config ----------
 const subjectConfig = {
   Physics: { icon: <FaAtom className="text-blue-600" /> },
@@ -44,6 +44,7 @@ const resolveCorrectKey = (options, correctAnswer) => {
 
 // ---------- Main Page ----------
 export default function ReviewAllWithMistakes() {
+  const router = useRouter();
   const [data, setData] = useState({}); // { subject: [enriched...] }
   const [subjects, setSubjects] = useState([]);
   const [activeSubject, setActiveSubject] = useState("");

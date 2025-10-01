@@ -61,7 +61,7 @@ const TestPlanResultPage = () => {
   const [totalMax, setTotalMax] = useState(0);
 
   useEffect(() => {
-    // Read from localStorage (support "examplan" and "examPlan" just in case)
+    // Read from localStorage (support "examplan" and "examPlan")
     const raw =
       localStorage.getItem("examplan") ??
       localStorage.getItem("examPlan") ??
@@ -69,36 +69,40 @@ const TestPlanResultPage = () => {
 
     const entries = normalizeExamplan(raw);
 
-    // Aggregate subject-wise stats
     // Get allocated questions from startTest
     const startTest = JSON.parse(localStorage.getItem("startTest")) || null;
     const allocatedQuestions = startTest?.allocatedQuestions || 0;
+    const subjectName = startTest?.subject || "Unknown";
 
     // Aggregate subject-wise stats
-    const stats = {}; // subject -> { correct, wrong }
-    for (const e of entries) {
-      const subject = (e.subject || "Unknown").trim();
-      const hasSelection =
-        e.selectedAnswer !== undefined &&
-        e.selectedAnswer !== null &&
-        String(e.selectedAnswer).trim() !== "";
+    const stats = {};
+    if (entries.length === 0 && allocatedQuestions > 0) {
+      // User didn’t attempt any question, create default stat
+      stats[subjectName] = { correct: 0, wrong: 0 };
+    } else {
+      for (const e of entries) {
+        const subject = (e.subject || "Unknown").trim();
+        const hasSelection =
+          e.selectedAnswer !== undefined &&
+          e.selectedAnswer !== null &&
+          String(e.selectedAnswer).trim() !== "";
 
-      if (!stats[subject]) {
-        stats[subject] = { correct: 0, wrong: 0 };
-      }
+        if (!stats[subject]) {
+          stats[subject] = { correct: 0, wrong: 0 };
+        }
 
-      if (hasSelection && e.isCorrect === true) {
-        stats[subject].correct += 1;
-      } else if (hasSelection) {
-        stats[subject].wrong += 1;
+        if (hasSelection && e.isCorrect === true) {
+          stats[subject].correct += 1;
+        } else if (hasSelection) {
+          stats[subject].wrong += 1;
+        }
       }
     }
 
     // Build subjects array based on allocatedQuestions
     const subjectsArray = Object.keys(stats).map((subject) => {
       const s = stats[subject];
-
-      const total = allocatedQuestions; // total questions from startTest
+      const total = allocatedQuestions;
       const unattempted = total - (s.correct + s.wrong);
 
       const score = s.correct * MARKS_CORRECT + s.wrong * MARKS_WRONG;
@@ -119,18 +123,14 @@ const TestPlanResultPage = () => {
       };
     });
 
-    // Sort (optional): highest score first
     subjectsArray.sort((a, b) => b.score - a.score);
 
     setSubjects(subjectsArray);
-
     const total = subjectsArray.reduce((acc, subj) => acc + subj.score, 0);
     const max = subjectsArray.reduce((acc, subj) => acc + subj.max, 0);
-
     setTotalScore(total);
     setTotalMax(max);
 
-    // Confetti if >=70%
     if (max && (total / max) * 100 >= 70) {
       setShowConfetti(true);
       const timer = setTimeout(() => setShowConfetti(false), 6000);
@@ -300,6 +300,7 @@ const TestPlanResultPage = () => {
                 localStorage.removeItem("selectedSubjects");
                 localStorage.removeItem("startTest");
                 localStorage.removeItem("examplan");
+                localStorage.removeItem("testStartTime");
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

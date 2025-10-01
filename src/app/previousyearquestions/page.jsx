@@ -125,9 +125,9 @@ const PreviousYearList = () => {
           href="https://neet720.com/previousyearquestions"
         />
       </Head>
-      <ToggleBar />
+      {/* <ToggleBar /> */}
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <BottomNavbar />
+        {/* <BottomNavbar /> */}
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
             <button
