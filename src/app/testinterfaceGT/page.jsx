@@ -17,13 +17,13 @@ export default function Page() {
   return (
     <div>
       {/* Desktop View */}
-      <div className="hidden md:block">
+      <div className="">
         <TestInterface />
       </div>
       {/* Mobile View */}
-      <div className="block md:hidden">
+      {/* <div className="block md:hidden">
         <TestInterfaceMobile />
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -76,6 +76,7 @@ const TestInterface = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredOption, setHoveredOption] = useState(null);
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
+  const [showQuestionPanel, setShowQuestionPanel] = useState(false);
 
   // Derived values (must be above effects that reference them)
   // const currentQuestionData =
@@ -474,18 +475,18 @@ const TestInterface = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50">
       {/* Animated Header */}
       <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 shadow-lg border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
             {/* Animated Timer Section */}
-            <div className="relative">
-              <div className="flex items-center gap-3">
+            <div className="relative w-full sm:w-auto flex justify-center sm:justify-start">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div
                   className={`p-2 rounded-full ${
                     isLowTime ? "bg-red-100 animate-pulse" : "bg-blue-100"
                   } transition-all`}
                 >
                   <FaClock
-                    className={`text-xl ${
+                    className={`text-base sm:text-xl ${
                       isLowTime ? "text-red-600" : "text-blue-600"
                     }`}
                   />
@@ -494,23 +495,27 @@ const TestInterface = () => {
                   <div
                     className={`${
                       isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
-                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}
+                    } text-white px-2 sm:px-3 py-1 rounded-lg font-mono text-sm sm:text-base min-w-[2.5rem] sm:min-w-[3rem] text-center transition-all transform hover:scale-105`}
                   >
                     {formattedTime.hours}
                   </div>
-                  <span className="text-gray-600 self-center font-bold">:</span>
+                  <span className="text-gray-600 self-center font-bold text-sm sm:text-base">
+                    :
+                  </span>
                   <div
                     className={`${
                       isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
-                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}
+                    } text-white px-2 sm:px-3 py-1 rounded-lg font-mono text-sm sm:text-base min-w-[2.5rem] sm:min-w-[3rem] text-center transition-all transform hover:scale-105`}
                   >
                     {formattedTime.minutes}
                   </div>
-                  <span className="text-gray-600 self-center font-bold">:</span>
+                  <span className="text-gray-600 self-center font-bold text-sm sm:text-base">
+                    :
+                  </span>
                   <div
                     className={`${
                       isLowTime ? "bg-red-600 animate-pulse" : "bg-gray-900"
-                    } text-white px-3 py-1 rounded-lg font-mono text-base min-w-[3rem] text-center transition-all transform hover:scale-105`}
+                    } text-white px-2 sm:px-3 py-1 rounded-lg font-mono text-sm sm:text-base min-w-[2.5rem] sm:min-w-[3rem] text-center transition-all transform hover:scale-105`}
                   >
                     {formattedTime.seconds}
                   </div>
@@ -525,7 +530,7 @@ const TestInterface = () => {
             </div>
 
             {/* Stylish Subject Tabs */}
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3 w-full sm:w-auto overflow-x-auto scrollbar-hide pb-2 sm:pb-0 px-1">
               {selectedSubjects.map((subject) => {
                 const SubjectIcon = subjectIcons[subject]?.icon || FaAtom;
                 const isActive = currentSubject === subject;
@@ -538,14 +543,14 @@ const TestInterface = () => {
                       setCurrentSubject(subject);
                       setCurrentQuestion(0);
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all transform hover:scale-105 ${
+                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl transition-all transform hover:scale-105 whitespace-nowrap text-sm sm:text-base flex-shrink-0 ${
                       isActive
                         ? `bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white shadow-lg`
                         : "bg-white/80 text-gray-700 hover:bg-white/90 shadow border border-gray-200"
                     }`}
                   >
                     <SubjectIcon
-                      className={`text-lg ${
+                      className={`text-base sm:text-lg ${
                         isActive ? "text-white" : config.color
                       }`}
                     />
@@ -564,7 +569,7 @@ const TestInterface = () => {
             <button
               onClick={handleSubmitConformation}
               disabled={isSubmitting}
-              className="relative overflow-hidden px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 flex items-center gap-2"
+              className="relative overflow-hidden px-4 sm:px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base"
             >
               {isSubmitting ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -572,7 +577,6 @@ const TestInterface = () => {
                 <FaBolt className="text-sm" />
               )}
               Submit Test
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-100%] transition-transform duration-700"></div>
             </button>
           </div>
         </div>
@@ -694,161 +698,256 @@ const TestInterface = () => {
             </div>
 
             {/* Enhanced Action Buttons */}
-            <div className="relative z-10 flex justify-between items-center pt-4 border-t border-gray-100">
-              <button
-                onClick={handleClearResponse}
-                className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all transform hover:scale-105"
-              >
-                <FaEraser className="text-sm" />
-                Clear Response
-              </button>
+            {/* Enhanced Action Buttons */}
+            <div className="relative z-10 pt-4 border-t border-gray-100">
+              {/* Mobile Layout */}
+              <div className="flex flex-col sm:hidden gap-3">
+                {/* Navigation Buttons Row */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleNavigation("prev")}
+                    disabled={currentQuestion === 0}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-white shadow-sm font-medium text-sm"
+                  >
+                    <FaChevronLeft className="text-xs" />
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => handleNavigation("next")}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg font-medium text-sm"
+                  >
+                    Next
+                    <FaChevronRight className="text-xs" />
+                  </button>
+                </div>
 
-              <div className="flex gap-3">
+                {/* Action Buttons Row */}
+                {/* Action Buttons Row */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleClearResponse}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all font-medium text-sm"
+                  >
+                    <FaEraser className="text-xs" />
+                    Clear
+                  </button>
+                  <button
+                    onClick={() => setShowQuestionPanel(true)}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg font-medium text-sm"
+                  >
+                    <MdVisibility className="text-base" />
+                    Questions
+                  </button>
+                </div>
+              </div>
+
+              {/* Desktop Layout */}
+              <div className="hidden sm:flex justify-between items-center">
                 <button
-                  onClick={() => handleNavigation("prev")}
-                  disabled={currentQuestion === 0}
-                  className="flex items-center gap-2 px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed bg-white shadow-sm"
+                  onClick={handleClearResponse}
+                  className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all transform hover:scale-105"
                 >
-                  <FaChevronLeft className="text-sm" />
-                  Previous
+                  <FaEraser className="text-sm" />
+                  Clear Response
                 </button>
-                <button
-                  onClick={() => handleNavigation("next")}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg"
-                >
-                  Next
-                  <FaChevronRight className="text-sm" />
-                </button>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleNavigation("prev")}
+                    disabled={currentQuestion === 0}
+                    className="flex items-center gap-2 px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed bg-white shadow-sm"
+                  >
+                    <FaChevronLeft className="text-sm" />
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => handleNavigation("next")}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg"
+                  >
+                    Next
+                    <FaChevronRight className="text-sm" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Enhanced Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Stylish Progress Card */}
-          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl shadow-xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <HiOutlineSparkles className="text-xl" />
-                <h3 className="font-bold text-lg">Test Progress</h3>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <MdDone className="text-green-300" />
-                    <span className="text-sm">Answered</span>
+        {/* Enhanced Sidebar - Slides in on mobile */}
+        {/* Enhanced Sidebar - Slides in on mobile */}
+        <div
+          className={`
+    fixed lg:relative inset-0 lg:inset-auto
+    lg:col-span-1
+    bg-black bg-opacity-50 lg:bg-transparent
+    z-50 lg:z-auto
+    transition-all duration-300 ease-in-out
+    ${showQuestionPanel ? "block" : "hidden lg:block"}
+  `}
+        >
+          <div
+            className={`
+      absolute lg:relative
+      right-0 top-0 bottom-0
+      w-[85%] sm:w-96 lg:w-full
+      bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 lg:bg-transparent
+      shadow-2xl lg:shadow-none
+      h-full
+      transform transition-transform duration-300 ease-in-out
+      overflow-y-auto
+      ${
+        showQuestionPanel
+          ? "translate-x-0"
+          : "translate-x-full lg:translate-x-0"
+      }
+    `}
+          >
+            <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
+              {/* Close button for mobile */}
+              <button
+                onClick={() => setShowQuestionPanel(false)}
+                className="lg:hidden absolute top-4 right-4 z-10 text-gray-600 hover:text-gray-800 bg-white rounded-full p-2 shadow-lg"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              {/* Stylish Progress Card */}
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl shadow-xl p-4 sm:p-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-4">
+                    <HiOutlineSparkles className="text-lg sm:text-xl" />
+                    <h3 className="font-bold text-base sm:text-lg">
+                      Test Progress
+                    </h3>
                   </div>
-                  <div className="text-2xl font-bold">
-                    {stats.answered}/{stats.total}
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <MdDone className="text-green-300 text-sm sm:text-base" />
+                        <span className="text-xs sm:text-sm">Answered</span>
+                      </div>
+                      <div className="text-xl sm:text-2xl font-bold">
+                        {stats.answered}/{stats.total}
+                      </div>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <MdFlag className="text-red-300 text-sm sm:text-base" />
+                        <span className="text-xs sm:text-sm">Marked</span>
+                      </div>
+                      <div className="text-xl sm:text-2xl font-bold">
+                        {stats.marked}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 bg-white/20 rounded-full h-2">
+                    <div
+                      className="h-full bg-yellow-300 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${(stats.answered / stats.total) * 100}%`,
+                      }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-center mt-2">
+                    {Math.round((stats.answered / stats.total) * 100)}% complete
+                  </p>
+                </div>
+              </div>
+
+              {/* Enhanced Question Navigation Grid */}
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white">
+                    <MdVisibility className="text-sm sm:text-base" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-sm sm:text-base">
+                    Question Map
+                  </h3>
+                </div>
+                <div className="grid grid-cols-5 gap-2">
+                  {questionsData[currentSubject]?.map((_, index) => {
+                    const isCurrentQuestion = currentQuestion === index;
+                    const isAnswered =
+                      answers[`${currentSubject}-${index}`] !== undefined;
+                    const isMarked =
+                      markedForReview[`${currentSubject}-${index}`];
+                    const isVisited =
+                      visitedQuestions[`${currentSubject}-${index}`];
+
+                    let buttonClass =
+                      "w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all transform hover:scale-110 relative ";
+
+                    if (isCurrentQuestion) {
+                      buttonClass +=
+                        "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg scale-110";
+                    } else if (isMarked) {
+                      buttonClass +=
+                        "bg-gradient-to-br from-red-500 to-pink-500 text-white";
+                    } else if (isAnswered) {
+                      buttonClass +=
+                        "bg-gradient-to-br from-green-500 to-emerald-500 text-white";
+                    } else if (isVisited) {
+                      buttonClass +=
+                        "bg-gradient-to-br from-orange-400 to-pink-400 text-white";
+                    } else {
+                      buttonClass +=
+                        "bg-gray-100 text-gray-600 hover:bg-gray-200";
+                    }
+
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setCurrentQuestion(index);
+                          setShowQuestionPanel(false);
+                        }}
+                        className={buttonClass}
+                      >
+                        {index + 1}
+                        {isCurrentQuestion && (
+                          <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-transparent via-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Legend */}
+                <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-4 sm:mt-6 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded"></div>
+                    <span className="text-gray-600">Answered</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-red-500 to-pink-500 rounded"></div>
+                    <span className="text-gray-600">Marked</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-orange-400 to-pink-400 rounded"></div>
+                    <span className="text-gray-600">Visited</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-blue-600 to-indigo-700 rounded"></div>
+                    <span className="text-gray-600">Current</span>
                   </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <MdFlag className="text-red-300" />
-                    <span className="text-sm">Marked</span>
-                  </div>
-                  <div className="text-2xl font-bold">{stats.marked}</div>
-                </div>
-              </div>
-              <div className="mt-4 bg-white/20 rounded-full h-2">
-                <div
-                  className="h-full bg-yellow-300 rounded-full transition-all duration-500"
-                  style={{ width: `${(stats.answered / stats.total) * 100}%` }}
-                ></div>
-              </div>
-              <p className="text-xs text-center mt-2">
-                {Math.round((stats.answered / stats.total) * 100)}% complete
-              </p>
-            </div>
-          </div>
-
-          {/* Enhanced Question Navigation Grid */}
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white">
-                <MdVisibility />
-              </div>
-              <h3 className="font-bold text-gray-900">Question Map</h3>
-            </div>
-            <div className="grid grid-cols-5 gap-2">
-              {questionsData[currentSubject]?.map((_, index) => {
-                const isCurrentQuestion = currentQuestion === index;
-                const isAnswered =
-                  answers[`${currentSubject}-${index}`] !== undefined;
-                const isMarked = markedForReview[`${currentSubject}-${index}`];
-                const isVisited =
-                  visitedQuestions[`${currentSubject}-${index}`];
-
-                let buttonClass =
-                  "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all transform hover:scale-110 relative ";
-
-                if (isCurrentQuestion) {
-                  buttonClass +=
-                    "bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg scale-110";
-                } else if (isMarked) {
-                  buttonClass +=
-                    "bg-gradient-to-br from-red-500 to-pink-500 text-white";
-                } else if (isAnswered) {
-                  buttonClass +=
-                    "bg-gradient-to-br from-green-500 to-emerald-500 text-white";
-                } else if (isVisited) {
-                  buttonClass +=
-                    "bg-gradient-to-br from-orange-400 to-pink-400 text-white";
-                } else {
-                  buttonClass += "bg-gray-100 text-gray-600 hover:bg-gray-200";
-                }
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentQuestion(index)}
-                    className={buttonClass}
-                  >
-                    {index + 1}
-                    {isCurrentQuestion && (
-                      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-transparent via-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Legend */}
-            <div className="grid grid-cols-2 gap-3 mt-6 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded"></div>
-                <span className="text-gray-600">Answered</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-gradient-to-br from-red-500 to-pink-500 rounded"></div>
-                <span className="text-gray-600">Marked</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-gradient-to-br from-orange-400 to-pink-400 rounded"></div>
-                <span className="text-gray-600">Visited</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-gradient-to-br from-blue-600 to-indigo-700 rounded"></div>
-                <span className="text-gray-600">Current</span>
               </div>
             </div>
-          </div>
-
-          {/* Floating Action Button for Mobile */}
-          <div className="lg:hidden fixed bottom-8 right-8 z-30">
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:scale-110 disabled:opacity-50"
-            >
-              {isSubmitting ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-              ) : (
-                <FaFire className="text-xl" />
-              )}
-            </button>
           </div>
         </div>
       </div>
@@ -870,12 +969,12 @@ const TestInterface = () => {
           </div>
         ))}
       </div>
-      <ConfirmationModal
+      {/* <ConfirmationModal
         show={isModalVisible}
         onClose={() => setIsModalVisible(false)} // Close the modal
         message={"Are you sure you want to submit the test?"}
         onConfirm={handleSubmit} // Confirm submission
-      />
+      /> */}
 
       {/* Custom CSS Animations */}
       <style jsx>{`
@@ -898,10 +997,127 @@ const TestInterface = () => {
           }
         }
 
+        @keyframes slideIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
+
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
       `}</style>
+      {/* Confirmation Modal */}
+      {isModalVisible && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-60 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 transform transition-all animate-[slideIn_0.3s_ease-out]">
+            <div className="text-center">
+              {/* Icon */}
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-red-100 to-orange-100 mb-4">
+                <svg
+                  className="h-8 w-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                Submit Test?
+              </h3>
+
+              {/* Description */}
+              <div className="mb-6">
+                <p className="text-sm sm:text-base text-gray-600 mb-4">
+                  Are you sure you want to submit your test? Once submitted, you
+                  won't be able to change your answers.
+                </p>
+
+                {/* Stats Summary */}
+                <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 space-y-2 text-left border border-gray-200">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600 flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      Answered:
+                    </span>
+                    <span className="font-semibold text-green-600">
+                      {stats.answered} / {stats.total}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600 flex items-center gap-2">
+                      <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+                      Marked for Review:
+                    </span>
+                    <span className="font-semibold text-amber-600">
+                      {stats.marked}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600 flex items-center gap-2">
+                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      Not Visited:
+                    </span>
+                    <span className="font-semibold text-gray-600">
+                      {stats.notVisited}
+                    </span>
+                  </div>
+                  <div className="pt-2 mt-2 border-t border-gray-200">
+                    <div className="flex justify-between items-center text-sm font-semibold">
+                      <span className="text-gray-700">Progress:</span>
+                      <span className="text-blue-600">
+                        {Math.round((stats.answered / stats.total) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => setIsModalVisible(false)}
+                  className="px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium text-sm sm:text-base order-2 sm:order-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setIsModalVisible(false);
+                    handleSubmit();
+                  }}
+                  className="px-6 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all font-medium shadow-lg text-sm sm:text-base order-1 sm:order-2 flex items-center justify-center gap-2"
+                >
+                  <FaBolt className="text-sm" />
+                  Yes, Submit Test
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

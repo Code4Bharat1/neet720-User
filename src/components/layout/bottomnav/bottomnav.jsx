@@ -13,28 +13,29 @@ const BottomNavbar = ({ activePage }) => {
   ];
 
   return (
-    <div className="block fixed bottom-0 left-0 mt-10 w-full bg-white shadow-md z-50 md:hidden">
-      <div className="flex justify-around items-center py-2">
-        {navItems.map((item) => (
-          <div
-            key={item.name}
-            onClick={() => router.push(item.path)}
-            className={`flex flex-col items-center text-sm cursor-pointer transition-all ${
-              activePage === item.name ? "text-[#007AFF] font-bold" : "text-[#8D8686]"
-            }`}
-          >
-            <div
-              className={`w-10 h-10 flex items-center justify-center rounded-full ${
-                activePage === item.name ? "text-[#007AFF]" : "text-[#8D8686]"
-              }`}
-            >
-              <span className="text-2xl">{item.icon}</span>
-            </div>
-            <span>{item.name}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <></>
+    // <div className="block fixed bottom-0 left-0 mt-10 w-full bg-white shadow-md z-50 md:hidden">
+    //   <div className="flex justify-around items-center py-2">
+    //     {navItems.map((item) => (
+    //       <div
+    //         key={item.name}
+    //         onClick={() => router.push(item.path)}
+    //         className={`flex flex-col items-center text-sm cursor-pointer transition-all ${
+    //           activePage === item.name ? "text-[#007AFF] font-bold" : "text-[#8D8686]"
+    //         }`}
+    //       >
+    //         <div
+    //           className={`w-10 h-10 flex items-center justify-center rounded-full ${
+    //             activePage === item.name ? "text-[#007AFF]" : "text-[#8D8686]"
+    //           }`}
+    //         >
+    //           <span className="text-2xl">{item.icon}</span>
+    //         </div>
+    //         <span>{item.name}</span>
+    //       </div>
+    //     ))}
+    //   </div>
+    // </div>
   );
 };
 
