@@ -70,7 +70,12 @@ const TestPlanResultPage = () => {
     const entries = normalizeExamplan(raw);
 
     // Aggregate subject-wise stats
-    const stats = {}; // subject -> { total, correct, wrong, unattempted }
+    // Get allocated questions from startTest
+    const startTest = JSON.parse(localStorage.getItem("startTest")) || null;
+    const allocatedQuestions = startTest?.allocatedQuestions || 0;
+
+    // Aggregate subject-wise stats
+    const stats = {}; // subject -> { correct, wrong }
     for (const e of entries) {
       const subject = (e.subject || "Unknown").trim();
       const hasSelection =
@@ -79,23 +84,26 @@ const TestPlanResultPage = () => {
         String(e.selectedAnswer).trim() !== "";
 
       if (!stats[subject]) {
-        stats[subject] = { total: 0, correct: 0, wrong: 0 };
+        stats[subject] = { correct: 0, wrong: 0 };
       }
-      stats[subject].total += 1;
 
-      if (!hasSelection) {
-        stats[subject].unattempted += 1;
-      } else if (e.isCorrect === true) {
+      if (hasSelection && e.isCorrect === true) {
         stats[subject].correct += 1;
-      } else {
+      } else if (hasSelection) {
         stats[subject].wrong += 1;
       }
     }
 
+    // Build subjects array based on allocatedQuestions
     const subjectsArray = Object.keys(stats).map((subject) => {
       const s = stats[subject];
+
+      const total = allocatedQuestions; // total questions from startTest
+      const unattempted = total - (s.correct + s.wrong);
+
       const score = s.correct * MARKS_CORRECT + s.wrong * MARKS_WRONG;
-      const max = s.total * MARKS_CORRECT;
+      const max = total * MARKS_CORRECT;
+
       return {
         name: subject,
         icon: subjectIcons[subject] ?? (
@@ -106,8 +114,8 @@ const TestPlanResultPage = () => {
         max,
         correct: s.correct,
         wrong: s.wrong,
-        unattempted: s.unattempted,
-        total: s.total,
+        unattempted,
+        total,
       };
     });
 
@@ -152,6 +160,7 @@ const TestPlanResultPage = () => {
         allocatedQuestions: String(st.allocatedQuestions),
         subject: st.subject,
       });
+      localStorage.removeItem("examplan");
       router.push(`/testinterfaceplan?${params.toString()}`);
       return;
     }
@@ -286,7 +295,12 @@ const TestPlanResultPage = () => {
             </motion.button> */}
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/examplan")}
+              onClick={() => {
+                router.push("/examplan");
+                localStorage.removeItem("selectedSubjects");
+                localStorage.removeItem("startTest");
+                localStorage.removeItem("examplan");
+              }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

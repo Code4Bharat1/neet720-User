@@ -10,7 +10,9 @@ import {
   FaDownload,
 } from "react-icons/fa";
 import { AlertTriangle, Clock, X, CheckCircle } from "lucide-react";
-
+import { LuBookText } from "react-icons/lu";
+import { MdQuiz } from "react-icons/md";
+import { IoCreate } from "react-icons/io5";
 const OMRDownloadButton = () => {
   const logoUrl =
     "https://examportal-diagrams-new.s3.eu-north-1.amazonaws.com/1749384337445-nexcore-logo-pc.png";
@@ -380,17 +382,17 @@ const TestCards = () => {
   const cards = [
     {
       title: "FAST QUIZ",
-      icon: <FaShieldAlt className="w-5 h-5" />,
+      icon: <MdQuiz className="w-5 h-5" />,
       route: "/fastquiz",
     },
     {
-      title: "START TEST",
-      icon: <FaShoppingBag className="w-5 h-5" />,
+      title: "FULL TEST",
+      icon: <LuBookText className="w-5 h-5" />,
       route: "/testinterface",
     },
     {
       title: "CREATE TEST",
-      icon: <FaShieldVirus className="w-5 h-5" />,
+      icon: <IoCreate className="w-5 h-5" />,
       route: "/createtest",
     },
   ];
@@ -492,7 +494,7 @@ const TestCards = () => {
           <div
             key={index}
             onClick={() => handleClick(card.route)}
-            className="md:h-[100px] flex items-center justify-center gap-4 p-4 rounded-lg text-white font-medium shadow hover:scale-105 cursor-pointer transition bg-gradient-to-b from-[#0077B6] to-[#ADE8F4]"
+            className="md:h-[100px] flex items-center justify-center gap-4 p-4 rounded-lg text-white font-medium shadow hover:scale-105 cursor-pointer transition bg-blue-500"
           >
             {card.icon}
             <span>{card.title}</span>

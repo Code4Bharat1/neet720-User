@@ -84,6 +84,7 @@ const TestInterface = () => {
   const [lastIndex, setLastIndex] = useState(0);
   const [allocatedQuestions, setAllocatedQuestions] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [testEndTime, setTestEndTime] = useState(null);
 
   // For mobile overlays
@@ -127,38 +128,38 @@ const TestInterface = () => {
   }, [questionsData, currentSubject]);
 
   // Handle full screen escape
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      if (
-        !document.fullscreenElement &&
-        !document.webkitFullscreenElement &&
-        !document.mozFullscreenElement &&
-        !document.msFullscreenElement
-      ) {
-        router.push("/testselection");
-      }
-    };
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
-    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
+  // useEffect(() => {
+  //   const handleFullScreenChange = () => {
+  //     if (
+  //       !document.fullscreenElement &&
+  //       !document.webkitFullscreenElement &&
+  //       !document.mozFullscreenElement &&
+  //       !document.msFullscreenElement
+  //     ) {
+  //       router.push("/testselection");
+  //     }
+  //   };
+  //   document.addEventListener("fullscreenchange", handleFullScreenChange);
+  //   document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
+  //   document.addEventListener("mozfullscreenchange", handleFullScreenChange);
+  //   document.addEventListener("MSFullscreenChange", handleFullScreenChange);
 
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleFullScreenChange
-      );
-      document.removeEventListener(
-        "mozfullscreenchange",
-        handleFullScreenChange
-      );
-      document.removeEventListener(
-        "MSFullscreenChange",
-        handleFullScreenChange
-      );
-    };
-  }, [router]);
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullScreenChange);
+  //     document.removeEventListener(
+  //       "webkitfullscreenchange",
+  //       handleFullScreenChange
+  //     );
+  //     document.removeEventListener(
+  //       "mozfullscreenchange",
+  //       handleFullScreenChange
+  //     );
+  //     document.removeEventListener(
+  //       "MSFullscreenChange",
+  //       handleFullScreenChange
+  //     );
+  //   };
+  // }, [router]);
 
   // Fetch questions
   useEffect(() => {
@@ -341,7 +342,7 @@ const TestInterface = () => {
   };
 
   const handleSubmit = async () => {
-    // Before building payload, ensure all questions (0..lastIndex-1) exist as answered/unattempted
+    // Ensure all questions are tracked
     const ensureAllQuestionsTracked = () => {
       const questionInfo =
         JSON.parse(localStorage.getItem("questionInfo")) || [];
@@ -352,10 +353,12 @@ const TestInterface = () => {
     ensureAllQuestionsTracked();
 
     if (isSubmitting) return;
-    const confirmSubmit = window.confirm(
-      "Are you sure you want to submit this test?"
-    );
-    if (!confirmSubmit) return;
+
+    // const confirmSubmit = window.confirm(
+    //   "Are you sure you want to submit this test?"
+    // );
+    // if (!confirmSubmit) return;
+
     setIsSubmitting(true);
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
@@ -365,14 +368,18 @@ const TestInterface = () => {
       setIsSubmitting(false);
       return;
     }
+
     const endTime = new Date().toISOString();
     const startTime =
       localStorage.getItem("testStartTime") || new Date().toISOString();
+
     let correctAnswers = [],
       wrongAnswers = [],
-      notAttempted = [],
-      totalMarks = 0;
+      notAttempted = [];
+    let totalMarks = 0;
+
     const savedAnswers = JSON.parse(localStorage.getItem("examplan")) || [];
+
     savedAnswers.forEach((answer) => {
       const {
         question_id,
@@ -382,6 +389,7 @@ const TestInterface = () => {
         subject,
         chapterName,
       } = answer;
+
       const marks = isCorrect ? 4 : selectedAnswer == null ? 0 : -1;
       const questionData = [
         question_id,
@@ -392,12 +400,22 @@ const TestInterface = () => {
         marks,
         0,
       ];
-      if (selectedAnswer == null)
+
+      if (selectedAnswer == null) {
         notAttempted.push([question_id, subject, chapterName]);
-      else if (isCorrect) correctAnswers.push(questionData);
-      else wrongAnswers.push(questionData);
+      } else if (isCorrect) {
+        correctAnswers.push(questionData);
+      } else {
+        wrongAnswers.push(questionData);
+      }
       totalMarks += marks;
     });
+
+    // ✅ Create testName dynamically (example: "System Assigned Test - <date>")
+    const testName =
+      localStorage.getItem("currentTestName") ||
+      `System Test - ${new Date().toLocaleDateString("en-GB")}`;
+
     const testResults = {
       correctAnswers,
       wrongAnswers,
@@ -405,7 +423,9 @@ const TestInterface = () => {
       startTime,
       endTime,
       total_marks: totalMarks,
+      testName, // ✅ Send to backend
     };
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/fulltest/submit`,
@@ -417,6 +437,7 @@ const TestInterface = () => {
           },
         }
       );
+
       if (response.status === 201) {
         toast.success("Test submitted successfully!", { duration: 5000 });
         window.location.href = "/result";
@@ -624,7 +645,7 @@ const TestInterface = () => {
           Next
         </button>
         <button
-          onClick={handleSubmit}
+          onClick={() => setShowConfirmModal(true)}
           disabled={isSubmitting}
           className="flex-1 mx-1 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-bold text-sm"
         >
@@ -709,6 +730,37 @@ const TestInterface = () => {
                   {index + 1}
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Confirm Submit Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              Confirm Test Submission
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to submit this test? Once submitted, you
+              cannot change your answers.
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  setShowConfirmModal(false);
+                  await handleSubmit();
+                }}
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Submit
+              </button>
             </div>
           </div>
         </div>

@@ -67,16 +67,16 @@ const NeetPrep = () => {
   };
 
   //Function to enter the full screen
-  const enterFullScreen = async() => {
+  const enterFullScreen = async () => {
     const elem = document.documentElement;
-     if (elem.requestFullscreen) {
+    if (elem.requestFullscreen) {
       await elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) {
       await elem.webkitRequestFullscreen(); // Safari
     } else if (elem.msRequestFullscreen) {
       await elem.msRequestFullscreen(); // IE11
     }
-  }
+  };
 
   const handleStartTest = (subject, chapter) => {
     // Calculate the number of allocated questions for the chapter
@@ -95,7 +95,6 @@ const NeetPrep = () => {
       // Store the subject in localStorage to filter questions later
       localStorage.setItem("selectedSubjects", JSON.stringify([subject]));
 
-
       // Store the object as a JSON string in localStorage
       localStorage.setItem("startTest", JSON.stringify(startTestData));
 
@@ -105,14 +104,18 @@ const NeetPrep = () => {
           chapter
         )}&allocatedQuestions=${allocatedQuestions}&subject=${subject}`
       );
-      enterFullScreen();  
+      enterFullScreen();
     } else {
       setError("No data found for the selected chapter.");
     }
   };
 
   if (loading) {
-    return <div className="text-center mt-10"><Loading/></div>;
+    return (
+      <div className="text-center mt-10">
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
@@ -138,16 +141,17 @@ const NeetPrep = () => {
         {/* Subject Wise Selection */}
         <motion.div className="mt-8" variants={fadeIn}>
           <label className="block text-md font-medium text-center">
-            Subject Wise 
+            Subject Wise
           </label>
           <div className="flex flex-wrap justify-center gap-4 mt-4">
             {Object.keys(subjectUnits || {}).map((subject) => (
               <motion.div
                 key={subject}
-                className={`px-6 py-2 rounded-lg border text-center cursor-pointer ${selectedSubjects.includes(subject)
+                className={`px-6 py-2 rounded-lg border text-center cursor-pointer ${
+                  selectedSubjects.includes(subject)
                     ? "bg-blue-100 border-blue-500 text-blue-700 font-semibold"
                     : "border-gray-300 text-gray-700"
-                  }`}
+                }`}
                 whileHover={{ scale: 1.05 }}
                 onClick={() => handleSubjectToggle(subject)}
               >
@@ -172,54 +176,57 @@ const NeetPrep = () => {
               className="bg-white p-4 mt-8 rounded-lg border w-11/12 mx-auto"
               variants={fadeIn}
             >
-              <h2 className="text-2xl font-bold mb-4">
-                {subject} Chapters 
-              </h2>
+              <h2 className="text-2xl font-bold mb-4">{subject} Chapters</h2>
               <div className="space-y-4">
-              {/* // Inside your map function where you render each unit */}
-             {(() => {
-  const units = subjectUnits?.[subject] || [];
+                {/* // Inside your map function where you render each unit */}
+                {(() => {
+                  const units = subjectUnits?.[subject] || [];
 
-  // Step 1: Calculate total weightage for this subject
-  const totalWeightage = units.reduce(
-    (total, unit) => total + (unit.weightage || 0),
-    0
-  );
+                  // Step 1: Calculate total weightage for this subject
+                  const totalWeightage = units.reduce(
+                    (total, unit) => total + (unit.weightage || 0),
+                    0
+                  );
 
-  return units.map((unit, index) => {
-    // Step 2: Calculate percentage per chapter based on total
-    const progressPercentage = totalWeightage
-      ? ((unit.weightage || 0) / totalWeightage) * 100
-      : 0;
+                  return units.map((unit, index) => {
+                    // Step 2: Calculate percentage per chapter based on total
+                    const progressPercentage = totalWeightage
+                      ? ((unit.weightage || 0) / totalWeightage) * 100
+                      : 0;
 
-    return (
-      <div
-        key={index}
-        className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-3"
-      >
-        <div className="text-sm text-gray-800">
-          <strong>{unit.chapter}</strong> — {unit.allocated_time.split('.')[0]} days, {unit.expected_questions} questions
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-600">{`${Math.round(progressPercentage)}%`}</span>
-          <div className="w-24 h-2 bg-gray-200 rounded-full">
-            <div
-              className="h-2 bg-blue-500 rounded-full"
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-          </div>
-          <button
-            className="px-4 py-1.5 text-sm whitespace-nowrap rounded-md bg-[#49A6CF] text-white hover:bg-[#3c91b3] transition"
-            onClick={() => handleStartTest(subject, unit.chapter)}
-          >
-            Start Test
-          </button>
-        </div>
-      </div>
-    );
-  });
-})()}
-
+                    return (
+                      <div
+                        key={index}
+                        className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-3"
+                      >
+                        <div className="text-sm text-gray-800">
+                          <strong>{unit.chapter}</strong> —{" "}
+                          {unit.allocated_time.split(".")[0]} days,{" "}
+                          {unit.expected_questions} questions
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm text-gray-600">{`${Math.round(
+                            progressPercentage
+                          )}%`}</span>
+                          <div className="w-24 h-2 bg-gray-200 rounded-full">
+                            <div
+                              className="h-2 bg-blue-500 rounded-full"
+                              style={{ width: `${progressPercentage}%` }}
+                            ></div>
+                          </div>
+                          <button
+                            className="px-4 py-1.5 text-sm whitespace-nowrap rounded-md bg-[#49A6CF] text-white hover:bg-[#3c91b3] transition"
+                            onClick={() =>
+                              handleStartTest(subject, unit.chapter)
+                            }
+                          >
+                            Start Test
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </motion.div>
           ))
