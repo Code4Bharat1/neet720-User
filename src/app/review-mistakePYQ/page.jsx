@@ -1,17 +1,18 @@
-"use client";
+'use client';  // Make sure this is client-side code
 
-import { Suspense } from "react";
-import Sidebar from "@/components/layout/sidebar/sidebar";
-import NavBar from "@/components/layout/navbar/navbar";
-import BottomNavbar from "@/components/layout/bottomnav/bottomnav";
-import ToggleBar from "@/components/layout/togglebar/togglebar";
-import ReviewMistakePYQ from "@/components/review-mistake/review-mistakePYQ";
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+// Dynamically import ReviewAllWithMistakes with ssr: false to make it client-side only
+const ReviewAllWithMistakes = dynamic(() => import('@/components/review-mistake/review-mistakePYQ'), {
+  ssr: false,  // This ensures the component is rendered only on the client side
+});
 
 const Page = () => {
   return (
     <div>
       <Suspense fallback={<div>loading</div>}>
-        <ReviewMistakePYQ />
+        <ReviewAllWithMistakes />
       </Suspense>
     </div>
   );
