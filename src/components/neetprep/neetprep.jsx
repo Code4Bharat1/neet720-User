@@ -144,20 +144,25 @@ const NeetPrep = () => {
             Subject Wise
           </label>
           <div className="flex flex-wrap justify-center gap-4 mt-4">
-            {Object.keys(subjectUnits || {}).map((subject) => (
-              <motion.div
-                key={subject}
-                className={`px-6 py-2 rounded-lg border text-center cursor-pointer ${
-                  selectedSubjects.includes(subject)
-                    ? "bg-blue-100 border-blue-500 text-blue-700 font-semibold"
-                    : "border-gray-300 text-gray-700"
-                }`}
-                whileHover={{ scale: 1.05 }}
-                onClick={() => handleSubjectToggle(subject)}
-              >
-                {subject}
-              </motion.div>
-            ))}
+            {subjectUnits && Object.keys(subjectUnits).length > 0 ? (
+              Object.keys(subjectUnits).map((subject) => (
+                <motion.div
+                  key={subject}
+                  className={`px-6 py-2 rounded-lg border text-center cursor-pointer ${
+                    selectedSubjects.includes(subject)
+                      ? "bg-blue-100 border-blue-500 text-blue-700 font-semibold"
+                      : "border-gray-300 text-gray-700"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => handleSubjectToggle(subject)}
+                >
+                  {subject}
+                </motion.div>
+              ))
+            ) : (
+              // Optional: You can display a message or leave this empty if you don't want to show anything when no subjects are present
+              <div>No subjects available</div>
+            )}
           </div>
         </motion.div>
 

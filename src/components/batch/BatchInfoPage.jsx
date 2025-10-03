@@ -10,8 +10,15 @@ import {
   AlertCircle,
   ArrowLeft,
   Play,
+  X,
+  TrendingUp,
+  Award,
+  Target,
+  FileText,
 } from "lucide-react";
 import { useParams } from "next/navigation";
+import axios from "axios";
+
 export default function BatchInfoPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -19,6 +26,9 @@ export default function BatchInfoPage() {
   const [batchData, setBatchData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submittedTestIds, setSubmittedTestIds] = useState(new Set());
+  const [attemptedTests, setAttemptedTests] = useState({});
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [selectedResult, setSelectedResult] = useState(null);
 
   useEffect(() => {
     const fetchBatchDetails = async () => {
@@ -31,7 +41,7 @@ export default function BatchInfoPage() {
           return;
         }
 
-        // Fetch batch details with tests
+        // Fetch batch details
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/batches/batchesInfo/${batchId}`,
           {
@@ -43,14 +53,40 @@ export default function BatchInfoPage() {
         );
 
         const data = await response.json();
+        console.log("Batch Data:", data);
 
         if (data.success) {
           setBatchData(data);
 
-          // Fetch submitted tests
+          // ✅ get student ID from token
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          const email = decodedToken.email;
-          await fetchSubmittedTests(email, token);
+          const studentId = decodedToken.id;
+
+          // ✅ check attempt status for each test
+          const statusPromises = data.tests.map(async (test) => {
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/batches/${test.id}/student/${studentId}/status`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const attemptData = await res.json();
+            return { 
+              testId: test.id, 
+              attempted: attemptData.attempted,
+              result: attemptData.result 
+            };
+          });
+
+          const statuses = await Promise.all(statusPromises);
+
+          // ✅ save in state as { testId: { attempted, result } }
+          const attemptMap = {};
+          statuses.forEach((s) => {
+            attemptMap[s.testId] = {
+              attempted: s.attempted,
+              result: s.result
+            };
+          });
+          setAttemptedTests(attemptMap);
         }
       } catch (error) {
         console.error("Failed to fetch batch details:", error);
@@ -100,6 +136,14 @@ export default function BatchInfoPage() {
     router.push("/testinterfaceGT");
   };
 
+  const handleViewResult = (testId) => {
+    const resultData = attemptedTests[testId]?.result;
+    if (resultData) {
+      setSelectedResult(resultData);
+      setShowResultModal(true);
+    }
+  };
+
   const getTestStatus = (test) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -110,9 +154,8 @@ export default function BatchInfoPage() {
     const endDate = new Date(test.exam_end_date);
     endDate.setHours(23, 59, 59, 999);
 
-    const testId = String(test.id);
-    const isSubmitted =
-      submittedTestIds.has(testId) || submittedTestIds.has(test.id);
+    const testId = test.id;
+    const isSubmitted = attemptedTests[testId]?.attempted;
 
     if (isSubmitted) {
       return {
@@ -159,6 +202,154 @@ export default function BatchInfoPage() {
       month: "short",
       year: "numeric",
     });
+  };
+
+  const parseSubjectWiseMarks = (marksString) => {
+    try {
+      return JSON.parse(marksString);
+    } catch {
+      return {};
+    }
+  };
+
+  const ResultModal = () => {
+    if (!selectedResult) return null;
+
+    const subjectMarks = parseSubjectWiseMarks(selectedResult.subjectWiseMarks);
+    const percentage = ((selectedResult.score / selectedResult.overallmarks) * 100).toFixed(2);
+    const accuracy = ((selectedResult.correctAnswers / selectedResult.totalquestions) * 100).toFixed(2);
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          {/* Header */}
+          <div className="sticky top-0 bg-white border-b border-gray-200 p-4 sm:p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Test Results</h2>
+              <p className="text-sm text-gray-600 mt-1">{selectedResult.testname}</p>
+            </div>
+            <button
+              onClick={() => setShowResultModal(false)}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 sm:p-6 space-y-6">
+            {/* Score Overview */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="text-3xl sm:text-4xl font-bold text-blue-600">
+                    {selectedResult.score}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1">Score Obtained</div>
+                  <div className="text-xs text-gray-500">out of {selectedResult.overallmarks}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl sm:text-4xl font-bold text-indigo-600">
+                    {percentage}%
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1">Percentage</div>
+                  <div className="text-xs text-gray-500">Accuracy: {accuracy}%</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Question Statistics */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="text-2xl font-bold text-green-600">
+                  {selectedResult.correctAnswers}
+                </div>
+                <div className="text-xs text-gray-600 mt-1">Correct</div>
+              </div>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <X className="w-5 h-5 text-red-600" />
+                </div>
+                <div className="text-2xl font-bold text-red-600">
+                  {selectedResult.incorrectAnswers}
+                </div>
+                <div className="text-xs text-gray-600 mt-1">Incorrect</div>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <AlertCircle className="w-5 h-5 text-gray-600" />
+                </div>
+                <div className="text-2xl font-bold text-gray-600">
+                  {selectedResult.unattempted}
+                </div>
+                <div className="text-xs text-gray-600 mt-1">Unattempted</div>
+              </div>
+            </div>
+
+            {/* Subject-wise Performance */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <Target className="w-5 h-5 text-blue-600" />
+                Subject-wise Performance
+              </h3>
+              <div className="space-y-3">
+                {Object.entries(subjectMarks).map(([subject, marks]) => (
+                  <div key={subject} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-gray-700">{subject}</span>
+                      <span className={`text-lg font-bold ${marks >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {marks > 0 ? '+' : ''}{marks}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Test Details */}
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Test Details
+              </h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-gray-600">Total Questions:</span>
+                  <span className="font-medium text-gray-800 ml-2">
+                    {selectedResult.totalquestions}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Status:</span>
+                  <span className="font-medium text-green-600 ml-2">
+                    {selectedResult.status}
+                  </span>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-gray-600">Submitted:</span>
+                  <span className="font-medium text-gray-800 ml-2">
+                    {formatDate(selectedResult.createdAt)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-4 sm:p-6">
+            <button
+              onClick={() => setShowResultModal(false)}
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -325,14 +516,20 @@ export default function BatchInfoPage() {
                             <Play className="w-4 h-4 mr-2" />
                             Start Test
                           </button>
+                        ) : status.status === "completed" ? (
+                          <button
+                            onClick={() => handleViewResult(test.id)}
+                            className="w-full sm:w-auto inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm sm:text-base"
+                          >
+                            <Award className="w-4 h-4 mr-2" />
+                            View Result
+                          </button>
                         ) : (
                           <button
                             disabled
                             className="w-full sm:w-auto inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed font-medium text-sm sm:text-base"
                           >
-                            {status.status === "completed"
-                              ? "Completed"
-                              : status.status === "expired"
+                            {status.status === "expired"
                               ? "Expired"
                               : `Starts ${formatDate(test.exam_start_date)}`}
                           </button>
@@ -356,6 +553,9 @@ export default function BatchInfoPage() {
           )}
         </div>
       </div>
+
+      {/* Result Modal */}
+      {showResultModal && <ResultModal />}
     </div>
   );
 }

@@ -61,7 +61,7 @@ const subjectIcons = {
 
 const TestInterface = () => {
   const router = useRouter();
-  const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [questionsData, setQuestionsData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -72,20 +72,18 @@ const TestInterface = () => {
   const [visitedQuestions, setVisitedQuestions] = useState({});
   const [markedForReview, setMarkedForReview] = useState({});
   const [timer, setTimer] = useState(0);
-  const [startTime, setStartTime] = useState(new Date());
+  const [questionStartTimes, setQuestionStartTimes] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredOption, setHoveredOption] = useState(null);
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
   const [showQuestionPanel, setShowQuestionPanel] = useState(false);
-
-  // Derived values (must be above effects that reference them)
-  // const currentQuestionData =
-  //   questionsData[currentSubject]?.[currentQuestion] ?? null;
-  // const currentOptionsLength = currentQuestionData?.options?.length ?? 0;
+  const [totalNumberOfQuestions, setTotalNumberOfQuestions] = useState(0);
+  const [totalMarks, setTotalMarks] = useState(0);
+  const [negativeMarking, setNegativeMarking] = useState(1);
+  const [positiveMarking, setPositiveMarking] = useState(4);
 
   const numQuestions = questionsData[currentSubject]?.length || 0;
   const currentQuestionData = questionsData[currentSubject]?.[currentQuestion];
-  // const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -118,6 +116,11 @@ const TestInterface = () => {
         const uniqueSubjects = [...new Set(data.map((q) => q.subject))];
         setSelectedSubjects(uniqueSubjects);
         setCurrentSubject(uniqueSubjects[0]);
+
+        // Initialize start time for first question
+        const firstQuestionKey = `${uniqueSubjects[0]}-0`;
+        setQuestionStartTimes({ [firstQuestionKey]: Date.now() });
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching test questions:", err);
@@ -127,42 +130,6 @@ const TestInterface = () => {
     };
 
     fetchQuestions();
-  }, []);
-
-  //useEffect to control the escape screen
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      if (
-        !document.fullscreenElement &&
-        !document.webkitFullscreenElement &&
-        !document.msFullscreenElement &&
-        !document.mozFullscreenElement
-      ) {
-        //push the page
-        router.push("/testselection");
-      }
-    };
-
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
-    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleFullScreenChange
-      );
-      document.removeEventListener(
-        "mozfullscreenchange",
-        handleFullScreenChange
-      );
-      document.removeEventListener(
-        "MSFullscreenChange",
-        handleFullScreenChange
-      );
-    };
   }, []);
 
   useEffect(() => {
@@ -192,6 +159,11 @@ const TestInterface = () => {
         );
 
         const testDetails = response.data?.test;
+        setTotalNumberOfQuestions(testDetails.no_of_questions || 0);
+        setTotalMarks(testDetails.marks || 0);
+        setNegativeMarking(testDetails.negativemarks || 1);
+        setPositiveMarking(testDetails.positivemarking || 4);
+
         if (testDetails?.duration) {
           setTimer(testDetails.duration * 60);
         }
@@ -242,61 +214,62 @@ const TestInterface = () => {
     setFocusedOptionIndex(null);
   }, [currentQuestion]);
 
+  // Track question change for timing
+  useEffect(() => {
+    const questionKey = `${currentSubject}-${currentQuestion}`;
+    if (!questionStartTimes[questionKey]) {
+      setQuestionStartTimes((prev) => ({
+        ...prev,
+        [questionKey]: Date.now(),
+      }));
+    }
+  }, [currentSubject, currentQuestion]);
+
   const handleOptionClick = (index) => {
     const questionData = questionsData[currentSubject][currentQuestion];
+    const questionKey = `${currentSubject}-${currentQuestion}`;
     const selectedAnswer = questionData.options[index];
     const correctAnswer = questionData.correctAnswer;
     const isCorrect = selectedAnswer === correctAnswer;
 
+    // Calculate time taken for this question
+    const startTime = questionStartTimes[questionKey] || Date.now();
+    const timeTakenInSeconds = (Date.now() - startTime) / 1000;
+    const minutes = Math.floor(timeTakenInSeconds / 60);
+    const seconds = Math.floor(timeTakenInSeconds % 60);
+
+    // Create answer data
     const answerData = {
+      questionKey,
       subject: currentSubject,
       question: questionData.question,
       question_id: questionData.id,
       selectedAnswer,
       isCorrect,
       correctAnswer,
+      timeTaken: { minutes, seconds },
+      timestamp: new Date().toISOString(),
     };
 
-    let savedAnswers = [];
+    // Get existing answers from localStorage
+    let savedAnswers = {};
     try {
       const stored = localStorage.getItem("testAnswers");
-      savedAnswers = stored ? JSON.parse(stored) : [];
-      if (!Array.isArray(savedAnswers)) savedAnswers = [];
+      savedAnswers = stored ? JSON.parse(stored) : {};
     } catch {
-      savedAnswers = [];
+      savedAnswers = {};
     }
 
-    const currentTime = new Date();
-    const timeTakenInSeconds = (currentTime - startTime) / 1000;
-    const minutes = Math.floor(timeTakenInSeconds / 60);
-    const seconds = Math.floor(timeTakenInSeconds % 60);
-
-    const answerWithTime = {
-      ...answerData,
-      timeTaken: { minutes, seconds },
-      timestamp: currentTime.toISOString(),
-    };
-
-    savedAnswers.push(answerWithTime);
+    // Update or add the answer (using questionKey to avoid duplicates)
+    savedAnswers[questionKey] = answerData;
     localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
 
-    setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index });
+    // Update state
+    setAnswers({ ...answers, [questionKey]: index });
     setVisitedQuestions({
       ...visitedQuestions,
-      [`${currentSubject}-${currentQuestion}`]: true,
+      [questionKey]: true,
     });
-
-    const previousTime = JSON.parse(localStorage.getItem("questionTime")) || {};
-    previousTime[`${currentSubject}-${currentQuestion}`] = timeTakenInSeconds;
-    localStorage.setItem("questionTime", JSON.stringify(previousTime));
-
-    const savedTimeForCurrentQuestion =
-      previousTime[`${currentSubject}-${currentQuestion}`];
-    const newStartTime = savedTimeForCurrentQuestion
-      ? new Date(new Date() - savedTimeForCurrentQuestion * 1000)
-      : currentTime;
-
-    setStartTime(newStartTime);
   };
 
   useEffect(() => {
@@ -328,17 +301,37 @@ const TestInterface = () => {
   };
 
   const handleReviewLater = () => {
+    const questionKey = `${currentSubject}-${currentQuestion}`;
     setMarkedForReview({
       ...markedForReview,
-      [`${currentSubject}-${currentQuestion}`]:
-        !markedForReview[`${currentSubject}-${currentQuestion}`],
+      [questionKey]: !markedForReview[questionKey],
     });
   };
 
   const handleClearResponse = () => {
+    const questionKey = `${currentSubject}-${currentQuestion}`;
+
+    // Remove from state
     const updatedAnswers = { ...answers };
-    delete updatedAnswers[`${currentSubject}-${currentQuestion}`];
+    delete updatedAnswers[questionKey];
     setAnswers(updatedAnswers);
+
+    // Remove from localStorage
+    let savedAnswers = {};
+    try {
+      const stored = localStorage.getItem("testAnswers");
+      savedAnswers = stored ? JSON.parse(stored) : {};
+    } catch {
+      savedAnswers = {};
+    }
+    delete savedAnswers[questionKey];
+    localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
+
+    // Reset start time for this question
+    setQuestionStartTimes((prev) => ({
+      ...prev,
+      [questionKey]: Date.now(),
+    }));
   };
 
   const handleSubmitConformation = () => {
@@ -350,7 +343,11 @@ const TestInterface = () => {
     setIsSubmitting(true);
 
     try {
-      const testAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
+      // Get answers from localStorage (now it's an object, not array)
+      const storedAnswers = localStorage.getItem("testAnswers");
+      const answersObject = storedAnswers ? JSON.parse(storedAnswers) : {};
+      const testAnswersArray = Object.values(answersObject);
+
       const selectedChapters =
         JSON.parse(localStorage.getItem("selectedChapters")) || [];
       const testid = localStorage.getItem("testid");
@@ -365,33 +362,39 @@ const TestInterface = () => {
       const studentId = decodedToken?.id || decodedToken?.studentId;
       if (!studentId) throw new Error("Student ID not found in token");
 
-      const totalquestions =
-        parseInt(localStorage.getItem("totalQuestions")) || testAnswers.length;
+      const totalquestions = totalNumberOfQuestions;
 
-      const correctAnswers = testAnswers.filter((a) => a.isCorrect).length;
-      const incorrectAnswers = testAnswers.filter(
+      // Calculate results correctly
+      const correctAnswers = testAnswersArray.filter((a) => a.isCorrect).length;
+      const incorrectAnswers = testAnswersArray.filter(
         (a) => !a.isCorrect && a.selectedAnswer !== null
       ).length;
-      const attempted = correctAnswers + incorrectAnswers;
+      const attempted = testAnswersArray.length;
       const unattempted = totalquestions - attempted;
 
-      const score = correctAnswers * 4 - incorrectAnswers;
-      const overallmarks = totalquestions * 4;
+      // Calculate score with proper negative marking
+      const score =
+        correctAnswers * positiveMarking - incorrectAnswers * negativeMarking;
+      const overallmarks = totalMarks;
 
-      const simplifiedAnswers = testAnswers.map((ans) => ({
+      // Simplified answers for storage
+      const simplifiedAnswers = testAnswersArray.map((ans) => ({
         subject: ans.subject,
         question: ans.question,
         correctAnswer: ans.correctAnswer,
+        selectedAnswer: ans.selectedAnswer,
+        isCorrect: ans.isCorrect,
       }));
 
+      // Calculate subject-wise marks
       const subjectWiseMarks = {};
-      testAnswers.forEach((ans) => {
+      testAnswersArray.forEach((ans) => {
         const subject = ans.subject;
         if (!subjectWiseMarks[subject]) subjectWiseMarks[subject] = 0;
         if (ans.isCorrect) {
-          subjectWiseMarks[subject] += 4;
+          subjectWiseMarks[subject] += positiveMarking;
         } else if (ans.selectedAnswer !== null) {
-          subjectWiseMarks[subject] -= 1;
+          subjectWiseMarks[subject] -= negativeMarking;
         }
       });
 
@@ -410,14 +413,21 @@ const TestInterface = () => {
         subjectWiseMarks,
       };
 
+      console.log("Submitting payload:", payload);
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/save-test`,
         payload
       );
 
       console.log("Test result submitted:", response.data);
+
+      // Clear localStorage after successful submission
+      localStorage.removeItem("testAnswers");
+      localStorage.removeItem("questionTime");
+
       toast.success("Test submitted successfully! 🎉", { duration: 5000 });
-      router.push("/resultGT");
+      router.back();
     } catch (error) {
       console.error("Error submitting test result:", error);
       toast.error("Failed to submit test. Please try again. ❌", {
@@ -469,7 +479,7 @@ const TestInterface = () => {
 
   const subjectConfig = subjectIcons[currentSubject] || subjectIcons.Physics;
   const stats = getQuestionStats();
-  const isLowTime = timer < 300; // Less than 5 minutes
+  const isLowTime = timer < 300;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50">
