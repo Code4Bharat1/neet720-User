@@ -121,13 +121,13 @@ const Hero = () => {
           <h3 className="text-sm md:text-4xl font-bold mb-2 md:mb-6">
             Welcome Back, {firstName} {lastName}!
           </h3>
-          <p className="text-[10px] md:text-lg md:font-thin">
+          {/* <p className="text-[10px] md:text-lg md:font-thin">
             You have{" "}
             <strong className="font-bold">
               {pendingData}+ pending tests
             </strong>
             , gear up and start preparing now!
-          </p>
+          </p> */}
         </div>
 
         {/* Image Div */}
