@@ -574,7 +574,7 @@ const TestInterfacePYQ = () => {
       {/* Main content */}
       <div className="max-w-7xl mx-auto p-3 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 relative">
         {/* Mobile Toggle Button for Question Map */}
-        <button
+        {/* <button
           onClick={() => setShowQuestionPanel(!showQuestionPanel)}
           className="lg:hidden fixed bottom-20 right-4 z-40 bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full shadow-2xl hover:from-purple-700 hover:to-pink-700 transition-all flex items-center justify-center"
         >
@@ -596,7 +596,7 @@ const TestInterfacePYQ = () => {
           ) : (
             <MdVisibility className="text-2xl" />
           )}
-        </button>
+        </button> */}
 
         {/* Question section */}
         <div
@@ -816,7 +816,7 @@ const TestInterfacePYQ = () => {
           >
             <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
               {/* Close button for mobile */}
-              <button
+              {/* <button
                 onClick={() => setShowQuestionPanel(false)}
                 className="lg:hidden absolute top-4 right-4 z-10 text-gray-600 hover:text-gray-800 bg-white rounded-full p-2 shadow-lg"
               >
@@ -834,7 +834,7 @@ const TestInterfacePYQ = () => {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-              </button>
+              </button> */}
 
               {/* Progress Card */}
               <div className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl shadow-xl p-4 sm:p-6 relative overflow-hidden">

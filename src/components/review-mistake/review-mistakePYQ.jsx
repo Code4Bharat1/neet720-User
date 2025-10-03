@@ -20,7 +20,8 @@ import {
   FaArrowUp,
   FaArrowLeft,
 } from "react-icons/fa";
-import useRouter from 'next/navigation';
+import { useRouter } from 'next/navigation';
+
 // ---------- Subject icon config ----------
 const subjectConfig = {
   Physics: { icon: <FaAtom className="text-blue-600" /> },
