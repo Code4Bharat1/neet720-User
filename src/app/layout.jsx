@@ -41,7 +41,7 @@ export const metadata = {
   alternates: {
     canonical: "https://neet720.com",
   },
-  
+
   openGraph: {
     title: "NEET720 – Smart NEET Exam Portal & AI Rank Predictor",
     description:
@@ -96,13 +96,9 @@ export default function RootLayout({ children }) {
           toastOptions={{
             duration: 4000,
             style: {
-              background: "#ffffff",
-              color: "#1e293b", // slate-800
-              fontWeight: "500",
-              border: "1px solid #e2e8f0", // gray-200
-              padding: "12px 16px",
-              borderRadius: "12px",
-              fontSize: "14px",
+              zIndex: 999999, // 🔥 makes it appear above modals
+              background: "#333",
+              color: "#fff",
             },
             success: {
               iconTheme: {

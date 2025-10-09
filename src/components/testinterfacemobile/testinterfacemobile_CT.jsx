@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaFlask, FaAtom, FaDna } from "react-icons/fa";
-import toast from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast"; // Added toast import
 
 const subjects = [
   { name: "Physics", icon: <FaAtom className="text-lg text-blue-500" /> },
@@ -22,6 +22,7 @@ const TestInterfaceMobile = () => {
   const [markedForReview, setMarkedForReview] = useState({});
   const [timer, setTimer] = useState(10800);
   const [lastIndex, setLastIndex] = useState(0);
+  const [startTime, setStartTime] = useState(new Date()); // Moved useState to top
 
   const selectedChapters =
     JSON.parse(localStorage.getItem("selectedChapters")) || {};
@@ -212,12 +213,30 @@ const TestInterfaceMobile = () => {
   };
 
   const handleClearResponse = () => {
+    const subjectData = questionsData[currentSubject];
+
+    // ✅ Safety check to prevent crashes
+    if (!subjectData || !subjectData[currentQuestion]) {
+      console.warn("No question data found to clear.");
+      toast.error("No question available to clear!", { duration: 3000 });
+      return;
+    }
+
     const updatedAnswers = { ...answers };
     delete updatedAnswers[`${currentSubject}-${currentQuestion}`];
     setAnswers(updatedAnswers);
-  };
 
-  const [startTime, setStartTime] = useState(new Date());
+    // ✅ Remove from saved answers in localStorage as well
+    const savedAnswers = JSON.parse(localStorage.getItem("testAnswers")) || [];
+    const currentQuestionData = subjectData[currentQuestion];
+    const updatedSavedAnswers = savedAnswers.filter(
+      (answer) => answer.question_id !== currentQuestionData.id
+    );
+    localStorage.setItem("testAnswers", JSON.stringify(updatedSavedAnswers));
+
+    // ✅ Show success toast
+    toast.success("Response cleared successfully!", { duration: 2000 });
+  };
 
   const calculateTotalTime = (subject) => {
     const questionTime = JSON.parse(localStorage.getItem("questionTime")) || {};
@@ -531,7 +550,23 @@ const TestInterfaceMobile = () => {
           </div>
         </div>
       </div>
-    </div>
+
+      {/* ✅ Toast Container - Fixed placement */}
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#333",
+            color: "#fff",
+            fontSize: "16px",
+            borderRadius: "10px",
+            zIndex: 999999,
+          },
+        }}
+      />
+    </div> // This properly closes the main outer div
   );
 };
 

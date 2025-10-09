@@ -448,6 +448,9 @@ const TestInterface = () => {
         )
     );
     localStorage.setItem("testAnswers", JSON.stringify(savedAnswers));
+    
+    // Show success toast
+    toast.success("Response cleared successfully!", { duration: 2000 });
   };
 
   const calculateTotalTime = (subject) => {
@@ -1079,7 +1082,7 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
         </div>
       </div>
 
-      {/* Bottom Navigation (Mobile Only) */}
+      {/* Bottom Navigation (Mobile Only) - UPDATED WITH CLEAR RESPONSE BUTTON */}
       <div className="fixed z-40 left-0 right-0 bottom-0 w-full bg-white/95 backdrop-blur border-t border-gray-200 flex justify-between items-center px-2 py-2 shadow-md xl:hidden">
         <button
           onClick={() => handleNavigation("prev")}
@@ -1098,6 +1101,14 @@ ${focusedOptionIndex === index ? "ring-2 ring-blue-400" : ""}
         >
           <MdVisibility className="text-lg" />
           Questions
+        </button>
+        {/* ADDED CLEAR RESPONSE BUTTON FOR MOBILE */}
+        <button
+          onClick={handleClearResponse}
+          className="flex flex-col items-center px-2 py-1 text-xs"
+        >
+          <FaEraser className="text-lg" />
+          Clear
         </button>
         <button
           onClick={handleReviewLater}
