@@ -99,6 +99,41 @@ const TestPlanResultPage = () => {
       }
     }
 
+    // ⛔ Prevent going back to test page
+    useEffect(() => {
+      const handlePopState = (event) => {
+        event.preventDefault();
+        // Always redirect to examplan or dashboard
+        router.replace("/examplan"); // or "/dashboard"
+      };
+
+      // Add listener
+      window.addEventListener("popstate", handlePopState);
+
+      // Push a dummy state so browser has something to replace
+      window.history.pushState(null, "", window.location.href);
+
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }, [router]);
+
+    // Prevent going back to test page (redirect to examplan)
+    useEffect(() => {
+      const handlePopState = () => {
+        router.replace("/examplan");
+        setTimeout(() => window.history.pushState(null, "", window.location.href), 0);
+      };
+
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
+
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }, [router]);
+
+
     // Build subjects array based on allocatedQuestions
     const subjectsArray = Object.keys(stats).map((subject) => {
       const s = stats[subject];

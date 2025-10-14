@@ -39,6 +39,7 @@ export default function TakeTest() {
   const [showNavigator, setShowNavigator] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fullscreenExited, setFullscreenExited] = useState(false);
+  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
 
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -273,6 +274,7 @@ export default function TakeTest() {
   };
 
   const handleSubmitTest = async () => {
+    setShowSubmitDialog(false);
     setTestCompleted(true);
     exitFullscreen();
     const results = calculateScore();
@@ -321,6 +323,21 @@ export default function TakeTest() {
     if (hasAnswer) return "answered";
     if (isMarked) return "marked";
     return "unanswered";
+  };
+
+  // Calculate question statistics for the confirmation dialog
+  const getQuestionStats = () => {
+    const attempted = Object.keys(answers).length;
+    const skipped = questions.length - attempted;
+    const marked = markedForReview.size;
+    const answeredAndMarked = Array.from(markedForReview).filter(id => answers[id]).length;
+
+    return {
+      attempted,
+      skipped,
+      marked,
+      answeredAndMarked
+    };
   };
 
   // ========================================
@@ -576,6 +593,7 @@ export default function TakeTest() {
 
   // Test interface
   const currentQuestion = questions[currentQuestionIndex];
+  const stats = getQuestionStats();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -628,7 +646,7 @@ export default function TakeTest() {
               </button>
 
               <button
-                onClick={handleSubmitTest}
+                onClick={() => setShowSubmitDialog(true)}
                 className="px-3 sm:px-6 py-1 sm:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-xs sm:text-sm"
               >
                 Submit
@@ -830,7 +848,7 @@ export default function TakeTest() {
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 bg-green-100 rounded border"></div>
                   <span className="text-gray-600">
-                    Answered ({Object.keys(answers).length})
+                    Answered ({stats.attempted})
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -838,7 +856,7 @@ export default function TakeTest() {
                     <Flag className="w-2 h-2 absolute top-0 right-0 text-orange-600" />
                   </div>
                   <span className="text-gray-600">
-                    Marked for Review ({markedForReview.size})
+                    Marked for Review ({stats.marked})
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -846,17 +864,13 @@ export default function TakeTest() {
                     <Flag className="w-2 h-2 absolute top-0 right-0 text-purple-600" />
                   </div>
                   <span className="text-gray-600">
-                    Answered & Marked (
-                    {
-                      Array.from(markedForReview).filter(id => answers[id]).length
-                    })
+                    Answered & Marked ({stats.answeredAndMarked})
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 bg-gray-100 rounded border"></div>
                   <span className="text-gray-600">
-                    Not Answered (
-                    {questions.length - Object.keys(answers).length})
+                    Not Answered ({stats.skipped})
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -870,12 +884,12 @@ export default function TakeTest() {
                   <div className="flex justify-between">
                     <span>Total Progress:</span>
                     <span className="font-semibold">
-                      {Math.round((Object.keys(answers).length / questions.length) * 100)}%
+                      {Math.round((stats.attempted / questions.length) * 100)}%
                     </span>
                   </div>
                 </div>
                 <button
-                  onClick={handleSubmitTest}
+                  onClick={() => setShowSubmitDialog(true)}
                   className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
                 >
                   Submit Test
@@ -936,7 +950,7 @@ export default function TakeTest() {
               <div className="flex items-center gap-3">
                 <div className="w-4 h-4 bg-green-100 rounded border"></div>
                 <span className="text-gray-600">
-                  Answered ({Object.keys(answers).length})
+                  Answered ({stats.attempted})
                 </span>
               </div>
               <div className="flex items-center gap-3">
@@ -944,7 +958,7 @@ export default function TakeTest() {
                   <Flag className="w-2 h-2 absolute top-0 right-0 text-orange-600" />
                 </div>
                 <span className="text-gray-600">
-                  Marked for Review ({markedForReview.size})
+                  Marked for Review ({stats.marked})
                 </span>
               </div>
               <div className="flex items-center gap-3">
@@ -952,16 +966,13 @@ export default function TakeTest() {
                   <Flag className="w-2 h-2 absolute top-0 right-0 text-purple-600" />
                 </div>
                 <span className="text-gray-600">
-                  Answered & Marked (
-                  {
-                    Array.from(markedForReview).filter(id => answers[id]).length
-                  })
+                  Answered & Marked ({stats.answeredAndMarked})
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-4 h-4 bg-gray-100 rounded border"></div>
                 <span className="text-gray-600">
-                  Not Answered ({questions.length - Object.keys(answers).length})
+                  Not Answered ({stats.skipped})
                 </span>
               </div>
             </div>
@@ -971,13 +982,79 @@ export default function TakeTest() {
                 <div className="flex justify-between">
                   <span>Progress:</span>
                   <span className="font-semibold">
-                    {Math.round((Object.keys(answers).length / questions.length) * 100)}%
+                    {Math.round((stats.attempted / questions.length) * 100)}%
                   </span>
                 </div>
               </div>
               <button
-                onClick={handleSubmitTest}
+                onClick={() => setShowSubmitDialog(true)}
                 className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              >
+                Submit Test
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Submit Confirmation Dialog */}
+      {showSubmitDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <AlertCircle className="w-16 h-16 sm:w-20 sm:h-20 text-yellow-500 mx-auto mb-4" />
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                Submit Test?
+              </h3>
+              <p className="text-gray-600 text-sm sm:text-base">
+                Are you sure you want to submit your test? This action cannot be undone.
+              </p>
+            </div>
+
+            {/* Test Statistics */}
+            <div className="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 text-center">
+                Test Summary
+              </h4>
+              <div className="grid grid-cols-2 gap-4 text-sm sm:text-base">
+                <div className="text-center">
+                  <div className="text-2xl sm:text-3xl font-bold text-green-600">
+                    {stats.attempted}
+                  </div>
+                  <div className="text-gray-600">Attempted</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl sm:text-3xl font-bold text-red-600">
+                    {stats.skipped}
+                  </div>
+                  <div className="text-gray-600">Skipped</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl sm:text-3xl font-bold text-orange-600">
+                    {stats.marked}
+                  </div>
+                  <div className="text-gray-600">Marked for Review</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl sm:text-3xl font-bold text-purple-600">
+                    {stats.answeredAndMarked}
+                  </div>
+                  <div className="text-gray-600">Answered & Marked</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button
+                onClick={() => setShowSubmitDialog(false)}
+                className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors font-medium text-sm sm:text-base"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitTest}
+                className="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium text-sm sm:text-base"
               >
                 Submit Test
               </button>
