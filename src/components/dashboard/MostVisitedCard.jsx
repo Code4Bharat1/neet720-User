@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import {
   Card,
   CardContent,
@@ -16,11 +16,47 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
   const [graphData, setGraphData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalTests, setTotalTests] = useState(0);
+
+  // Improved date helpers
+  const getStartOfWeek = (date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday as start of week
+    return new Date(d.setDate(diff));
+  };
+
+  const isSameWeek = (testDate, currentDate) => {
+    const test = new Date(testDate);
+    const current = new Date(currentDate);
+    const weekStart = getStartOfWeek(current);
+    const testWeekStart = getStartOfWeek(test);
+    return weekStart.getTime() === testWeekStart.getTime();
+  };
+
+  const isSameMonth = (testDate, currentDate) => {
+    const test = new Date(testDate);
+    const current = new Date(currentDate);
+    return test.getFullYear() === current.getFullYear() && 
+           test.getMonth() === current.getMonth();
+  };
+
+  const isSameYear = (testDate, currentDate) => 
+    new Date(testDate).getFullYear() === new Date(currentDate).getFullYear();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
         const token = localStorage.getItem("authToken");
+        if (!token) {
+          setError("Authentication required");
+          setLoading(false);
+          return;
+        }
+
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/testcount`,
           {
@@ -30,92 +66,106 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
           }
         );
 
+        console.log("API Response:", response.data);
+
         const rawData = response.data;
 
-        // Filter the data based on the selected timeframe
-        const currentDate = new Date();
-        const isSameYear = (date) =>
-          new Date(date).getFullYear() === currentDate.getFullYear();
-        const isSameMonth = (date) =>
-          isSameYear(date) &&
-          new Date(date).getMonth() === currentDate.getMonth();
-        const isSameWeek = (date) => {
-          const testDate = new Date(date);
-          const weekStart = new Date(currentDate);
-          weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-          return testDate >= weekStart;
-        };
-
-        const filterByDate = (tests, filterFunc) => {
-          return tests && tests.updatedAt && filterFunc(tests.updatedAt);
-        };
-
-        let filteredData = [];
-        switch (selectedFilter) {
-          case "This Year":
-            filteredData = [
-              rawData.fullTestResults,
-              rawData.recommendedTests,
-              rawData.meTests,
-            ].filter((test) => filterByDate(test, isSameYear));
-            break;
-          case "This Month":
-            filteredData = [
-              rawData.fullTestResults,
-              rawData.recommendedTests,
-              rawData.meTests,
-            ].filter((test) => filterByDate(test, isSameMonth));
-            break;
-          case "This Week":
-            filteredData = [
-              rawData.fullTestResults,
-              rawData.recommendedTests,
-              rawData.meTests,
-            ].filter((test) => filterByDate(test, isSameWeek));
-            break;
-          default:
-            filteredData = [
-              rawData.fullTestResults,
-              rawData.recommendedTests,
-              rawData.meTests,
-            ];
+        // Check if we have valid data structure
+        if (!rawData || typeof rawData !== 'object') {
+          setError("Invalid data format received");
+          setLoading(false);
+          return;
         }
 
-        const totalTests = filteredData.reduce(
-          (acc, test) => acc + test.totalTests,
-          0
-        );
+        const currentDate = new Date();
 
-        // Prepare the data for the graph and table
-        const formattedData = filteredData.map((test) => ({
-          name: test.tableName,
-          value: ((test.totalTests / totalTests) * 100).toFixed(2), // Total Tests as percentage
-          color:
-            test.tableName === "FullTestResults"
-              ? "#1E66F5"
-              : test.tableName === "RecommendedTest"
-              ? "#FFA500"
-              : "#FF3B30",
+        // Process each test type with better error handling
+        const testTypes = [
+          { 
+            key: 'fullTestResults', 
+            name: 'Full Tests',
+            color: "#1E66F5" 
+          },
+          { 
+            key: 'recommendedTests', 
+            name: 'Recommended Tests',
+            color: "#FFA500" 
+          },
+          { 
+            key: 'meTests', 
+            name: 'ME Tests',
+            color: "#FF3B30" 
+          }
+        ];
+
+        let filteredTests = [];
+
+        testTypes.forEach(testType => {
+          const testData = rawData[testType.key];
+          
+          if (testData && typeof testData === 'object') {
+            let shouldInclude = false;
+            
+            // Apply date filtering based on selectedFilter
+            switch (selectedFilter) {
+              case "This Year":
+                shouldInclude = testData.updatedAt && isSameYear(testData.updatedAt, currentDate);
+                break;
+              case "This Month":
+                shouldInclude = testData.updatedAt && isSameMonth(testData.updatedAt, currentDate);
+                break;
+              case "This Week":
+                shouldInclude = testData.updatedAt && isSameWeek(testData.updatedAt, currentDate);
+                break;
+              default: // All time
+                shouldInclude = true;
+            }
+
+            if (shouldInclude && testData.totalTests > 0) {
+              filteredTests.push({
+                name: testType.name,
+                totalTests: testData.totalTests || 0,
+                color: testType.color
+              });
+            }
+          }
+        });
+
+        console.log("Filtered tests:", filteredTests);
+
+        // Calculate total tests
+        const total = filteredTests.reduce((sum, test) => sum + test.totalTests, 0);
+        setTotalTests(total);
+
+        if (total === 0) {
+          setData([]);
+          setGraphData([]);
+          setLoading(false);
+          return;
+        }
+
+        // Prepare data for table (percentages)
+        const tableData = filteredTests.map(test => ({
+          name: test.name,
+          value: ((test.totalTests / total) * 100).toFixed(1),
+          color: test.color,
+          totalTests: test.totalTests
         }));
 
-        setData(formattedData);
-
-        // Prepare the graph data (showing total attempted percentage)
-        const graphFormattedData = filteredData.map((test) => ({
-          name: test.tableName,
+        // Prepare data for graph (absolute values)
+        const pieData = filteredTests.map(test => ({
+          name: test.name,
           value: test.totalTests,
-          color:
-            test.tableName === "FullTestResults"
-              ? "#1E66F5"
-              : test.tableName === "RecommendedTest"
-              ? "#FFA500"
-              : "#FF3B30",
+          color: test.color
         }));
 
-        setGraphData(graphFormattedData);
+        setData(tableData);
+        setGraphData(pieData);
         setLoading(false);
+
       } catch (err) {
-        setError("Failed to load test statistics");
+        console.error("Error fetching test statistics:", err);
+        setError(err.response?.data?.message || "Failed to load test statistics");
         setLoading(false);
       }
     };
@@ -123,9 +173,67 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
     fetchData();
   }, [selectedFilter]);
 
-  if (loading)
-    return <div className="text-center text-blue-500">Loading...</div>;
-  if (error) return <div className="text-center text-red-500">{error}</div>;
+  // Render loading state
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Test Statistics</CardTitle>
+          <CardDescription>
+            Overview of test data based on selection
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-64">
+          <div className="text-center text-blue-500">Loading test statistics...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Test Statistics</CardTitle>
+          <CardDescription>
+            Overview of test data based on selection
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-64">
+          <div className="text-center text-red-500">{error}</div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Render no data state
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Test Statistics</CardTitle>
+          <CardDescription>
+            Overview of test data based on selection
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-64">
+          <div className="text-center text-gray-500">
+            No test data found for {selectedFilter.toLowerCase()}
+          </div>
+          <div className="text-sm text-gray-400 mt-2">
+            Take some tests to see statistics
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -136,48 +244,73 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center">
+        {/* Total Tests Summary */}
+        <div className="w-full text-center mb-4 p-3 bg-gray-50 rounded-lg">
+          <div className="text-2xl font-bold text-blue-600">{totalTests}</div>
+          <div className="text-sm text-gray-600">Total Tests ({selectedFilter})</div>
+        </div>
+
         {/* Chart */}
-        <PieChart width={200} height={200}>
-          <Pie
-            data={graphData}
-            cx="50%"
-            cy="50%"
-            innerRadius={50}
-            outerRadius={80}
-            dataKey="value"
-            paddingAngle={2}
-          >
-            {graphData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
+        <div className="w-full h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={graphData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={2}
+                dataKey="value"
+                label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                labelLine={false}
+              >
+                {graphData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip 
+                formatter={(value) => [`${value} tests`, 'Count']}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
 
         {/* Data Table */}
         <div className="w-full mt-4">
-          <div className="flex justify-between border-b pb-2 text-gray-500 text-sm">
+          <div className="flex justify-between border-b pb-2 text-gray-500 text-sm font-medium">
             <span>TEST NAME</span>
             <span>TOTAL TESTS (%)</span>
           </div>
           {data.map((item, index) => (
-            <div key={index} className="flex justify-between py-2">
-              <div className="flex items-center gap-2">
+            <div key={index} className="flex justify-between items-center py-3 border-b">
+              <div className="flex items-center gap-3">
                 <span
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: item.color }}
                 ></span>
-                <span className="text-gray-700 text-sm">{item.name}</span>
+                <span className="text-gray-700 text-sm font-medium">{item.name}</span>
               </div>
-              <span
-                className={`text-sm font-semibold ${
-                  item.value < 50 ? "text-red-500" : "text-green-500"
-                }`}
-              >
-                {item.value}%
-              </span>
+              <div className="text-right">
+                <div className="text-sm font-semibold text-gray-900">
+                  {item.totalTests} tests
+                </div>
+                <div className={`text-xs ${
+                  parseFloat(item.value) < 33 ? "text-red-500" : 
+                  parseFloat(item.value) < 66 ? "text-yellow-500" : "text-green-500"
+                }`}>
+                  {item.value}%
+                </div>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Period Info */}
+        <div className="w-full mt-4 text-center">
+          <div className="text-xs text-gray-400">
+            Showing data for: {selectedFilter}
+          </div>
         </div>
       </CardContent>
     </Card>
