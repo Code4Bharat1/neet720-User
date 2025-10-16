@@ -15,31 +15,70 @@ import {
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const SpeedCard = ({ changeDate }) => {
-  const [daily, setDaily] = useState([]); // [{ date:'YYYY-MM-DD', Physics, Chemistry, Biology, overall }]
+  const [daily, setDaily] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [allData, setAllData] = useState([]); // Store all data for filtering
 
-  // Helpers for time windows
-  const now = useMemo(() => new Date(), []);
-  const isSameYear = (d) => new Date(d).getFullYear() === now.getFullYear();
-  const isSameMonth = (d) =>
-    isSameYear(d) && new Date(d).getMonth() === now.getMonth();
-  const isSameWeek = (d) => {
-    const dt = new Date(d);
-    const weekStart = new Date(now);
-    weekStart.setHours(0, 0, 0, 0);
-    weekStart.setDate(now.getDate() - weekStart.getDay()); // Sun start (adjust if Mon needed)
-    return dt >= weekStart;
+  // Enhanced date helpers with better period handling
+  const getStartOfWeek = (date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday as start of week
+    return new Date(d.setDate(diff));
   };
 
-  // Format date -> YYYY-MM-DD (local midnight safe)
-  const asISODate = (d) => {
-    const x = new Date(d);
-    const yyyy = x.getFullYear();
-    const mm = String(x.getMonth() + 1).padStart(2, "0");
-    const dd = String(x.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
+  const getStartOfMonth = (date) => {
+    const d = new Date(date);
+    return new Date(d.getFullYear(), d.getMonth(), 1);
   };
 
+  const getStartOfYear = (date) => {
+    const d = new Date(date);
+    return new Date(d.getFullYear(), 0, 1);
+  };
+
+  const isSameWeek = (testDate, currentDate) => {
+    const test = new Date(testDate);
+    const current = new Date(currentDate);
+    const weekStart = getStartOfWeek(current);
+    const testWeekStart = getStartOfWeek(test);
+    return weekStart.getTime() === testWeekStart.getTime();
+  };
+
+  const isSameMonth = (testDate, currentDate) => {
+    const test = new Date(testDate);
+    const current = new Date(currentDate);
+    return test.getFullYear() === current.getFullYear() && 
+           test.getMonth() === current.getMonth();
+  };
+
+  const isSameYear = (testDate, currentDate) => 
+    new Date(testDate).getFullYear() === new Date(currentDate).getFullYear();
+
+  // More robust date formatting
+  const asISODate = (dateString) => {
+    const date = new Date(dateString);
+    // Adjust for timezone to get local date
+    const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+    return localDate.toISOString().split('T')[0];
+  };
+
+  // Format date for display based on period
+  const formatDateForDisplay = (dateString, period) => {
+    const date = new Date(dateString);
+    switch (period) {
+      case "This Week":
+        return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      case "This Month":
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      case "This Year":
+        return date.toLocaleDateString('en-US', { month: 'short' });
+      default:
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  };
+
+  // Fetch all data initially
   useEffect(() => {
     const fetchAverageMarks = async () => {
       try {
@@ -47,6 +86,7 @@ const SpeedCard = ({ changeDate }) => {
         const token = localStorage.getItem("authToken");
         if (!token) {
           console.warn("No token found in localStorage");
+          setAllData([]);
           setDaily([]);
           return;
         }
@@ -56,48 +96,13 @@ const SpeedCard = ({ changeDate }) => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        console.log("response :", res.data)
-
+        console.log("API Response:", res.data);
         const raw = Array.isArray(res.data) ? res.data : [];
-        const filtered = raw.filter((t) => {
-          if (!t?.updatedAt) return false;
-          if (changeDate === "This Year") return isSameYear(t.updatedAt);
-          if (changeDate === "This Month") return isSameMonth(t.updatedAt);
-          if (changeDate === "This Week") return isSameWeek(t.updatedAt);
-          return true; // default: no filter / all time
-        });
-
-        // Group by day
-        const byDay = new Map();
-        for (const item of filtered) {
-          const key = asISODate(item.updatedAt);
-          const acc = byDay.get(key) || {
-            PhysicsSum: 0,
-            ChemistrySum: 0,
-            BiologySum: 0,
-            count: 0,
-          };
-          acc.PhysicsSum += item.Physics || 0;
-          acc.ChemistrySum += item.Chemistry || 0;
-          acc.BiologySum += item.Biology || 0;
-          acc.count += 1;
-          byDay.set(key, acc);
-        }
-
-        // Build daily rows sorted asc by date
-        const rows = Array.from(byDay.entries())
-          .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-          .map(([date, v]) => {
-            const Physics = v.count ? +(v.PhysicsSum / v.count).toFixed(2) : 0;
-            const Chemistry = v.count ? +(v.ChemistrySum / v.count).toFixed(2) : 0;
-            const Biology = v.count ? +(v.BiologySum / v.count).toFixed(2) : 0;
-            const overall = +(((Physics + Chemistry + Biology) / 3) || 0).toFixed(2);
-            return { date, Physics, Chemistry, Biology, overall };
-          });
-
-        setDaily(rows);
-      } catch (e) {
-        console.error("Error fetching average marks:", e);
+        setAllData(raw);
+        
+      } catch (error) {
+        console.error("Error fetching average marks:", error);
+        setAllData([]);
         setDaily([]);
       } finally {
         setLoading(false);
@@ -105,47 +110,182 @@ const SpeedCard = ({ changeDate }) => {
     };
 
     fetchAverageMarks();
-  }, [changeDate]);
+  }, []);
 
-  // Derive headline + trend from last two days
-  const last = daily.length ? daily[daily.length - 1] : null;
+  // Process data when changeDate or allData changes
+  useEffect(() => {
+    if (allData.length === 0) {
+      setDaily([]);
+      return;
+    }
+
+    const currentDate = new Date();
+    let filtered = [];
+    
+    // Filter data based on selected period
+    switch (changeDate) {
+      case "This Week":
+        filtered = allData.filter(test => 
+          test?.updatedAt && isSameWeek(test.updatedAt, currentDate)
+        );
+        break;
+      case "This Month":
+        filtered = allData.filter(test => 
+          test?.updatedAt && isSameMonth(test.updatedAt, currentDate)
+        );
+        break;
+      case "This Year":
+        filtered = allData.filter(test => 
+          test?.updatedAt && isSameYear(test.updatedAt, currentDate)
+        );
+        break;
+      default:
+        filtered = allData; // All time
+    }
+
+    console.log("Filtered data for", changeDate, ":", filtered);
+
+    // Group by day with improved logic
+    const byDay = new Map();
+    
+    filtered.forEach((test) => {
+      const testDate = asISODate(test.updatedAt);
+      
+      if (!byDay.has(testDate)) {
+        byDay.set(testDate, {
+          Physics: [],
+          Chemistry: [],
+          Biology: [],
+          Botany: [],
+          Zoology: [],
+          count: 0
+        });
+      }
+      
+      const dayData = byDay.get(testDate);
+      
+      // Collect all scores for each subject
+      if (test.Physics !== undefined && test.Physics !== null) {
+        dayData.Physics.push(test.Physics);
+      }
+      if (test.Chemistry !== undefined && test.Chemistry !== null) {
+        dayData.Chemistry.push(test.Chemistry);
+      }
+      if (test.Biology !== undefined && test.Biology !== null) {
+        dayData.Biology.push(test.Biology);
+      }
+      if (test.Botany !== undefined && test.Botany !== null) {
+        dayData.Botany.push(test.Botany);
+      }
+      if (test.Zoology !== undefined && test.Zoology !== null) {
+        dayData.Zoology.push(test.Zoology);
+      }
+      dayData.count += 1;
+    });
+
+    // Calculate averages and create final array
+    const rows = Array.from(byDay.entries())
+      .map(([date, dayData]) => {
+        const calculateAverage = (scores) => {
+          if (scores.length === 0) return 0;
+          const sum = scores.reduce((a, b) => a + b, 0);
+          return +(sum / scores.length).toFixed(2);
+        };
+
+        const Physics = calculateAverage(dayData.Physics);
+        const Chemistry = calculateAverage(dayData.Chemistry);
+        const Biology = calculateAverage(dayData.Biology);
+        const Botany = calculateAverage(dayData.Botany);
+        const Zoology = calculateAverage(dayData.Zoology);
+        
+        // Calculate overall average from available subjects
+        const subjectsWithData = [Physics, Chemistry, Biology, Botany, Zoology].filter(score => score > 0);
+        const overall = subjectsWithData.length > 0 
+          ? +(subjectsWithData.reduce((a, b) => a + b, 0) / subjectsWithData.length).toFixed(2)
+          : 0;
+        
+        return { 
+          date, 
+          Physics, 
+          Chemistry, 
+          Biology, 
+          Botany,
+          Zoology,
+          overall,
+          count: dayData.count 
+        };
+      })
+      .sort((a, b) => a.date.localeCompare(b.date)); // Sort by date ascending
+
+    console.log("Processed daily data for", changeDate, ":", rows);
+    setDaily(rows);
+  }, [allData, changeDate]);
+
+  // Improved trend calculation
+  const last = daily.length > 0 ? daily[daily.length - 1] : null;
   const prev = daily.length > 1 ? daily[daily.length - 2] : null;
+  
   const currentAvg = last ? last.overall.toFixed(2) : "0.00";
-  const prevAvg = prev ? prev.overall : 0;
+  const prevAvg = prev ? prev.overall : last ? last.overall : 0;
   const isImproving = last && last.overall >= prevAvg;
   const trendColor = isImproving ? "text-green-500" : "text-red-500";
   const TrendIcon = isImproving ? FaArrowUp : FaArrowDown;
 
-  // Chart.js dataset: daily bars per subject
+  // Prepare chart data with all subjects
   const chartData = {
-    labels: daily.map((r) => r.date), // e.g. 2025-08-01
+    labels: daily.map((r) => formatDateForDisplay(r.date, changeDate)),
     datasets: [
       {
         label: "Physics",
         data: daily.map((r) => r.Physics),
         backgroundColor: "#16DBCC",
         borderRadius: 6,
+        hidden: daily.every(r => r.Physics === 0), // Hide if no data
       },
       {
         label: "Chemistry",
         data: daily.map((r) => r.Chemistry),
         backgroundColor: "#FFBB38",
         borderRadius: 6,
+        hidden: daily.every(r => r.Chemistry === 0),
       },
       {
         label: "Biology",
         data: daily.map((r) => r.Biology),
         backgroundColor: "#FE5C73",
         borderRadius: 6,
+        hidden: daily.every(r => r.Biology === 0),
       },
-    ],
+      {
+        label: "Botany",
+        data: daily.map((r) => r.Botany),
+        backgroundColor: "#4CAF50",
+        borderRadius: 6,
+        hidden: daily.every(r => r.Botany === 0),
+      },
+      {
+        label: "Zoology",
+        data: daily.map((r) => r.Zoology),
+        backgroundColor: "#8BC34A",
+        borderRadius: 6,
+        hidden: daily.every(r => r.Zoology === 0),
+      },
+    ].filter(dataset => !dataset.hidden), // Remove completely hidden datasets
   };
+
+  // Count available subjects for the current period
+  const availableSubjects = useMemo(() => {
+    const subjects = ['Physics', 'Chemistry', 'Biology', 'Botany', 'Zoology'];
+    return subjects.filter(subject => 
+      daily.some(day => day[subject] > 0)
+    ).length;
+  }, [daily]);
 
   return (
     <div className="w-full max-w-sm p-5 bg-white rounded-2xl shadow-md">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-bold text-gray-500">AVERAGE MARKS (Day-by-Day)</h3>
+        <h3 className="text-sm font-bold text-gray-500">AVERAGE MARKS ({changeDate})</h3>
         <span className={`flex items-center text-sm font-medium ${trendColor}`}>
           <TrendIcon className="mr-1" />
           {isImproving ? "Improved" : "Dropped"}
@@ -155,7 +295,9 @@ const SpeedCard = ({ changeDate }) => {
       {/* Latest day's overall */}
       <h2 className="text-2xl font-bold mt-2">{currentAvg}%</h2>
       <p className="text-xs text-gray-500">
-        {last ? `Latest: ${last.date}` : "No data"}
+        {last ? `Latest: ${formatDateForDisplay(last.date, changeDate)}` : "No data available"}
+        {last && last.count > 1 && ` (${last.count} tests)`}
+        {availableSubjects > 0 && ` • ${availableSubjects} subject${availableSubjects > 1 ? 's' : ''}`}
       </p>
 
       {/* Chart */}
@@ -173,35 +315,64 @@ const SpeedCard = ({ changeDate }) => {
                 ticks: {
                   callback: (v) => v + "%",
                 },
+                grid: {
+                  color: "rgba(0, 0, 0, 0.1)",
+                },
               },
               x: {
+                grid: {
+                  display: false,
+                },
                 ticks: {
-                  maxRotation: 0,
+                  maxRotation: daily.length > 7 ? 45 : 0,
+                  minRotation: daily.length > 7 ? 45 : 0,
                   autoSkip: true,
-                  autoSkipPadding: 8,
+                  maxTicksLimit: daily.length > 10 ? 10 : undefined,
                 },
               },
             },
             plugins: {
-              legend: { display: true, position: "bottom" },
+              legend: { 
+                display: true, 
+                position: "bottom",
+                labels: {
+                  usePointStyle: true,
+                  padding: 15,
+                  boxWidth: 8,
+                }
+              },
               tooltip: {
                 callbacks: {
-                  label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}%`,
+                  label: (context) => {
+                    const label = context.dataset.label || '';
+                    const value = context.parsed.y;
+                    return `${label}: ${value}%`;
+                  },
+                  afterLabel: (context) => {
+                    const index = context.dataIndex;
+                    const dayData = daily[index];
+                    const testsCount = dayData?.count;
+                    return testsCount > 1 ? `Based on ${testsCount} tests` : '';
+                  }
                 },
               },
-              title: { display: false },
             },
           }}
         />
       </div>
 
-      {/* Loading state */}
+      {/* Status messages */}
       {loading && (
-        <p className="mt-2 text-xs text-gray-500">Loading day-by-day data…</p>
+        <p className="mt-2 text-xs text-gray-500 text-center">Loading performance data...</p>
       )}
       {!loading && daily.length === 0 && (
-        <p className="mt-2 text-xs text-gray-500">No records in this period.</p>
+        <p className="mt-2 text-xs text-gray-500 text-center">No test records found for {changeDate.toLowerCase()}.</p>
       )}
+      
+      {/* Period info */}
+      <div className="mt-2 text-xs text-gray-400 text-center">
+        <p>Showing {daily.length} day{daily.length !== 1 ? 's' : ''} • {changeDate}</p>
+      </div>
     </div>
   );
 };

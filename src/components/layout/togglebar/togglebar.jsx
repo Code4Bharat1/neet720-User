@@ -27,7 +27,7 @@ const sidebarLinks = [
   { name: "Result", path: "/pasttest", icon: <FaPoll /> },
   // { name: "Analytics", path: "/analytics", icon: <FaChartLine /> },
   { name: "Colleges", path: "/colleges", icon: <FaUniversity /> },
-  { name: "Credits", path: "/credits", icon: <FaCookie /> },
+  { name: "Scholarship", path: "/credits", icon: <FaCookie /> },
   { name: "PYQs", path: "/previousyearquestions", icon: <FaTablets /> },
   { name: "View Notice", path: "/notice", icon: <FaBook /> },
   { name: "Test Series", path: "/test-series", icon: <BookText /> },

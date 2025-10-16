@@ -52,6 +52,20 @@ function normalizeExamplan(rawVal) {
   }
 }
 
+// put this near normalizeExamplan()
+function getStartTest() {
+  try {
+    const raw = localStorage.getItem("startTest");
+    if (!raw) return null;
+    const obj = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (!obj?.subject || !obj?.chapter || obj?.allocatedQuestions == null)
+      return null;
+    return obj;
+  } catch {
+    return null;
+  }
+}
+
 const TestPlanResultPage = () => {
   const router = useRouter();
   const { width, height } = useWindowSize();
@@ -60,6 +74,24 @@ const TestPlanResultPage = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [totalMax, setTotalMax] = useState(0);
 
+  // ⛔ BLOCK BROWSER BACK/FORWARD BUTTONS COMPLETELY
+  useEffect(() => {
+    // Prevent any navigation away from this page using browser buttons
+    const blockNavigation = (event) => {
+      // Store the current scroll position
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    // Push current state to history and set up blocker
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", blockNavigation);
+
+    return () => {
+      window.removeEventListener("popstate", blockNavigation);
+    };
+  }, []);
+
+  // SECOND useEffect - Process exam results
   useEffect(() => {
     // Read from localStorage (support "examplan" and "examPlan")
     const raw =
@@ -77,7 +109,7 @@ const TestPlanResultPage = () => {
     // Aggregate subject-wise stats
     const stats = {};
     if (entries.length === 0 && allocatedQuestions > 0) {
-      // User didn’t attempt any question, create default stat
+      // User didn't attempt any question, create default stat
       stats[subjectName] = { correct: 0, wrong: 0 };
     } else {
       for (const e of entries) {
@@ -98,41 +130,6 @@ const TestPlanResultPage = () => {
         }
       }
     }
-
-    // ⛔ Prevent going back to test page
-    useEffect(() => {
-      const handlePopState = (event) => {
-        event.preventDefault();
-        // Always redirect to examplan or dashboard
-        router.replace("/examplan"); // or "/dashboard"
-      };
-
-      // Add listener
-      window.addEventListener("popstate", handlePopState);
-
-      // Push a dummy state so browser has something to replace
-      window.history.pushState(null, "", window.location.href);
-
-      return () => {
-        window.removeEventListener("popstate", handlePopState);
-      };
-    }, [router]);
-
-    // Prevent going back to test page (redirect to examplan)
-    useEffect(() => {
-      const handlePopState = () => {
-        router.replace("/examplan");
-        setTimeout(() => window.history.pushState(null, "", window.location.href), 0);
-      };
-
-      window.history.pushState(null, "", window.location.href);
-      window.addEventListener("popstate", handlePopState);
-
-      return () => {
-        window.removeEventListener("popstate", handlePopState);
-      };
-    }, [router]);
-
 
     // Build subjects array based on allocatedQuestions
     const subjectsArray = Object.keys(stats).map((subject) => {
@@ -173,34 +170,13 @@ const TestPlanResultPage = () => {
     }
   }, []);
 
-  // put this near normalizeExamplan()
-  function getStartTest() {
-    try {
-      const raw = localStorage.getItem("startTest");
-      if (!raw) return null;
-      const obj = typeof raw === "string" ? JSON.parse(raw) : raw;
-      if (!obj?.subject || !obj?.chapter || obj?.allocatedQuestions == null)
-        return null;
-      return obj;
-    } catch {
-      return null;
-    }
-  }
-
   const handleRetakeTest = () => {
-    const st = getStartTest();
-    if (st) {
-      const params = new URLSearchParams({
-        chapter: st.chapter, // URLSearchParams will encode for you
-        allocatedQuestions: String(st.allocatedQuestions),
-        subject: st.subject,
-      });
-      localStorage.removeItem("examplan");
-      router.push(`/testinterfaceplan?${params.toString()}`);
-      return;
-    }
-    // Fallback if startTest is missing/invalid
-    // router.push("/testinterface");
+    // Instead of going back to test, redirect to examplan like Exit button
+    router.push("/examplan");
+    localStorage.removeItem("selectedSubjects");
+    localStorage.removeItem("startTest");
+    localStorage.removeItem("examplan");
+    localStorage.removeItem("testStartTime");
   };
 
   const percent = totalMax ? Math.round((totalScore / totalMax) * 100) : 0;

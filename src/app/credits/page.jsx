@@ -275,7 +275,7 @@ const Page = () => {
         <BottomNavbar />
         <div className='w-full'>
           <NavBar />
-          <div className="flex-1 p-6 md:p-8">
+          <div className="flex-1 p-6 md:p-8 pt-24 md:pt-0">
             {/* Header Section */}
             <div className="mb-8 ">
               <div className="flex flex-col md:flex-row md:items-center text-center justify-center">

@@ -260,7 +260,7 @@ const QuizInterface = () => {
   const handleArrowKeyNavigation = (e) => {
     if (showResult) return;
 
-    const optionCount = currentQuestion.options.length;
+    const optionCount = currentQuestion.options?.length || 0;
 
     if (e.key === "ArrowDown") {
       setFocusedOptionIndex((prev) =>
@@ -271,8 +271,10 @@ const QuizInterface = () => {
         prev === null || prev === 0 ? optionCount - 1 : prev - 1
       );
     } else if (e.key === "Enter" && focusedOptionIndex !== null) {
-      const selectedOption = currentQuestion.options[focusedOptionIndex];
-      handleOptionSelect(currentQuestion.id, selectedOption.option_text);
+      const selectedOption = currentQuestion.options?.[focusedOptionIndex];
+      if (selectedOption) {
+        handleOptionSelect(currentQuestion.id, selectedOption.option_text);
+      }
     }
   };
 
@@ -283,6 +285,7 @@ const QuizInterface = () => {
   const startTimer = () => {
     setTimeLeft(difficultySettings[difficulty].timeLimit)
     setShowResult(false)
+    setFocusedOptionIndex(null)
     if (timerRef.current) clearInterval(timerRef.current)
 
     timerRef.current = setInterval(() => {
@@ -299,7 +302,7 @@ const QuizInterface = () => {
   }
 
   const autoAnswerQuestion = () => {
-  const correctAnswer = currentQuestion.options.find((opt) => opt.is_correct)?.option_text || "";
+  const correctAnswer = currentQuestion.options?.find((opt) => opt.is_correct)?.option_text || "";
 
   // Forcefully set bot answer every time (even if user answered wrong)
   handleOptionSelect(currentQuestion.id, correctAnswer, true);
@@ -310,7 +313,7 @@ const QuizInterface = () => {
 
 
   const handleOptionSelect = (questionId, selectedOption, isAutoAnswered = false) => {
-  const correctAnswer = questions.find((q) => q.id === questionId)?.options.find((opt) => opt.is_correct)?.option_text || "";
+  const correctAnswer = questions.find((q) => q.id === questionId)?.options?.find((opt) => opt.is_correct)?.option_text || "";
 
   const isCorrect = selectedOption?.trim().toLowerCase() === correctAnswer?.trim().toLowerCase();
     console.log("Selected Option:", selectedOption);
@@ -347,8 +350,18 @@ const QuizInterface = () => {
   const handleNavigation = (direction) => {
     if (direction === "next" && currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1)
+      // Reset states for new question
+      setShowResult(false)
+      setFocusedOptionIndex(null)
+      setBotThinking(false)
+      if (thinkingRef.current) clearInterval(thinkingRef.current)
     } else if (direction === "prev" && currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1)
+      // Reset states for previous question
+      setShowResult(false)
+      setFocusedOptionIndex(null)
+      setBotThinking(false)
+      if (thinkingRef.current) clearInterval(thinkingRef.current)
     }
   }
 
@@ -357,6 +370,7 @@ const QuizInterface = () => {
     delete updatedAnswers[currentQuestion.id]
     setAnswers(updatedAnswers)
     setShowResult(false)
+    setFocusedOptionIndex(null)
     startTimer()
     startBotThinking()
     setBotPrompt("🔄 Fresh start! Let's see who gets it first!")
@@ -403,7 +417,7 @@ const QuizInterface = () => {
     let classes =
       "group relative flex items-center p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer transform hover:scale-[1.02] hover:shadow-lg"
 
-    const correctAnswer = questions.find((q) => q.id === currentQuestion.id)?.options.find((opt) => opt.is_correct)?.option_text || "";
+    const correctAnswer = questions.find((q) => q.id === currentQuestion.id)?.options?.find((opt) => opt.is_correct)?.option_text || "";
     const selectedOption = currentAnswer?.selectedOption
 
     if (showResult) {
@@ -805,14 +819,14 @@ const QuizInterface = () => {
         </span>
       </label>
 
-      {/* ✅ Correct Answer */}
+      {/* ✅ Correct Answer - Only show when result is displayed */}
       {showResult && optionText === correctAnswer && (
         <div className="ml-28 -mr-14 w-1/2 max-sm:w-fit max-sm:ml-20 max-sm:mr-0 mt-1 flex items-center flex-wrap gap-1 text-green-600 text-sm font-medium">
           ✅ <span className="max-sm:hidden">Correct Answer</span>
         </div>
       )}
 
-      {/* ❌ User's Wrong Answer */}
+      {/* ❌ User's Wrong Answer - Only show when result is displayed */}
       {showResult &&
         selectedAnswer === optionText &&
         optionText !== correctAnswer && (
@@ -821,7 +835,7 @@ const QuizInterface = () => {
           </div>
         )}
 
-      {/* 🤖 Bot's Auto Answer */}
+      {/* 🤖 Bot's Auto Answer - Only show when result is displayed */}
       {showResult &&
         currentAnswer?.isAutoAnswered &&
         optionText === correctAnswer && (
