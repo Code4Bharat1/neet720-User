@@ -10,7 +10,7 @@ const ForgotPassword = () => {
   const router = useRouter();
 
   // Form state
-  const [email, setEmail] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -23,26 +23,27 @@ const ForgotPassword = () => {
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // API base URL from environment variables
 
-  // Step 1: Send email to request OTP
-  const handleEmailSubmit = async (e) => {
+  // Step 1: Send mobile number to request OTP
+  const handleMobileSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setError('');
     setIsLoading(true);
 
-    if (!email) {
-      setError('Please enter your email address.');
+    if (!mobileNumber) {
+      setError('Please enter your mobile number.');
       setIsLoading(false);
       return;
     }
 
     try {
+      // Send request to backend to send OTP to WhatsApp
       const response = await axios.post(`${apiBaseUrl}/students/forgot-password`, {
-        emailAddress: email,
+        mobileNumber, // Use mobile number to send OTP
       });
 
       if (response.status === 200) {
-        setMessage('OTP sent to your email for password reset.');
+        setMessage('OTP sent to your WhatsApp for password reset.');
         setIsOtpSent(true);
       }
     } catch (err) {
@@ -52,7 +53,7 @@ const ForgotPassword = () => {
     }
   };
 
-  // Step 2: Reset Password by sending email, OTP, and new password together
+  // Step 2: Reset Password by sending OTP and new password together
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -71,7 +72,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await axios.post(`${apiBaseUrl}/students/reset-password`, {
-        emailAddress: email,
+        mobileNumber, // Mobile number for password reset
         otp,          // OTP as a string
         newPassword,  // New password field
       });
@@ -120,36 +121,35 @@ const ForgotPassword = () => {
         </h2>
         {!isOtpSent && (
           <p className="text-gray-600 text-center mb-6">
-            Enter your email address to receive an OTP for password reset.
+            Enter your mobile number to receive an OTP for password reset via WhatsApp.
           </p>
         )}
 
         {isOtpSent && (
           <p className="text-gray-600 text-center mb-6">
-            Enter the OTP sent to your email and reset your password.
+            Enter the OTP sent to your WhatsApp and reset your password.
           </p>
         )}
 
-
         {/* Form Section */}
         <form
-          onSubmit={isOtpSent ? handleResetPassword : handleEmailSubmit}
+          onSubmit={isOtpSent ? handleResetPassword : handleMobileSubmit}
           className="space-y-6 w-full md:w-full max-w-md"
         >
-          {/* Email Field (only visible before OTP is sent) */}
+          {/* Mobile Number Field (only visible before OTP is sent) */}
           {!isOtpSent && (
             <div className="mb-6">
-              <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
-                Email Address
+              <label htmlFor="mobileNumber" className="block text-sm font-bold text-gray-700 mb-2">
+                Mobile Number
               </label>
               <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="mobileNumber"
+                value={mobileNumber}
+                onChange={(e) => setMobileNumber(e.target.value)}
                 required
                 className="appearance-none rounded-md block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Enter Your Email"
+                placeholder="Enter Your Mobile Number"
               />
             </div>
           )}
@@ -213,8 +213,7 @@ const ForgotPassword = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className={`w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#3e9ec7] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all flex items-center justify-center ${isLoading && 'opacity-75'
-              }`}
+            className={`w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#3e9ec7] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all flex items-center justify-center ${isLoading && 'opacity-75'}`}
             disabled={isLoading}
           >
             <AiOutlineSend className="text-lg mr-2" />

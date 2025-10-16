@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -34,51 +33,19 @@ const SignUpPage = () => {
   const [otp, setOtp] = useState("");
   const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [resendOtpClicked, setResendOtpClicked] = useState(false); // Track resend OTP click
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  // Input field change handler with validation
+  // ✅ handle form field changes (with validation)
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // Validation for firstName and lastName - only alphabets and spaces
-    if (name === "firstName" || name === "lastName") {
-      const nameRegex = /^[a-zA-Z\s]*$/;
-      if (!nameRegex.test(value)) {
-        return; // Don't update if invalid characters
-      }
-    }
-
-    // Validation for mobileNumber - only digits and max 10 digits
-    if (name === "mobileNumber") {
-      const phoneRegex = /^\d*$/;
-      if (!phoneRegex.test(value) || value.length > 10) {
-        return; // Don't update if non-digit or exceeds 10 digits
-      }
-    }
-
-    // Validation for email - basic check to prevent spaces
-    if (name === "emailAddress") {
-      if (value.includes(" ")) {
-        return; // Don't allow spaces in email
-      }
-    }
-
-    // Validation for password - prevent spaces
-    if (name === "password" || name === "confirmPassword") {
-      if (value.includes(" ")) {
-        toast.error("Password cannot contain spaces");
-        return;
-      }
-    }
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = (field) => {
     setShowPassword((prev) => ({
       ...prev,
@@ -86,55 +53,48 @@ const SignUpPage = () => {
     }));
   };
 
-  // Validate email format
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateMobile = (mobile) => /^\d{10}$/.test(mobile);
 
-  // Validate mobile number
-  const validateMobile = (mobile) => {
-    return mobile.length === 10 && /^\d{10}$/.test(mobile);
-  };
-
-  // Validate password strength
   const validatePassword = (password) => {
-    if (password.length < 8) {
-      return "Password must be at least 8 characters long";
-    }
-    if (!/[A-Z]/.test(password)) {
-      return "Password must contain at least one uppercase letter";
-    }
-    if (!/[a-z]/.test(password)) {
-      return "Password must contain at least one lowercase letter";
-    }
-    if (!/[0-9]/.test(password)) {
-      return "Password must contain at least one number";
-    }
-    if (!/[!@#$%^&*]/.test(password)) {
-      return "Password must contain at least one special character (!@#$%^&*)";
-    }
+    if (password.length < 8) return "Password must be at least 8 characters long";
+    if (!/[A-Z]/.test(password)) return "Password must contain an uppercase letter";
+    if (!/[a-z]/.test(password)) return "Password must contain a lowercase letter";
+    if (!/[0-9]/.test(password)) return "Password must contain a number";
+    if (!/[!@#$%^&*]/.test(password)) return "Password must contain a special character";
     return null;
   };
 
-  // Send OTP
+  /* =========================================================
+     🔹 SEND OTP (Email + WhatsApp)
+  ========================================================= */
   const handleSendOtp = async () => {
-    if (!formData.emailAddress) {
-      toast.error("Please enter an email address.");
+    const { emailAddress, mobileNumber } = formData;
+
+    if (!emailAddress || !mobileNumber) {
+      toast.error("Please enter both email and mobile number.");
       return;
     }
-    if (!validateEmail(formData.emailAddress)) {
-      toast.error("Please enter a valid email address.");
+    if (!validateEmail(emailAddress)) {
+      toast.error("Invalid email address.");
       return;
     }
+    if (!validateMobile(mobileNumber)) {
+      toast.error("Enter a valid 10-digit mobile number.");
+      return;
+    }
+
     try {
       setLoading(true);
-      const res = await axios.post(`${apiBaseUrl}/demo/sendotp`, {
-        emailAddress: formData.emailAddress,
+      const res = await axios.post(`${apiBaseUrl}/demo/signup/send-otp`, {
+        emailAddress,
+        mobileNumber,
       });
+
       if (res.status === 200) {
-        toast.success("OTP sent to your email!");
+        toast.success("OTP sent to your Email & WhatsApp!");
         setOtpSent(true);
+        setResendOtpClicked(false); // reset resend flag
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to send OTP.");
@@ -143,7 +103,9 @@ const SignUpPage = () => {
     }
   };
 
-  // Verify OTP
+  /* =========================================================
+     🔹 VERIFY OTP
+  ========================================================= */
   const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       toast.error("Enter a valid 6-digit OTP.");
@@ -151,7 +113,7 @@ const SignUpPage = () => {
     }
     try {
       setVerifyingOtp(true);
-      const res = await axios.post(`${apiBaseUrl}/demo/verifyotp`, {
+      const res = await axios.post(`${apiBaseUrl}/demo/signup/verify-otp`, {
         emailAddress: formData.emailAddress,
         otp,
       });
@@ -166,7 +128,33 @@ const SignUpPage = () => {
     }
   };
 
-  // Submit Sign Up
+  /* =========================================================
+     🔹 RESEND OTP
+  ========================================================= */
+  const handleResendOtp = async () => {
+    const { emailAddress, mobileNumber } = formData;
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${apiBaseUrl}/demo/signup/send-otp`, {
+        emailAddress,
+        mobileNumber,
+      });
+
+      if (res.status === 200) {
+        toast.success("OTP resent successfully to your Email & WhatsApp!");
+        setResendOtpClicked(true); // mark as resent
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to resend OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* =========================================================
+     🔹 COMPLETE SIGNUP
+  ========================================================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
     const {
@@ -178,52 +166,40 @@ const SignUpPage = () => {
       confirmPassword,
     } = formData;
 
-    // Required fields validation
     if (!firstName || !emailAddress || !mobileNumber || !password || !confirmPassword) {
       toast.error("All fields are required.");
       return;
     }
 
-    // Name validation
-    if (firstName.trim().length < 2) {
-      toast.error("First name must be at least 2 characters long.");
-      return;
-    }
-
-    // Email validation
     if (!validateEmail(emailAddress)) {
-      toast.error("Please enter a valid email address.");
+      toast.error("Invalid email address.");
       return;
     }
 
-    // Mobile number validation
     if (!validateMobile(mobileNumber)) {
       toast.error("Mobile number must be exactly 10 digits.");
       return;
     }
 
-    // Password validation
     const passwordError = validatePassword(password);
     if (passwordError) {
       toast.error(passwordError);
       return;
     }
 
-    // Password match validation
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
       return;
     }
 
-    // OTP verification check
     if (!otpVerified) {
-      toast.error("Please verify the OTP sent to your email.");
+      toast.error("Please verify OTP first.");
       return;
     }
 
     try {
       setLoading(true);
-      const res = await axios.post(`${apiBaseUrl}/demo/signup`, {
+      const res = await axios.post(`${apiBaseUrl}/demo/signup/complete`, {
         firstName,
         lastName,
         fullName: `${firstName} ${lastName}`,
@@ -232,6 +208,7 @@ const SignUpPage = () => {
         password,
         isDemo: true,
       });
+
       if (res.status === 201) {
         toast.success("Signup successful!");
         if (res.data.token) {
@@ -246,15 +223,18 @@ const SignUpPage = () => {
     }
   };
 
-  return (
+  /* =========================================================
+     🔹 UI RENDER
+  ========================================================= */
+ return (
     <div className="flex flex-wrap bg-gradient-to-b from-[#0077B6] to-[#ADE8F4] min-h-screen">
-      {/* Left */}
+      {/* Left side logo */}
       <div className="hidden md:flex md:w-[40%] items-center justify-center">
         <Image src="/neet720_logo.jpg" alt="Logo" width={300} height={200} />
       </div>
-      {/* Right */}
+
+      {/* Right side form */}
       <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white p-6 md:rounded-l-3xl">
-        {/* Logo Section (only visible on mobile) */}
         <div className="flex justify-center mb-6 md:hidden">
           <Image
             src="/neet720_logo.jpg"
@@ -268,9 +248,11 @@ const SignUpPage = () => {
         <h2 className="text-2xl md:text-3xl font-bold text-[#45A4CE] mb-6 text-center">
           {otpSent && !otpVerified ? "Enter OTP" : "Create an Account"}
         </h2>
-        {/* Form */}
+
+        {/* FORM */}
         {!otpSent || (otpSent && otpVerified) ? (
           <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
+            {/* First + Last Name */}
             <div className="flex gap-4">
               <div className="w-1/2">
                 <label className="block mb-1 text-sm font-bold">
@@ -288,12 +270,10 @@ const SignUpPage = () => {
                     required
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Letters only</p>
               </div>
+
               <div className="w-1/2">
-                <label className="block mb-1 text-sm font-bold">
-                  Last Name
-                </label>
+                <label className="block mb-1 text-sm font-bold">Last Name</label>
                 <div className="relative">
                   <AiOutlineUser className="absolute left-3 top-3 text-gray-500 text-xl" />
                   <input
@@ -305,9 +285,10 @@ const SignUpPage = () => {
                     placeholder="Doe"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Letters only</p>
               </div>
             </div>
+
+            {/* Email + OTP */}
             <div>
               <label className="block mb-1 text-sm font-bold">
                 Email <span className="text-red-500">*</span>
@@ -325,20 +306,9 @@ const SignUpPage = () => {
                   disabled={otpVerified}
                 />
               </div>
-              {!otpSent && (
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={loading}
-                  className="mt-2 text-blue-600 font-semibold hover:underline disabled:opacity-50"
-                >
-                  {loading ? "Sending..." : "Send OTP"}
-                </button>
-              )}
-              {otpVerified && (
-                <p className="text-xs text-green-600 mt-1 font-semibold">✓ Verified</p>
-              )}
             </div>
+
+            {/* Mobile + Send OTP */}
             <div>
               <label className="block mb-1 text-sm font-bold">
                 Mobile Number <span className="text-red-500">*</span>
@@ -354,10 +324,38 @@ const SignUpPage = () => {
                   placeholder="9876543210"
                   maxLength={10}
                   required
+                  disabled={otpVerified}
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">10 digits only</p>
+
+              {!otpSent && (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={loading}
+                  className="mt-2 text-blue-600 font-semibold hover:underline disabled:opacity-50"
+                >
+                  {loading ? "Sending..." : "Send OTP"}
+                </button>
+              )}
+
+              {otpSent && !otpVerified && (
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={loading}
+                  className="mt-2 text-blue-600 font-semibold hover:underline disabled:opacity-50"
+                >
+                  {loading ? "Resending..." : "Resend OTP"}
+                </button>
+              )}
+
+              {otpVerified && (
+                <p className="text-xs text-green-600 mt-1 font-semibold">✓ Verified</p>
+              )}
             </div>
+
+            {/* Password Fields */}
             <div>
               <label className="block mb-1 text-sm font-bold">
                 Password <span className="text-red-500">*</span>
@@ -377,17 +375,11 @@ const SignUpPage = () => {
                   onClick={() => togglePasswordVisibility("password")}
                   className="absolute right-3 top-3 cursor-pointer text-gray-500 hover:text-gray-700"
                 >
-                  {showPassword.password ? (
-                    <AiOutlineEye className="text-xl" />
-                  ) : (
-                    <AiOutlineEyeInvisible className="text-xl" />
-                  )}
+                  {showPassword.password ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
                 </span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
-              </p>
             </div>
+
             <div>
               <label className="block mb-1 text-sm font-bold">
                 Confirm Password <span className="text-red-500">*</span>
@@ -407,27 +399,24 @@ const SignUpPage = () => {
                   onClick={() => togglePasswordVisibility("confirmPassword")}
                   className="absolute right-3 top-3 cursor-pointer text-gray-500 hover:text-gray-700"
                 >
-                  {showPassword.confirmPassword ? (
-                    <AiOutlineEye className="text-xl" />
-                  ) : (
-                    <AiOutlineEyeInvisible className="text-xl" />
-                  )}
+                  {showPassword.confirmPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
                 </span>
               </div>
             </div>
+
             <button
               type="submit"
               disabled={loading || !otpVerified}
-              className="w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#5babcd] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#5babcd] disabled:opacity-50 transition-colors"
             >
               {loading ? "Submitting..." : "Sign Up"}
             </button>
           </form>
         ) : (
+          // OTP Input screen
           <div className="w-full max-w-sm space-y-4">
             <p className="text-center text-gray-700">
-              Enter the 6-digit OTP sent to{" "}
-              <strong>{formData.emailAddress}</strong>
+              Enter the 6-digit OTP sent to <strong>{formData.emailAddress}</strong> & WhatsApp.
             </p>
             <input
               type="text"
@@ -442,10 +431,23 @@ const SignUpPage = () => {
             <button
               onClick={handleVerifyOtp}
               disabled={verifyingOtp || otp.length !== 6}
-              className="w-full py-3 bg-[#0077B6] text-white font-semibold rounded-md hover:bg-[#005f8a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 bg-[#0077B6] text-white font-semibold rounded-md hover:bg-[#005f8a] disabled:opacity-50 transition-colors"
             >
               {verifyingOtp ? "Verifying..." : "Verify OTP"}
             </button>
+
+            {/* Resend OTP button */}
+            {!otpVerified && (
+              <button
+                type="button"
+                onClick={handleResendOtp}
+                disabled={loading}
+                className="w-full mt-2 text-blue-600 font-semibold hover:underline disabled:opacity-50"
+              >
+                {loading ? "Resending..." : "Resend OTP"}
+              </button>
+            )}
+
             <button
               onClick={() => {
                 setOtpSent(false);
@@ -457,6 +459,7 @@ const SignUpPage = () => {
             </button>
           </div>
         )}
+
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 font-bold">
             Already have an account?{" "}
