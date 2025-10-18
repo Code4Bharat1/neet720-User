@@ -91,6 +91,7 @@ const QuizInterface = () => {
   const serialLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
   const timerRef = useRef(null)
   const thinkingRef = useRef(null)
+  const nextQuestionTimerRef = useRef(null)
 
   const currentQuestion = questions[currentQuestionIndex] || {}
   const currentAnswer = answers[currentQuestion.id]
@@ -142,6 +143,7 @@ const QuizInterface = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
       if (thinkingRef.current) clearInterval(thinkingRef.current)
+      if (nextQuestionTimerRef.current) clearTimeout(nextQuestionTimerRef.current)
     }
   }, [])
 
@@ -153,6 +155,7 @@ const QuizInterface = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
       if (thinkingRef.current) clearInterval(thinkingRef.current)
+      if (nextQuestionTimerRef.current) clearTimeout(nextQuestionTimerRef.current)
     }
   }, [currentQuestionIndex, questions])
 
@@ -173,7 +176,6 @@ const QuizInterface = () => {
       setLoading(false)
     }
   }
-
 
   useEffect(() => {
   const handleKeyDown = (event) => {
@@ -287,6 +289,7 @@ const QuizInterface = () => {
     setShowResult(false)
     setFocusedOptionIndex(null)
     if (timerRef.current) clearInterval(timerRef.current)
+    if (nextQuestionTimerRef.current) clearTimeout(nextQuestionTimerRef.current)
 
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -302,52 +305,73 @@ const QuizInterface = () => {
   }
 
   const autoAnswerQuestion = () => {
-  const correctAnswer = currentQuestion.options?.find((opt) => opt.is_correct)?.option_text || "";
+    const correctAnswer = currentQuestion.options.find((opt) => opt.is_correct)?.option_text || "";
 
-  // Forcefully set bot answer every time (even if user answered wrong)
-  handleOptionSelect(currentQuestion.id, correctAnswer, true);
+    // Forcefully set bot answer every time (even if user answered wrong)
+    handleOptionSelect(currentQuestion.id, correctAnswer, true);
 
-  setBotPrompt("⏱️ Time's up! I got this one for my team!");
-  setShowResult(true);
-};
+    setBotPrompt("⏱️ Time's up! I got this one for my team!");
+    setShowResult(true);
+    
+    // Auto move to next question after 3 seconds
+    scheduleNextQuestion();
+  };
 
+  const scheduleNextQuestion = () => {
+    if (nextQuestionTimerRef.current) clearTimeout(nextQuestionTimerRef.current);
+    
+    nextQuestionTimerRef.current = setTimeout(() => {
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
+        // If it's the last question, submit the test
+        handleSubmitTest();
+      }
+    }, 3000);
+  };
 
   const handleOptionSelect = (questionId, selectedOption, isAutoAnswered = false) => {
-  const correctAnswer = questions.find((q) => q.id === questionId)?.options?.find((opt) => opt.is_correct)?.option_text || "";
+    const correctAnswer = questions.find((q) => q.id === questionId)?.options.find((opt) => opt.is_correct)?.option_text || "";
 
-  const isCorrect = selectedOption?.trim().toLowerCase() === correctAnswer?.trim().toLowerCase();
+    const isCorrect = selectedOption?.trim().toLowerCase() === correctAnswer?.trim().toLowerCase();
     console.log("Selected Option:", selectedOption);
-  console.log("Correct Answer:", correctAnswer);
-  console.log("Is Correct:", isCorrect);
-  setAnswers((prev) => ({
-    ...prev,
-    [questionId]: {
-      selectedOption,
-      isAutoAnswered,
-      isCorrect,
-      correctAnswer,
-    },
-  }));
+    console.log("Correct Answer:", correctAnswer);
+    console.log("Is Correct:", isCorrect);
+    
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: {
+        selectedOption,
+        isAutoAnswered,
+        isCorrect,
+        correctAnswer,
+      },
+    }));
 
-  if (!isAutoAnswered) {
-    clearInterval(timerRef.current);
-    stopBotThinking();
-    setShowResult(true);
+    if (!isAutoAnswered) {
+      clearInterval(timerRef.current);
+      stopBotThinking();
+      setShowResult(true);
 
-    const feedbacks = [
-      isCorrect ? "🎯 Excellent! You beat me to it!" : "🤔 Oops! That's a point for me.",
-      isCorrect ? "🔥 You're quick! Well done!" : "😅 I would have gotten that right!",
-      isCorrect ? "👏 Nice work! You're on fire!" : "💡 Better luck next time!",
-      isCorrect ? "⚡ Lightning fast! Amazing!" : "🤖 My circuits say otherwise!",
-      isCorrect ? "🏆 You got it before me!" : "🎯 I was about to pick the right one!",
-    ];
+      const feedbacks = [
+        isCorrect ? "🎯 Excellent! You beat me to it!" : "🤔 Oops! That's a point for me.",
+        isCorrect ? "🔥 You're quick! Well done!" : "😅 I would have gotten that right!",
+        isCorrect ? "👏 Nice work! You're on fire!" : "💡 Better luck next time!",
+        isCorrect ? "⚡ Lightning fast! Amazing!" : "🤖 My circuits say otherwise!",
+        isCorrect ? "🏆 You got it before me!" : "🎯 I was about to pick the right one!",
+      ];
 
-    setBotPrompt(feedbacks[Math.floor(Math.random() * feedbacks.length)]);
-  }
-};
+      setBotPrompt(feedbacks[Math.floor(Math.random() * feedbacks.length)]);
 
+      // Auto move to next question after 3 seconds, regardless of whether answer was correct or wrong
+      scheduleNextQuestion();
+    }
+  };
 
   const handleNavigation = (direction) => {
+    // Clear any existing next question timer when manually navigating
+    if (nextQuestionTimerRef.current) clearTimeout(nextQuestionTimerRef.current);
+    
     if (direction === "next" && currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1)
       // Reset states for new question
@@ -366,6 +390,9 @@ const QuizInterface = () => {
   }
 
   const handleClearResponse = () => {
+    // Clear any existing next question timer when clearing response
+    if (nextQuestionTimerRef.current) clearTimeout(nextQuestionTimerRef.current);
+    
     const updatedAnswers = { ...answers }
     delete updatedAnswers[currentQuestion.id]
     setAnswers(updatedAnswers)
@@ -377,9 +404,12 @@ const QuizInterface = () => {
   }
 
   const handleSubmitTest = () => {
+    // Clear all timers when submitting test
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (thinkingRef.current) clearInterval(thinkingRef.current);
+    if (nextQuestionTimerRef.current) clearTimeout(nextQuestionTimerRef.current);
+    
     setQuizCompleted(true)
-    clearInterval(timerRef.current)
-    clearInterval(thinkingRef.current)
     setShowFinalResults(true)
   }
 
@@ -1027,4 +1057,4 @@ const QuizInterface = () => {
   )
 }
 
-export default QuizInterface
+export default QuizInterface;

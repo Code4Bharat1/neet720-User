@@ -38,7 +38,7 @@ const subjects = [
 
 const TestInterface = () => {
   const router = useRouter();
-  const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [questionsData, setQuestionsData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,16 +55,14 @@ const TestInterface = () => {
   const [testName, setTestName] = useState("");
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(null);
 
-  // Calculate total time based on question count (1 min per question)
   const totalQuestions =
     totalQuestionsBySubject.Physics +
     totalQuestionsBySubject.Chemistry +
     totalQuestionsBySubject.Biology;
-  const [timer, setTimer] = useState(totalQuestions * 60); // 1 minute per question
+  const [timer, setTimer] = useState(totalQuestions * 60);
   const [timeSpent, setTimeSpent] = useState({});
   const serialLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
-  // Detect the user exits fullscreen
   useEffect(() => {
     const handleFullScreenChange = () => {
       if (
@@ -73,8 +71,6 @@ const TestInterface = () => {
         !document.mozFullScreenElement &&
         !document.msFullscreenElement
       ) {
-        // User exited fullscreen mode
-        // router.push("/testselection");
       }
     };
 
@@ -179,21 +175,24 @@ const TestInterface = () => {
     setAnswers(newAnswers);
     localStorage.setItem("testAnswers", JSON.stringify(newAnswers));
 
-    // Mark as visited
     const newVisited = { ...visitedQuestions, [questionKey]: true };
     setVisitedQuestions(newVisited);
     localStorage.setItem("visitedQuestions", JSON.stringify(newVisited));
   };
 
   const handleNavigation = (direction) => {
+    const questionKey = `${currentSubject}-${currentQuestion}`;
+    const newVisited = { ...visitedQuestions, [questionKey]: true };
+    setVisitedQuestions(newVisited);
+    localStorage.setItem("visitedQuestions", JSON.stringify(newVisited));
+
     const currentTime = new Date().getTime();
     const newTimeSpent = {
       ...timeSpent,
-      [`${currentSubject}-${currentQuestion}`]: currentTime,
+      [questionKey]: currentTime,
     };
     setTimeSpent(newTimeSpent);
 
-    // Save time spent to localStorage
     localStorage.setItem("timeSpent", JSON.stringify(newTimeSpent));
 
     const totalQuestionsInSubject =
@@ -205,7 +204,6 @@ const TestInterface = () => {
       direction === "next" &&
       currentQuestion >= totalQuestionsInSubject - 1
     ) {
-      // Move to next subject
       const subjectIndex = subjects.findIndex((s) => s.name === currentSubject);
       if (subjectIndex < subjects.length - 1) {
         setCurrentSubject(subjects[subjectIndex + 1].name);
@@ -214,7 +212,6 @@ const TestInterface = () => {
     } else if (direction === "prev" && currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
     } else if (direction === "prev" && currentQuestion === 0) {
-      // Move to previous subject
       const subjectIndex = subjects.findIndex((s) => s.name === currentSubject);
       if (subjectIndex > 0) {
         const prevSubject = subjects[subjectIndex - 1].name;
@@ -230,7 +227,6 @@ const TestInterface = () => {
       [`${currentSubject}-${currentQuestion}`]: true,
     });
 
-    // Save marked questions to localStorage
     localStorage.setItem(
       "markedForReview",
       JSON.stringify({
@@ -247,7 +243,6 @@ const TestInterface = () => {
     delete updatedAnswers[`${currentSubject}-${currentQuestion}`];
     setAnswers(updatedAnswers);
 
-    // Update localStorage
     const currentAnswers =
       JSON.parse(localStorage.getItem("testAnswers")) || {};
     delete currentAnswers[`${currentSubject}-${currentQuestion}`];
@@ -255,47 +250,48 @@ const TestInterface = () => {
   };
 
   useEffect(() => {
-  const handleKeyDown = (event) => {
-    if (event.key === "ArrowLeft" && currentQuestion > 0) {
-      handleNavigation("prev");
-    } else if (event.key === "ArrowRight") {
-      handleNavigation("next");
-    }
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft" && currentQuestion > 0) {
+        handleNavigation("prev");
+      } else if (event.key === "ArrowRight") {
+        handleNavigation("next");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentQuestion]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const options = questionsData[currentSubject]?.[currentQuestion]?.options;
+      if (!options) return;
+
+      if (e.key === "ArrowDown") {
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === options.length - 1 ? 0 : prev + 1
+        );
+      } else if (e.key === "ArrowUp") {
+        setFocusedOptionIndex((prev) =>
+          prev === null || prev === 0 ? options.length - 1 : prev - 1
+        );
+      } else if (e.key === "Enter" && focusedOptionIndex !== null) {
+        handleOptionClick(focusedOptionIndex);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [focusedOptionIndex, currentSubject, currentQuestion, questionsData]);
+
+  useEffect(() => {
+    setFocusedOptionIndex(null);
+  }, [currentQuestion]);
+
+  const handleSubmitConformation = () => {
+    setIsModalVisible(true);
   };
 
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [currentQuestion]);
-
-useEffect(() => {
-  const handleKeyDown = (e) => {
-    const options = questionsData[currentSubject]?.[currentQuestion]?.options;
-    if (!options) return;
-
-    if (e.key === "ArrowDown") {
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === options.length - 1 ? 0 : prev + 1
-      );
-    } else if (e.key === "ArrowUp") {
-      setFocusedOptionIndex((prev) =>
-        prev === null || prev === 0 ? options.length - 1 : prev - 1
-      );
-    } else if (e.key === "Enter" && focusedOptionIndex !== null) {
-      handleOptionClick(focusedOptionIndex);
-    }
-  };
-
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [focusedOptionIndex, currentSubject, currentQuestion, questionsData]);
-
-useEffect(() => {
-  setFocusedOptionIndex(null);
-}, [currentQuestion]);
-
-  const handleSubmitConformation = ()=>{
-    setIsModalVisible(true)
-  }
   const handleSubmit = async () => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
@@ -313,10 +309,8 @@ useEffect(() => {
     let notAttempted = [];
     let totalMarks = 0;
 
-    // New: Object to keep marks per question
     const perQuestionMarks = {};
 
-    // Process answers by subject
     Object.keys(questionsData).forEach((subject) => {
       questionsData[subject].forEach((question, index) => {
         const key = `${subject}-${index}`;
@@ -357,7 +351,6 @@ useEffect(() => {
       });
     });
 
-    // --- Save to localStorage ---
     localStorage.setItem("perQuestionMarks", JSON.stringify(perQuestionMarks));
     localStorage.setItem("totalMarks", totalMarks.toString());
 
@@ -382,8 +375,8 @@ useEffect(() => {
         }
       );
 
-      console.log("response : ", response.data.testResult.id)
-      localStorage.setItem("currentTestID" , response.data.testResult.id)
+      console.log("response : ", response.data.testResult.id);
+      localStorage.setItem("currentTestID", response.data.testResult.id);
       if (response.status === 201) {
         toast.success("Test submitted successfully!", { duration: 5000 });
         window.location.href = "/result";
@@ -399,7 +392,6 @@ useEffect(() => {
     }
   };
 
-  // Helper functions for stats
   const getAnsweredCountBySubject = (subject) => {
     return Object.keys(answers).filter((key) => key.startsWith(`${subject}-`))
       .length;
@@ -415,6 +407,28 @@ useEffect(() => {
     return Object.keys(visitedQuestions).filter((key) =>
       key.startsWith(`${subject}-`)
     ).length;
+  };
+
+  const getQuestionColor = (subject, index) => {
+    const questionKey = `${subject}-${index}`;
+
+    if (markedForReview[questionKey] && answers[questionKey] !== undefined) {
+      return "bg-green-500 hover:bg-green-600";
+    }
+
+    if (markedForReview[questionKey]) {
+      return "bg-purple-500 hover:bg-purple-600";
+    }
+
+    if (answers[questionKey] !== undefined) {
+      return "bg-green-500 hover:bg-green-600";
+    }
+
+    if (visitedQuestions[questionKey]) {
+      return "bg-red-500 hover:bg-red-600";
+    }
+
+    return "bg-gray-400 hover:bg-gray-500";
   };
 
   if (loading) {
@@ -437,7 +451,6 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen w-full bg-gray-100 flex flex-col">
-      {/* Header with Timer */}
       <div className="bg-white shadow-md py-4 max-sm:py-1 sticky top-0 z-10">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
           <h1 className="text-2xl max-sm:text-xl font-bold text-gray-800 mb-2 md:mb-0">
@@ -445,7 +458,6 @@ useEffect(() => {
           </h1>
 
           <div className="flex flex-wrap gap-4 items-center">
-            {/* Timer Display */}
             <div className="bg-blue-50 p-3 max-sm:p-1 max-sm:bg-transparent rounded-lg shadow">
               <div className="flex items-center gap-2 mb-1">
                 <FaClock className="text-blue-600" />
@@ -479,11 +491,8 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Main Content with sidebar at the top for mobile and on the right for desktop */}
       <div className="container mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6">
-        {/* Question Side Content */}
         <div className="lg:w-2/3 flex flex-col gap-4">
-          {/* Subject Tabs */}
           <div className="bg-white rounded-lg shadow-md p-4">
             <h2 className="text-lg font-semibold mb-3">Subject Sections</h2>
             <div className="grid grid-cols-3 gap-4">
@@ -513,7 +522,6 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Question Box */}
           <div className="bg-white rounded-lg shadow-lg p-6 select-none">
             <div className="mb-6 flex justify-between items-center">
               <span className="bg-blue-100 text-blue-800 px-4 py-1 rounded-full font-medium">
@@ -527,7 +535,6 @@ useEffect(() => {
             </div>
 
             <div className="flex flex-col md:flex-row gap-6">
-              {/* Question Content */}
               <div className="w-full">
                 <h3 className="text-xl font-semibold mb-6">
                   {questionsData[currentSubject]?.[currentQuestion]?.question ||
@@ -538,7 +545,7 @@ useEffect(() => {
                   {questionsData[currentSubject]?.[
                     currentQuestion
                   ]?.options.map((option, index) => {
-                    const serialLetter = String.fromCharCode(65 + index); // A, B, C, D...
+                    const serialLetter = String.fromCharCode(65 + index);
                     const questionKey = `${currentSubject}-${currentQuestion}`;
                     return (
                       <div key={index} className="flex items-center gap-4 mb-3">
@@ -552,23 +559,26 @@ useEffect(() => {
                           className="peer hidden"
                         />
                         <label
-  htmlFor={`option-${questionKey}-${index}`}
-  className={`flex items-center cursor-pointer select-none transition-all duration-200
-    ${focusedOptionIndex === index ? "ring-2 ring-blue-400 rounded-md" : ""}
-  `}
->
-
+                          htmlFor={`option-${questionKey}-${index}`}
+                          className={`flex items-center cursor-pointer select-none transition-all duration-200
+                            ${
+                              focusedOptionIndex === index
+                                ? "ring-2 ring-blue-400 rounded-md"
+                                : ""
+                            }
+                          `}
+                        >
                           <span
                             className={`
-              w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold text-lg mr-4
-              ${
-                answers[questionKey] === index
-                  ? "bg-blue-500 text-white border-blue-500"
-                  : "bg-gray-200 text-blue-600 border-gray-300"
-              }
-              peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500
-              transition-all duration-200
-            `}
+                              w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold text-lg mr-4
+                              ${
+                                answers[questionKey] === index
+                                  ? "bg-blue-500 text-white border-blue-500"
+                                  : "bg-gray-200 text-blue-600 border-gray-300"
+                              }
+                              peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500
+                              transition-all duration-200
+                            `}
                           >
                             {serialLetter}
                           </span>
@@ -581,7 +591,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Navigation Buttons */}
             <div className="mt-8 flex flex-wrap justify-between gap-4">
               <div className="flex gap-3">
                 <button
@@ -622,9 +631,7 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Right Sidebar: Status & Question Grids */}
         <div className="lg:w-1/3 space-y-4 flex flex-col">
-          {/* Test Status - Moved higher up */}
           <div className="bg-white rounded-lg shadow-lg p-4">
             <h3 className="font-semibold text-lg mb-3">Test Overview</h3>
 
@@ -687,7 +694,6 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Question Legend - Moved higher up */}
           <div className="bg-white rounded-lg shadow-lg p-4 flex-grow overflow-auto">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-lg">
@@ -701,7 +707,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Legend colors */}
             <div className="grid grid-cols-2 gap-2 mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-green-500 rounded-full"></div>
@@ -721,9 +726,7 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Only show current subject question grid */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              {/* Question number grid for current subject */}
               <div className="grid grid-cols-9 gap-1">
                 {Array.from({
                   length: totalQuestionsBySubject[currentSubject],
@@ -734,15 +737,7 @@ useEffect(() => {
                       currentQuestion === index
                         ? "ring-2 ring-blue-300 ring-offset-1"
                         : ""
-                    } ${
-                      markedForReview[`${currentSubject}-${index}`]
-                        ? "bg-purple-500 hover:bg-purple-600"
-                        : answers[`${currentSubject}-${index}`] !== undefined
-                        ? "bg-green-500 hover:bg-green-600"
-                        : visitedQuestions[`${currentSubject}-${index}`]
-                        ? "bg-red-500 hover:bg-red-600"
-                        : "bg-gray-400 hover:bg-gray-500"
-                    }`}
+                    } ${getQuestionColor(currentSubject, index)}`}
                     onClick={() => {
                       setCurrentQuestion(index);
                     }}
@@ -758,8 +753,8 @@ useEffect(() => {
       <ConfirmationModal
         show={isModalVisible}
         message={'Are you sure you want to submit your test?'}
-        onClose={() => setIsModalVisible(false)} // Close the modal
-        onConfirm={handleSubmit} // Confirm submission
+        onClose={() => setIsModalVisible(false)}
+        onConfirm={handleSubmit}
       />
     </div>
   );
