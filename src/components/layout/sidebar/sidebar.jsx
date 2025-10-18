@@ -60,7 +60,7 @@ const Sidebar = ({ isOpen }) => {
 
   const menuItems = [
     { href: '/dashboard', icon: FaTachometerAlt, label: 'Dashboard' },
-    { href: '/examplan', icon: FaBullseye, label: 'Exam Plan' },
+    { href: '/goalsetup', icon: FaBullseye, label: 'Exam Plan' },
     { href: '/testselection', icon: FaClipboardList, label: 'Test' },
     { href: '/pasttest', icon: FaPoll, label: 'Result' },
     // { href: '/analytics', icon: FaChartLine, label: 'Analytics' },

@@ -20,6 +20,7 @@ export default function UserTestSeriesList() {
         const res = await axios.get(`${API_BASE}/test-series`);
         if (res.data.success) {
           setTestSeries(res.data.data);
+          console.log(res.data.data)
         } else {
           setError(res.data.message || "Failed to load test series.");
         }
