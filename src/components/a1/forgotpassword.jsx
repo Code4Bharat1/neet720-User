@@ -166,7 +166,7 @@ const ForgotPassword = () => {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   required
-                  maxLength={4}
+                  maxLength={6}
                   className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter OTP"
                 />
