@@ -8,35 +8,51 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: "",
+    loginId: "", // can be email or mobile
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const router = useRouter();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
     try {
+      // Detect if user entered an email or mobile number
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.loginId);
+      const isMobile = /^[0-9]{10}$/.test(formData.loginId);
+
+      const payload = {
+        password: formData.password,
+      };
+
+      if (isEmail) {
+        payload.emailAddress = formData.loginId;
+      } else if (isMobile) {
+        payload.mobileNumber = formData.loginId;
+      } else {
+        toast.error("Please enter a valid email or 10-digit mobile number");
+        setLoading(false);
+        return;
+      }
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/students/login`,
-        { emailAddress: formData.email, password: formData.password }
+        payload
       );
+
       localStorage.setItem("authToken", response.data.token);
-      toast.success("✅ Login Successfully!!", {
-        duration: 5000
-      });
-      router.push("/dashboard"); // Redirect to dashboard after successful login
+      toast.success("✅ Login Successfully!", { duration: 4000 });
+      router.push("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to login.", {
-        duration: 5000
+        duration: 4000,
       });
     } finally {
       setLoading(false);
@@ -58,7 +74,7 @@ const Login = () => {
 
       {/* Right Section */}
       <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white p-6 md:rounded-l-3xl">
-        {/* Logo Section for Mobile */}
+        {/* Logo for Mobile */}
         <div className="md:hidden flex justify-center mb-6">
           <Image
             src="/neet720_logo.jpg"
@@ -69,35 +85,33 @@ const Login = () => {
           />
         </div>
 
-        {/* Heading Section */}
+        {/* Heading */}
         <h2 className="text-center text-2xl md:text-3xl font-bold text-[#45A4CE] mb-1">
           Welcome Back
         </h2>
 
-        {/* Subheading Section */}
         <p className="text-center text-xl md:text-3xl mt-2 font-medium mb-6 text-[#45A4CE]">
           Login to continue
         </p>
 
-        {/* Form Section */}
         <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md">
-          {/* Email Input */}
+          {/* Login ID Input */}
           <div>
             <label
-              htmlFor="email"
+              htmlFor="loginId"
               className="block text-sm font-semibold text-[#53ADD3] mb-2"
             >
-              Email Address
+              Email Address or Mobile Number
             </label>
             <input
-              type="email"
-              name="email"
-              id="email"
-              value={formData.email}
+              type="text"
+              name="loginId"
+              id="loginId"
+              value={formData.loginId}
               onChange={handleChange}
               required
               className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Email Address"
+              placeholder="Enter your email or mobile number"
             />
           </div>
 
@@ -152,6 +166,7 @@ const Login = () => {
             {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
+
         {/* Sign Up Redirect */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
@@ -164,10 +179,6 @@ const Login = () => {
             </a>
           </p>
         </div>
-
-
-        {/* Error Message */}
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
       </div>
     </div>
   );
