@@ -214,7 +214,7 @@ const SignUpPage = () => {
         if (res.data.token) {
           localStorage.setItem("authToken", res.data.token);
         }
-        router.push("/dashboard");
+        router.push("/login");
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Signup failed.");
