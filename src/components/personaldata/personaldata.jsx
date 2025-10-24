@@ -6,6 +6,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+console.log("API base URL =>", apiBaseUrl);
+
 
 const PersonalData = () => {
   const router = useRouter();
@@ -28,6 +30,8 @@ const PersonalData = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchPersonalData = async () => {
@@ -55,8 +59,6 @@ const PersonalData = () => {
             fullAddress: userData.fullAddress || "",
           });
 
-          console.log(formData);
-
           setProfileImage(userData.profileImage || "/profile.jpg");
         }
       } catch (error) {
@@ -75,32 +77,28 @@ const PersonalData = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedTypes.includes(file.type)) {
       toast.error("Please upload only JPEG or PNG images.");
-      e.target.value = ''; // Clear the input
+      e.target.value = '';
       return;
     }
 
-    // Validate file size (5MB = 5 * 1024 * 1024 bytes)
-    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+    const maxSizeInBytes = 5 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {
       toast.error("Image size should be less than 5MB. Please choose a smaller image.");
-      e.target.value = ''; // Clear the input
+      e.target.value = '';
       return;
     }
 
-    // Validate image dimensions (800x800px minimum)
     const img = new Image();
     img.onload = function () {
       if (img.width < 800 || img.height < 800) {
         toast.error("Image should be at least 800x800px. Please choose a larger image.");
-        e.target.value = ''; // Clear the input
+        e.target.value = '';
         return;
       }
 
-      // If all validations pass, process the image
       const reader = new FileReader();
       reader.onload = () => {
         localStorage.setItem("profileImage", reader.result);
@@ -112,25 +110,21 @@ const PersonalData = () => {
 
     img.onerror = function () {
       toast.error("Invalid image file. Please choose a valid image.");
-      e.target.value = ''; // Clear the input
+      e.target.value = '';
       return;
     };
 
-    // Create object URL to load image for dimension checking
     img.src = URL.createObjectURL(file);
   };
 
   const handleUpdateClick = async () => {
     setIsUpdating(true);
 
-    // Validate mobile number
     const mobileNumber = formData.mobileNumber.trim();
-    const mobileRegex = /^[6-9]\d{9}$/; // Validates 10-digit number starting with 6-9
+    const mobileRegex = /^[6-9]\d{9}$/;
 
     if (!mobileRegex.test(mobileNumber)) {
-      toast.error(
-        "Please enter a valid 10-digit mobile number starting with 6-9."
-      );
+      toast.error("Please enter a valid 10-digit mobile number starting with 6-9.");
       setIsUpdating(false);
       return;
     }
@@ -142,7 +136,6 @@ const PersonalData = () => {
         return;
       }
 
-      // Decode the JWT token to get the student ID
       const decodeJWT = (token) => {
         try {
           const base64Url = token.split(".")[1];
@@ -155,17 +148,14 @@ const PersonalData = () => {
       };
 
       const decodedToken = decodeJWT(authToken);
-      const studentId = decodedToken?.id; // Adjust based on your JWT structure
+      const studentId = decodedToken?.id;
 
       if (!studentId) {
         throw new Error("Unable to decode student ID from token");
       }
 
-      // Get profile image from localStorage or state
-      const updatedProfileImage =
-        localStorage.getItem("profileImage") || profileImage;
+      const updatedProfileImage = localStorage.getItem("profileImage") || profileImage;
 
-      // Prepare the data to send
       const requestData = {
         id: studentId,
         updatedImageUrl: updatedProfileImage,
@@ -180,8 +170,6 @@ const PersonalData = () => {
         emailAddress: formData.emailAddress,
         fullAddress: formData.fullAddress,
       };
-
-      console.log("Sending data:", requestData);
 
       const response = await axios.post(
         `${apiBaseUrl}/students/newdata`,
@@ -201,8 +189,7 @@ const PersonalData = () => {
         toast.success("User updated successfully!");
       }
     } catch (error) {
-      if (error.status === 409) {
-        console.log("error : ", error.response.data.message);
+      if (error.response?.status === 409) {
         toast.error(error.response.data.message);
       } else {
         console.error("Error updating personal data:", error);
@@ -212,6 +199,48 @@ const PersonalData = () => {
       setIsUpdating(false);
     }
   };
+
+  const handleDeleteAccount = async () => {
+  setIsDeleting(true);
+  try {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      toast.error("Authentication token not found");
+      return;
+    }
+
+    const response = await axios.delete(
+      `${apiBaseUrl}/students/delete-account`,
+      {
+        headers: { Authorization: `Bearer ${authToken}` },
+      }
+    );
+
+    if (response.status === 200) {
+      toast.success("Account deleted successfully");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("profileImage");
+      router.push("/");
+    }
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    
+    if (error.response?.status === 404) {
+      toast.error(
+        "Delete account feature is not available on the server yet. Please contact administrator to enable this feature."
+      );
+    } else if (error.response?.status === 409) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error(
+        error.response?.data?.message || "Failed to delete account. Please try again later."
+      );
+    }
+  } finally {
+    setIsDeleting(false);
+    setShowDeleteDialog(false);
+  }
+};
 
   return (
     <div className="p-6 w-full relative">
@@ -245,10 +274,11 @@ const PersonalData = () => {
         </div>
         <button
           onClick={!isEditable ? () => setIsEditable(true) : handleUpdateClick}
-          className={`px-6 py-2 rounded text-white font-medium ${isEditable
+          className={`px-6 py-2 rounded text-white font-medium ${
+            isEditable
               ? "bg-[#0077B6] hover:bg-[#498fb5]"
               : "bg-[#45A4CE] hover:bg-[#3589ac]"
-            }`}
+          }`}
         >
           {isUpdating ? "Updating..." : isEditable ? "Update" : "Edit"}
         </button>
@@ -373,6 +403,46 @@ const PersonalData = () => {
           />
         </div>
       </form>
+
+      {/* Delete Account Button */}
+      <div className="flex justify-end mt-8 pt-6 border-t border-gray-200">
+        <button
+          onClick={() => setShowDeleteDialog(true)}
+          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200"
+        >
+          Delete Account
+        </button>
+      </div>
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Delete Account
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowDeleteDialog(false)}
+                disabled={isDeleting}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium rounded-lg transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 disabled:bg-red-400"
+              >
+                {isDeleting ? "Deleting..." : "Delete Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
