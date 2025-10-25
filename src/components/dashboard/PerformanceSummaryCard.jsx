@@ -197,7 +197,7 @@ const PerformanceSummaryCard = ({ selectedFilter }) => {
 
   return (
     <div className="pt-4 flex flex-col items-center justify-center gap-4 sm:w-full sm:h-auto mb-20 md:flex-row md:items-start md:justify-center ">
-      <div className="bg-white rounded-2xl p-4 shadow-lg sm:w-full h-96 sm:mb-4 md:w-[450px]">
+      <div className="bg-white rounded-2xl p-4 shadow-lg sm:w-full h-96 sm:mb-4 md:w-[450px] lg :w-[600px] xl:w-[700px]">
         <h2 className="text-lg font-semibold mb-4 text-center md:text-left text-[#343C6A]">
           Performance Summary
         </h2>

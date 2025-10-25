@@ -203,11 +203,21 @@ const TestInterface = () => {
     localStorage.setItem("examplan", JSON.stringify(savedAnswers));
 
     // Update state for answers and visited questions
-    setAnswers({ ...answers, [`${currentSubject}-${currentQuestion}`]: index });
+    const currentKey = `${currentSubject}-${currentQuestion}`;
+    setAnswers({ ...answers, [currentKey]: index });
     setVisitedQuestions({
       ...visitedQuestions,
-      [`${currentSubject}-${currentQuestion}`]: true,
+      [currentKey]: true,
     });
+    
+    // If answer is given and question was marked for review, unmark it
+    if (markedForReview[currentKey]) {
+      setMarkedForReview(prev => {
+        const newState = { ...prev };
+        delete newState[currentKey];
+        return newState;
+      });
+    }
   };
 
   const handleNavigation = (direction) => {
@@ -229,16 +239,29 @@ const TestInterface = () => {
   };
 
   const handleReviewLater = () => {
-    setMarkedForReview({
-      ...markedForReview,
-      [`${currentSubject}-${currentQuestion}`]: true,
-    });
-    handleNavigation("next"); // Move to the next question after review
+    const currentKey = `${currentSubject}-${currentQuestion}`;
+    
+    // Toggle mark for review state
+    if (markedForReview[currentKey]) {
+      // Unmark if already marked
+      setMarkedForReview(prev => {
+        const newState = { ...prev };
+        delete newState[currentKey];
+        return newState;
+      });
+    } else {
+      // Mark for review
+      setMarkedForReview({
+        ...markedForReview,
+        [currentKey]: true,
+      });
+    }
   };
 
   const handleClearResponse = () => {
+    const currentKey = `${currentSubject}-${currentQuestion}`;
     const updatedAnswers = { ...answers };
-    delete updatedAnswers[`${currentSubject}-${currentQuestion}`];
+    delete updatedAnswers[currentKey];
     setAnswers(updatedAnswers);
 
     // Remove from localStorage as well
@@ -715,7 +738,11 @@ const TestInterface = () => {
                     className="flex-1 px-4 py-2.5 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-all flex items-center justify-center space-x-1 text-sm font-medium"
                   >
                     <FaFlag className="h-3 w-3" />
-                    <span>Review</span>
+                    <span>
+                      {markedForReview[`${currentSubject}-${currentQuestion}`]
+                        ? "Unmark Review"
+                        : "Review"}
+                    </span>
                   </button>
                 </div>
 
@@ -796,7 +823,11 @@ const TestInterface = () => {
                     className="px-4 sm:px-6 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-all flex items-center justify-center space-x-1 text-sm sm:text-base"
                   >
                     <FaFlag className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Mark for Review</span>
+                    <span>
+                      {markedForReview[`${currentSubject}-${currentQuestion}`]
+                        ? "Unmark Review"
+                        : "Mark for Review"}
+                    </span>
                   </button>
                 </div>
 

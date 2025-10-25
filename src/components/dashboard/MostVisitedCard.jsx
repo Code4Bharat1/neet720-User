@@ -18,12 +18,27 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
   const [error, setError] = useState(null);
   const [totalTests, setTotalTests] = useState(0);
 
-  // Improved date helpers
+  // Enhanced date helpers with daily support
+  const getStartOfDay = (date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
   const getStartOfWeek = (date) => {
     const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday as start of week
-    return new Date(d.setDate(diff));
+    const day = d.getDay(); // Sunday = 0, Monday = 1, ...
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Monday start
+    const start = new Date(d.setDate(diff));
+    start.setHours(0, 0, 0, 0); // ✅ normalize to start of day (local)
+    return start;
+  };
+
+
+  const isSameDay = (testDate, currentDate) => {
+    const test = getStartOfDay(testDate);
+    const current = getStartOfDay(currentDate);
+    return test.getTime() === current.getTime();
   };
 
   const isSameWeek = (testDate, currentDate) => {
@@ -37,11 +52,11 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
   const isSameMonth = (testDate, currentDate) => {
     const test = new Date(testDate);
     const current = new Date(currentDate);
-    return test.getFullYear() === current.getFullYear() && 
-           test.getMonth() === current.getMonth();
+    return test.getFullYear() === current.getFullYear() &&
+      test.getMonth() === current.getMonth();
   };
 
-  const isSameYear = (testDate, currentDate) => 
+  const isSameYear = (testDate, currentDate) =>
     new Date(testDate).getFullYear() === new Date(currentDate).getFullYear();
 
   useEffect(() => {
@@ -49,7 +64,7 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const token = localStorage.getItem("authToken");
         if (!token) {
           setError("Authentication required");
@@ -81,20 +96,21 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
 
         // Process each test type with better error handling
         const testTypes = [
-          { 
-            key: 'fullTestResults', 
+          {
+            key: 'fullTestResults',
             name: 'Full Tests',
-            color: "#1E66F5" 
+            color: "#1E66F5",
+            
           },
-          { 
-            key: 'recommendedTests', 
+          {
+            key: 'recommendedTests',
             name: 'Recommended Tests',
-            color: "#FFA500" 
+            color: "#FFA500"
           },
-          { 
-            key: 'meTests', 
+          {
+            key: 'meTests',
             name: 'ME Tests',
-            color: "#FF3B30" 
+            color: "#FF3B30"
           }
         ];
 
@@ -102,22 +118,33 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
 
         testTypes.forEach(testType => {
           const testData = rawData[testType.key];
-          
+
           if (testData && typeof testData === 'object') {
             let shouldInclude = false;
-            
+
             // Apply date filtering based on selectedFilter
             switch (selectedFilter) {
-              case "This Year":
-                shouldInclude = testData.updatedAt && isSameYear(testData.updatedAt, currentDate);
+              case "Today": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameDay(localUpdatedAt, currentDate);
                 break;
-              case "This Month":
-                shouldInclude = testData.updatedAt && isSameMonth(testData.updatedAt, currentDate);
+              }
+              case "This Week": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameWeek(localUpdatedAt, currentDate);
                 break;
-              case "This Week":
-                shouldInclude = testData.updatedAt && isSameWeek(testData.updatedAt, currentDate);
+              }
+              case "This Month": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameMonth(localUpdatedAt, currentDate);
                 break;
-              default: // All time
+              }
+              case "This Year": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameYear(localUpdatedAt, currentDate);
+                break;
+              }
+              default:
                 shouldInclude = true;
             }
 
@@ -173,6 +200,113 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
     fetchData();
   }, [selectedFilter]);
 
+  // Add real-time updates - refetch data every 30 seconds to catch new tests
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const token = localStorage.getItem("authToken");
+      if (token && !loading) {
+        // Silently refresh data without showing loading state
+        fetchDataSilently();
+      }
+    }, 30000); // Refresh every 30 seconds
+
+    const fetchDataSilently = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/testcount`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const rawData = response.data;
+        const currentDate = new Date();
+
+        const testTypes = [
+          { key: 'fullTestResults', name: 'Full Tests', color: "#1E66F5" },
+          { key: 'recommendedTests', name: 'Recommended Tests', color: "#FFA500" },
+          { key: 'meTests', name: 'ME Tests', color: "#FF3B30" }
+        ];
+
+        let filteredTests = [];
+
+        testTypes.forEach(testType => {
+          const testData = rawData[testType.key];
+
+          if (testData && typeof testData === 'object') {
+            let shouldInclude = false;
+
+            switch (selectedFilter) {
+              case "Today": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameDay(localUpdatedAt, currentDate);
+                break;
+              }
+              case "This Week": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameWeek(localUpdatedAt, currentDate);
+                break;
+              }
+              case "This Month": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameMonth(localUpdatedAt, currentDate);
+                break;
+              }
+              case "This Year": {
+                const localUpdatedAt = new Date(testData.updatedAt);
+                shouldInclude = testData.updatedAt && isSameYear(localUpdatedAt, currentDate);
+                break;
+              }
+              default:
+                shouldInclude = true;
+            }
+
+            if (shouldInclude && testData.totalTests > 0) {
+              filteredTests.push({
+                name: testType.name,
+                totalTests: testData.totalTests || 0,
+                color: testType.color
+              });
+            }
+          }
+        });
+
+        const total = filteredTests.reduce((sum, test) => sum + test.totalTests, 0);
+        setTotalTests(total);
+
+        if (total === 0) {
+          setData([]);
+          setGraphData([]);
+          return;
+        }
+
+        const tableData = filteredTests.map(test => ({
+          name: test.name,
+          value: ((test.totalTests / total) * 100).toFixed(1),
+          color: test.color,
+          totalTests: test.totalTests
+        }));
+
+        const pieData = filteredTests.map(test => ({
+          name: test.name,
+          value: test.totalTests,
+          color: test.color
+        }));
+
+        setData(tableData);
+        setGraphData(pieData);
+      } catch (err) {
+        console.error("Error silently refreshing test statistics:", err);
+        // Don't set error state for silent refresh to avoid disrupting user experience
+      }
+    };
+
+    return () => clearInterval(interval);
+  }, [selectedFilter, loading]);
+
   // Render loading state
   if (loading) {
     return (
@@ -202,7 +336,7 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center h-64">
           <div className="text-center text-red-500">{error}</div>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
@@ -251,7 +385,7 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
         </div>
 
         {/* Chart */}
-        <div className="w-full h-64">
+        <div className="w-full h-full md:h-64 lg:h-72">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -262,6 +396,7 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
                 outerRadius={80}
                 paddingAngle={2}
                 dataKey="value"
+                
                 label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                 labelLine={false}
               >
@@ -269,7 +404,7 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`${value} tests`, 'Count']}
               />
             </PieChart>
@@ -295,10 +430,9 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
                 <div className="text-sm font-semibold text-gray-900">
                   {item.totalTests} tests
                 </div>
-                <div className={`text-xs ${
-                  parseFloat(item.value) < 33 ? "text-red-500" : 
+                <div className={`text-xs ${parseFloat(item.value) < 33 ? "text-red-500" :
                   parseFloat(item.value) < 66 ? "text-yellow-500" : "text-green-500"
-                }`}>
+                  }`}>
                   {item.value}%
                 </div>
               </div>
@@ -310,6 +444,9 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
         <div className="w-full mt-4 text-center">
           <div className="text-xs text-gray-400">
             Showing data for: {selectedFilter}
+          </div>
+          <div className="text-xs text-gray-400 mt-1">
+            Updates automatically every 30 seconds
           </div>
         </div>
       </CardContent>
