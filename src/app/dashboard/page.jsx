@@ -93,12 +93,12 @@ const Page = () => {
           {/* Snapshot Area Starts Here */}
           <div ref={captureRef} className="bg-white w-full">
             {/* Updated Grid Layout: 3 Columns in Medium Screens */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4  mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-4 mt-8 auto-rows-fr">
               <SpeedCard changeDate={selectedFilter} />
               <AccuracyCard selectedFilter={selectedFilter} />
               <SuccessRateCard selectedFilter={selectedFilter} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-4 mt-8 auto-rows-fr">
               <OverallPerformanceCard selectedFilter={selectedFilter} />
               <MostVisitedPageCard selectedFilter={selectedFilter} />
               <PerformanceSummaryCard selectedFilter={selectedFilter} />

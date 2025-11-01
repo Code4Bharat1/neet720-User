@@ -1,3382 +1,5786 @@
-// data/collegeData.js
+// Formatted college data (uniform objects)
 const collegeData = [
   {
-    name: 'AIIMS Delhi',
-    state: 'Delhi',
-    rankCutoff: 100,
-    intake: 125,
-    type: 'Government',
+    "collegeName": "AIIMS Delhi",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 100,
+    "maxAIR": 100,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Maulana Azad Medical College',
-    state: 'Delhi',
-    rankCutoff: 2000,
-    intake: 250,
-    type: 'Government',
+    "collegeName": "Maulana Azad Medical College",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2000,
+    "maxAIR": 2000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Grant Medical College',
-    state: 'Maharashtra',
-    rankCutoff: 5000,
-    intake: 200,
-    type: 'Government',
+    "collegeName": "Grant Medical College",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5000,
+    "maxAIR": 5000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'BJ Medical College',
-    state: 'Maharashtra',
-    rankCutoff: 7000,
-    intake: 250,
-    type: 'Government',
+    "collegeName": "BJ Medical College",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7000,
+    "maxAIR": 7000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Seth GS Medical College',
-    state: 'Maharashtra',
-    rankCutoff: 8000,
-    intake: 180,
-    type: 'Government',
+    "collegeName": "Seth GS Medical College",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8000,
+    "maxAIR": 8000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'ABC Medical College',
-    state: 'Tamil Nadu',
-    rankCutoff: 30000,
-    intake: 150,
-    type: 'Private',
+    "collegeName": "ABC Medical College",
+    "state": "Tamil Nadu",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 30000,
+    "maxAIR": 30000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'All India Institute of Medical Sciences, Nagpur',
-    state: 'Maharashtra',
-    rankCutoff: [946, 953],
-    intake: 125,
-    type: 'Government'
+    "collegeName": "All India Institute of Medical Sciences, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 946,
+    "maxAIR": 953,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Armed Forces Medical College, Pune',
-    state: 'Maharashtra',
-    rankCutoff: [600, 1000],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Armed Forces Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 600,
+    "maxAIR": 1000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'B. J. Government Medical College, Pune',
-    state: 'Maharashtra',
-    rankCutoff: [937, 2379],
-    intake: 250,
-    type: 'Government'
+    "collegeName": "B. J. Government Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 937,
+    "maxAIR": 2379,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Dr. Shankarrao Chavan Government Medical College, Nanded',
-    state: 'Maharashtra',
-    rankCutoff: [8943, 11255],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Dr. Shankarrao Chavan Government Medical College, Nanded",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8943,
+    "maxAIR": 11255,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Dr. Vaishampayan Memorial Medical College, Solapur',
-    state: 'Maharashtra',
-    rankCutoff: [9477, 15732],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "Dr. Vaishampayan Memorial Medical College, Solapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9477,
+    "maxAIR": 15732,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Akola',
-    state: 'Maharashtra',
-    rankCutoff: [12051, 18630],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "Government Medical College, Akola",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12051,
+    "maxAIR": 18630,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Alibag',
-    state: 'Maharashtra',
-    rankCutoff: [20000, 22000],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College, Alibag",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 20000,
+    "maxAIR": 22000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College and District Hospital, Ratnagiri',
-    state: 'Maharashtra',
-    rankCutoff: [14075, 14603],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College and District Hospital, Ratnagiri",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14075,
+    "maxAIR": 14603,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Aurangabad',
-    state: 'Maharashtra',
-    rankCutoff: [6000, 13000],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "Government Medical College, Aurangabad",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6000,
+    "maxAIR": 13000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Chandrapur',
-    state: 'Maharashtra',
-    rankCutoff: [25500, 26000],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Chandrapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 25500,
+    "maxAIR": 26000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Gondia',
-    state: 'Maharashtra',
-    rankCutoff: [14452, 20449],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Gondia",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14452,
+    "maxAIR": 20449,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College & Hospital, Baramati',
-    state: 'Maharashtra',
-    rankCutoff: [7000, 7915],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College & Hospital, Baramati",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7000,
+    "maxAIR": 7915,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Jalgaon',
-    state: 'Maharashtra',
-    rankCutoff: [13468, 19537],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Jalgaon",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13468,
+    "maxAIR": 19537,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Latur',
-    state: 'Maharashtra',
-    rankCutoff: [12492, 19088],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Latur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12492,
+    "maxAIR": 19088,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Miraj',
-    state: 'Maharashtra',
-    rankCutoff: [15000, 33000],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "Government Medical College, Miraj",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 15000,
+    "maxAIR": 33000,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Nagpur',
-    state: 'Maharashtra',
-    rankCutoff: [33359, 36884],
-    intake: 250,
-    type: 'Government'
+    "collegeName": "Government Medical College, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 33359,
+    "maxAIR": 36884,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Nandurbar',
-    state: 'Maharashtra',
-    rankCutoff: [13638, 36587],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College, Nandurbar",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13638,
+    "maxAIR": 36587,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Osmanabad',
-    state: 'Maharashtra',
-    rankCutoff: [15653, 40130],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College, Osmanabad",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 15653,
+    "maxAIR": 40130,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Parbhani',
-    state: 'Maharashtra',
-    rankCutoff: [15984, 21773],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College, Parbhani",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 15984,
+    "maxAIR": 21773,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Satara',
-    state: 'Maharashtra',
-    rankCutoff: [19688, 23439],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College, Satara",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 19688,
+    "maxAIR": 23439,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Sindhudurg',
-    state: 'Maharashtra',
-    rankCutoff: [34640, 41176],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Government Medical College, Sindhudurg",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 34640,
+    "maxAIR": 41176,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Grant Medical College, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [21292, 23380],
-    intake: 250,
-    type: 'Government'
+    "collegeName": "Grant Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 21292,
+    "maxAIR": 23380,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'H.B.T. Medical College & Dr. R.N. Cooper Municipal General Hospital, Juhu, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [10202, 11430],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "H.B.T. Medical College & Dr. R.N. Cooper Municipal General Hospital, Juhu, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10202,
+    "maxAIR": 11430,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Indira Gandhi Medical College & Hospital, Nagpur',
-    state: 'Maharashtra',
-    rankCutoff: [6065, 9138],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "Indira Gandhi Medical College & Hospital, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6065,
+    "maxAIR": 9138,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Lokmanya Tilak Municipal Medical College, Sion, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [2857, 7505],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "Lokmanya Tilak Municipal Medical College, Sion, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2857,
+    "maxAIR": 7505,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Rajashree Chatrapati Shahu Maharaj Government Medical College, Kolhapur',
-    state: 'Maharashtra',
-    rankCutoff: [10491, 14755],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Rajashree Chatrapati Shahu Maharaj Government Medical College, Kolhapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10491,
+    "maxAIR": 14755,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Rajiv Gandhi Medical College and Chhatrapati Shivaji Maharaj Hospital, Thane',
-    state: 'Maharashtra',
-    rankCutoff: [7574, 8634],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "Rajiv Gandhi Medical College and Chhatrapati Shivaji Maharaj Hospital, Thane",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7574,
+    "maxAIR": 8634,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Seth GS Medical College, and KEM Hospital, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [1010, 1500],
-    intake: 250,
-    type: 'Government'
+    "collegeName": "Seth GS Medical College, and KEM Hospital, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1010,
+    "maxAIR": 1500,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Shri Vasant Rao Naik Govt. Medical College, Yavatmal',
-    state: 'Maharashtra',
-    rankCutoff: [13794, 22392],
-    intake: 200,
-    type: 'Government'
+    "collegeName": "Shri Vasant Rao Naik Govt. Medical College, Yavatmal",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13794,
+    "maxAIR": 22392,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Sri Bhausaheb Hire Government Medical College, Dhule',
-    state: 'Maharashtra',
-    rankCutoff: [18285, 23322],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Sri Bhausaheb Hire Government Medical College, Dhule",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 18285,
+    "maxAIR": 23322,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'SRTR Medical College, Ambajogai',
-    state: 'Maharashtra',
-    rankCutoff: [13034, 19200],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "SRTR Medical College, Ambajogai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13034,
+    "maxAIR": 19200,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Topiwala National Medical College, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [8000, 10744],
-    intake: 150,
-    type: 'Government'
-  },
-  
-  {
-    name: 'ACSR Government Medical College, Nellore',
-    state: 'Andhra Pradesh',
-    rankCutoff: [12893, 24462],
-    intake: 175,
-    type: 'Government'
+    "collegeName": "Topiwala National Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8000,
+    "maxAIR": 10744,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Andhra Medical College, Visakhapatnam',
-    state: 'Andhra Pradesh',
-    rankCutoff: [2037, 4934],
-    intake: 250,
-    type: 'Government'
+    "collegeName": "ACSR Government Medical College, Nellore",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12893,
+    "maxAIR": 24462,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Anantapur',
-    state: 'Andhra Pradesh',
-    rankCutoff: [16320, 27545],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Andhra Medical College, Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2037,
+    "maxAIR": 4934,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Eluru',
-    state: 'Andhra Pradesh',
-    rankCutoff: [22511, 22511],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Anantapur",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 16320,
+    "maxAIR": 27545,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Machilipatnam',
-    state: 'Andhra Pradesh',
-    rankCutoff: [27219, 33474],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Eluru",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 22511,
+    "maxAIR": 22511,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Nandyal',
-    state: 'Andhra Pradesh',
-    rankCutoff: [23395, 40650],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Machilipatnam",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 27219,
+    "maxAIR": 33474,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Rajamahendravaram',
-    state: 'Andhra Pradesh',
-    rankCutoff: [22622, 33316],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Nandyal",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 23395,
+    "maxAIR": 40650,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Government Medical College, Vizianagaram',
-    state: 'Andhra Pradesh',
-    rankCutoff: [32659, 33494],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Government Medical College, Rajamahendravaram",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 22622,
+    "maxAIR": 33316,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Govt. Siddhartha Medical College, Vijaywada',
-    state: 'Andhra Pradesh',
-    rankCutoff: [1503, 14969],
-    intake: 175,
-    type: 'Government'
+    "collegeName": "Government Medical College, Vizianagaram",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 32659,
+    "maxAIR": 33494,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Guntur Medical College, Guntur',
-    state: 'Andhra Pradesh',
-    rankCutoff: [1930, 7806],
-    intake: 250,
-    type: 'Government'
+    "collegeName": "Govt. Siddhartha Medical College, Vijaywada",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1503,
+    "maxAIR": 14969,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Kurnool Medical College, Kurnool',
-    state: 'Andhra Pradesh',
-    rankCutoff: [1242, 9391],
-    intake: 250,
-    type: 'Government'
+    "collegeName": "Guntur Medical College, Guntur",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1930,
+    "maxAIR": 7806,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'NRI Medical College, Chinnakakani',
-    state: 'Andhra Pradesh',
-    rankCutoff: [22431, 27391],
-    intake: 200,
-    type: 'Private'
+    "collegeName": "Kurnool Medical College, Kurnool",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1242,
+    "maxAIR": 9391,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Rajiv Gandhi Institute of Medical Sciences, Kadapa',
-    state: 'Andhra Pradesh',
-    rankCutoff: [29787, 32073],
-    intake: 100,
-    type: 'Government'
+    "collegeName": "NRI Medical College, Chinnakakani",
+    "state": "Andhra Pradesh",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 22431,
+    "maxAIR": 27391,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Rajiv Gandhi Institute of Medical Sciences, Ongole',
-    state: 'Andhra Pradesh',
-    rankCutoff: [22173, 23917],
-    intake: 120,
-    type: 'Government'
+    "collegeName": "Rajiv Gandhi Institute of Medical Sciences, Kadapa",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 29787,
+    "maxAIR": 32073,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Rajiv Gandhi Institute of Medical Sciences, Srikakulam',
-    state: 'Andhra Pradesh',
-    rankCutoff: [16692, 22802],
-    intake: 150,
-    type: 'Government'
+    "collegeName": "Rajiv Gandhi Institute of Medical Sciences, Ongole",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 22173,
+    "maxAIR": 23917,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Ranga Raya Medical College, Kakinada',
-    state: 'Andhra Pradesh',
-    rankCutoff: [6689, 12631],
-    intake: 250,
-    type: 'Government'
-  },
-    {
-    name: 'Sri Padmavathi Medical College for Women, Tirupati',
-    state: 'Andhra Pradesh',
-    rankCutoff: [25298, 29262],
-    intake: 175,
-    type: 'Government'
+    "collegeName": "Rajiv Gandhi Institute of Medical Sciences, Srikakulam",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 16692,
+    "maxAIR": 22802,
+    "closingScore": null,
+    "year": 2024
   },
   {
-    name: 'Sri Venkateswara Medical College, Tirupati',
-    state: 'Andhra Pradesh',
-    rankCutoff: [3529, 14902],
-    intake: 240,
-    type: 'Government'
+    "collegeName": "Ranga Raya Medical College, Kakinada",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6689,
+    "maxAIR": 12631,
+    "closingScore": null,
+    "year": 2024
   },
+  {
+    "collegeName": "Sri Padmavathi Medical College for Women, Tirupati",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 25298,
+    "maxAIR": 29262,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sri Venkateswara Medical College, Tirupati",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 3529,
+    "maxAIR": 14902,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Tomo Riba Institute Of Health And Medical Science",
+    "state": "Arunachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 44516,
+    "maxAIR": 135876,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gauhati Medical College, Guwahati",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 750,
+    "maxAIR": 14638,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Fakhruddin Ali Ahmed Medical College and Hospital, Barpeta",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10055,
+    "maxAIR": 39500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Silchar Medical College and Hospital, Silchar",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10563,
+    "maxAIR": 32389,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Assam Medical College, Dibrugarh",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12446,
+    "maxAIR": 23939,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Jorhat Medical College, Jorhat",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14823,
+    "maxAIR": 32485,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Tezpur Medical College, Tezpur",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 27459,
+    "maxAIR": 39023,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dhubri Medical College, Dhubri",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 30524,
+    "maxAIR": 59503,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Nagaon Medical College, Nagaon",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 32964,
+    "maxAIR": 58535,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Nalbari Medical College, Nalbari",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 39384,
+    "maxAIR": 56983,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Diphu Medical College and Hospital, Diphu",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 39999,
+    "maxAIR": 54236,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Lakhimpur Medical College, Lakhimpur",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 40504,
+    "maxAIR": 53094,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Anugrah Narayan Magadh Medical College and Hospital, Gaya",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 531,
+    "maxAIR": 583,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bhagwan Mahavir Institute Of Medical Sciences, Pawapuri",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 614,
+    "maxAIR": 614,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Darbhanga Medical College, Laheriasarai",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 436,
+    "maxAIR": 436,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "ESIC Medical College and Hospital, Bihta, Patna",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 525,
+    "maxAIR": 598,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Indira Gandhi Institute of Medical Sciences, Patna",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 20,
+    "maxAIR": 200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Nalanda Medical College and Hospital, Patna",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 124,
+    "maxAIR": 319,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Patna Medical College, Patna",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 103,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sri Krishna Medical College, Muzaffarpur",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 446,
+    "maxAIR": 607,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Jawahar Lal Nehru Medical College, Bhagalpur",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 359,
+    "maxAIR": 599,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College and Hospital, Chandigarh",
+    "state": "Chandigarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 436,
+    "maxAIR": 30338,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pt Jawahar Lal Nehru Memorial Medical College, Raipur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2125,
+    "maxAIR": 17127,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chhattisgarh Institute of Medical Sciences, Bilaspur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 17373,
+    "maxAIR": 29684,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Rajnandgaon",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 29948,
+    "maxAIR": 40460,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Late Bali Ram Kashyap Memorial Government Medical College, Jagdalpur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 30313,
+    "maxAIR": 45014,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Late Shri Lakhiram Agrawal Memorial Government Medical College, Raigarh",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 40247,
+    "maxAIR": 51531,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "CCM Medical College, Durg",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 31549,
+    "maxAIR": 60288,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Raipur Institute of Medical Sciences, Raipur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 29509,
+    "maxAIR": 61244,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri Shankaracharya Institute of Medical Science, Bhilai",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 31414,
+    "maxAIR": 68263,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri Balaji Institute of Medical Science, Mowa, Raipur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 32939,
+    "maxAIR": 68435,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kanker",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 21133,
+    "maxAIR": 71019,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Korba",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 59279,
+    "maxAIR": 72117,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Mahasamund",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 62344,
+    "maxAIR": 75631,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Maulana Azad Medical College, New Delhi",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 58,
+    "maxAIR": 85,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Lady Hardinge Medical College for Women, New Delhi",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 203,
+    "maxAIR": 485,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "University College of Medical Sciences, University of Delhi, Delhi",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 127,
+    "maxAIR": 304,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "AMC MET Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 40409,
+    "maxAIR": 60645,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "B J Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 142,
+    "maxAIR": 2353,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMC Porbandar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 48526,
+    "maxAIR": 65691,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College and Hospital, Gandhinagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13168,
+    "maxAIR": 30713,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College and Hospital, Himmatnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 31829,
+    "maxAIR": 50673,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College and Hospital, Sola",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2615,
+    "maxAIR": 25601,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Godhra",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 35702,
+    "maxAIR": 67985,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Morbi",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 37633,
+    "maxAIR": 60015,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Navsari",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 43507,
+    "maxAIR": 61691,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Rajpipla",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 48977,
+    "maxAIR": 66368,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Dharpur Patan",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 35104,
+    "maxAIR": 53598,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Junagadh",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 26261,
+    "maxAIR": 44820,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Vadnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 36284,
+    "maxAIR": 58453,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMERS Medical College, Valsad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 32262,
+    "maxAIR": 45662,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Bhavnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7405,
+    "maxAIR": 21102,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Surat",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2474,
+    "maxAIR": 12188,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gujarat Medical Education and Research Society Medical College, Gotri, Vadodara",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11647,
+    "maxAIR": 34855,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "M P Shah Government Medical College, Jamnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5335,
+    "maxAIR": 18456,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Medical College, Baroda",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 574,
+    "maxAIR": 7197,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pandit Deendayal Upadhyay Medical College, Rajkot",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 403,
+    "maxAIR": 13700,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Smt NHL Municipal Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5023,
+    "maxAIR": 37730,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Surat Municipal Institute of Medical Education and Research, Surat",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12367,
+    "maxAIR": 17631,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pt Bhagwat Dayal Sharma Post Graduate Institute of Medical Sciences, Rohtak",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 314,
+    "maxAIR": 7331,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kalpana Chawla Government Medical College, Karnal",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 931,
+    "maxAIR": 9449,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "ESIC Medical College, Faridabad",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2008,
+    "maxAIR": 5917,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "BPS Government Medical College for Women, Sonepat",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7481,
+    "maxAIR": 13442,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Maharaja Agrasen Medical College, Agroha",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7550,
+    "maxAIR": 15892,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shaheed Hasan Khan Mewati Government Medical College, Nalhar",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9556,
+    "maxAIR": 14951,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Indira Gandhi Medical College, Shimla",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 503,
+    "maxAIR": 24404,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr Rajendra Prasad Government Medical College, Tanda",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4207,
+    "maxAIR": 34436,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr Yashwant Singh Parmar Government Medical College, Nahan",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 28125,
+    "maxAIR": 62594,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri Lal Bahadur Shastri Government Medical College, Mandi",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 35020,
+    "maxAIR": 42598,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr Radhakrishnan Government Medical College, Hamirpur",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 42729,
+    "maxAIR": 56448,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pt Jawahar Lal Nehru Government Medical College and Hospital, Chamba",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 53192,
+    "maxAIR": 71481,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Maharishi Markandeshwar Medical College and Hospital, Solan",
+    "state": "Himachal Pradesh",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 72753,
+    "maxAIR": 95729,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Srinagar",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5,
+    "maxAIR": 741,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Jammu",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 18,
+    "maxAIR": 831,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sher-I-Kashmir Institute of Medical Sciences, Srinagar",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 59,
+    "maxAIR": 763,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Baramulla",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 93,
+    "maxAIR": 766,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Anantnag",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 104,
+    "maxAIR": 510,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Doda",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 180,
+    "maxAIR": 847,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kathua",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 190,
+    "maxAIR": 775,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College and Associated Hospital, Rajouri",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 205,
+    "maxAIR": 840,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Rajendra Institute of Medical Sciences, Ranchi",
+    "state": "Jharkhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4536,
+    "maxAIR": 10524,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mahatma Gandhi Memorial Medical College and Hospital, Jamshedpur",
+    "state": "Jharkhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10899,
+    "maxAIR": 15217,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Patliputra Medical College, Dhanbad",
+    "state": "Jharkhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 15518,
+    "maxAIR": 18163,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Hazaribag Medical College, Hazaribag",
+    "state": "Jharkhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 19303,
+    "maxAIR": 22144,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dumka Medical College, Dumka",
+    "state": "Jharkhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 22362,
+    "maxAIR": 25989,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Palamu Medical College, Palamu",
+    "state": "Jharkhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 23940,
+    "maxAIR": 28177,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bangalore Govt Medical College",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 127,
+    "maxAIR": 2995,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Belgaum Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2978,
+    "maxAIR": 17978,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bidar Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4049,
+    "maxAIR": 36980,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chamarajanagar Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 23353,
+    "maxAIR": 33229,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chikkaballapura Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 25379,
+    "maxAIR": 45731,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chikkamagaluru Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 32303,
+    "maxAIR": 49397,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chitradurga Medical College And Research Institute",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 40882,
+    "maxAIR": 58848,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "ESIC And PGIMSR Bangalore",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8057,
+    "maxAIR": 12699,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "ESIC Medical College Gulbarga",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 25421,
+    "maxAIR": 32751,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gadag Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 19655,
+    "maxAIR": 31413,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gulbarga Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7969,
+    "maxAIR": 21687,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Hassan Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4119,
+    "maxAIR": 21953,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Haveri Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 45713,
+    "maxAIR": 54357,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Karnataka Institute Of Medical Sciences Hubli",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 802,
+    "maxAIR": 11713,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Karwar Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 31025,
+    "maxAIR": 44457,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kodagu Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 22444,
+    "maxAIR": 39421,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Koppal Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 33175,
+    "maxAIR": 40002,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mandya Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8244,
+    "maxAIR": 18189,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mysore Medical College",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2147,
+    "maxAIR": 6809,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Raichur Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 23505,
+    "maxAIR": 35143,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shimoga Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10261,
+    "maxAIR": 22409,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Vijayanagar Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8950,
+    "maxAIR": 18465,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Yadgiri Institute Of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 46235,
+    "maxAIR": 51344,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kozhikode",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 23,
+    "maxAIR": 2820,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Thiruvananthapuram",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 214,
+    "maxAIR": 3611,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Thrissur",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 324,
+    "maxAIR": 5487,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kottayam",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 867,
+    "maxAIR": 4966,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "T D Medical College, Alappuzha",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4360,
+    "maxAIR": 7414,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Ernakulam",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5459,
+    "maxAIR": 8452,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Manjeri",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5588,
+    "maxAIR": 8453,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kannur",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6189,
+    "maxAIR": 8412,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kollam",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6882,
+    "maxAIR": 7875,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "All India Institute of Medical Sciences, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 946,
+    "maxAIR": 953,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Armed Forces Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 600,
+    "maxAIR": 1000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "B. J. Government Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 937,
+    "maxAIR": 2379,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr. Shankarrao Chavan Government Medical College, Nanded",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11455,
+    "maxAIR": 22172,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr. Vaishampayan Memorial Medical College, Solapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8165,
+    "maxAIR": 17793,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Akola",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8674,
+    "maxAIR": 25537,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Alibag",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13081,
+    "maxAIR": 28735,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College and District Hospital, Ratnagiri",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14075,
+    "maxAIR": 14603,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Aurangabad",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6000,
+    "maxAIR": 13000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Chandrapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 19224,
+    "maxAIR": 32096,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Gondia",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 30825,
+    "maxAIR": 36202,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College & Hospital, Baramati",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7035,
+    "maxAIR": 18749,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Jalgaon",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14286,
+    "maxAIR": 30274,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Latur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 18783,
+    "maxAIR": 24301,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Miraj",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8402,
+    "maxAIR": 20348,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 3024,
+    "maxAIR": 11671,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Nandurbar",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 31042,
+    "maxAIR": 35737,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Osmanabad",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 26603,
+    "maxAIR": 33409,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Parbhani",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 30711,
+    "maxAIR": 36540,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Satara",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 22006,
+    "maxAIR": 26721,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Sindhudurg",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 29686,
+    "maxAIR": 33895,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Grant Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2215,
+    "maxAIR": 7030,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "H.B.T. Medical College & Dr. R.N. Cooper Municipal General Hospital, Juhu, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4721,
+    "maxAIR": 9113,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Indira Gandhi Medical College & Hospital, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11798,
+    "maxAIR": 16701,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Lokmanya Tilak Municipal Medical College, Sion, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2162,
+    "maxAIR": 5544,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Rajashree Chatrapati Shahu Maharaj Government Medical College, Kolhapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10491,
+    "maxAIR": 14755,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Rajiv Gandhi Medical College and Chhatrapati Shivaji Maharaj Hospital, Thane",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8671,
+    "maxAIR": 10869,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Seth GS Medical College, and KEM Hospital, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 53,
+    "maxAIR": 1962,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri Vasant Rao Naik Govt. Medical College, Yavatmal",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 21013,
+    "maxAIR": 30213,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sri Bhausaheb Hire Government Medical College, Dhule",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 21260,
+    "maxAIR": 27063,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SRTR Medical College, Ambajogai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13034,
+    "maxAIR": 19200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Topiwala National Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2034,
+    "maxAIR": 7623,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gajra Raja Medical College, Gwalior",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1526,
+    "maxAIR": 23279,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mahatma Gandhi Memorial Medical College, Indore",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1868,
+    "maxAIR": 10596,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gandhi Medical College, Bhopal",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2641,
+    "maxAIR": 16625,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Netaji Subhash Chandra Bose Medical College and Hospital, Jabalpur",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7513,
+    "maxAIR": 23060,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Atal Bihari Vajpayee Government Medical College, Vidisha",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 20530,
+    "maxAIR": 36381,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Ratlam",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 20550,
+    "maxAIR": 39620,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shyam Shah Medical College, Rewa",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 23273,
+    "maxAIR": 30984,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bundelkhand Medical College, Sagar",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 23848,
+    "maxAIR": 33372,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Khandwa",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 26987,
+    "maxAIR": 44654,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Shivpuri",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 30824,
+    "maxAIR": 46637,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Datia",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 36258,
+    "maxAIR": 44338,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chhindwara Institute of Medical Sciences, Chhindwara",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 36370,
+    "maxAIR": 45365,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Shahdol",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 37677,
+    "maxAIR": 48376,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bhima Bhoi Medical College and Hospital, Balangir",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12040,
+    "maxAIR": 20186,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Fakir Mohan Medical College and Hospital, Balasore",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12013,
+    "maxAIR": 16805,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College and Hospital, Keonjhar",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 19777,
+    "maxAIR": 25755,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College Bhawanipatna",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 21544,
+    "maxAIR": 27718,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Sundargarh and Hospital, Sundargarh",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 17913,
+    "maxAIR": 25147,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "MKCG Medical College, Berhampur",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4198,
+    "maxAIR": 10298,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pandit Raghunath Murmu Medical College and Hospital, Baripada",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12385,
+    "maxAIR": 18852,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SCB Medical College, Cuttack",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 35,
+    "maxAIR": 4771,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri Jagannath Medical College and Hospital, Puri",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9371,
+    "maxAIR": 15214,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SLN Medical College and Hospital, Koraput",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12539,
+    "maxAIR": 22164,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Veer Surendra Sai Institute of Medical Sciences and Research, Burla",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2229,
+    "maxAIR": 12002,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Patiala",
+    "state": "Punjab",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4,
+    "maxAIR": 9089,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dayanand Medical College and Hospital, Ludhiana",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 312,
+    "maxAIR": 21163,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr BR Ambedkar State Institute of Medical Sciences, Mohali",
+    "state": "Punjab",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 758,
+    "maxAIR": 24140,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Amritsar",
+    "state": "Punjab",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 826,
+    "maxAIR": 23615,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Guru Gobind Singh Medical College and Hospital, Faridkot",
+    "state": "Punjab",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2516,
+    "maxAIR": 19474,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Christian Medical College, Ludhiana",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 2528,
+    "maxAIR": 35616,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Punjab Institute of Medical Sciences, Jalandhar",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 24209,
+    "maxAIR": 35094,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gian Sagar Medical College and Hospital, Banur",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 30751,
+    "maxAIR": 44706,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sri Guru Ram Das Institute of Medical Sciences and Research, Amritsar",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 31649,
+    "maxAIR": 74410,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Adesh Institute of Medical Sciences and Research, Bathinda",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 46024,
+    "maxAIR": 78732,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr Sampurnanand Medical College, Jodhpur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2335,
+    "maxAIR": 5346,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "ESIC Medical College and Hospital, Alwar",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7055,
+    "maxAIR": 9590,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Alwar",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8589,
+    "maxAIR": 11222,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Barmer",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9227,
+    "maxAIR": 10617,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Bharatpur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6945,
+    "maxAIR": 9871,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Bundi",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9460,
+    "maxAIR": 12523,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Chittorgarh",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10158,
+    "maxAIR": 11161,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Dausa",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8989,
+    "maxAIR": 11843,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Dholpur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10494,
+    "maxAIR": 11922,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Dungarpur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8561,
+    "maxAIR": 10947,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Hanumangarh",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10726,
+    "maxAIR": 12428,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Karauli",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9291,
+    "maxAIR": 12714,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kota",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 3075,
+    "maxAIR": 7792,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Pali",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7410,
+    "maxAIR": 9625,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Sirohi",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11047,
+    "maxAIR": 11673,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Sri Ganganagar",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10099,
+    "maxAIR": 11360,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Jawaharlal Nehru Medical College, Ajmer",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2750,
+    "maxAIR": 6870,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Jhalawar Hospital and Medical College, Jhalawar",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7844,
+    "maxAIR": 8406,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pandit Deendayal Upadhyaya Medical College, Churu",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8322,
+    "maxAIR": 10127,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Rabindra Nath Tagore Medical College, Udaipur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1263,
+    "maxAIR": 6026,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Rajmata Vijaya Raje Scindia Medical College, Bhilwara",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7942,
+    "maxAIR": 9231,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "RUHS College of Medical Sciences, Jaipur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2237,
+    "maxAIR": 3333,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sardar Patel Medical College, Bikaner",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 217,
+    "maxAIR": 4557,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sawai Man Singh Medical College, Jaipur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 114,
+    "maxAIR": 2189,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri Kalyan Government Medical College, Sikar",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7272,
+    "maxAIR": 8764,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chengalpattu Medical College, Chengalpattu",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 543,
+    "maxAIR": 879,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Coimbatore Medical College, Coimbatore",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 352,
+    "maxAIR": 454,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Omandurar",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 540,
+    "maxAIR": 704,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Vellore Medical College, Vellore",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1049,
+    "maxAIR": 1442,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Dharamapuri Medical College, Dharmapuri",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1230,
+    "maxAIR": 1230,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Kilpauk Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 269,
+    "maxAIR": 506,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Tiruppur",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1188,
+    "maxAIR": 1188,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Thiruvallur",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 877,
+    "maxAIR": 1402,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Villupuram Medical College, Villupuram",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1041,
+    "maxAIR": 1306,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "KAP Viswanatham Government Medical College, Tiruchirapalli",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 943,
+    "maxAIR": 1251,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Madras Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 29,
+    "maxAIR": 146,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Madurai Medical College, Madurai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 365,
+    "maxAIR": 607,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mohan Kumaramangalam Medical College, Salem",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1040,
+    "maxAIR": 1040,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Stanley Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 148,
+    "maxAIR": 311,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Thanjavur Medical College, Thanjavur",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 755,
+    "maxAIR": 927,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Theni Medical College, Theni",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 905,
+    "maxAIR": 1248,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Tirunelveli Medical College, Tirunelveli",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 554,
+    "maxAIR": 1297,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Osmania Medical College",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2043,
+    "maxAIR": 5574,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gandhi Medical College Secunderabad",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2326,
+    "maxAIR": 2650,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kakatiya Medical College",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9506,
+    "maxAIR": 12158,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Rajiv Gandhi Inst Of Medical Sciences Adilabad",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12883,
+    "maxAIR": 19924,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Govt Medical College Nizamabad",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 15534,
+    "maxAIR": 15534,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Agartala Government Medical College, Agartala",
+    "state": "Tripura",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2330,
+    "maxAIR": 58655,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Regional Institute of Medical Sciences, Lamphelpat",
+    "state": "Manipur",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11249,
+    "maxAIR": 19891,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Tripura Medical College and DR BRAM Teaching Hospital, Agartala",
+    "state": "Tripura",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 67554,
+    "maxAIR": 199270,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "KING GEORGE MEDICAL UNIVERSITY, LUCKNOW",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 525,
+    "maxAIR": 2849,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "DR. RAM MANOHAR LOHIA IMS, LUCKNOW",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2948,
+    "maxAIR": 4323,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GSVM Medical College, Kanpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 3332,
+    "maxAIR": 6310,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Moti Lal Nehru Medical College, Prayagraj",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 3759,
+    "maxAIR": 7687,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Institute of Medical Sciences, Greater Noida",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5638,
+    "maxAIR": 8377,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Lala Lajpat Rai Memorial Medical College, Meerut",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4435,
+    "maxAIR": 8545,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Baba Raghav Das Medical College, Gorakhpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5852,
+    "maxAIR": 9206,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sarojini Naidu Medical College, Agra",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5458,
+    "maxAIR": 9576,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Maharani Laxmibai Medical College, Jhansi",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7731,
+    "maxAIR": 10381,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "U.P. University of Medical Sciences, Saifai, Etawah",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8011,
+    "maxAIR": 11675,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Saharanpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10447,
+    "maxAIR": 12352,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kannauj",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7630,
+    "maxAIR": 12518,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Ambedkar Nagar",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10994,
+    "maxAIR": 12907,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Ayodhya",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10799,
+    "maxAIR": 13089,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Azamgarh",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9862,
+    "maxAIR": 13839,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Jalaun",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7039,
+    "maxAIR": 14159,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Badaun",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9759,
+    "maxAIR": 14313,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Firozabad",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11280,
+    "maxAIR": 15693,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Banda",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11437,
+    "maxAIR": 15720,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Bahraich",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9962,
+    "maxAIR": 15955,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Shahjahanpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12011,
+    "maxAIR": 16447,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Basti",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13556,
+    "maxAIR": 16591,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Etah",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12813,
+    "maxAIR": 18317,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Deoria",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12908,
+    "maxAIR": 18610,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Fatehpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14418,
+    "maxAIR": 18648,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Hardoi",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 15281,
+    "maxAIR": 18962,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Siddharth Nagar",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11738,
+    "maxAIR": 19055,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Pratapgarh",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14959,
+    "maxAIR": 19525,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Mirzapur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9363,
+    "maxAIR": 20061,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Jaunpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13189,
+    "maxAIR": 20608,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Autonomous Medical College, Ghazipur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12863,
+    "maxAIR": 20930,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Doon Medical College, Dehradun",
+    "state": "Uttarakhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4308,
+    "maxAIR": 22054,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Haldwani",
+    "state": "Uttarakhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6240,
+    "maxAIR": 22406,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Veer Chandra Singh Garhwali Government Institute of Medical Science and Research, Srinagar",
+    "state": "Uttarakhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 15317,
+    "maxAIR": 29599,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Soban Singh Jeena Government Institute of Medical Science and Research, Almora",
+    "state": "Uttarakhand",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 22828,
+    "maxAIR": 35986,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bankura Sammilani Medical College, Bankura",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8329,
+    "maxAIR": 21057,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Barasat Government Medical College and Hospital, North 24 Parganas",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13710,
+    "maxAIR": 22433,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Burdwan Medical College, Burdwan",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7604,
+    "maxAIR": 17021,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Calcutta National Medical College, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8834,
+    "maxAIR": 13443,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "College of Medicine and JNM Hospital, Kalyani",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11628,
+    "maxAIR": 19211,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "College of Medicine and Sagore Dutta Hospital, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13482,
+    "maxAIR": 15552,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Diamond Harbour Government Medical College and Hospital, Diamond Harbour",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 19061,
+    "maxAIR": 22671,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "ESI PGIMSR ESIC Medical College and ESIC Hospital Joka, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 10721,
+    "maxAIR": 19343,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Institute of Post Graduate Medical Education and Research, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 617,
+    "maxAIR": 6223,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Malda Medical College and Hospital, Malda",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 17815,
+    "maxAIR": 22739,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Medical College, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 888,
+    "maxAIR": 4922,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Midnapore Medical College, Midnapore",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 13310,
+    "maxAIR": 22726,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Murshidabad Medical College and Hospital, Murshidabad",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2322,
+    "maxAIR": 22429,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Nilratan Sircar Medical College, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 4958,
+    "maxAIR": 8670,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "North Bengal Medical College and Hospital, Sushrutanagar",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 12653,
+    "maxAIR": 22780,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Purulia Government Medical College & Hospital",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 21635,
+    "maxAIR": 21635,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Rampurhat Government Medical College and Hospital, Rampurhat",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 8744,
+    "maxAIR": 8744,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "RG Kar Medical College and Hospital, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 6386,
+    "maxAIR": 11186,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sarat Chandra Chattopadhyay Government Medical College and Hospital, Howrah",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 14480,
+    "maxAIR": 22569,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "All India Institute of Medical Sciences, New Delhi",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 100,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Christian Medical College, Vellore",
+    "state": "Tamil Nadu",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 84,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Armed Forces Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 700,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Maulana Azad Medical College, New Delhi",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 103,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Lady Hardinge Medical College, New Delhi",
+    "state": "Delhi",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 241484,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Grant Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4354,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Seth G.S. Medical College & KEM Hospital, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Madras Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1585,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Andhra Medical College, Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 8000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Medical College, Kolkata (CNMC)",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 7000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bangalore Medical College and Research Institute, Bangalore",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1888,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mysore Medical College and Research Institute, Mysuru",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4700,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kasturba Medical College, Manipal",
+    "state": "Karnataka",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 26000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kempegowda Institute of Medical Sciences, Bangalore",
+    "state": "Karnataka",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 46000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "King George's Medical University, Lucknow",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1300,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Motilal Nehru Medical College, Prayagraj",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 7500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mahatma Gandhi Memorial Medical College, Kanpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 9000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Era's Lucknow Medical College and Hospital",
+    "state": "Uttar Pradesh",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 65000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "B.J. Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2300,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Surat",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4700,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pandit Deendayal Upadhyay Medical College, Rajkot",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 6800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Smt. NHL Municipal Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 16500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SMS Medical College, Jaipur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1100,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr. S.N. Medical College, Jodhpur",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Jawaharlal Nehru Medical College, Ajmer",
+    "state": "Rajasthan",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5300,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Geetanjali Medical College and Hospital, Udaipur",
+    "state": "Rajasthan",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 62000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Nil Ratan Sircar Medical College, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "R.G. Kar Medical College, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 3600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Calcutta National Medical College, Kolkata",
+    "state": "West Bengal",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 6800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "KPC Medical College and Hospital, Kolkata",
+    "state": "West Bengal",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 60000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Madras Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 380,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Stanley Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kilpauk Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "PSG Institute of Medical Sciences and Research, Coimbatore",
+    "state": "Tamil Nadu",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 32000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Thiruvananthapuram",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kottayam",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kozhikode",
+    "state": "Kerala",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Amrita Institute of Medical Sciences, Kochi",
+    "state": "Kerala",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 31000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Andhra Medical College, Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2300,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sri Venkateswara Medical College, Tirupati",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Guntur Medical College, Guntur",
+    "state": "Andhra Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4100,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Katuri Medical College, Guntur",
+    "state": "Andhra Pradesh",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 52000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Osmania Medical College, Hyderabad",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1700,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gandhi Medical College, Secunderabad",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kakatiya Medical College, Warangal",
+    "state": "Telangana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Deccan College of Medical Sciences, Hyderabad",
+    "state": "Telangana",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 61000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gandhi Medical College, Bhopal",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 3400,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Netaji Subhash Chandra Bose Medical College, Jabalpur",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gajra Raja Medical College, Gwalior",
+    "state": "Madhya Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Index Medical College Hospital and Research Centre, Indore",
+    "state": "Madhya Pradesh",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 65000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Patna Medical College, Patna",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Nalanda Medical College, Patna",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4300,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Darbhanga Medical College, Laheriasarai",
+    "state": "Bihar",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 7400,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Katihar Medical College, Katihar",
+    "state": "Bihar",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 67000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SCB Medical College and Hospital, Cuttack",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2300,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "MKCG Medical College, Berhampur",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "VSS Institute of Medical Sciences and Research, Burla",
+    "state": "Odisha",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Hi-Tech Medical College, Bhubaneswar",
+    "state": "Odisha",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 62000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Amritsar",
+    "state": "Punjab",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 3500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Patiala",
+    "state": "Punjab",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2900,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Christian Medical College, Ludhiana",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 38000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dayanand Medical College, Ludhiana",
+    "state": "Punjab",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 45000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pt. Bhagwat Dayal Sharma Post Graduate Institute of Medical Sciences, Rohtak",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shaheed Hasan Khan Mewati Government Medical College, Nalhar",
+    "state": "Haryana",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 6400,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Maharaja Agrasen Medical College, Agroha",
+    "state": "Haryana",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 39000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Adesh Medical College and Hospital, Shahabad",
+    "state": "Haryana",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 60000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Indira Gandhi Medical College, Shimla",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 2500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr. Rajendra Prasad Government Medical College, Tanda",
+    "state": "Himachal Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Maharishi Markandeshwar Medical College, Solan",
+    "state": "Himachal Pradesh",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 58000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pt. Jawahar Lal Nehru Memorial Medical College, Raipur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Bilaspur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 7200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Late Baliram Kashyap Memorial Government Medical College, Jagdalpur",
+    "state": "Chhattisgarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 8300,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri Shankaracharya Institute of Medical Sciences, Bhilai",
+    "state": "Chhattisgarh",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 64000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Jammu",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Srinagar",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 6100,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sher-i-Kashmir Institute of Medical Sciences, Srinagar",
+    "state": "Jammu and Kashmir",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gauhati Medical College, Guwahati",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 4600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Silchar Medical College, Silchar",
+    "state": "Assam",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 9200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Regional Institute of Medical Sciences, Imphal",
+    "state": "Manipur",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 7200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "North Eastern Indira Gandhi Regional Institute of Health and Medical Sciences, Shillong",
+    "state": "Meghalaya",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 5800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Agartala Government Medical College, Agartala",
+    "state": "Tripura",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 8700,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Zoram Medical College, Mizoram",
+    "state": "Mizoram",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 11200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College and Hospital, Chandigarh",
+    "state": "Chandigarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Postgraduate Institute of Medical Education and Research (PGIMER), Chandigarh",
+    "state": "Chandigarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 120,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Indira Gandhi Medical College and Research Institute, Puducherry",
+    "state": "Puducherry",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 6200,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Jawaharlal Institute of Postgraduate Medical Education and Research (JIPMER), Puducherry",
+    "state": "Puducherry",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 600,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kasturba Medical College, Manipal",
+    "state": "Karnataka",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 22500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kasturba Medical College, Mangalore",
+    "state": "Karnataka",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 26500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "JSS Medical College, Mysuru",
+    "state": "Karnataka",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 28500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sri Ramachandra Institute of Higher Education and Research, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 34000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Saveetha Medical College, Chennai",
+    "state": "Tamil Nadu",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 38000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SRM Medical College Hospital and Research Centre, Kattankulathur",
+    "state": "Tamil Nadu",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 42000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Amrita School of Medicine, Kochi",
+    "state": "Kerala",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 28000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mahatma Gandhi Medical College and Research Institute, Puducherry",
+    "state": "Puducherry",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 50000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bharati Vidyapeeth Deemed University Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 46000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "DY Patil Medical College, Navi Mumbai",
+    "state": "Maharashtra",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 52000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Datta Meghe Institute of Medical Sciences, Wardha",
+    "state": "Maharashtra",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 56000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Symbiosis Medical College for Women, Pune",
+    "state": "Maharashtra",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 43000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr. D. Y. Patil Medical College, Kolhapur",
+    "state": "Maharashtra",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 58000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Kalinga Institute of Medical Sciences (KIMS), Bhubaneswar",
+    "state": "Odisha",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 41000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Hamdard Institute of Medical Sciences and Research, New Delhi",
+    "state": "Delhi",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 48000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "MGM Medical College, Navi Mumbai",
+    "state": "Maharashtra",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 54000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Manipal Tata Medical College, Jamshedpur",
+    "state": "Jharkhand",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 24500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "KS Hegde Medical Academy, Mangalore",
+    "state": "Karnataka",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 36000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Yenepoya Medical College, Mangalore",
+    "state": "Karnataka",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 39500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "BLDE (Deemed to be University) Shri B.M. Patil Medical College, Vijayapura",
+    "state": "Karnataka",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 58000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sri Siddhartha Medical College, Tumkur",
+    "state": "Karnataka",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 60000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Chettinad Hospital and Research Institute, Kanchipuram",
+    "state": "Tamil Nadu",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 42000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Karpagam Faculty of Medical Sciences & Research, Coimbatore",
+    "state": "Tamil Nadu",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 58000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SRHU Swami Rama Himalayan University, Dehradun",
+    "state": "Uttarakhand",
+    "type": "Private (Deemed)",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 46000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Himalayan Institute of Medical Sciences, Dehradun",
+    "state": "Uttarakhand",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 47000,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Sanjay Gandhi Postgraduate Institute of Medical Sciences, Lucknow",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 900,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "King George's Medical University, Lucknow",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 1100,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Dr. Ram Manohar Lohia Institute of Medical Sciences, Lucknow",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 3800,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Satara",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2347,
+    "maxAIR": 9309,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Akola",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 11589,
+    "maxAIR": 20763,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Parbhani",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 9301,
+    "maxAIR": 26486,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "B. J. Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 126,
+    "maxAIR": 2598,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Vadodara",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 242,
+    "maxAIR": 8113,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri M.P. Shah Government Medical College, Jamnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1878,
+    "maxAIR": 21274,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Seth GS Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 935,
+    "closingScore": 690,
+    "year": 2024
+  },
+  {
+    "collegeName": "Grant Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 100,
+    "maxAIR": 2828,
+    "closingScore": 685,
+    "year": 2024
+  },
+  {
+    "collegeName": "BJ Govt. Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 200,
+    "maxAIR": 3500,
+    "closingScore": 681,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2400,
+    "maxAIR": 8700,
+    "closingScore": 650,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Ambejogai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 7000,
+    "maxAIR": 18500,
+    "closingScore": 625,
+    "year": 2024
+  },
+  {
+    "collegeName": "BJ Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 126,
+    "maxAIR": 2598,
+    "closingScore": 685,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Surat",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 800,
+    "maxAIR": 5000,
+    "closingScore": 672,
+    "year": 2024
+  },
+  {
+    "collegeName": "Medical College Baroda",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 400,
+    "maxAIR": 8000,
+    "closingScore": 668,
+    "year": 2024
+  },
+  {
+    "collegeName": "Pandit Deendayal Upadhyay Medical College, Rajkot",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2500,
+    "maxAIR": 15000,
+    "closingScore": 640,
+    "year": 2024
+  },
+  {
+    "collegeName": "King George's Medical University, Lucknow (KGMU)",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 100,
+    "maxAIR": 920,
+    "closingScore": 690,
+    "year": 2024
+  },
+  {
+    "collegeName": "GSVM Medical College, Kanpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 500,
+    "maxAIR": 3000,
+    "closingScore": 680,
+    "year": 2024
+  },
+  {
+    "collegeName": "MLN Medical College, Allahabad",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 900,
+    "maxAIR": 6000,
+    "closingScore": 665,
+    "year": 2024
+  },
+  {
+    "collegeName": "Lala Lajpat Rai Medical College, Meerut",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2000,
+    "maxAIR": 12000,
+    "closingScore": 645,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bangalore Medical College",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 200,
+    "maxAIR": 1800,
+    "closingScore": 682,
+    "year": 2024
+  },
+  {
+    "collegeName": "MS Ramaiah Medical College (Govt. quota)",
+    "state": "Karnataka",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 5000,
+    "maxAIR": 15000,
+    "closingScore": 640,
+    "year": 2024
+  },
+  {
+    "collegeName": "AJ Institute of Medical Sciences (Govt. quota)",
+    "state": "Karnataka",
+    "type": "Private",
+    "category": "General",
+    "minAIR": 10000,
+    "maxAIR": 30000,
+    "closingScore": 610,
+    "year": 2024
+  },
+  {
+    "collegeName": "KIMS Hubli",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 900,
+    "maxAIR": 5000,
+    "closingScore": 660,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College & Hospital, Chandigarh (GMCH)",
+    "state": "Chandigarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 250,
+    "maxAIR": 1800,
+    "closingScore": 682,
+    "year": 2024
+  },
+  {
+    "collegeName": "Postgraduate Institute of Medical Education & Research (PGIMER-MBBS quota seats)",
+    "state": "Chandigarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 500,
+    "closingScore": 690,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Satara",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 2347,
+    "maxAIR": 9309,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Alibag",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 5645,
+    "maxAIR": 16854,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "B. J. Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 126,
+    "maxAIR": 2598,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Vadodara",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 242,
+    "maxAIR": 8113,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Shri M.P. Shah Government Medical College, Jamnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1878,
+    "maxAIR": 21274,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Seth GS Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 1,
+    "maxAIR": 935,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Grant Medical College, Mumbai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 100,
+    "maxAIR": 2828,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "BJ Medical College, Pune",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 200,
+    "maxAIR": 3500,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Nagpur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Miraj",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "RCSM GMC, Kolhapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Akola",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Aurangabad",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Ambejogai",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Chandrapur",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Gondia",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Nanded",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Jalgaon",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Parbhani",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Nagpur AIIMS (AIIMS Nagpur)",
+    "state": "Maharashtra",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "BJ Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 126,
+    "maxAIR": 2598,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Medical College, Baroda",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Surat",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMC Rajkot",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMC Bhavnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMC Vadnagar",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMC Junagadh",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GMC Godhra",
+    "state": "Gujarat",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GCS Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Private",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "NHL Medical College, Ahmedabad",
+    "state": "Gujarat",
+    "type": "Private",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "KGMU Lucknow",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": 100,
+    "maxAIR": 920,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "GSVM Medical College Kanpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "MLN Medical College Allahabad",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "LLRM Medical College Meerut",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "BRD Medical College Gorakhpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Azamgarh",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Basti",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Banda",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Saharanpur",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Firozabad",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Kannauj",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College, Ayodhya",
+    "state": "Uttar Pradesh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Bangalore Medical College",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "KIMS Hubli",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Gulbarga Institute of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Belagavi Institute of Medical Sciences",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Mysore Medical College",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "VIMS Bellary",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "SIMS Shimoga",
+    "state": "Karnataka",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "BIMS Bengaluru",
+    "state": "Karnataka",
+    "type": "Private",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "M.S. Ramaiah Medical College",
+    "state": "Karnataka",
+    "type": "Private",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "St. John's Medical College",
+    "state": "Karnataka",
+    "type": "Private",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "Government Medical College & Hospital, Chandigarh",
+    "state": "Chandigarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  {
+    "collegeName": "PGIMER MBBS Chandigarh",
+    "state": "Chandigarh",
+    "type": "Government",
+    "category": "General",
+    "minAIR": null,
+    "maxAIR": null,
+    "closingScore": null,
+    "year": 2024
+  },
+  // -------- GUJARAT GOVERNMENT MBBS COLLEGES --------
 {
-    name: 'Tomo Riba Institute Of Health And Medical Science',
-    state: 'Arunachal Pradesh',
-    intake: 50,
-    type: 'Government',
-    rankCutoff: [44516, 135876]
-  },
+  collegeName:"BJ Medical College, Ahmedabad",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:126,
+  maxAIR:2598,
+  year:2024
+},
+{
+  collegeName:"Medical College, Baroda (MSU Baroda)",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:242,
+  maxAIR:8113,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Surat",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:800,
+  maxAIR:5000,
+  year:2024
+},
+{
+  collegeName:"Pandit Deendayal Upadhyay Medical College, Rajkot",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:1878,
+  maxAIR:21274,
+  year:2024
+},
+{
+  collegeName:"Gujarat Adani Institute of Medical Sciences, Bhuj",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Bhavnagar",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Gandhinagar",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Sola (Ahmedabad)",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Himmatnagar",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Junagadh",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Gotri (Vadodara)",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Dharpur (Patan)",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Morbi",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Narmada",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"GMERS Medical College, Navsari",
+  state:"Gujarat",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+// -------- UTTAR PRADESH — GOVERNMENT MBBS COLLEGES --------
+{
+  collegeName:"King George’s Medical University (KGMU), Lucknow",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:100,
+  maxAIR:920,
+  year:2024
+},
+{
+  collegeName:"Institute of Medical Sciences, BHU, Varanasi",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:120,
+  maxAIR:900,
+  year:2024
+},
+{
+  collegeName:"GSVM Medical College, Kanpur",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"MLN Medical College, Prayagraj (Allahabad)",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Lala Lajpat Rai Medical College (LLRMC), Meerut",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"BRD Medical College, Gorakhpur",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Azamgarh",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Basti",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Banda",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Saharanpur",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Firozabad",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Kannauj",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Jalaun (Orai)",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Mirzapur",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Government Medical College, Ayodhya",
+  state:"Uttar Pradesh",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+// -------- KARNATAKA — GOVERNMENT MBBS COLLEGES --------
+{
+  collegeName:"Bangalore Medical College and Research Institute (BMCRI), Bengaluru",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Mysore Medical College and Research Institute, Mysuru",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Karnataka Institute of Medical Sciences (KIMS), Hubli",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Vijayanagar Institute of Medical Sciences (VIMS), Bellary",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Mandya Institute of Medical Sciences, Mandya",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Shimoga Institute of Medical Sciences, Shivamogga",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Bidar Institute of Medical Sciences, Bidar",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Gulbarga Institute of Medical Sciences, Kalaburagi",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Belagavi Institute of Medical Sciences, Belagavi",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Kodagu Institute of Medical Sciences, Kodagu",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Karwar Institute of Medical Sciences, Karwar",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Raichur Institute of Medical Sciences, Raichur",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"Chamarajanagar Institute of Medical Sciences, Chamarajanagar",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"ESIC Medical College, Bengaluru (Govt quota)",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
+{
+  collegeName:"ESIC Medical College, Gulbarga (Govt quota)",
+  state:"Karnataka",
+  type:"Government",
+  category:"General",
+  minAIR:null,
+  maxAIR:null,
+  year:2024
+},
 
- {
-    name: 'Gauhati Medical College, Guwahati',
-    state: 'Assam',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [750, 14638] 
-  },
-  {
-    name: 'Fakhruddin Ali Ahmed Medical College and Hospital, Barpeta',
-    state: 'Assam',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [10055, 39500]
-  },
-  {
-    name: 'Silchar Medical College and Hospital, Silchar',
-    state: 'Assam',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [10563, 32389]
-  },
-  {
-    name: 'Assam Medical College, Dibrugarh',
-    state: 'Assam',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [12446, 23939]
-  },
-  {
-    name: 'Jorhat Medical College, Jorhat',
-    state: 'Assam',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [14823, 32485]
-  },
-  {
-    name: 'Tezpur Medical College, Tezpur',
-    state: 'Assam',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [27459, 39023]
-  },
-  {
-    name: 'Dhubri Medical College, Dhubri',
-    state: 'Assam',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [30524, 59503]
-  },
-  {
-    name: 'Nagaon Medical College, Nagaon',
-    state: 'Assam',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [32964, 58535]
-  },
-  {
-    name: 'Nalbari Medical College, Nalbari',
-    state: 'Assam',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [39384, 56983]
-  },
-  {
-    name: 'Diphu Medical College and Hospital, Diphu',
-    state: 'Assam',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [39999, 54236]
-  },
-  {
-    name: 'Lakhimpur Medical College, Lakhimpur',
-    state: 'Assam',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [40504, 53094]
-  },
-  {
-    name: 'Anugrah Narayan Magadh Medical College and Hospital, Gaya',
-    state: 'Bihar',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [531, 583]
-  },
-  {
-    name: 'Bhagwan Mahavir Institute Of Medical Sciences, Pawapuri',
-    state: 'Bihar',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [614, 614]
-  },
-  {
-    name: 'Darbhanga Medical College, Laheriasarai',
-    state: 'Bihar',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [436, 436]
-  },
-  {
-    name: 'ESIC Medical College and Hospital, Bihta, Patna',
-    state: 'Bihar',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [525, 598]
-  },
-  {
-    name: 'Indira Gandhi Institute of Medical Sciences, Patna',
-    state: 'Bihar',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [20, 200]
-  },
-  {
-    name: 'Nalanda Medical College and Hospital, Patna',
-    state: 'Bihar',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [124, 319]
-  },
-  {
-    name: 'Patna Medical College, Patna',
-    state: 'Bihar',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [1, 103]
-  },
-  {
-    name: 'Sri Krishna Medical College, Muzaffarpur',
-    state: 'Bihar',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [446, 607]
-  },
-  {
-    name: 'Jawahar Lal Nehru Medical College, Bhagalpur',
-    state: 'Bihar',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [359, 599]
-  },
-  {
-    name: 'Government Medical College and Hospital, Chandigarh',
-    state: 'Chandigarh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [436, 30338]
-  },
- {
-    name: 'Pt Jawahar Lal Nehru Memorial Medical College, Raipur',
-    state: 'Chhattisgarh',
-    intake: 230,
-    type: 'Government',
-    rankCutoff: [2125, 17127]
-  },
-  {
-    name: 'Chhattisgarh Institute of Medical Sciences, Bilaspur',
-    state: 'Chhattisgarh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [17373, 29684]
-  },
-  {
-    name: 'Government Medical College, Rajnandgaon',
-    state: 'Chhattisgarh',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [29948, 40460]
-  },
-  {
-    name: 'Late Bali Ram Kashyap Memorial Government Medical College, Jagdalpur',
-    state: 'Chhattisgarh',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [30313, 45014]
-  },
-  {
-    name: 'Late Shri Lakhiram Agrawal Memorial Government Medical College, Raigarh',
-    state: 'Chhattisgarh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [40247, 51531]
-  },
-    {
-    name: 'CCM Medical College, Durg',
-    state: 'Chhattisgarh',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [31549, 60288]
-  },
-  {
-    name: 'Raipur Institute of Medical Sciences, Raipur',
-    state: 'Chhattisgarh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [29509, 61244]
-  },
-  {
-    name: 'Shri Shankaracharya Institute of Medical Science, Bhilai',
-    state: 'Chhattisgarh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [31414, 68263]
-  },
-  {
-    name: 'Shri Balaji Institute of Medical Science, Mowa, Raipur',
-    state: 'Chhattisgarh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [32939, 68435]
-  },
-  {
-    name: 'Government Medical College, Kanker',
-    state: 'Chhattisgarh',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [21133, 71019]
-  },
-  {
-    name: 'Government Medical College, Korba',
-    state: 'Chhattisgarh',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [59279, 72117]
-  },
-  {
-    name: 'Government Medical College, Mahasamund',
-    state: 'Chhattisgarh',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [62344, 75631]
-  },
- {
-    name: 'Maulana Azad Medical College, New Delhi',
-    state: 'Delhi',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [58, 85]
-  },
-  {
-    name: 'Lady Hardinge Medical College for Women, New Delhi',
-    state: 'Delhi',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [203, 485]
-  },
-  {
-    name: 'University College of Medical Sciences, University of Delhi, Delhi',
-    state: 'Delhi',
-    intake: 170,
-    type: 'Government',
-    rankCutoff: [127, 304]
-  },
 
- {
-    name: 'AMC MET Medical College, Ahmedabad',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [40409, 60645]
-  },
-  {
-    name: 'B J Medical College, Ahmedabad',
-    state: 'Gujarat',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [142, 2353]
-  },
-  {
-    name: 'GMC Porbandar',
-    state: 'Gujarat',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [48526, 65691]
-  },
-  {
-    name: 'GMERS Medical College and Hospital, Gandhinagar',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [13168, 30713]
-  },
-  {
-    name: 'GMERS Medical College and Hospital, Himmatnagar',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [31829, 50673]
-  },
-  {
-    name: 'GMERS Medical College and Hospital, Sola',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [2615, 25601]
-  },
-  {
-    name: 'GMERS Medical College, Godhra',
-    state: 'Gujarat',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [35702, 67985]
-  },
-  {
-    name: 'GMERS Medical College, Morbi',
-    state: 'Gujarat',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [37633, 60015]
-  },
-  {
-    name: 'GMERS Medical College, Navsari',
-    state: 'Gujarat',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [43507, 61691]
-  },
-  {
-    name: 'GMERS Medical College, Rajpipla',
-    state: 'Gujarat',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [48977, 66368]
-  },
-  {
-    name: 'GMERS Medical College, Dharpur Patan',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [35104, 53598]
-  },
-  {
-    name: 'GMERS Medical College, Junagadh',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [26261, 44820]
-  },
-  {
-    name: 'GMERS Medical College, Vadnagar',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [36284, 58453]
-  },
-  {
-    name: 'GMERS Medical College, Valsad',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [32262, 45662]
-  },
-  {
-    name: 'Government Medical College, Bhavnagar',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [7405, 21102]
-  },
-  {
-    name: 'Government Medical College, Surat',
-    state: 'Gujarat',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [2474, 12188]
-  },
-  {
-    name: 'Gujarat Medical Education and Research Society Medical College, Gotri, Vadodara',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [11647, 34855]
-  },
-  {
-    name: 'M P Shah Government Medical College, Jamnagar',
-    state: 'Gujarat',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [5335, 18456]
-  },
-  {
-    name: 'Medical College, Baroda',
-    state: 'Gujarat',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [574, 7197]
-  },
-  {
-    name: 'Pandit Deendayal Upadhyay Medical College, Rajkot',
-    state: 'Gujarat',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [403, 13700]
-  },
-  {
-    name: 'Smt NHL Municipal Medical College, Ahmedabad',
-    state: 'Gujarat',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [5023, 37730]
-  },
-  {
-    name: 'Surat Municipal Institute of Medical Education and Research, Surat',
-    state: 'Gujarat',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [12367, 17631]
-  },
- {
-    name: 'Pt Bhagwat Dayal Sharma Post Graduate Institute of Medical Sciences, Rohtak',
-    state: 'Haryana',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [314, 7331]
-  },
-  {
-    name: 'Kalpana Chawla Government Medical College, Karnal',
-    state: 'Haryana',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [931, 9449]
-  },
-  {
-    name: 'ESIC Medical College, Faridabad',
-    state: 'Haryana',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [2008, 5917]
-  },
-  {
-    name: 'BPS Government Medical College for Women, Sonepat',
-    state: 'Haryana',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [7481, 13442]
-  },
-  {
-    name: 'Maharaja Agrasen Medical College, Agroha',
-    state: 'Haryana',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [7550, 15892]
-  },
-  {
-    name: 'Shaheed Hasan Khan Mewati Government Medical College, Nalhar',
-    state: 'Haryana',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [9556, 14951]
-  },
-{
-    name: 'Indira Gandhi Medical College, Shimla',
-    state: 'Himachal Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [503, 24404]
-  },
-  {
-    name: 'Dr Rajendra Prasad Government Medical College, Tanda',
-    state: 'Himachal Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [4207, 34436]
-  },
-  {
-    name: 'Dr Yashwant Singh Parmar Government Medical College, Nahan',
-    state: 'Himachal Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [28125, 62594]
-  },
-  {
-    name: 'Shri Lal Bahadur Shastri Government Medical College, Mandi',
-    state: 'Himachal Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [35020, 42598]
-  },
-  {
-    name: 'Dr Radhakrishnan Government Medical College, Hamirpur',
-    state: 'Himachal Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [42729, 56448]
-  },
-  {
-    name: 'Pt Jawahar Lal Nehru Government Medical College and Hospital, Chamba',
-    state: 'Himachal Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [53192, 71481]
-  },
-  {
-    name: 'Maharishi Markandeshwar Medical College and Hospital, Solan',
-    state: 'Himachal Pradesh',
-    intake: 150,
-    type: 'Private',
-    rankCutoff: [72753, 95729]
-  },
- {
-    name: 'Government Medical College, Srinagar',
-    state: 'Jammu and Kashmir',
-    intake: 180,
-    type: 'Government',
-    rankCutoff: [5, 741]
-  },
-  {
-    name: 'Government Medical College, Jammu',
-    state: 'Jammu and Kashmir',
-    intake: 172,
-    type: 'Government',
-    rankCutoff: [18, 831]
-  },
-  {
-    name: 'Sher-I-Kashmir Institute of Medical Sciences, Srinagar',
-    state: 'Jammu and Kashmir',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [59, 763]
-  },
-  {
-    name: 'Government Medical College, Baramulla',
-    state: 'Jammu and Kashmir',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [93, 766]
-  },
-  {
-    name: 'Government Medical College, Anantnag',
-    state: 'Jammu and Kashmir',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [104, 510]
-  },
-  {
-    name: 'Government Medical College, Doda',
-    state: 'Jammu and Kashmir',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [180, 847]
-  },
-  {
-    name: 'Government Medical College, Kathua',
-    state: 'Jammu and Kashmir',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [190, 775]
-  },
-  {
-    name: 'Government Medical College and Associated Hospital, Rajouri',
-    state: 'Jammu and Kashmir',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [205, 840]
-  },
-{
-    name: 'Rajendra Institute of Medical Sciences, Ranchi',
-    state: 'Jharkhand',
-    intake: 180,
-    type: 'Government',
-    rankCutoff: [4536, 10524]
-  },
-  {
-    name: 'Mahatma Gandhi Memorial Medical College and Hospital, Jamshedpur',
-    state: 'Jharkhand',
-    intake: 50,
-    type: 'Government',
-    rankCutoff: [10899, 15217]
-  },
-  {
-    name: 'Patliputra Medical College, Dhanbad',
-    state: 'Jharkhand',
-    intake: 140,
-    type: 'Government',
-    rankCutoff: [15518, 18163]
-  },
-  {
-    name: 'Hazaribag Medical College, Hazaribag',
-    state: 'Jharkhand',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [19303, 22144]
-  },
-  {
-    name: 'Dumka Medical College, Dumka',
-    state: 'Jharkhand',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [22362, 25989]
-  },
-  {
-    name: 'Palamu Medical College, Palamu',
-    state: 'Jharkhand',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [23940, 28177]
-  },
-{
-    name: 'Bangalore Govt Medical College',
-    state: 'Karnataka',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [127, 2995]
-  },
-  {
-    name: 'Belgaum Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [2978, 17978]
-  },
-  {
-    name: 'Bidar Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [4049, 36980]
-  },
-  {
-    name: 'Chamarajanagar Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [23353, 33229]
-  },
-  {
-    name: 'Chikkaballapura Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [25379, 45731]
-  },
-  {
-    name: 'Chikkamagaluru Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [32303, 49397]
-  },
-  {
-    name: 'Chitradurga Medical College And Research Institute',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [40882, 58848]
-  },
-  {
-    name: 'ESIC And PGIMSR Bangalore',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [8057, 12699]
-  },
-  {
-    name: 'ESIC Medical College Gulbarga',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [25421, 32751]
-  },
-  {
-    name: 'Gadag Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [19655, 31413]
-  },
-  {
-    name: 'Gulbarga Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [7969, 21687]
-  },
-  {
-    name: 'Hassan Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [4119, 21953]
-  },
-  {
-    name: 'Haveri Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [45713, 54357]
-  },
-  {
-    name: 'Karnataka Institute Of Medical Sciences Hubli',
-    state: 'Karnataka',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [802, 11713]
-  },
-  {
-    name: 'Karwar Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [31025, 44457]
-  },
-  {
-    name: 'Kodagu Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [22444, 39421]
-  },
-  {
-    name: 'Koppal Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [33175, 40002]
-  },
-  {
-    name: 'Mandya Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [8244, 18189]
-  },
-  {
-    name: 'Mysore Medical College',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [2147, 6809]
-  },
-  {
-    name: 'Raichur Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [23505, 35143]
-  },
-  {
-    name: 'Shimoga Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [10261, 22409]
-  },
-  {
-    name: 'Vijayanagar Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [8950, 18465]
-  },
-  {
-    name: 'Yadgiri Institute Of Medical Sciences',
-    state: 'Karnataka',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [46235, 51344]
-  },
-  {
-    name: 'Government Medical College, Kozhikode',
-    state: 'Kerala',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [23, 2820]
-  },
-  {
-    name: 'Government Medical College, Thiruvananthapuram',
-    state: 'Kerala',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [214, 3611]
-  },
-  {
-    name: 'Government Medical College, Thrissur',
-    state: 'Kerala',
-    intake: 175,
-    type: 'Government',
-    rankCutoff: [324, 5487]
-  },
-  {
-    name: 'Government Medical College, Kottayam',
-    state: 'Kerala',
-    intake: 175,
-    type: 'Government',
-    rankCutoff: [867, 4966]
-  },
-  {
-    name: 'T D Medical College, Alappuzha',
-    state: 'Kerala',
-    intake: 175,
-    type: 'Government',
-    rankCutoff: [4360, 7414]
-  },
-  {
-    name: 'Government Medical College, Ernakulam',
-    state: 'Kerala',
-    intake: 110,
-    type: 'Government',
-    rankCutoff: [5459, 8452]
-  },
-  {
-    name: 'Government Medical College, Manjeri',
-    state: 'Kerala',
-    intake: 110,
-    type: 'Government',
-    rankCutoff: [5588, 8453]
-  },
-  {
-    name: 'Government Medical College, Kannur',
-    state: 'Kerala',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [6189, 8412]
-  },
-  {
-    name: 'Government Medical College, Kollam',
-    state: 'Kerala',
-    intake: 110,
-    type: 'Government',
-    rankCutoff: [6882, 7875]
-  },
-{
-    name: 'All India Institute of Medical Sciences, Nagpur',
-    state: 'Maharashtra',
-    rankCutoff: [946, 953],
-    intake: 125,
-    type: 'Government'
-  },
-  {
-    name: 'Armed Forces Medical College, Pune',
-    state: 'Maharashtra',
-    rankCutoff: [600, 1000],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'B. J. Government Medical College, Pune',
-    state: 'Maharashtra',
-    rankCutoff: [937, 2379],
-    intake: 250,
-    type: 'Government'
-  },
-  {
-    name: 'Dr. Shankarrao Chavan Government Medical College, Nanded',
-    state: 'Maharashtra',
-    rankCutoff: [11455, 22172],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Dr. Vaishampayan Memorial Medical College, Solapur',
-    state: 'Maharashtra',
-    rankCutoff: [8165, 17793],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Akola',
-    state: 'Maharashtra',
-    rankCutoff: [8674, 25537],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Alibag',
-    state: 'Maharashtra',
-    rankCutoff: [13081, 28735],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College and District Hospital, Ratnagiri',
-    state: 'Maharashtra',
-    rankCutoff: [14075, 14603],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Aurangabad',
-    state: 'Maharashtra',
-    rankCutoff: [6000, 13000],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Chandrapur',
-    state: 'Maharashtra',
-    rankCutoff: [19224, 32096],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Gondia',
-    state: 'Maharashtra',
-    rankCutoff: [30825, 36202],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College & Hospital, Baramati',
-    state: 'Maharashtra',
-    rankCutoff: [7035, 18749],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Jalgaon',
-    state: 'Maharashtra',
-    rankCutoff: [14286, 30274],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Latur',
-    state: 'Maharashtra',
-    rankCutoff: [18783, 24301],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Miraj',
-    state: 'Maharashtra',
-    rankCutoff: [8402, 20348],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Nagpur',
-    state: 'Maharashtra',
-    rankCutoff: [3024, 11671],
-    intake: 250,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Nandurbar',
-    state: 'Maharashtra',
-    rankCutoff: [31042, 35737],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Osmanabad',
-    state: 'Maharashtra',
-    rankCutoff: [26603, 33409],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Parbhani',
-    state: 'Maharashtra',
-    rankCutoff: [30711, 36540],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Satara',
-    state: 'Maharashtra',
-    rankCutoff: [22006, 26721],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Government Medical College, Sindhudurg',
-    state: 'Maharashtra',
-    rankCutoff: [29686, 33895],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Grant Medical College, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [2215, 7030],
-    intake: 250,
-    type: 'Government'
-  },
-  {
-    name: 'H.B.T. Medical College & Dr. R.N. Cooper Municipal General Hospital, Juhu, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [4721, 9113],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Indira Gandhi Medical College & Hospital, Nagpur',
-    state: 'Maharashtra',
-    rankCutoff: [11798, 16701],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Lokmanya Tilak Municipal Medical College, Sion, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [2162, 5544],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Rajashree Chatrapati Shahu Maharaj Government Medical College, Kolhapur',
-    state: 'Maharashtra',
-    rankCutoff: [10491, 14755],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Rajiv Gandhi Medical College and Chhatrapati Shivaji Maharaj Hospital, Thane',
-    state: 'Maharashtra',
-    rankCutoff: [8671, 10869],
-    intake: 100,
-    type: 'Government'
-  },
-  {
-    name: 'Seth GS Medical College, and KEM Hospital, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [53, 1962],
-    intake: 250,
-    type: 'Government'
-  },
-  {
-    name: 'Shri Vasant Rao Naik Govt. Medical College, Yavatmal',
-    state: 'Maharashtra',
-    rankCutoff: [21013, 30213],
-    intake: 200,
-    type: 'Government'
-  },
-  {
-    name: 'Sri Bhausaheb Hire Government Medical College, Dhule',
-    state: 'Maharashtra',
-    rankCutoff: [21260, 27063],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'SRTR Medical College, Ambajogai',
-    state: 'Maharashtra',
-    rankCutoff: [13034, 19200],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Topiwala National Medical College, Mumbai',
-    state: 'Maharashtra',
-    rankCutoff: [2034, 7623],
-    intake: 150,
-    type: 'Government'
-  },
-  {
-    name: 'Gajra Raja Medical College, Gwalior',
-    state: 'Madhya Pradesh',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [1526, 23279]
-  },
-  {
-    name: 'Mahatma Gandhi Memorial Medical College, Indore',
-    state: 'Madhya Pradesh',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [1868, 10596]
-  },
-  {
-    name: 'Gandhi Medical College, Bhopal',
-    state: 'Madhya Pradesh',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [2641, 16625]
-  },
-  {
-    name: 'Netaji Subhash Chandra Bose Medical College and Hospital, Jabalpur',
-    state: 'Madhya Pradesh',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [7513, 23060]
-  },
-  {
-    name: 'Atal Bihari Vajpayee Government Medical College, Vidisha',
-    state: 'Madhya Pradesh',
-    intake: 180,
-    type: 'Government',
-    rankCutoff: [20530, 36381]
-  },
-  {
-    name: 'Government Medical College, Ratlam',
-    state: 'Madhya Pradesh',
-    intake: 180,
-    type: 'Government',
-    rankCutoff: [20550, 39620]
-  },
-  {
-    name: 'Shyam Shah Medical College, Rewa',
-    state: 'Madhya Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [23273, 30984]
-  },
-  {
-    name: 'Bundelkhand Medical College, Sagar',
-    state: 'Madhya Pradesh',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [23848, 33372]
-  },
-  {
-    name: 'Government Medical College, Khandwa',
-    state: 'Madhya Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [26987, 44654]
-  },
-  {
-    name: 'Government Medical College, Shivpuri',
-    state: 'Madhya Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [30824, 46637]
-  },
-  {
-    name: 'Government Medical College, Datia',
-    state: 'Madhya Pradesh',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [36258, 44338]
-  },
-  {
-    name: 'Chhindwara Institute of Medical Sciences, Chhindwara',
-    state: 'Madhya Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [36370, 45365]
-  },
-  {
-    name: 'Government Medical College, Shahdol',
-    state: 'Madhya Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [37677, 48376]
-  },
-{
-    name: 'Bhima Bhoi Medical College and Hospital, Balangir',
-    state: 'Odisha',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [12040, 20186]
-  },
-  {
-    name: 'Fakir Mohan Medical College and Hospital, Balasore',
-    state: 'Odisha',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [12013, 16805]
-  },
-  {
-    name: 'Government Medical College and Hospital, Keonjhar',
-    state: 'Odisha',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [19777, 25755]
-  },
-  {
-    name: 'Government Medical College Bhawanipatna',
-    state: 'Odisha',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [21544, 27718]
-  },
-  {
-    name: 'Government Medical College, Sundargarh and Hospital, Sundargarh',
-    state: 'Odisha',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [17913, 25147]
-  },
-  {
-    name: 'MKCG Medical College, Berhampur',
-    state: 'Odisha',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [4198, 10298]
-  },
-  {
-    name: 'Pandit Raghunath Murmu Medical College and Hospital, Baripada',
-    state: 'Odisha',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [12385, 18852]
-  },
-  {
-    name: 'SCB Medical College, Cuttack',
-    state: 'Odisha',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [35, 4771]
-  },
-  {
-    name: 'Shri Jagannath Medical College and Hospital, Puri',
-    state: 'Odisha',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [9371, 15214]
-  },
-  {
-    name: 'SLN Medical College and Hospital, Koraput',
-    state: 'Odisha',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [12539, 22164]
-  },
-  {
-    name: 'Veer Surendra Sai Institute of Medical Sciences and Research, Burla',
-    state: 'Odisha',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [2229, 12002]
-  },
- {
-    name: 'Government Medical College, Patiala',
-    state: 'Punjab',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [4, 9089]
-  },
-  {
-    name: 'Dayanand Medical College and Hospital, Ludhiana',
-    state: 'Punjab',
-    intake: 100,
-    type: 'Private',
-    rankCutoff: [312, 21163]
-  },
-  {
-    name: 'Dr BR Ambedkar State Institute of Medical Sciences, Mohali',
-    state: 'Punjab',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [758, 24140]
-  },
-  {
-    name: 'Government Medical College, Amritsar',
-    state: 'Punjab',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [826, 23615]
-  },
-  {
-    name: 'Guru Gobind Singh Medical College and Hospital, Faridkot',
-    state: 'Punjab',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [2516, 19474]
-  },
-  {
-    name: 'Christian Medical College, Ludhiana',
-    state: 'Punjab',
-    intake: 100,
-    type: 'Private',
-    rankCutoff: [2528, 35616]
-  },
-  {
-    name: 'Punjab Institute of Medical Sciences, Jalandhar',
-    state: 'Punjab',
-    intake: 150,
-    type: 'Private',
-    rankCutoff: [24209, 35094]
-  },
-  {
-    name: 'Gian Sagar Medical College and Hospital, Banur',
-    state: 'Punjab',
-    intake: 150,
-    type: 'Private',
-    rankCutoff: [30751, 44706]
-  },
-  {
-    name: 'Sri Guru Ram Das Institute of Medical Sciences and Research, Amritsar',
-    state: 'Punjab',
-    intake: 150,
-    type: 'Private',
-    rankCutoff: [31649, 74410]
-  },
-  {
-    name: 'Adesh Institute of Medical Sciences and Research, Bathinda',
-    state: 'Punjab',
-    intake: 150,
-    type: 'Private',
-    rankCutoff: [46024, 78732]
-  },
- {
-    name: 'Dr Sampurnanand Medical College, Jodhpur',
-    state: 'Rajasthan',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [2335, 5346]
-  },
-  {
-    name: 'ESIC Medical College and Hospital, Alwar',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [7055, 9590]
-  },
-  {
-    name: 'Government Medical College, Alwar',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [8589, 11222]
-  },
-  {
-    name: 'Government Medical College, Barmer',
-    state: 'Rajasthan',
-    intake: 130,
-    type: 'Government',
-    rankCutoff: [9227, 10617]
-  },
-  {
-    name: 'Government Medical College, Bharatpur',
-    state: 'Rajasthan',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [6945, 9871]
-  },
-  {
-    name: 'Government Medical College, Bundi',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [9460, 12523]
-  },
-  {
-    name: 'Government Medical College, Chittorgarh',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10158, 11161]
-  },
-  {
-    name: 'Government Medical College, Dausa',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [8989, 11843]
-  },
-  {
-    name: 'Government Medical College, Dholpur',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10494, 11922]
-  },
-  {
-    name: 'Government Medical College, Dungarpur',
-    state: 'Rajasthan',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [8561, 10947]
-  },
-  {
-    name: 'Government Medical College, Hanumangarh',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10726, 12428]
-  },
-  {
-    name: 'Government Medical College, Karauli',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [9291, 12714]
-  },
-  {
-    name: 'Government Medical College, Kota',
-    state: 'Rajasthan',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [3075, 7792]
-  },
-  {
-    name: 'Government Medical College, Pali',
-    state: 'Rajasthan',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [7410, 9625]
-  },
-  {
-    name: 'Government Medical College, Sirohi',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [11047, 11673]
-  },
-  {
-    name: 'Government Medical College, Sri Ganganagar',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10099, 11360]
-  },
-  {
-    name: 'Jawaharlal Nehru Medical College, Ajmer',
-    state: 'Rajasthan',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [2750, 6870]
-  },
-  {
-    name: 'Jhalawar Hospital and Medical College, Jhalawar',
-    state: 'Rajasthan',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [7844, 8406]
-  },
-  {
-    name: 'Pandit Deendayal Upadhyaya Medical College, Churu',
-    state: 'Rajasthan',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [8322, 10127]
-  },
-  {
-    name: 'Rabindra Nath Tagore Medical College, Udaipur',
-    state: 'Rajasthan',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [1263, 6026]
-  },
-  {
-    name: 'Rajmata Vijaya Raje Scindia Medical College, Bhilwara',
-    state: 'Rajasthan',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [7942, 9231]
-  },
-  {
-    name: 'RUHS College of Medical Sciences, Jaipur',
-    state: 'Rajasthan',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [2237, 3333]
-  },
-  {
-    name: 'Sardar Patel Medical College, Bikaner',
-    state: 'Rajasthan',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [217, 4557]
-  },
-  {
-    name: 'Sawai Man Singh Medical College, Jaipur',
-    state: 'Rajasthan',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [114, 2189]
-  },
-  {
-    name: 'Shri Kalyan Government Medical College, Sikar',
-    state: 'Rajasthan',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [7272, 8764]
-  },
- {
-    name: 'Chengalpattu Medical College, Chengalpattu',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [543, 879]
-  },
-  {
-    name: 'Coimbatore Medical College, Coimbatore',
-    state: 'Tamil Nadu',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [352, 454]
-  },
-  {
-    name: 'Government Medical College, Omandurar',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [540, 704]
-  },
-  {
-    name: 'Government Vellore Medical College, Vellore',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [1049, 1442]
-  },
-  {
-    name: 'Government Dharamapuri Medical College, Dharmapuri',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [1230, 1230]
-  },
-  {
-    name: 'Government Kilpauk Medical College, Chennai',
-    state: 'Tamil Nadu',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [269, 506]
-  },
-  {
-    name: 'Government Medical College, Tiruppur',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [1188, 1188]
-  },
-  {
-    name: 'Government Medical College, Thiruvallur',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [877, 1402]
-  },
-  {
-    name: 'Government Villupuram Medical College, Villupuram',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [1041, 1306]
-  },
-  {
-    name: 'KAP Viswanatham Government Medical College, Tiruchirapalli',
-    state: 'Tamil Nadu',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [943, 1251]
-  },
-  {
-    name: 'Madras Medical College, Chennai',
-    state: 'Tamil Nadu',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [29, 146]
-  },
-  {
-    name: 'Madurai Medical College, Madurai',
-    state: 'Tamil Nadu',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [365, 607]
-  },
-  {
-    name: 'Mohan Kumaramangalam Medical College, Salem',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [1040, 1040]
-  },
-  {
-    name: 'Stanley Medical College, Chennai',
-    state: 'Tamil Nadu',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [148, 311]
-  },
-  {
-    name: 'Thanjavur Medical College, Thanjavur',
-    state: 'Tamil Nadu',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [755, 927]
-  },
-  {
-    name: 'Theni Medical College, Theni',
-    state: 'Tamil Nadu',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [905, 1248]
-  },
-  {
-    name: 'Tirunelveli Medical College, Tirunelveli',
-    state: 'Tamil Nadu',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [554, 1297]
-  },
-{
-    name: 'Osmania Medical College',
-    state: 'Telangana',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [2043, 5574]
-  },
-  {
-    name: 'Gandhi Medical College Secunderabad',
-    state: 'Telangana',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [2326, 2650]
-  },
-  {
-    name: 'Kakatiya Medical College',
-    state: 'Telangana',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [9506, 12158]
-  },
-  {
-    name: 'Rajiv Gandhi Inst Of Medical Sciences Adilabad',
-    state: 'Telangana',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [12883, 19924]
-  },
-  {
-    name: 'Govt Medical College Nizamabad',
-    state: 'Telangana',
-    intake: 120,
-    type: 'Government',
-    rankCutoff: [15534, 15534]
-  },
-{
-    name: 'Agartala Government Medical College, Agartala',
-    state: 'Tripura',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [2330, 58655]
-  },
-  {
-    name: 'Regional Institute of Medical Sciences, Lamphelpat',
-    state: 'Manipur',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [11249, 19891]
-  },
-  {
-    name: 'Tripura Medical College and DR BRAM Teaching Hospital, Agartala',
-    state: 'Tripura',
-    intake: 100,
-    type: 'Private',
-    rankCutoff: [67554, 199270]
-  },
-{
-    name: 'KING GEORGE MEDICAL UNIVERSITY, LUCKNOW',
-    state: 'Uttar Pradesh',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [525, 2849]
-  },
-  {
-    name: 'DR. RAM MANOHAR LOHIA IMS, LUCKNOW',
-    state: 'Uttar Pradesh',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [2948, 4323]
-  },
-  {
-    name: 'GSVM Medical College, Kanpur',
-    state: 'Uttar Pradesh',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [3332, 6310]
-  },
-  {
-    name: 'Moti Lal Nehru Medical College, Prayagraj',
-    state: 'Uttar Pradesh',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [3759, 7687]
-  },
-  {
-    name: 'Government Institute of Medical Sciences, Greater Noida',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [5638, 8377]
-  },
-  {
-    name: 'Lala Lajpat Rai Memorial Medical College, Meerut',
-    state: 'Uttar Pradesh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [4435, 8545]
-  },
-  {
-    name: 'Baba Raghav Das Medical College, Gorakhpur',
-    state: 'Uttar Pradesh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [5852, 9206]
-  },
-  {
-    name: 'Sarojini Naidu Medical College, Agra',
-    state: 'Uttar Pradesh',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [5458, 9576]
-  },
-  {
-    name: 'Maharani Laxmibai Medical College, Jhansi',
-    state: 'Uttar Pradesh',
-    intake: 150,
-    type: 'Government',
-    rankCutoff: [7731, 10381]
-  },
-  {
-    name: 'U.P. University of Medical Sciences, Saifai, Etawah',
-    state: 'Uttar Pradesh',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [8011, 11675]
-  },
-  {
-    name: 'Government Medical College, Saharanpur',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10447, 12352]
-  },
-  {
-    name: 'Government Medical College, Kannauj',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [7630, 12518]
-  },
-  {
-    name: 'Government Medical College, Ambedkar Nagar',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10994, 12907]
-  },
-  {
-    name: 'Autonomous Medical College, Ayodhya',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10799, 13089]
-  },
-  {
-    name: 'Government Medical College, Azamgarh',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [9862, 13839]
-  },
-  {
-    name: 'Government Medical College, Jalaun',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [7039, 14159]
-  },
-  {
-    name: 'Government Medical College, Badaun',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [9759, 14313]
-  },
-  {
-    name: 'Autonomous Medical College, Firozabad',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [11280, 15693]
-  },
-  {
-    name: 'Government Medical College, Banda',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [11437, 15720]
-  },
-  {
-    name: 'Autonomous Medical College, Bahraich',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [9962, 15955]
-  },
-  {
-    name: 'Autonomous Medical College, Shahjahanpur',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [12011, 16447]
-  },
-  {
-    name: 'Autonomous Medical College, Basti',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [13556, 16591]
-  },
-  {
-    name: 'Autonomous Medical College, Etah',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [12813, 18317]
-  },
-  {
-    name: 'Autonomous Medical College, Deoria',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [12908, 18610]
-  },
-  {
-    name: 'Autonomous Medical College, Fatehpur',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [14418, 18648]
-  },
-  {
-    name: 'Autonomous Medical College, Hardoi',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [15281, 18962]
-  },
-  {
-    name: 'Autonomous Medical College, Siddharth Nagar',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [11738, 19055]
-  },
-  {
-    name: 'Autonomous Medical College, Pratapgarh',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [14959, 19525]
-  },
-  {
-    name: 'Autonomous Medical College, Mirzapur',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [9363, 20061]
-  },
-  {
-    name: 'Autonomous Medical College, Jaunpur',
-    state: 'Uttar Pradesh',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [13189, 20608]
-  },
-  {
-    name: 'Autonomous Medical College, Ghazipur',
-    state: 'Uttar Pradesh',
-    intake: 50,
-    type: 'Government',
-    rankCutoff: [12863, 20930]
-  },
-{
-    name: 'Doon Medical College, Dehradun',
-    state: 'Uttarakhand',
-    intake: 175,
-    type: 'Government',
-    rankCutoff: [4308, 22054]
-  },
-  {
-    name: 'Government Medical College, Haldwani',
-    state: 'Uttarakhand',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [6240, 22406]
-  },
-  {
-    name: 'Veer Chandra Singh Garhwali Government Institute of Medical Science and Research, Srinagar',
-    state: 'Uttarakhand',
-    intake: 175,
-    type: 'Government',
-    rankCutoff: [15317, 29599]
-  },
-  {
-    name: 'Soban Singh Jeena Government Institute of Medical Science and Research, Almora',
-    state: 'Uttarakhand',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [22828, 35986]
-  },
-  {
-    name: 'Bankura Sammilani Medical College, Bankura',
-    state: 'West Bengal',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [8329, 21057]
-  },
-  {
-    name: 'Barasat Government Medical College and Hospital, North 24 Parganas',
-    state: 'West Bengal',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [13710, 22433]
-  },
-  {
-    name: 'Burdwan Medical College, Burdwan',
-    state: 'West Bengal',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [7604, 17021]
-  },
-  {
-    name: 'Calcutta National Medical College, Kolkata',
-    state: 'West Bengal',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [8834, 13443]
-  },
-  {
-    name: 'College of Medicine and JNM Hospital, Kalyani',
-    state: 'West Bengal',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [11628, 19211]
-  },
-  {
-    name: 'College of Medicine and Sagore Dutta Hospital, Kolkata',
-    state: 'West Bengal',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [13482, 15552]
-  },
-  {
-    name: 'Diamond Harbour Government Medical College and Hospital, Diamond Harbour',
-    state: 'West Bengal',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [19061, 22671]
-  },
-  {
-    name: 'ESI PGIMSR ESIC Medical College and ESIC Hospital Joka, Kolkata',
-    state: 'West Bengal',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [10721, 19343]
-  },
-  {
-    name: 'Institute of Post Graduate Medical Education and Research, Kolkata',
-    state: 'West Bengal',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [617, 6223]
-  },
-  {
-    name: 'Malda Medical College and Hospital, Malda',
-    state: 'West Bengal',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [17815, 22739]
-  },
-  {
-    name: 'Medical College, Kolkata',
-    state: 'West Bengal',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [888, 4922]
-  },
-  {
-    name: 'Midnapore Medical College, Midnapore',
-    state: 'West Bengal',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [13310, 22726]
-  },
-  {
-    name: 'Murshidabad Medical College and Hospital, Murshidabad',
-    state: 'West Bengal',
-    intake: 125,
-    type: 'Government',
-    rankCutoff: [2322, 22429]
-  },
-  {
-    name: 'Nilratan Sircar Medical College, Kolkata',
-    state: 'West Bengal',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [4958, 8670]
-  },
-  {
-    name: 'North Bengal Medical College and Hospital, Sushrutanagar',
-    state: 'West Bengal',
-    intake: 200,
-    type: 'Government',
-    rankCutoff: [12653, 22780]
-  },
-  {
-    name: 'Purulia Government Medical College & Hospital',
-    state: 'West Bengal',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [21635, 21635]
-  },
-  {
-    name: 'Rampurhat Government Medical College and Hospital, Rampurhat',
-    state: 'West Bengal',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [8744, 8744]
-  },
-  {
-    name: 'RG Kar Medical College and Hospital, Kolkata',
-    state: 'West Bengal',
-    intake: 250,
-    type: 'Government',
-    rankCutoff: [6386, 11186]
-  },
-  {
-    name: 'Sarat Chandra Chattopadhyay Government Medical College and Hospital, Howrah',
-    state: 'West Bengal',
-    intake: 100,
-    type: 'Government',
-    rankCutoff: [14480, 22569]
-  },
-  {
-    name: "All India Institute of Medical Sciences, New Delhi",
-    state: "Delhi",
-    rankCutoff: [1, 100], // closing rank ≈ 100 (rounded range representation)
-    intake: 125,
-    type: "Government",
-    source: "Careers360 / AIIMS counselling pages"
-  },
 
-  // Christian Medical College, Vellore — (very high cutoff; closing rank example)
-  {
-    name: "Christian Medical College, Vellore",
-    state: "Tamil Nadu",
-    rankCutoff: [1, 84], // closing rank ≈ 84 (General AI closing rank referenced)
-    intake: 100,
-    type: "Private",
-    source: "Careers360 / CollegeDunia (category-wise closing ranks)"
-  },
-
-  // Armed Forces Medical College, Pune (AFMC)
-  {
-    name: "Armed Forces Medical College, Pune",
-    state: "Maharashtra",
-    rankCutoff: [1, 700], // AFMC closing ranks vary by gender/category; shown here as approx closing rank ~650-700
-    intake: 150,
-    type: "Government",
-    source: "AFMC cutoff summaries (Vedantu/Careers360)"
-  },
-
-  // Maulana Azad Medical College (MAMC), New Delhi
-  {
-    name: "Maulana Azad Medical College, New Delhi",
-    state: "Delhi",
-    rankCutoff: [1, 103], // Round-1 AI closing rank example (General)
-    intake: 250,
-    type: "Government",
-    source: "Shiksha / state counselling reports"
-  },
-
-  // Lady Hardinge Medical College, New Delhi
-  {
-    name: "Lady Hardinge Medical College, New Delhi",
-    state: "Delhi",
-    rankCutoff: [1, 241484], // Note: some sources list state-quota ranks; this entry uses reported closing rank from CollegeDunia (shows large rank numbers for some categories/rounds). Please cross-check category and quota.
-    intake: 100,
-    type: "Government",
-    source: "CollegeDunia / MBBS Council (round reports)"
-  },
-
-  // Grant Medical College & Sir JJ Group of Hospitals, Mumbai (example closing rank)
-  {
-    name: "Grant Medical College, Mumbai",
-    state: "Maharashtra",
-    rankCutoff: [1, 4354], // reported closing rank for a recent round (General AI)
-    intake: 200,
-    type: "Government",
-    source: "Shiksha"
-  },
-
-  // Seth G.S. Medical College & KEM Hospital, Mumbai (example)
-  {
-    name: "Seth G.S. Medical College & KEM Hospital, Mumbai",
-    state: "Maharashtra",
-    rankCutoff: [1, 5000], // many specialities / rounds — this is an illustrative closing rank from public cutoffs; please verify specific quota & year
-    intake: 180,
-    type: "Government",
-    source: "MBBS Council / College pages"
-  },
-
-  // Madras Medical College, Chennai
-  {
-    name: "Madras Medical College, Chennai",
-    state: "Tamil Nadu",
-    rankCutoff: [1, 1585], // sample Round 2 closing rank (General) referenced in public reporting
-    intake: 250,
-    type: "Government",
-    source: "CollegeDunia / MBBS Council"
-  },
-
-  // Andhra Medical College, Visakhapatnam (example)
-  {
-    name: "Andhra Medical College, Visakhapatnam",
-    state: "Andhra Pradesh",
-    rankCutoff: [1, 8000], // example closing rank — consult state counselling for exact year/quota
-    intake: 200,
-    type: "Government",
-    source: "State counselling / College pages"
-  },
-
-  // Calcutta National Medical College / Medical College, Kolkata (example)
-  {
-    name: "Medical College, Kolkata (CNMC)",
-    state: "West Bengal",
-    rankCutoff: [1, 7000], // approximate recent closing rank for AI/combined rounds; verify by category
-    intake: 250,
-    type: "Government",
-    source: "State counselling reports / CollegeDunia"
-  },
-  // === Karnataka ===
-{
-  name: "Bangalore Medical College and Research Institute, Bangalore",
-  state: "Karnataka",
-  rankCutoff: [1, 1888],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023 AIQ Round-1)"
-},
-{
-  name: "Mysore Medical College and Research Institute, Mysuru",
-  state: "Karnataka",
-  rankCutoff: [1, 4700],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Kasturba Medical College, Manipal",
-  state: "Karnataka",
-  rankCutoff: [1, 26000],
-  intake: 250,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Kempegowda Institute of Medical Sciences, Bangalore",
-  state: "Karnataka",
-  rankCutoff: [1, 46000],
-  intake: 150,
-  type: "Private",
-  source: "CollegeDunia (2023)"
-},
-
-// === Uttar Pradesh ===
-{
-  name: "King George's Medical University, Lucknow",
-  state: "Uttar Pradesh",
-  rankCutoff: [1, 1300],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Motilal Nehru Medical College, Prayagraj",
-  state: "Uttar Pradesh",
-  rankCutoff: [1, 7500],
-  intake: 200,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Mahatma Gandhi Memorial Medical College, Kanpur",
-  state: "Uttar Pradesh",
-  rankCutoff: [1, 9000],
-  intake: 250,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Era's Lucknow Medical College and Hospital",
-  state: "Uttar Pradesh",
-  rankCutoff: [1, 65000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Gujarat ===
-{
-  name: "B.J. Medical College, Ahmedabad",
-  state: "Gujarat",
-  rankCutoff: [1, 2300],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Government Medical College, Surat",
-  state: "Gujarat",
-  rankCutoff: [1, 4700],
-  intake: 200,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Pandit Deendayal Upadhyay Medical College, Rajkot",
-  state: "Gujarat",
-  rankCutoff: [1, 6800],
-  intake: 150,
-  type: "Government",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Smt. NHL Municipal Medical College, Ahmedabad",
-  state: "Gujarat",
-  rankCutoff: [1, 16500],
-  intake: 200,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Rajasthan ===
-{
-  name: "SMS Medical College, Jaipur",
-  state: "Rajasthan",
-  rankCutoff: [1, 1100],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Dr. S.N. Medical College, Jodhpur",
-  state: "Rajasthan",
-  rankCutoff: [1, 4000],
-  intake: 250,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Jawaharlal Nehru Medical College, Ajmer",
-  state: "Rajasthan",
-  rankCutoff: [1, 5300],
-  intake: 200,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Geetanjali Medical College and Hospital, Udaipur",
-  state: "Rajasthan",
-  rankCutoff: [1, 62000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === West Bengal ===
-{
-  name: "Nil Ratan Sircar Medical College, Kolkata",
-  state: "West Bengal",
-  rankCutoff: [1, 5200],
-  intake: 250,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "R.G. Kar Medical College, Kolkata",
-  state: "West Bengal",
-  rankCutoff: [1, 3600],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Calcutta National Medical College, Kolkata",
-  state: "West Bengal",
-  rankCutoff: [1, 6800],
-  intake: 200,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "KPC Medical College and Hospital, Kolkata",
-  state: "West Bengal",
-  rankCutoff: [1, 60000],
-  intake: 150,
-  type: "Private",
-  source: "CollegeDunia (2023)"
-},
-// === Tamil Nadu ===
-{
-  name: "Madras Medical College, Chennai",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 380],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Stanley Medical College, Chennai",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 1200],
-  intake: 250,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Kilpauk Medical College, Chennai",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 2600],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "PSG Institute of Medical Sciences and Research, Coimbatore",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 32000],
-  intake: 150,
-  type: "Private",
-  source: "Shiksha (2023)"
-},
-
-// === Kerala ===
-{
-  name: "Government Medical College, Thiruvananthapuram",
-  state: "Kerala",
-  rankCutoff: [1, 800],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Government Medical College, Kottayam",
-  state: "Kerala",
-  rankCutoff: [1, 2500],
-  intake: 200,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Government Medical College, Kozhikode",
-  state: "Kerala",
-  rankCutoff: [1, 1800],
-  intake: 250,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Amrita Institute of Medical Sciences, Kochi",
-  state: "Kerala",
-  rankCutoff: [1, 31000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Andhra Pradesh ===
-{
-  name: "Andhra Medical College, Visakhapatnam",
-  state: "Andhra Pradesh",
-  rankCutoff: [1, 2300],
-  intake: 200,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Sri Venkateswara Medical College, Tirupati",
-  state: "Andhra Pradesh",
-  rankCutoff: [1, 4600],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Guntur Medical College, Guntur",
-  state: "Andhra Pradesh",
-  rankCutoff: [1, 4100],
-  intake: 200,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Katuri Medical College, Guntur",
-  state: "Andhra Pradesh",
-  rankCutoff: [1, 52000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Telangana ===
-{
-  name: "Osmania Medical College, Hyderabad",
-  state: "Telangana",
-  rankCutoff: [1, 1700],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Gandhi Medical College, Secunderabad",
-  state: "Telangana",
-  rankCutoff: [1, 2200],
-  intake: 200,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Kakatiya Medical College, Warangal",
-  state: "Telangana",
-  rankCutoff: [1, 5200],
-  intake: 200,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Deccan College of Medical Sciences, Hyderabad",
-  state: "Telangana",
-  rankCutoff: [1, 61000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Madhya Pradesh ===
-{
-  name: "Gandhi Medical College, Bhopal",
-  state: "Madhya Pradesh",
-  rankCutoff: [1, 3400],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Netaji Subhash Chandra Bose Medical College, Jabalpur",
-  state: "Madhya Pradesh",
-  rankCutoff: [1, 5200],
-  intake: 200,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Gajra Raja Medical College, Gwalior",
-  state: "Madhya Pradesh",
-  rankCutoff: [1, 5600],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Index Medical College Hospital and Research Centre, Indore",
-  state: "Madhya Pradesh",
-  rankCutoff: [1, 65000],
-  intake: 150,
-  type: "Private",
-  source: "Shiksha (2023)"
-},
-
-// === Bihar ===
-{
-  name: "Patna Medical College, Patna",
-  state: "Bihar",
-  rankCutoff: [1, 1800],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Nalanda Medical College, Patna",
-  state: "Bihar",
-  rankCutoff: [1, 4300],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Darbhanga Medical College, Laheriasarai",
-  state: "Bihar",
-  rankCutoff: [1, 7400],
-  intake: 150,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Katihar Medical College, Katihar",
-  state: "Bihar",
-  rankCutoff: [1, 67000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-// === Odisha ===
-{
-  name: "SCB Medical College and Hospital, Cuttack",
-  state: "Odisha",
-  rankCutoff: [1, 2300],
-  intake: 250,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "MKCG Medical College, Berhampur",
-  state: "Odisha",
-  rankCutoff: [1, 5200],
-  intake: 200,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "VSS Institute of Medical Sciences and Research, Burla",
-  state: "Odisha",
-  rankCutoff: [1, 4800],
-  intake: 200,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Hi-Tech Medical College, Bhubaneswar",
-  state: "Odisha",
-  rankCutoff: [1, 62000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Punjab ===
-{
-  name: "Government Medical College, Amritsar",
-  state: "Punjab",
-  rankCutoff: [1, 3500],
-  intake: 200,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Government Medical College, Patiala",
-  state: "Punjab",
-  rankCutoff: [1, 2900],
-  intake: 250,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Christian Medical College, Ludhiana",
-  state: "Punjab",
-  rankCutoff: [1, 38000],
-  intake: 150,
-  type: "Private",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Dayanand Medical College, Ludhiana",
-  state: "Punjab",
-  rankCutoff: [1, 45000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Haryana ===
-{
-  name: "Pt. Bhagwat Dayal Sharma Post Graduate Institute of Medical Sciences, Rohtak",
-  state: "Haryana",
-  rankCutoff: [1, 1800],
-  intake: 200,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Shaheed Hasan Khan Mewati Government Medical College, Nalhar",
-  state: "Haryana",
-  rankCutoff: [1, 6400],
-  intake: 100,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Maharaja Agrasen Medical College, Agroha",
-  state: "Haryana",
-  rankCutoff: [1, 39000],
-  intake: 100,
-  type: "Private",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Adesh Medical College and Hospital, Shahabad",
-  state: "Haryana",
-  rankCutoff: [1, 60000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Himachal Pradesh ===
-{
-  name: "Indira Gandhi Medical College, Shimla",
-  state: "Himachal Pradesh",
-  rankCutoff: [1, 2500],
-  intake: 150,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Dr. Rajendra Prasad Government Medical College, Tanda",
-  state: "Himachal Pradesh",
-  rankCutoff: [1, 4200],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Maharishi Markandeshwar Medical College, Solan",
-  state: "Himachal Pradesh",
-  rankCutoff: [1, 58000],
-  intake: 150,
-  type: "Private",
-  source: "Shiksha (2023)"
-},
-
-// === Chhattisgarh ===
-{
-  name: "Pt. Jawahar Lal Nehru Memorial Medical College, Raipur",
-  state: "Chhattisgarh",
-  rankCutoff: [1, 4600],
-  intake: 200,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Government Medical College, Bilaspur",
-  state: "Chhattisgarh",
-  rankCutoff: [1, 7200],
-  intake: 150,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Late Baliram Kashyap Memorial Government Medical College, Jagdalpur",
-  state: "Chhattisgarh",
-  rankCutoff: [1, 8300],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Shri Shankaracharya Institute of Medical Sciences, Bhilai",
-  state: "Chhattisgarh",
-  rankCutoff: [1, 64000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-
-// === Jammu & Kashmir ===
-{
-  name: "Government Medical College, Jammu",
-  state: "Jammu and Kashmir",
-  rankCutoff: [1, 5200],
-  intake: 150,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Government Medical College, Srinagar",
-  state: "Jammu and Kashmir",
-  rankCutoff: [1, 6100],
-  intake: 200,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Sher-i-Kashmir Institute of Medical Sciences, Srinagar",
-  state: "Jammu and Kashmir",
-  rankCutoff: [1, 4800],
-  intake: 150,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-
-// === North-Eastern States ===
-{
-  name: "Gauhati Medical College, Guwahati",
-  state: "Assam",
-  rankCutoff: [1, 4600],
-  intake: 200,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Silchar Medical College, Silchar",
-  state: "Assam",
-  rankCutoff: [1, 9200],
-  intake: 100,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Regional Institute of Medical Sciences, Imphal",
-  state: "Manipur",
-  rankCutoff: [1, 7200],
-  intake: 150,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "North Eastern Indira Gandhi Regional Institute of Health and Medical Sciences, Shillong",
-  state: "Meghalaya",
-  rankCutoff: [1, 5800],
-  intake: 50,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Agartala Government Medical College, Agartala",
-  state: "Tripura",
-  rankCutoff: [1, 8700],
-  intake: 100,
-  type: "Government",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Zoram Medical College, Mizoram",
-  state: "Mizoram",
-  rankCutoff: [1, 11200],
-  intake: 100,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-// === Chandigarh / UTs ===
-{
-  name: "Government Medical College and Hospital, Chandigarh",
-  state: "Chandigarh",
-  rankCutoff: [1, 1600],
-  intake: 150,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Postgraduate Institute of Medical Education and Research (PGIMER), Chandigarh",
-  state: "Chandigarh",
-  rankCutoff: [1, 120],
-  intake: 100,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Indira Gandhi Medical College and Research Institute, Puducherry",
-  state: "Puducherry",
-  rankCutoff: [1, 6200],
-  intake: 150,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Jawaharlal Institute of Postgraduate Medical Education and Research (JIPMER), Puducherry",
-  state: "Puducherry",
-  rankCutoff: [1, 600],
-  intake: 200,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-
-// === Deemed Universities & Top Private Colleges ===
-{
-  name: "Kasturba Medical College, Manipal",
-  state: "Karnataka",
-  rankCutoff: [1, 22500],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Kasturba Medical College, Mangalore",
-  state: "Karnataka",
-  rankCutoff: [1, 26500],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "JSS Medical College, Mysuru",
-  state: "Karnataka",
-  rankCutoff: [1, 28500],
-  intake: 200,
-  type: "Private (Deemed)",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Sri Ramachandra Institute of Higher Education and Research, Chennai",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 34000],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Saveetha Medical College, Chennai",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 38000],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "Shiksha (2023)"
-},
-{
-  name: "SRM Medical College Hospital and Research Centre, Kattankulathur",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 42000],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Amrita School of Medicine, Kochi",
-  state: "Kerala",
-  rankCutoff: [1, 28000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Mahatma Gandhi Medical College and Research Institute, Puducherry",
-  state: "Puducherry",
-  rankCutoff: [1, 50000],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Bharati Vidyapeeth Deemed University Medical College, Pune",
-  state: "Maharashtra",
-  rankCutoff: [1, 46000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "Careers360 (2023)"
-},
-{
-  name: "DY Patil Medical College, Navi Mumbai",
-  state: "Maharashtra",
-  rankCutoff: [1, 52000],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Datta Meghe Institute of Medical Sciences, Wardha",
-  state: "Maharashtra",
-  rankCutoff: [1, 56000],
-  intake: 200,
-  type: "Private (Deemed)",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Symbiosis Medical College for Women, Pune",
-  state: "Maharashtra",
-  rankCutoff: [1, 43000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Dr. D. Y. Patil Medical College, Kolhapur",
-  state: "Maharashtra",
-  rankCutoff: [1, 58000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Kalinga Institute of Medical Sciences (KIMS), Bhubaneswar",
-  state: "Odisha",
-  rankCutoff: [1, 41000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Hamdard Institute of Medical Sciences and Research, New Delhi",
-  state: "Delhi",
-  rankCutoff: [1, 48000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "MGM Medical College, Navi Mumbai",
-  state: "Maharashtra",
-  rankCutoff: [1, 54000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Manipal Tata Medical College, Jamshedpur",
-  state: "Jharkhand",
-  rankCutoff: [1, 24500],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "KS Hegde Medical Academy, Mangalore",
-  state: "Karnataka",
-  rankCutoff: [1, 36000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Yenepoya Medical College, Mangalore",
-  state: "Karnataka",
-  rankCutoff: [1, 39500],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "BLDE (Deemed to be University) Shri B.M. Patil Medical College, Vijayapura",
-  state: "Karnataka",
-  rankCutoff: [1, 58000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "Careers360 (2023)"
-},
-{
-  name: "Sri Siddhartha Medical College, Tumkur",
-  state: "Karnataka",
-  rankCutoff: [1, 60000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Chettinad Hospital and Research Institute, Kanchipuram",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 42000],
-  intake: 250,
-  type: "Private (Deemed)",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Karpagam Faculty of Medical Sciences & Research, Coimbatore",
-  state: "Tamil Nadu",
-  rankCutoff: [1, 58000],
-  intake: 150,
-  type: "Private",
-  source: "Careers360 (2023)"
-},
-{
-  name: "SRHU Swami Rama Himalayan University, Dehradun",
-  state: "Uttarakhand",
-  rankCutoff: [1, 46000],
-  intake: 150,
-  type: "Private (Deemed)",
-  source: "CollegeDunia (2023)"
-},
-{
-  name: "Himalayan Institute of Medical Sciences, Dehradun",
-  state: "Uttarakhand",
-  rankCutoff: [1, 47000],
-  intake: 150,
-  type: "Private",
-  source: "Shiksha (2023)"
-},
-{
-  name: "Sanjay Gandhi Postgraduate Institute of Medical Sciences, Lucknow",
-  state: "Uttar Pradesh",
-  rankCutoff: [1, 900],
-  intake: 150,
-  type: "Government",
-  source: "Careers360 (2023)"
-},
-{
-  name: "King George's Medical University, Lucknow",
-  state: "Uttar Pradesh",
-  rankCutoff: [1, 1100],
-  intake: 250,
-  type: "Government",
-  source: "MBBS Council (2023)"
-},
-{
-  name: "Dr. Ram Manohar Lohia Institute of Medical Sciences, Lucknow",
-  state: "Uttar Pradesh",
-  rankCutoff: [1, 3800],
-  intake: 150,
-  type: "Government",
-  source: "CollegeDunia (2023)"
-},
 
 ];
 

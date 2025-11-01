@@ -100,7 +100,7 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
             key: 'fullTestResults',
             name: 'Full Tests',
             color: "#1E66F5",
-            
+
           },
           {
             key: 'recommendedTests',
@@ -386,7 +386,7 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
 
         {/* Chart */}
         <div className="w-full h-full md:h-64 lg:h-72">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="110%" height="100%">
             <PieChart>
               <Pie
                 data={graphData}
@@ -396,9 +396,11 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
                 outerRadius={80}
                 paddingAngle={2}
                 dataKey="value"
-                
+
                 label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                 labelLine={false}
+                labelPosition="inside"
+
               >
                 {graphData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
