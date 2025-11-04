@@ -34,7 +34,6 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
     return start;
   };
 
-
   const isSameDay = (testDate, currentDate) => {
     const test = getStartOfDay(testDate);
     const current = getStartOfDay(currentDate);
@@ -384,23 +383,22 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
           <div className="text-sm text-gray-600">Total Tests ({selectedFilter})</div>
         </div>
 
-        {/* Chart */}
-        <div className="w-full h-full md:h-64 lg:h-72">
-          <ResponsiveContainer width="110%" height="100%">
+        {/* Chart - Mobile responsive */}
+        <div className="w-full h-64 sm:h-72 md:h-80 mb-4">
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={graphData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={80}
+                innerRadius={40}
+                outerRadius={60}
                 paddingAngle={2}
                 dataKey="value"
-
-                label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                label={({ name, percent }) => 
+                  `${name} (${(percent * 100).toFixed(0)}%)`
+                }
                 labelLine={false}
-                labelPosition="inside"
-
               >
                 {graphData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -413,28 +411,30 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
           </ResponsiveContainer>
         </div>
 
-        {/* Data Table */}
+        {/* Data Table - Mobile responsive */}
         <div className="w-full mt-4">
-          <div className="flex justify-between border-b pb-2 text-gray-500 text-sm font-medium">
-            <span>TEST NAME</span>
-            <span>TOTAL TESTS (%)</span>
+          <div className="flex justify-between border-b pb-2 text-gray-500 text-xs sm:text-sm font-medium">
+            <span className="truncate pr-2">TEST NAME</span>
+            <span className="truncate pl-2">TOTAL TESTS (%)</span>
           </div>
           {data.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-3 border-b">
-              <div className="flex items-center gap-3">
+            <div key={index} className="flex justify-between items-center py-2 sm:py-3 border-b">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
                 <span
-                  className="w-3 h-3 rounded-full"
+                  className="w-3 h-3 rounded-full shrink-0"
                   style={{ backgroundColor: item.color }}
                 ></span>
-                <span className="text-gray-700 text-sm font-medium">{item.name}</span>
+                <span className="text-gray-700 text-xs sm:text-sm font-medium truncate">
+                  {item.name}
+                </span>
               </div>
-              <div className="text-right">
-                <div className="text-sm font-semibold text-gray-900">
+              <div className="text-right min-w-0 pl-2">
+                <div className="text-xs sm:text-sm font-semibold text-gray-900 whitespace-nowrap">
                   {item.totalTests} tests
                 </div>
                 <div className={`text-xs ${parseFloat(item.value) < 33 ? "text-red-500" :
                   parseFloat(item.value) < 66 ? "text-yellow-500" : "text-green-500"
-                  }`}>
+                  } whitespace-nowrap`}>
                   {item.value}%
                 </div>
               </div>
