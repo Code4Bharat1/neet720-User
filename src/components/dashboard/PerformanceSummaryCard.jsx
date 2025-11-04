@@ -1,41 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+} from "recharts";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { withinRange } from "@/lib/dateFilters";
 
 const PerformanceSummaryCard = ({ selectedFilter }) => {
-  const [data, setData] = useState({
-    Physics: [],
-    Chemistry: [],
-    Biology: [],
-    labels: [],
-  });
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/success`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/average`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -43,169 +27,106 @@ const PerformanceSummaryCard = ({ selectedFilter }) => {
           }
         );
 
-        const rawData = response.data;
-        const currentDate = new Date();
-
-        const isSameYear = (date) =>
-          new Date(date).getFullYear() === currentDate.getFullYear();
-        const isSameMonth = (date) =>
-          isSameYear(date) &&
-          new Date(date).getMonth() === currentDate.getMonth();
-        const isSameWeek = (date) => {
-          const testDate = new Date(date);
-          const weekStart = new Date(currentDate);
-          weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-          return testDate >= weekStart;
-        };
-
-        let labels = [];
-        let performanceData = { Physics: [], Chemistry: [], Biology: [] };
-
-        if (selectedFilter === "This Year") {
-          labels = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ];
-          labels.forEach((month, index) => {
-            const filtered = rawData.filter((item) => {
-              const testDate = new Date(item.updatedAt);
-              return (
-                isSameYear(item.updatedAt) && testDate.getMonth() === index
-              );
-            });
-            performanceData.Physics.push(
-              filtered.reduce((sum, item) => sum + (item.Physics || 0), 0)
-            );
-            performanceData.Chemistry.push(
-              filtered.reduce((sum, item) => sum + (item.Chemistry || 0), 0)
-            );
-            performanceData.Biology.push(
-              filtered.reduce((sum, item) => sum + (item.Biology || 0), 0)
-            );
-          });
-        } else if (selectedFilter === "This Month") {
-          labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-          labels.forEach((week, index) => {
-            const filtered = rawData.filter((item) => {
-              const testDate = new Date(item.updatedAt);
-              const weekNumber = Math.floor(testDate.getDate() / 7);
-              return isSameMonth(item.updatedAt) && weekNumber === index;
-            });
-            performanceData.Physics.push(
-              filtered.reduce((sum, item) => sum + (item.Physics || 0), 0)
-            );
-            performanceData.Chemistry.push(
-              filtered.reduce((sum, item) => sum + (item.Chemistry || 0), 0)
-            );
-            performanceData.Biology.push(
-              filtered.reduce((sum, item) => sum + (item.Biology || 0), 0)
-            );
-          });
-        } else if (selectedFilter === "This Week") {
-          labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-          labels.forEach((day, index) => {
-            const filtered = rawData.filter((item) => {
-              const testDate = new Date(item.updatedAt);
-              return isSameWeek(item.updatedAt) && testDate.getDay() === index;
-            });
-            performanceData.Physics.push(
-              filtered.reduce((sum, item) => sum + (item.Physics || 0), 0)
-            );
-            performanceData.Chemistry.push(
-              filtered.reduce((sum, item) => sum + (item.Chemistry || 0), 0)
-            );
-            performanceData.Biology.push(
-              filtered.reduce((sum, item) => sum + (item.Biology || 0), 0)
-            );
-          });
-        }
-
-        setData({ ...performanceData, labels });
+        const filtered = response.data.filter((t) => withinRange(selectedFilter, t.updatedAt));
+        const formatted = filtered.map((t, i) => ({
+          name: `Test ${i + 1}`,
+          Physics: t.Physics || 0,
+          Chemistry: t.Chemistry || 0,
+          Biology: t.Biology || 0,
+          Total: ((t.Physics + t.Chemistry + t.Biology) / 3).toFixed(2),
+        }));
+        
+        setData(formatted);
+        setError(null);
       } catch (err) {
         console.error("Error fetching performance data:", err);
+        setError("Unable to load performance data");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [selectedFilter]);
 
-  const chartData = {
-    labels: data.labels,
-    datasets: [
-      {
-        label: "Physics",
-        data: data.Physics,
-        backgroundColor: "#FE5C73", // Red
-        barThickness: 8,
-        borderRadius: 10,
-      },
-      {
-        label: "Chemistry",
-        data: data.Chemistry,
-        backgroundColor: "#FFBB38", // Orange
-        barThickness: 8,
-        borderRadius: 10,
-      },
-      {
-        label: "Biology",
-        data: data.Biology,
-        backgroundColor: "#16DBCC", // Teal
-        barThickness: 8,
-        borderRadius: 10,
-      },
-    ],
-  };
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Performance Summary</CardTitle>
+          <CardDescription>Combined subject performance overview</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div>Loading...</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          usePointStyle: true,
-          pointStyle: "circle",
-          boxWidth: 19,
-          color: "#718EBF",
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: "#718EBF",
-        },
-      },
-      x: {
-        ticks: {
-          color: "#718EBF",
-        },
-      },
-    },
-  };
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Performance Summary</CardTitle>
+          <CardDescription>Combined subject performance overview</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-red-500">{error}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Performance Summary</CardTitle>
+          <CardDescription>Combined subject performance overview</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-gray-400">No data for {selectedFilter}</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <div className="pt-4 flex flex-col items-center justify-center gap-4 sm:w-full sm:h-auto mb-20 md:flex-row md:items-start md:justify-center ">
-      <div className="bg-white rounded-2xl p-4 shadow-lg sm:w-full h-96 sm:mb-4 md:w-[450px] lg :w-[600px] xl:w-[700px]">
-        <h2 className="text-lg font-semibold mb-4 text-center md:text-left text-[#343C6A]">
-          Performance Summary
-        </h2>
-        <div className="relative w-full h-72 sm:h-64 md:h-80 md:max-w-lg lg:max-w-lg xl:max-w-xl">
-          <Bar data={chartData} options={options} />
-        </div>
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Performance Summary</CardTitle>
+        <CardDescription>Combined subject performance overview</CardDescription>
+      </CardHeader>
+      <CardContent className="w-full h-auto min-h-[320px]">
+        <ResponsiveContainer width="100%" height={260}>
+          <ComposedChart 
+            data={data} 
+            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+          >
+            <CartesianGrid stroke="#f5f5f5" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip 
+              formatter={(value, name) => {
+                if (name === 'Total') return [`${value}%`, 'Average'];
+                return [`${value}%`, name];
+              }}
+            />
+            <Legend />
+            <Bar dataKey="Physics" barSize={20} fill="#1E66F5" />
+            <Bar dataKey="Chemistry" barSize={20} fill="#FFA500" />
+            <Bar dataKey="Biology" barSize={20} fill="#FF3B30" />
+            <Line 
+              type="monotone" 
+              dataKey="Total" 
+              stroke="#00C49F" 
+              strokeWidth={2}
+              dot={{ r: 4 }}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -11,6 +11,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { withinRange } from "@/lib/dateFilters";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -18,6 +20,7 @@ const SpeedCard = ({ changeDate }) => {
   const [daily, setDaily] = useState([]);
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState([]); // Store all data for filtering
+  const [error, setError] = useState(null);
 
   // Enhanced date helpers with better period handling
   const getStartOfWeek = (date) => {
@@ -88,6 +91,7 @@ const SpeedCard = ({ changeDate }) => {
           console.warn("No token found in localStorage");
           setAllData([]);
           setDaily([]);
+          setError("No authentication token found");
           return;
         }
 
@@ -99,11 +103,13 @@ const SpeedCard = ({ changeDate }) => {
         console.log("API Response:", res.data);
         const raw = Array.isArray(res.data) ? res.data : [];
         setAllData(raw);
+        setError(null);
         
       } catch (error) {
         console.error("Error fetching average marks:", error);
         setAllData([]);
         setDaily([]);
+        setError("Unable to load average marks data");
       } finally {
         setLoading(false);
       }
@@ -119,29 +125,8 @@ const SpeedCard = ({ changeDate }) => {
       return;
     }
 
-    const currentDate = new Date();
-    let filtered = [];
-    
-    // Filter data based on selected period
-    switch (changeDate) {
-      case "This Week":
-        filtered = allData.filter(test => 
-          test?.updatedAt && isSameWeek(test.updatedAt, currentDate)
-        );
-        break;
-      case "This Month":
-        filtered = allData.filter(test => 
-          test?.updatedAt && isSameMonth(test.updatedAt, currentDate)
-        );
-        break;
-      case "This Year":
-        filtered = allData.filter(test => 
-          test?.updatedAt && isSameYear(test.updatedAt, currentDate)
-        );
-        break;
-      default:
-        filtered = allData; // All time
-    }
+    // Use withinRange for filtering
+    const filtered = allData.filter((t) => withinRange(changeDate, t.updatedAt));
 
     console.log("Filtered data for", changeDate, ":", filtered);
 
@@ -281,99 +266,140 @@ const SpeedCard = ({ changeDate }) => {
     ).length;
   }, [daily]);
 
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Average Marks</CardTitle>
+          <CardDescription>Average marks across subjects</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div>Loading...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Average Marks</CardTitle>
+          <CardDescription>Average marks across subjects</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-red-500">{error}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (daily.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Average Marks</CardTitle>
+          <CardDescription>Average marks across subjects</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-gray-400">No data for {changeDate}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <div className="w-full max-w-sm p-5 bg-white rounded-2xl shadow-md">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h3 className="text-sm font-bold text-gray-500">AVERAGE MARKS ({changeDate})</h3>
-        <span className={`flex items-center text-sm font-medium ${trendColor}`}>
-          <TrendIcon className="mr-1" />
-          {isImproving ? "Improved" : "Dropped"}
-        </span>
-      </div>
-
-      {/* Latest day's overall */}
-      <h2 className="text-2xl font-bold mt-2">{currentAvg}%</h2>
-      <p className="text-xs text-gray-500">
-        {last ? `Latest: ${formatDateForDisplay(last.date, changeDate)}` : "No data available"}
-        {last && last.count > 1 && ` (${last.count} tests)`}
-        {availableSubjects > 0 && ` • ${availableSubjects} subject${availableSubjects > 1 ? 's' : ''}`}
-      </p>
-
-      {/* Chart */}
-      <div className="w-full h-48 mt-4">
-        <Bar
-          data={chartData}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: "index", intersect: false },
-            scales: {
-              y: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                  callback: (v) => v + "%",
-                },
-                grid: {
-                  color: "rgba(0, 0, 0, 0.1)",
-                },
-              },
-              x: {
-                grid: {
-                  display: false,
-                },
-                ticks: {
-                  maxRotation: daily.length > 7 ? 45 : 0,
-                  minRotation: daily.length > 7 ? 45 : 0,
-                  autoSkip: true,
-                  maxTicksLimit: daily.length > 10 ? 10 : undefined,
-                },
-              },
-            },
-            plugins: {
-              legend: { 
-                display: true, 
-                position: "bottom",
-                labels: {
-                  usePointStyle: true,
-                  padding: 15,
-                  boxWidth: 8,
-                }
-              },
-              tooltip: {
-                callbacks: {
-                  label: (context) => {
-                    const label = context.dataset.label || '';
-                    const value = context.parsed.y;
-                    return `${label}: ${value}%`;
+    <Card>
+      <CardHeader>
+        <CardTitle>Average Marks ({changeDate})</CardTitle>
+        <CardDescription>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-bold text-gray-500">AVERAGE MARKS ({changeDate})</span>
+            <span className={`flex items-center text-sm font-medium ${trendColor}`}>
+              <TrendIcon className="mr-1" />
+              {isImproving ? "Improved" : "Dropped"}
+            </span>
+          </div>
+          <h2 className="text-2xl font-bold mt-2">{currentAvg}%</h2>
+          <p className="text-xs text-gray-500">
+            {last ? `Latest: ${formatDateForDisplay(last.date, changeDate)}` : "No data available"}
+            {last && last.count > 1 && ` (${last.count} tests)`}
+            {availableSubjects > 0 && ` • ${availableSubjects} subject${availableSubjects > 1 ? 's' : ''}`}
+          </p>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="w-full h-auto min-h-[320px]">
+        <div className="w-full h-64 mt-4">
+          <Bar
+            data={chartData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: { mode: "index", intersect: false },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    callback: (v) => v + "%",
                   },
-                  afterLabel: (context) => {
-                    const index = context.dataIndex;
-                    const dayData = daily[index];
-                    const testsCount = dayData?.count;
-                    return testsCount > 1 ? `Based on ${testsCount} tests` : '';
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.1)",
+                  },
+                },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                  ticks: {
+                    maxRotation: daily.length > 7 ? 45 : 0,
+                    minRotation: daily.length > 7 ? 45 : 0,
+                    autoSkip: true,
+                    maxTicksLimit: daily.length > 10 ? 10 : undefined,
+                  },
+                },
+              },
+              plugins: {
+                legend: { 
+                  display: true, 
+                  position: "bottom",
+                  labels: {
+                    usePointStyle: true,
+                    padding: 15,
+                    boxWidth: 8,
                   }
                 },
+                tooltip: {
+                  callbacks: {
+                    label: (context) => {
+                      const label = context.dataset.label || '';
+                      const value = context.parsed.y;
+                      return `${label}: ${value}%`;
+                    },
+                    afterLabel: (context) => {
+                      const index = context.dataIndex;
+                      const dayData = daily[index];
+                      const testsCount = dayData?.count;
+                      return testsCount > 1 ? `Based on ${testsCount} tests` : '';
+                    }
+                  },
+                },
               },
-            },
-          }}
-        />
-      </div>
+            }}
+          />
+        </div>
 
-      {/* Status messages */}
-      {loading && (
-        <p className="mt-2 text-xs text-gray-500 text-center">Loading performance data...</p>
-      )}
-      {!loading && daily.length === 0 && (
-        <p className="mt-2 text-xs text-gray-500 text-center">No test records found for {changeDate.toLowerCase()}.</p>
-      )}
-      
-      {/* Period info */}
-      <div className="mt-2 text-xs text-gray-400 text-center">
-        <p>Showing {daily.length} day{daily.length !== 1 ? 's' : ''} • {changeDate}</p>
-      </div>
-    </div>
+        {/* Status messages */}
+        {!loading && daily.length === 0 && (
+          <p className="mt-2 text-xs text-gray-500 text-center">No test records found for {changeDate.toLowerCase()}.</p>
+        )}
+        
+        {/* Period info */}
+        <div className="mt-2 text-xs text-gray-400 text-center">
+          <p>Showing {daily.length} day{daily.length !== 1 ? 's' : ''} • {changeDate}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

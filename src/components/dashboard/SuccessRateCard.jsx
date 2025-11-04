@@ -2,15 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+  RadialBarChart, 
+  RadialBar, 
+  Legend, 
+  ResponsiveContainer, 
   Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import axios from "axios";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { withinRange } from "@/lib/dateFilters";
 
 const SuccessRateCard = ({ selectedFilter }) => {
   const [data, setData] = useState({
@@ -22,10 +23,14 @@ const SuccessRateCard = ({ selectedFilter }) => {
   const [successRate, setSuccessRate] = useState(0);
   const [isIncreasing, setIsIncreasing] = useState(false);
   const [trendPercentage, setTrendPercentage] = useState(0);
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/success`,
@@ -36,55 +41,39 @@ const SuccessRateCard = ({ selectedFilter }) => {
           }
         );
 
-        const rawData = response.data;
-        const currentDate = new Date();
+        const filtered = response.data.filter((t) => withinRange(selectedFilter, t.updatedAt));
+        
+        // Calculate average success rates
+        const avg = filtered.reduce(
+          (acc, t) => {
+            acc.Physics += t.Physics || 0;
+            acc.Chemistry += t.Chemistry || 0;
+            acc.Biology += t.Biology || 0;
+            return acc;
+          },
+          { Physics: 0, Chemistry: 0, Biology: 0 }
+        );
 
-        const isSameYear = (date) =>
-          new Date(date).getFullYear() === currentDate.getFullYear();
-        const isSameMonth = (date) =>
-          isSameYear(date) &&
-          new Date(date).getMonth() === currentDate.getMonth();
-        const isSameWeek = (date) => {
-          const testDate = new Date(date);
-          const weekStart = new Date(currentDate);
-          weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-          return testDate >= weekStart;
-        };
+        const count = filtered.length || 1;
+        const physicsAvg = avg.Physics / count;
+        const chemistryAvg = avg.Chemistry / count;
+        const biologyAvg = avg.Biology / count;
 
-        let filtered = [];
-        switch (selectedFilter) {
-          case "This Year":
-            filtered = rawData.filter((item) => isSameYear(item.updatedAt));
-            break;
-          case "This Month":
-            filtered = rawData.filter((item) => isSameMonth(item.updatedAt));
-            break;
-          case "This Week":
-            filtered = rawData.filter((item) => isSameWeek(item.updatedAt));
-            break;
-          default:
-            filtered = rawData;
-        }
+        // Format data for radial chart
+        const formatted = [
+          { name: "Physics", value: Math.min(physicsAvg, 100), fill: "#1E66F5" },
+          { name: "Chemistry", value: Math.min(chemistryAvg, 100), fill: "#FFA500" },
+          { name: "Biology", value: Math.min(biologyAvg, 100), fill: "#FF3B30" },
+        ];
+        setChartData(formatted);
 
-        const calculateTotalMarks = (filteredData) => {
-          const total = { physics: 0, chemistry: 0, biology: 0 };
-          filteredData.forEach((item) => {
-            total.physics += item.Physics || 0;
-            total.chemistry += item.Chemistry || 0;
-            total.biology += item.Biology || 0;
-          });
-          return total;
-        };
-
-        const totalMarks = calculateTotalMarks(filtered);
-
+        // Calculate overall success rate
         const avgSuccessRate = Math.min(
-          Math.round(
-            (totalMarks.physics + totalMarks.chemistry + totalMarks.biology) / 3
-          ),
+          Math.round((physicsAvg + chemistryAvg + biologyAvg) / 3),
           100
         );
 
+        // Trend calculation
         const prevRate = data.prevRate || 0;
         const isTrendIncreasing = avgSuccessRate > prevRate;
         const trendPercent = Math.min(
@@ -95,9 +84,19 @@ const SuccessRateCard = ({ selectedFilter }) => {
         setIsIncreasing(isTrendIncreasing);
         setTrendPercentage(trendPercent);
         setSuccessRate(avgSuccessRate);
-        setData({ ...totalMarks, prevRate: avgSuccessRate });
+        setData({ 
+          physics: physicsAvg, 
+          chemistry: chemistryAvg, 
+          biology: biologyAvg, 
+          prevRate: avgSuccessRate 
+        });
+        setError(null);
+
       } catch (err) {
         console.error("Error fetching success rate data:", err);
+        setError("Unable to load success rate data");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -107,43 +106,86 @@ const SuccessRateCard = ({ selectedFilter }) => {
   const trendColor = isIncreasing ? "text-green-500" : "text-red-500";
   const TrendIcon = isIncreasing ? FaArrowUp : FaArrowDown;
 
-  const chartData = [
-    { subject: "Physics", rate: Math.min(data.physics, 100) },
-    { subject: "Chemistry", rate: Math.min(data.chemistry, 100) },
-    { subject: "Biology", rate: Math.min(data.biology, 100) },
-  ];
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Success Rate</CardTitle>
+          <CardDescription>Average success per subject</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div>Loading...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Success Rate</CardTitle>
+          <CardDescription>Average success per subject</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-red-500">{error}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (chartData.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Success Rate</CardTitle>
+          <CardDescription>Average success per subject</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-gray-400">No data for {selectedFilter}</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <div className="w-full max-w-sm p-5 bg-white rounded-2xl shadow-md">
-      {/* Header Section */}
-      <div className="flex justify-between items-center">
-        <h3 className="text-sm font-bold text-gray-500">SUCCESS RATE</h3>
-        <span className={`flex items-center text-sm font-medium ${trendColor}`}>
-          <TrendIcon className="mr-1" />
-          {Math.abs(trendPercentage)}% {isIncreasing ? "Increase" : "Decrease"}
-        </span>
-      </div>
-
-      {/* Success Rate Display */}
-      <h2 className="text-2xl font-bold mt-2">{successRate}%</h2>
-
-      {/* Bar Chart */}
-      <div className="w-full h-48 mt-4"> {/* Increased height from h-32 to h-48 */}
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} barSize={35}>
-            <XAxis dataKey="subject" tickLine={false} axisLine={false} />
-            <YAxis
-              domain={[0, 100]}
-              ticks={[0, 20, 40, 60, 80, 100]}
-              tickFormatter={(tick) => `${tick}%`}
-              tick={{ fontSize: 12 }}
+    <Card>
+      <CardHeader>
+        <CardTitle>Success Rate</CardTitle>
+        <CardDescription>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-bold text-gray-500">SUCCESS RATE</span>
+            <span className={`flex items-center text-sm font-medium ${trendColor}`}>
+              <TrendIcon className="mr-1" />
+              {Math.abs(trendPercentage)}% {isIncreasing ? "Increase" : "Decrease"}
+            </span>
+          </div>
+          <h2 className="text-2xl font-bold mt-2">{successRate}%</h2>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="w-full h-auto min-h-[320px]">
+        <ResponsiveContainer width="100%" height={260}>
+          <RadialBarChart 
+            cx="50%" 
+            cy="50%" 
+            innerRadius="20%" 
+            outerRadius="100%" 
+            data={chartData}
+            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+          >
+            <RadialBar 
+              background 
+              dataKey="value" 
+              cornerRadius={5} 
             />
-            <Tooltip formatter={(value) => `${value}%`} />
-            <Bar dataKey="rate" fill="#FFD599" radius={[5, 5, 0, 0]} />
-          </BarChart>
+            <Legend />
+            <Tooltip 
+              formatter={(value) => `${Math.round(value)}%`}
+            />
+          </RadialBarChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
