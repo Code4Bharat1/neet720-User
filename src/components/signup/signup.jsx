@@ -328,6 +328,11 @@ const SignUpPage = () => {
                 />
               </div>
 
+              {/* Mobile Number Note */}
+              <p className="text-xs text-gray-600 mt-1">
+                After entering the number click on the send OTP button to verify the number.
+              </p>
+
               {!otpSent && (
                 <button
                   type="button"
@@ -377,6 +382,18 @@ const SignUpPage = () => {
                 >
                   {showPassword.password ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
                 </span>
+              </div>
+              
+              {/* Password Note */}
+              <div className="text-xs text-gray-600 mt-1">
+                <p>Password must contain:</p>
+                <ul className="list-disc list-inside ml-2">
+                  <li>At least 8 characters</li>
+                  <li>One uppercase letter (A-Z)</li>
+                  <li>One lowercase letter (a-z)</li>
+                  <li>One number (0-9)</li>
+                  <li>One special character (!@#$%^&*)</li>
+                </ul>
               </div>
             </div>
 

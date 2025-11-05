@@ -121,29 +121,33 @@ const OverallPerformanceCard = ({ selectedFilter = "This Year" }) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Overall Performance</CardTitle>
-        <CardDescription>Trend of average score over time</CardDescription>
-      </CardHeader>
-      <CardContent className="w-full h-auto min-h-[320px]">
-        <ResponsiveContainer width="100%" height={260}>
-          <LineChart 
-            data={data} 
-            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <Tooltip formatter={(value) => [`${value}%`, "Score"]} />
-            <Line
-              type="monotone"
-              dataKey="Score"
-              stroke="#1E66F5"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </CardContent>
+  <CardHeader>
+    <CardTitle>Overall Performance</CardTitle>
+    <CardDescription>Trend of average score over time</CardDescription>
+  </CardHeader>
+
+  {/* ✅ Give the container an explicit height per breakpoint */}
+  <CardContent className="w-full py-4 overflow-visible">
+    <div className="w-full h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <Tooltip formatter={(value) => [`${value}%`, "Score"]} />
+          <Line
+            type="monotone"
+            dataKey="Score"
+            stroke="#1E66F5"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div
           className={`flex gap-2 font-medium leading-none ${

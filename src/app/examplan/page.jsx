@@ -22,7 +22,7 @@ const Page = () => {
 
         {/* Open Graph Tags */}
         <meta property="og:title" content="NEET720 Exam Plan - Biology, Chemistry & Physics Preparation" />
-        <meta property="og:description" content="Create a personalized NEET exam plan for Biology, Chemistry, and Physics. Track your subject-wise study goals, progress, and test performance with NEET720." />
+        <me ta property="og:description" content="Create a personalized NEET exam plan for Biology, Chemistry, and Physics. Track your subject-wise study goals, progress, and test performance with NEET720." />
         <meta property="og:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/ExamPlan" />
         <meta property="og:url" content="https://neet720.com/examplan" />
         <meta property="og:type" content="website" />

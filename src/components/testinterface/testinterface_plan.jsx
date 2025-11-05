@@ -23,7 +23,7 @@ const subjects = [
 ];
 
 const TestInterface = () => {
-  //initailizing router
+  //initializing router
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
   const [questionsData, setQuestionsData] = useState({});
@@ -41,28 +41,138 @@ const TestInterface = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testEndTime, setTestEndTime] = useState(null);
   const [showQuestionPanel, setShowQuestionPanel] = useState(false);
-  //use effect to handle the full screen escape
-  // useEffect (()=>{
-  //   const handleFullScreenChange = () =>{
-  //     if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullscreenElement && !document.msFullscreenElement) {
-  //       //push the page if the full screen exits
-  //       router.push("/testselection");
-  //     }
-  //   }
+  
+  // Tab switching detection states
+  const [tabSwitchCount, setTabSwitchCount] = useState(0);
+  const [showTabSwitchWarning, setShowTabSwitchWarning] = useState(false);
+  const [fullscreenExitCount, setFullscreenExitCount] = useState(0);
+  const [showFullscreenWarning, setShowFullscreenWarning] = useState(false);
 
-  //   document.addEventListener("FullscreenElement", handleFullScreenChange);
-  //   document.addEventListener("webkitFullscreenElement", handleFullScreenChange);
-  //   document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-  //   document.addEventListener("mozFullscreenElement", handleFullScreenChange);
+  // Tab visibility detection
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Tab switched or minimized
+        const newCount = tabSwitchCount + 1;
+        setTabSwitchCount(newCount);
+        
+        if (newCount <= 2) {
+          setShowTabSwitchWarning(true);
+          toast.error(`Warning ${newCount}/2: Do not switch tabs!`, {
+            duration: 4000,
+          });
+        } else {
+          // 3rd attempt - auto submit
+          toast.error("Test submitted due to multiple tab switches!", {
+            duration: 3000,
+          });
+          handleSubmit();
+        }
+      }
+    };
 
-  //   return () => {
-  //     document.removeEventListener("fullscreenchange", handleFullScreenChange);
-  //     document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
-  //     document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
-  //     document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
-  //   }
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [tabSwitchCount]);
 
-  // },[])
+  // Fullscreen exit detection and prevention
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (!document.fullscreenElement && 
+          !document.webkitFullscreenElement && 
+          !document.mozFullScreenElement && 
+          !document.msFullscreenElement) {
+        
+        const newCount = fullscreenExitCount + 1;
+        setFullscreenExitCount(newCount);
+        
+        if (newCount <= 2) {
+          setShowFullscreenWarning(true);
+          toast.error(`Warning ${newCount}/2: Do not exit fullscreen mode!`, {
+            duration: 4000,
+          });
+          
+          // Immediately re-enter fullscreen
+          setTimeout(() => {
+            enterFullscreen();
+          }, 100);
+        } else {
+          // 3rd attempt - auto submit
+          toast.error("Test submitted due to exiting fullscreen!", {
+            duration: 3000,
+          });
+          handleSubmit();
+        }
+      }
+    };
+
+    // Prevent keyboard shortcuts (especially ESC)
+    const handleKeyDown = (e) => {
+      // Prevent F11, ESC, and other common fullscreen exit keys
+      if (
+        e.key === 'F11' || 
+        e.key === 'Escape' || 
+        (e.ctrlKey && e.key === 'f') ||
+        (e.altKey && e.key === 'Enter')
+      ) {
+        e.preventDefault();
+        const newCount = fullscreenExitCount + 1;
+        setFullscreenExitCount(newCount);
+        
+        if (newCount <= 2) {
+          setShowFullscreenWarning(true);
+          toast.error(`Warning ${newCount}/2: Do not exit fullscreen mode!`, {
+            duration: 4000,
+          });
+        } else {
+          toast.error("Test submitted due to exiting fullscreen!", {
+            duration: 3000,
+          });
+          handleSubmit();
+        }
+        return false;
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
+      document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
+      document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [fullscreenExitCount]);
+
+  // Request fullscreen when component mounts
+  const enterFullscreen = async () => {
+    try {
+      const element = document.documentElement;
+      if (element.requestFullscreen) {
+        await element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        await element.webkitRequestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        await element.mozRequestFullScreen();
+      } else if (element.msRequestFullscreen) {
+        await element.msRequestFullscreen();
+      }
+    } catch (error) {
+      console.log("Fullscreen not supported:", error);
+    }
+  };
+
+  useEffect(() => {
+    enterFullscreen();
+  }, []);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -362,6 +472,18 @@ const TestInterface = () => {
         toast.success("Test submitted successfully!", {
           duration: 5000,
         });
+        
+        // Exit fullscreen before redirecting
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+        
         window.location.href = "/test-plan-result";
       } else {
         toast.error("Failed to submit test.", {
@@ -1002,6 +1124,68 @@ const TestInterface = () => {
           </div>
         </div>
       </div>
+
+      {/* Tab Switch Warning Modal */}
+      {showTabSwitchWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Warning: Tab Switch Detected
+              </h3>
+              <p className="text-gray-600 mb-4">
+                You have switched tabs {tabSwitchCount} time(s). 
+                {tabSwitchCount < 2 
+                  ? ` You have ${2 - tabSwitchCount} warning(s) left. On the 3rd attempt, your test will be automatically submitted.`
+                  : " This is your final warning! Next tab switch will submit your test automatically."
+                }
+              </p>
+              <button
+                onClick={() => setShowTabSwitchWarning(false)}
+                className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium"
+              >
+                I Understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Warning Modal */}
+      {showFullscreenWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Warning: Fullscreen Mode Required
+              </h3>
+              <p className="text-gray-600 mb-4">
+                You have attempted to exit fullscreen {fullscreenExitCount} time(s). 
+                {fullscreenExitCount < 2 
+                  ? ` You have ${2 - fullscreenExitCount} warning(s) left. On the 3rd attempt, your test will be automatically submitted.`
+                  : " This is your final warning! Next attempt will submit your test automatically."
+                }
+              </p>
+              <button
+                onClick={() => setShowFullscreenWarning(false)}
+                className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium"
+              >
+                Continue Test
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isModalVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
