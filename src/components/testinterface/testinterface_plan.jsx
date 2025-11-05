@@ -64,6 +64,13 @@ const TestInterface = () => {
 
   // },[])
 
+  //block re-entry if submitted
+  useEffect(() => {
+    if (localStorage.getItem("testSubmitted") === "true") {
+      router.replace("/test-plan-result");
+    }
+  }, []);
+  
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -209,7 +216,7 @@ const TestInterface = () => {
       ...visitedQuestions,
       [currentKey]: true,
     });
-    
+
     // If answer is given and question was marked for review, unmark it
     if (markedForReview[currentKey]) {
       setMarkedForReview(prev => {
@@ -240,7 +247,7 @@ const TestInterface = () => {
 
   const handleReviewLater = () => {
     const currentKey = `${currentSubject}-${currentQuestion}`;
-    
+
     // Toggle mark for review state
     if (markedForReview[currentKey]) {
       // Unmark if already marked
@@ -362,7 +369,9 @@ const TestInterface = () => {
         toast.success("Test submitted successfully!", {
           duration: 5000,
         });
-        window.location.href = "/test-plan-result";
+        localStorage.setItem("testSubmitted", "true"); // store flag
+        router.replace("/test-plan-result");
+
       } else {
         toast.error("Failed to submit test.", {
           duration: 5000,
@@ -494,11 +503,10 @@ const TestInterface = () => {
             {selectedSubjects.map((subject) => (
               <button
                 key={subject.name}
-                className={`px-3 sm:px-5 py-1.5 flex items-center gap-2 rounded-md transition-all duration-300 text-sm sm:text-base ${
-                  currentSubject === subject.name
-                    ? "bg-blue-600 text-white font-semibold shadow-sm"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-3 sm:px-5 py-1.5 flex items-center gap-2 rounded-md transition-all duration-300 text-sm sm:text-base ${currentSubject === subject.name
+                  ? "bg-blue-600 text-white font-semibold shadow-sm"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
                 onClick={() => {
                   setCurrentSubject(subject.name);
                   setCurrentQuestion(0);
@@ -552,9 +560,8 @@ const TestInterface = () => {
 
         {/* Question Section */}
         <div
-          className={`w-full lg:w-3/4 select-none ${
-            showQuestionPanel ? "hidden lg:block" : "block"
-          }`}
+          className={`w-full lg:w-3/4 select-none ${showQuestionPanel ? "hidden lg:block" : "block"
+            }`}
         >
           <div className="bg-white rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
             {/* Question Header */}
@@ -565,21 +572,20 @@ const TestInterface = () => {
 
               <div className="flex flex-wrap gap-2">
                 <span
-                  className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
-                    markedForReview[`${currentSubject}-${currentQuestion}`]
-                      ? "bg-amber-100 text-amber-800"
-                      : answers[`${currentSubject}-${currentQuestion}`] !==
-                        undefined
+                  className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${markedForReview[`${currentSubject}-${currentQuestion}`]
+                    ? "bg-amber-100 text-amber-800"
+                    : answers[`${currentSubject}-${currentQuestion}`] !==
+                      undefined
                       ? "bg-green-100 text-green-800"
                       : "bg-blue-100 text-blue-800"
-                  }`}
+                    }`}
                 >
                   {markedForReview[`${currentSubject}-${currentQuestion}`]
                     ? "Review"
                     : answers[`${currentSubject}-${currentQuestion}`] !==
                       undefined
-                    ? "Answered"
-                    : "Not Answered"}
+                      ? "Answered"
+                      : "Not Answered"}
                 </span>
                 <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                   {currentSubject}
@@ -631,18 +637,16 @@ const TestInterface = () => {
                           />
                           <label
                             htmlFor={`${inputName}-${index}`}
-                            className={`flex items-start cursor-pointer w-full px-3 sm:px-5 py-3 sm:py-3 rounded-lg border transition-all duration-300 text-sm sm:text-base ${
-                              isSelected
-                                ? "bg-blue-600 text-white border-blue-600 shadow-md"
-                                : "bg-white hover:bg-gray-50 border-gray-200"
-                            }`}
+                            className={`flex items-start cursor-pointer w-full px-3 sm:px-5 py-3 sm:py-3 rounded-lg border transition-all duration-300 text-sm sm:text-base ${isSelected
+                              ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                              : "bg-white hover:bg-gray-50 border-gray-200"
+                              }`}
                           >
                             <span
-                              className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full mr-3 sm:mr-3 border-2 font-bold text-sm sm:text-lg flex-shrink-0 mt-0.5 ${
-                                isSelected
-                                  ? "bg-blue-500 text-white border-blue-500"
-                                  : "bg-gray-200 text-blue-600 border-gray-300"
-                              }`}
+                              className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full mr-3 sm:mr-3 border-2 font-bold text-sm sm:text-lg flex-shrink-0 mt-0.5 ${isSelected
+                                ? "bg-blue-500 text-white border-blue-500"
+                                : "bg-gray-200 text-blue-600 border-gray-300"
+                                }`}
                             >
                               {serialLetter}
                             </span>
@@ -666,11 +670,10 @@ const TestInterface = () => {
                   <button
                     onClick={() => handleNavigation("prev")}
                     disabled={currentQuestion === 0}
-                    className={`flex-1 px-4 py-2.5 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm font-medium ${
-                      currentQuestion === 0
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                    }`}
+                    className={`flex-1 px-4 py-2.5 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm font-medium ${currentQuestion === 0
+                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                      }`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -773,11 +776,10 @@ const TestInterface = () => {
                 <button
                   onClick={() => handleNavigation("prev")}
                   disabled={currentQuestion === 0}
-                  className={`px-4 sm:px-6 py-2 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm sm:text-base ${
-                    currentQuestion === 0
-                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                  }`}
+                  className={`px-4 sm:px-6 py-2 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm sm:text-base ${currentQuestion === 0
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    }`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -875,11 +877,10 @@ const TestInterface = () => {
       bg-white rounded-l-xl lg:rounded-xl shadow-2xl lg:shadow-sm
       h-full flex flex-col
       transform transition-transform duration-300 ease-in-out
-      ${
-        showQuestionPanel
-          ? "translate-x-0"
-          : "translate-x-full lg:translate-x-0"
-      }
+      ${showQuestionPanel
+                ? "translate-x-0"
+                : "translate-x-full lg:translate-x-0"
+              }
     `}
           >
             {/* Panel Header */}
@@ -951,17 +952,16 @@ const TestInterface = () => {
                 {Array.from({ length: allocatedQuestions }).map((_, index) => (
                   <button
                     key={index}
-                    className={`w-full aspect-square flex items-center justify-center text-xs sm:text-sm rounded-md transition-all font-medium ${
-                      currentQuestion === index
-                        ? "bg-blue-600 text-white border-2 border-blue-700 shadow-md"
-                        : markedForReview[`${currentSubject}-${index}`]
+                    className={`w-full aspect-square flex items-center justify-center text-xs sm:text-sm rounded-md transition-all font-medium ${currentQuestion === index
+                      ? "bg-blue-600 text-white border-2 border-blue-700 shadow-md"
+                      : markedForReview[`${currentSubject}-${index}`]
                         ? "bg-amber-500 text-white"
                         : answers[`${currentSubject}-${index}`] !== undefined
-                        ? "bg-green-500 text-white"
-                        : visitedQuestions[`${currentSubject}-${index}`]
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-300 text-gray-700 hover:bg-gray-400"
-                    }`}
+                          ? "bg-green-500 text-white"
+                          : visitedQuestions[`${currentSubject}-${index}`]
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                      }`}
                     onClick={() => {
                       setCurrentQuestion(index);
                       if (!visitedQuestions[`${currentSubject}-${index}`]) {

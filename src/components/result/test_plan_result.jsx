@@ -76,19 +76,13 @@ const TestPlanResultPage = () => {
 
   // ⛔ BLOCK BROWSER BACK/FORWARD BUTTONS COMPLETELY
   useEffect(() => {
-    // Prevent any navigation away from this page using browser buttons
-    const blockNavigation = (event) => {
-      // Store the current scroll position
+    window.history.pushState(null, "", window.location.href);
+    const blockBack = () => {
       window.history.pushState(null, "", window.location.href);
     };
+    window.addEventListener("popstate", blockBack);
 
-    // Push current state to history and set up blocker
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", blockNavigation);
-
-    return () => {
-      window.removeEventListener("popstate", blockNavigation);
-    };
+    return () => window.removeEventListener("popstate", blockBack);
   }, []);
 
   // SECOND useEffect - Process exam results
@@ -171,13 +165,16 @@ const TestPlanResultPage = () => {
   }, []);
 
   const handleRetakeTest = () => {
-    // Instead of going back to test, redirect to examplan like Exit button
-    router.push("/examplan");
+    // ✅ remove all test related data
     localStorage.removeItem("selectedSubjects");
     localStorage.removeItem("startTest");
     localStorage.removeItem("examplan");
     localStorage.removeItem("testStartTime");
+    localStorage.removeItem("testSubmitted"); // ✅ IMPORTANT
+
+    router.replace("/testinterfaceplan"); // ✅ replace to avoid back nav
   };
+
 
   const percent = totalMax ? Math.round((totalScore / totalMax) * 100) : 0;
 
@@ -307,12 +304,15 @@ const TestPlanResultPage = () => {
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
               onClick={() => {
-                router.push("/examplan");
                 localStorage.removeItem("selectedSubjects");
                 localStorage.removeItem("startTest");
                 localStorage.removeItem("examplan");
                 localStorage.removeItem("testStartTime");
+                localStorage.removeItem("testSubmitted"); // ✅ IMPORTANT
+
+                router.replace("/examplan"); // ✅ avoid history back
               }}
+
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
