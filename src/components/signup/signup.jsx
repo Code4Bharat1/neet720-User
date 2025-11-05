@@ -328,6 +328,11 @@ const SignUpPage = () => {
                 />
               </div>
 
+              {/* Mobile Number Note */}
+              <p className="text-xs text-gray-600 mt-1">
+                After entering the number click on the send OTP button to verify the number.
+              </p>
+
               {!otpSent && (
                 <button
                   type="button"

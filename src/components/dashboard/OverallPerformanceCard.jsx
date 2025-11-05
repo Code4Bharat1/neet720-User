@@ -20,11 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { withinRange } from "@/lib/dateFilters";
 
 const OverallPerformanceCard = ({ selectedFilter = "This Year" }) => {
   const [data, setData] = useState([]);
@@ -38,7 +34,7 @@ const OverallPerformanceCard = ({ selectedFilter = "This Year" }) => {
         setLoading(true);
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/testcount`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/success`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,91 +42,26 @@ const OverallPerformanceCard = ({ selectedFilter = "This Year" }) => {
           }
         );
 
-        const rawData = response.data;
-        const currentDate = new Date();
+        const filtered = response.data.filter((t) => withinRange(selectedFilter, t.updatedAt));
 
-        const isSameYear = (date) =>
-          new Date(date).getFullYear() === currentDate.getFullYear();
-        const isSameMonth = (date) =>
-          isSameYear(date) &&
-          new Date(date).getMonth() === currentDate.getMonth();
-        const isSameWeek = (date) => {
-          const testDate = new Date(date);
-          const weekStart = new Date(currentDate);
-          weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-          return testDate >= weekStart;
-        };
-
-        let labels = [];
-        let performanceData = [];
-
-        if (selectedFilter === "This Year") {
-          labels = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ];
-          performanceData = labels.map((month, index) => {
-            const count = Object.values(rawData).reduce((total, test) => {
-              const testDate = new Date(test.updatedAt);
-              return (
-                total +
-                (isSameYear(test.updatedAt) && testDate.getMonth() === index
-                  ? 1
-                  : 0)
-              );
-            }, 0);
-            return { label: month, performance: count };
-          });
-        } else if (selectedFilter === "This Month") {
-          labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-          performanceData = labels.map((week, index) => {
-            const count = Object.values(rawData).reduce((total, test) => {
-              const testDate = new Date(test.updatedAt);
-              const weekNumber = Math.floor(testDate.getDate() / 7);
-              return (
-                total +
-                (isSameMonth(test.updatedAt) && weekNumber === index ? 1 : 0)
-              );
-            }, 0);
-            return { label: week, performance: count };
-          });
-        } else if (selectedFilter === "This Week") {
-          labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-          performanceData = labels.map((day, index) => {
-            const count = Object.values(rawData).reduce((total, test) => {
-              const testDate = new Date(test.updatedAt);
-              return (
-                total +
-                (isSameWeek(test.updatedAt) && testDate.getDay() === index
-                  ? 1
-                  : 0)
-              );
-            }, 0);
-            return { label: day, performance: count };
-          });
-        }
+        const points = filtered.map((t, i) => ({
+          name: `Test ${i + 1}`,
+          Score: ((t.Physics + t.Chemistry + t.Biology) / 3).toFixed(2),
+        }));
 
         // Calculate average performance
-        const totalPerformance = performanceData.reduce(
-          (sum, item) => sum + item.performance,
+        const totalPerformance = points.reduce(
+          (sum, item) => sum + parseFloat(item.Score),
           0
         );
-        const avgPerformance = totalPerformance / performanceData.length || 0;
+        const avgPerformance = totalPerformance / points.length || 0;
         setAvgPerformance(avgPerformance);
-        setData(performanceData);
-        setLoading(false);
+        setData(points);
+        setError(null);
       } catch (err) {
         setError("Failed to load performance data");
+        console.error("Error fetching performance data:", err);
+      } finally {
         setLoading(false);
       }
     };
@@ -140,54 +71,83 @@ const OverallPerformanceCard = ({ selectedFilter = "This Year" }) => {
 
   if (loading) {
     return (
-      <Card className="flex items-center justify-center h-48">
-        <CardContent>
-          <p className="text-center text-gray-500">Loading...</p>
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Performance</CardTitle>
+          <CardDescription>Trend of average score over time</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div>Loading...</div>
         </CardContent>
       </Card>
     );
   }
 
-  const isImproving = avgPerformance > 50; // Change logic as needed
-  const trendPercentage = ((avgPerformance / 100) * 100).toFixed(1);
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Performance</CardTitle>
+          <CardDescription>Trend of average score over time</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-red-500">{error}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Performance</CardTitle>
+          <CardDescription>Trend of average score over time</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-gray-400">No data for {selectedFilter}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const isImproving = data.length >= 2 
+    ? parseFloat(data[data.length - 1].Score) > parseFloat(data[0].Score)
+    : false;
+    
+  const trendPercentage = data.length >= 2
+    ? Math.abs(((parseFloat(data[data.length - 1].Score) - parseFloat(data[0].Score)) / parseFloat(data[0].Score) * 100)).toFixed(1)
+    : 0;
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Overall Performance</CardTitle>
-        <CardDescription>Performance trend over time</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <LineChart 
-            data={data} 
-            margin={{ 
-              left: 12, 
-              right: 12, 
-              top: 20, 
-              bottom: 30 
-            }}
-          >
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="label" 
-              interval={0}
-              angle={selectedFilter === "This Year" ? -45 : 0}
-              textAnchor={selectedFilter === "This Year" ? "end" : "middle"}
-              height={selectedFilter === "This Year" ? 60 : 30}
-              tick={{ fontSize: 12 }}
-            />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="performance"
-              stroke={isImproving ? "green" : "red"}
-              strokeWidth={2}
-              dot={{ r: 3 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </CardContent>
+  <CardHeader>
+    <CardTitle>Overall Performance</CardTitle>
+    <CardDescription>Trend of average score over time</CardDescription>
+  </CardHeader>
+
+  {/* ✅ Give the container an explicit height per breakpoint */}
+  <CardContent className="w-full py-4 overflow-visible">
+    <div className="w-full h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <Tooltip formatter={(value) => [`${value}%`, "Score"]} />
+          <Line
+            type="monotone"
+            dataKey="Score"
+            stroke="#1E66F5"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div
           className={`flex gap-2 font-medium leading-none ${

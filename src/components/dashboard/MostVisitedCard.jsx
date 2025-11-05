@@ -34,7 +34,6 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
     return start;
   };
 
-
   const isSameDay = (testDate, currentDate) => {
     const test = getStartOfDay(testDate);
     const current = getStartOfDay(currentDate);
@@ -385,56 +384,128 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
         </div>
 
         {/* Chart */}
-        <div className="w-full h-full md:h-64 lg:h-72">
-          <ResponsiveContainer width="110%" height="100%">
-            <PieChart>
+        <div className="w-full flex justify-center items-center overflow-visible min-h-[260px] md:min-h-[280px] lg:min-h-[300px]">
+          <ResponsiveContainer width="100%" height={260}>
+            <PieChart margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
+              <defs>
+                {/* ✨ Gradient fills for each test type */}
+                <linearGradient id="blueGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#1E66F5" />
+                  <stop offset="100%" stopColor="#4FACFE" />
+                </linearGradient>
+                <linearGradient id="orangeGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#FFA500" />
+                  <stop offset="100%" stopColor="#FFCE00" />
+                </linearGradient>
+                <linearGradient id="redGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#FF3B30" />
+                  <stop offset="100%" stopColor="#FF6B6B" />
+                </linearGradient>
+              </defs>
+
               <Pie
                 data={graphData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={2}
+                innerRadius={55}
+                outerRadius={85}
+                paddingAngle={3}
+                cornerRadius={6}
                 dataKey="value"
-
-                label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                 labelLine={false}
-                labelPosition="inside"
+                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+                  const RAD = Math.PI / 180;
+                  const r = innerRadius + (outerRadius - innerRadius) * 0.6;
+                  const x = cx + r * Math.cos(-midAngle * RAD);
+                  const y = cy + r * Math.sin(-midAngle * RAD);
+                  const shortName = name.replace(" Tests", "");
+                  const pct = `${(percent * 100).toFixed(0)}%`;
+                  const isSmallScreen =
+                    typeof window !== "undefined" && window.innerWidth < 380;
 
+                  return (
+                    <text
+                      x={x}
+                      y={y}
+                      fill="#222"
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fontSize={isSmallScreen ? 10 : 12}
+                      fontWeight="600"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      {isSmallScreen ? (
+                        <>
+                          <tspan x={x} dy="-0.4em">{shortName}</tspan>
+                          <tspan x={x} dy="1.2em">{pct}</tspan>
+                        </>
+                      ) : (
+                        <>
+                          <tspan x={x} dy="-0.4em">{shortName}</tspan>
+                          <tspan x={x} dy="1.2em">{pct}</tspan>
+                        </>
+                      )}
+                    </text>
+                  );
+                }}
               >
-                {graphData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                {/* ✨ Apply gradients for better visual depth */}
+                {graphData.map((entry, i) => (
+                  <Cell
+                    key={i}
+                    fill={
+                      entry.name.includes("Full")
+                        ? "url(#blueGradient)"
+                        : entry.name.includes("Recommended")
+                          ? "url(#orangeGradient)"
+                          : "url(#redGradient)"
+                    }
+                    stroke="#fff"
+                    strokeWidth={2}
+                  />
                 ))}
               </Pie>
+
               <Tooltip
-                formatter={(value) => [`${value} tests`, 'Count']}
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  borderRadius: "8px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
+                }}
+                labelStyle={{ color: "#111", fontWeight: "600" }}
+                formatter={(value, name) => [`${value} tests`, name]}
               />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Data Table */}
+
+
+        {/* Data Table - Mobile responsive */}
         <div className="w-full mt-4">
-          <div className="flex justify-between border-b pb-2 text-gray-500 text-sm font-medium">
-            <span>TEST NAME</span>
-            <span>TOTAL TESTS (%)</span>
+          <div className="flex justify-between border-b pb-2 text-gray-500 text-xs sm:text-sm font-medium">
+            <span className="truncate pr-2">TEST NAME</span>
+            <span className="truncate pl-2">TOTAL TESTS (%)</span>
           </div>
           {data.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-3 border-b">
-              <div className="flex items-center gap-3">
+            <div key={index} className="flex justify-between items-center py-2 sm:py-3 border-b">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
                 <span
-                  className="w-3 h-3 rounded-full"
+                  className="w-3 h-3 rounded-full shrink-0"
                   style={{ backgroundColor: item.color }}
                 ></span>
-                <span className="text-gray-700 text-sm font-medium">{item.name}</span>
+                <span className="text-gray-700 text-xs sm:text-sm font-medium truncate">
+                  {item.name}
+                </span>
               </div>
-              <div className="text-right">
-                <div className="text-sm font-semibold text-gray-900">
+              <div className="text-right min-w-0 pl-2">
+                <div className="text-xs sm:text-sm font-semibold text-gray-900 whitespace-nowrap">
                   {item.totalTests} tests
                 </div>
                 <div className={`text-xs ${parseFloat(item.value) < 33 ? "text-red-500" :
                   parseFloat(item.value) < 66 ? "text-yellow-500" : "text-green-500"
-                  }`}>
+                  } whitespace-nowrap`}>
                   {item.value}%
                 </div>
               </div>

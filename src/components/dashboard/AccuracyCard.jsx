@@ -12,16 +12,21 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import axios from "axios";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { withinRange } from "@/lib/dateFilters";
 
 const AccuracyCard = ({ selectedFilter }) => {
   const [data, setData] = useState([]);
   const [avgAccuracy, setAvgAccuracy] = useState(0);
   const [isImproving, setIsImproving] = useState(false);
   const [trendPercentage, setTrendPercentage] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/success`,
@@ -33,7 +38,7 @@ const AccuracyCard = ({ selectedFilter }) => {
         );
         console.log("response :", response.data);
 
-        const rawData = response.data;
+        const rawData = response.data.filter((t) => withinRange(selectedFilter, t.updatedAt));
         const currentDate = new Date();
 
         const isSameYear = (date) =>
@@ -169,6 +174,9 @@ const AccuracyCard = ({ selectedFilter }) => {
 
       } catch (err) {
         console.error("Error fetching accuracy data:", err);
+        setError("Unable to load accuracy data");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -181,24 +189,69 @@ const AccuracyCard = ({ selectedFilter }) => {
   const TrendIcon = isImproving === null ? null : 
                     isImproving ? FaArrowUp : FaArrowDown;
 
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Accuracy Overview</CardTitle>
+          <CardDescription>Subject-wise accuracy across tests</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div>Loading...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Accuracy Overview</CardTitle>
+          <CardDescription>Subject-wise accuracy across tests</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-red-500">{error}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Accuracy Overview</CardTitle>
+          <CardDescription>Subject-wise accuracy across tests</CardDescription>
+        </CardHeader>
+        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+          <div className="text-gray-400">No data for {selectedFilter}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <div className="w-full max-w-sm p-5 bg-white rounded-2xl shadow-md">
-      <div className="flex justify-between items-center">
-        <h3 className="text-sm font-bold text-gray-500">ACCURACY</h3>
-        <span className={`flex items-center text-sm font-medium ${trendColor}`}>
-          {TrendIcon && <TrendIcon className="mr-1" />}
-          {trendPercentage > 0 ? `${trendPercentage}%` : '0%'} 
-          {isImproving !== null && (isImproving ? " Increase" : " Decrease")}
-        </span>
-      </div>
-
-      <h2 className="text-2xl font-bold mt-2">{avgAccuracy}%</h2>
-
-      <div className="w-full h-48 mt-4">
-        <ResponsiveContainer width="100%" height="100%">
+    <Card>
+      <CardHeader>
+        <CardTitle>ACCURACY</CardTitle>
+        <CardDescription>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-bold text-gray-500">ACCURACY</span>
+            <span className={`flex items-center text-sm font-medium ${trendColor}`}>
+              {TrendIcon && <TrendIcon className="mr-1" />}
+              {trendPercentage > 0 ? `${trendPercentage}%` : '0%'} 
+              {isImproving !== null && (isImproving ? " Increase" : " Decrease")}
+            </span>
+          </div>
+          <h2 className="text-2xl font-bold mt-2">{avgAccuracy}%</h2>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="w-full h-auto min-h-[320px]">
+        <ResponsiveContainer width="100%" height={260}>
           <LineChart 
             data={data} 
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis 
@@ -250,8 +303,8 @@ const AccuracyCard = ({ selectedFilter }) => {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

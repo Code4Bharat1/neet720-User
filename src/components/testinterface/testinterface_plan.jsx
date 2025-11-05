@@ -23,7 +23,7 @@ const subjects = [
 ];
 
 const TestInterface = () => {
-  //initailizing router
+  //initializing router
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false); // For controlling the modal visibility
   const [questionsData, setQuestionsData] = useState({});
@@ -1002,6 +1002,68 @@ const TestInterface = () => {
           </div>
         </div>
       </div>
+
+      {/* Tab Switch Warning Modal */}
+      {showTabSwitchWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Warning: Tab Switch Detected
+              </h3>
+              <p className="text-gray-600 mb-4">
+                You have switched tabs {tabSwitchCount} time(s). 
+                {tabSwitchCount < 2 
+                  ? ` You have ${2 - tabSwitchCount} warning(s) left. On the 3rd attempt, your test will be automatically submitted.`
+                  : " This is your final warning! Next tab switch will submit your test automatically."
+                }
+              </p>
+              <button
+                onClick={() => setShowTabSwitchWarning(false)}
+                className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium"
+              >
+                I Understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Warning Modal */}
+      {showFullscreenWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Warning: Fullscreen Mode Required
+              </h3>
+              <p className="text-gray-600 mb-4">
+                You have attempted to exit fullscreen {fullscreenExitCount} time(s). 
+                {fullscreenExitCount < 2 
+                  ? ` You have ${2 - fullscreenExitCount} warning(s) left. On the 3rd attempt, your test will be automatically submitted.`
+                  : " This is your final warning! Next attempt will submit your test automatically."
+                }
+              </p>
+              <button
+                onClick={() => setShowFullscreenWarning(false)}
+                className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium"
+              >
+                Continue Test
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isModalVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
