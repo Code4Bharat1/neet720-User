@@ -22,6 +22,13 @@ const ForgotPassword = () => {
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // API base URL from environment variables
 
+  const isStrongPassword = (password) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._])[A-Za-z\d@$!%*?&._]{8,}$/;
+    return regex.test(password);
+  };
+
+
   // Step 1: Send mobile number to request OTP
   const handleMobileSubmit = async (e) => {
     e.preventDefault();
@@ -63,11 +70,24 @@ const ForgotPassword = () => {
       setError('Please fill out all fields: OTP, new password, and confirm password.');
       return;
     }
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
 
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
+
+    // Check password strength
+    if (!isStrongPassword(newPassword)) {
+      setError(
+        'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+      );
+      return;
+    }
+
 
     try {
       const response = await axios.post(`${apiBaseUrl}/students/reset-password`, {
@@ -173,6 +193,7 @@ const ForgotPassword = () => {
               </div>
 
               <div className="mb-6">
+
                 <label htmlFor="newPassword" className="block text-sm font-bold text-gray-700 mb-2">
                   New Password
                 </label>
@@ -185,6 +206,9 @@ const ForgotPassword = () => {
                   className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter New Password"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Password must include 8+ characters, uppercase, lowercase, number & special symbol.
+                </p>
               </div>
 
               <div className="mb-6">

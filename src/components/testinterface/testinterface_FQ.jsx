@@ -98,45 +98,45 @@ const QuizInterface = () => {
   const DifficultyIcon = difficultySettings[difficulty].icon
 
   // Fullscreen escape handler
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      if (
-        !document.fullscreenElement &&
-        !document.webkitFullscreenElement &&
-        !document.msFullscreenElement &&
-        !document.mozFullscreenElement
-      ) {
-        router.push("/testselection")
-      }
-    }
+  // useEffect(() => {
+  //   const handleFullScreenChange = () => {
+  //     if (
+  //       !document.fullscreenElement &&
+  //       !document.webkitFullscreenElement &&
+  //       !document.msFullscreenElement &&
+  //       !document.mozFullscreenElement
+  //     ) {
+  //       router.push("/testselection")
+  //     }
+  //   }
 
-    document.addEventListener("fullscreenchange", handleFullScreenChange)
-    document.addEventListener("webkitfullscreenchange", handleFullScreenChange)
-    document.addEventListener("mozfullscreenchange", handleFullScreenChange)
-    document.addEventListener("MSFullscreenChange", handleFullScreenChange)
+  //   document.addEventListener("fullscreenchange", handleFullScreenChange)
+  //   document.addEventListener("webkitfullscreenchange", handleFullScreenChange)
+  //   document.addEventListener("mozfullscreenchange", handleFullScreenChange)
+  //   document.addEventListener("MSFullscreenChange", handleFullScreenChange)
 
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange)
-      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange)
-      document.removeEventListener("mozfullscreenchange", handleFullScreenChange)
-      document.removeEventListener("MSFullscreenChange", handleFullScreenChange)
-    }
-  }, [router])
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullScreenChange)
+  //     document.removeEventListener("webkitfullscreenchange", handleFullScreenChange)
+  //     document.removeEventListener("mozfullscreenchange", handleFullScreenChange)
+  //     document.removeEventListener("MSFullscreenChange", handleFullScreenChange)
+  //   }
+  // }, [router])
 
-  //prevent reload on F5 or Ctrl+R
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      if (!quizCompleted) {
-        event.preventDefault()
-        event.returnValue = ""
-      }
-    }
+  // //prevent reload on F5 or Ctrl+R
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     if (!quizCompleted) {
+  //       event.preventDefault()
+  //       event.returnValue = ""
+  //     }
+  //   }
 
-    window.addEventListener("beforeunload", handleBeforeUnload)
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-    }
-  }, [])
+  //   window.addEventListener("beforeunload", handleBeforeUnload)
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload)
+  //   }
+  // }, [])
 
   useEffect(() => {
     fetchQuestions()
@@ -654,7 +654,7 @@ const QuizInterface = () => {
             </button>
 
             <button
-              onClick={() => router.push("/testselection")}
+              onClick={() => router.replace("/testselection")}
               className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 rounded-2xl font-semibold hover:from-slate-300 hover:to-slate-400 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Home className="w-5 h-5" />

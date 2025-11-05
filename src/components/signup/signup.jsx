@@ -226,7 +226,7 @@ const SignUpPage = () => {
   /* =========================================================
      🔹 UI RENDER
   ========================================================= */
- return (
+  return (
     <div className="flex flex-wrap bg-gradient-to-b from-[#0077B6] to-[#ADE8F4] min-h-screen">
       {/* Left side logo */}
       <div className="hidden md:flex md:w-[40%] items-center justify-center">
@@ -383,18 +383,9 @@ const SignUpPage = () => {
                   {showPassword.password ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
                 </span>
               </div>
-              
-              {/* Password Note */}
-              <div className="text-xs text-gray-600 mt-1">
-                <p>Password must contain:</p>
-                <ul className="list-disc list-inside ml-2">
-                  <li>At least 8 characters</li>
-                  <li>One uppercase letter (A-Z)</li>
-                  <li>One lowercase letter (a-z)</li>
-                  <li>One number (0-9)</li>
-                  <li>One special character (!@#$%^&*)</li>
-                </ul>
-              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Password must include 8+ characters, uppercase, lowercase, number & special symbol.
+              </p>
             </div>
 
             <div>

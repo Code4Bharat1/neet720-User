@@ -621,7 +621,7 @@ const TestInterface = () => {
       toast.success(response.data.message, {
         duration: 5000,
       });
-      router.push("/resultCT");
+      router.replace("/resultCT");
     } catch (error) {
       toast.error("Error submitting test!", {
         duration: 5000,

@@ -62,35 +62,14 @@ const TestPlanResultPage = () => {
 
   // Set test completion flag and block navigation
   useEffect(() => {
-    // Mark test as completed
-    localStorage.setItem("testCompleted", "true");
-
-    // Prevent any navigation back to test interface
-    const blockNavigation = (event) => {
-      // Clear test data and redirect to examplan
-      localStorage.removeItem("selectedSubjects");
-      localStorage.removeItem("startTest");
-      localStorage.removeItem("examplan");
-      localStorage.removeItem("testStartTime");
-      router.replace("/examplan");
-    };
-
-    // Block browser back/forward buttons
     window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", blockNavigation);
-
-    // Handle page refresh/closing
-    const handleBeforeUnload = (event) => {
-      localStorage.setItem("testCompleted", "true");
+    const blockBack = () => {
+      window.history.pushState(null, "", window.location.href);
     };
+    window.addEventListener("popstate", blockBack);
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("popstate", blockNavigation);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [router]);
+    return () => window.removeEventListener("popstate", blockBack);
+  }, []);
 
   // Process exam results
   useEffect(() => {
@@ -171,24 +150,16 @@ const TestPlanResultPage = () => {
   }, []);
 
   const handleRetakeTest = () => {
-    // Clear test completion flag for new test
-    localStorage.removeItem("testCompleted");
-    router.push("/examplan");
+    // ✅ remove all test related data
     localStorage.removeItem("selectedSubjects");
     localStorage.removeItem("startTest");
     localStorage.removeItem("examplan");
     localStorage.removeItem("testStartTime");
+    localStorage.removeItem("testSubmitted"); // ✅ IMPORTANT
+
+    router.replace("/testinterfaceplan"); // ✅ replace to avoid back nav
   };
 
-  const handleExit = () => {
-    // Clear test completion flag
-    localStorage.removeItem("testCompleted");
-    router.push("/examplan");
-    localStorage.removeItem("selectedSubjects");
-    localStorage.removeItem("startTest");
-    localStorage.removeItem("examplan");
-    localStorage.removeItem("testStartTime");
-  };
 
   const percent = totalMax ? Math.round((totalScore / totalMax) * 100) : 0;
 
@@ -306,7 +277,16 @@ const TestPlanResultPage = () => {
             </motion.button>
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={handleExit}
+              onClick={() => {
+                localStorage.removeItem("selectedSubjects");
+                localStorage.removeItem("startTest");
+                localStorage.removeItem("examplan");
+                localStorage.removeItem("testStartTime");
+                localStorage.removeItem("testSubmitted"); // ✅ IMPORTANT
+
+                router.replace("/examplan"); // ✅ avoid history back
+              }}
+
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

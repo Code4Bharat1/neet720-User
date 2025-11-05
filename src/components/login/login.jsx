@@ -22,15 +22,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      // Detect if user entered an email or mobile number
       const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.loginId);
       const isMobile = /^[0-9]{10}$/.test(formData.loginId);
 
-      const payload = {
-        password: formData.password,
-      };
+      const payload = { password: formData.password };
 
       if (isEmail) {
         payload.emailAddress = formData.loginId;
@@ -47,7 +43,12 @@ const Login = () => {
         payload
       );
 
+      // ✅ Clear local storage on login
+      localStorage.clear();
+
+      // ✅ Save token after clearing
       localStorage.setItem("authToken", response.data.token);
+
       toast.success("✅ Login Successfully!", { duration: 4000 });
       router.push("/dashboard");
     } catch (err) {

@@ -272,14 +272,14 @@ const ResultPage = () => {
               <button
                 onClick={() => {
                   localStorage.removeItem("testAnswers");
-                  router.push("/testinterfaceCT");
+                  router.replace("/testinterfaceCT");
                 }}
                 className="bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 Retake Test
               </button>
               <button
-                onClick={() => router.push("/testselection")}
+                onClick={() => router.replace("/testselection")}
                 className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors font-medium"
               >
                 Exit

@@ -41,149 +41,36 @@ const TestInterface = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testEndTime, setTestEndTime] = useState(null);
   const [showQuestionPanel, setShowQuestionPanel] = useState(false);
-  
-  // Tab switching detection states
-  const [tabSwitchCount, setTabSwitchCount] = useState(0);
-  const [showTabSwitchWarning, setShowTabSwitchWarning] = useState(false);
-  const [fullscreenExitCount, setFullscreenExitCount] = useState(0);
-  const [showFullscreenWarning, setShowFullscreenWarning] = useState(false);
+  //use effect to handle the full screen escape
+  // useEffect (()=>{
+  //   const handleFullScreenChange = () =>{
+  //     if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullscreenElement && !document.msFullscreenElement) {
+  //       //push the page if the full screen exits
+  //       router.push("/testselection");
+  //     }
+  //   }
 
-  // Prevent access if test was already completed
+  //   document.addEventListener("FullscreenElement", handleFullScreenChange);
+  //   document.addEventListener("webkitFullscreenElement", handleFullScreenChange);
+  //   document.addEventListener("MSFullscreenChange", handleFullScreenChange);
+  //   document.addEventListener("mozFullscreenElement", handleFullScreenChange);
+
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullScreenChange);
+  //     document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
+  //     document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
+  //     document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
+  //   }
+
+  // },[])
+
+  //block re-entry if submitted
   useEffect(() => {
-    const testCompleted = localStorage.getItem("testCompleted");
-    if (testCompleted === "true") {
-      toast.error("Test already completed! Redirecting to exam plan...");
-      router.replace("/examplan");
-      return;
+    if (localStorage.getItem("testSubmitted") === "true") {
+      router.replace("/test-plan-result");
     }
-  }, [router]);
-
-  // Tab visibility detection
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        // Tab switched or minimized
-        const newCount = tabSwitchCount + 1;
-        setTabSwitchCount(newCount);
-        
-        if (newCount <= 2) {
-          setShowTabSwitchWarning(true);
-          toast.error(`Warning ${newCount}/2: Do not switch tabs!`, {
-            duration: 4000,
-          });
-        } else {
-          // 3rd attempt - auto submit
-          toast.error("Test submitted due to multiple tab switches!", {
-            duration: 3000,
-          });
-          handleSubmit();
-        }
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [tabSwitchCount]);
-
-  // Fullscreen exit detection and prevention
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      if (!document.fullscreenElement && 
-          !document.webkitFullscreenElement && 
-          !document.mozFullScreenElement && 
-          !document.msFullscreenElement) {
-        
-        const newCount = fullscreenExitCount + 1;
-        setFullscreenExitCount(newCount);
-        
-        if (newCount <= 2) {
-          setShowFullscreenWarning(true);
-          toast.error(`Warning ${newCount}/2: Do not exit fullscreen mode!`, {
-            duration: 4000,
-          });
-          
-          // Immediately re-enter fullscreen
-          setTimeout(() => {
-            enterFullscreen();
-          }, 100);
-        } else {
-          // 3rd attempt - auto submit
-          toast.error("Test submitted due to exiting fullscreen!", {
-            duration: 3000,
-          });
-          handleSubmit();
-        }
-      }
-    };
-
-    // Prevent keyboard shortcuts (especially ESC)
-    const handleKeyDown = (e) => {
-      // Prevent F11, ESC, and other common fullscreen exit keys
-      if (
-        e.key === 'F11' || 
-        e.key === 'Escape' || 
-        (e.ctrlKey && e.key === 'f') ||
-        (e.altKey && e.key === 'Enter')
-      ) {
-        e.preventDefault();
-        const newCount = fullscreenExitCount + 1;
-        setFullscreenExitCount(newCount);
-        
-        if (newCount <= 2) {
-          setShowFullscreenWarning(true);
-          toast.error(`Warning ${newCount}/2: Do not exit fullscreen mode!`, {
-            duration: 4000,
-          });
-        } else {
-          toast.error("Test submitted due to exiting fullscreen!", {
-            duration: 3000,
-          });
-          handleSubmit();
-        }
-        return false;
-      }
-    };
-
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
-    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("mozfullscreenchange", handleFullScreenChange);
-      document.removeEventListener("MSFullscreenChange", handleFullScreenChange);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [fullscreenExitCount]);
-
-  // Request fullscreen when component mounts
-  const enterFullscreen = async () => {
-    try {
-      const element = document.documentElement;
-      if (element.requestFullscreen) {
-        await element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) {
-        await element.webkitRequestFullscreen();
-      } else if (element.mozRequestFullScreen) {
-        await element.mozRequestFullScreen();
-      } else if (element.msRequestFullscreen) {
-        await element.msRequestFullscreen();
-      }
-    } catch (error) {
-      console.log("Fullscreen not supported:", error);
-    }
-  };
-
-  useEffect(() => {
-    enterFullscreen();
   }, []);
-
+  
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -329,7 +216,7 @@ const TestInterface = () => {
       ...visitedQuestions,
       [currentKey]: true,
     });
-    
+
     // If answer is given and question was marked for review, unmark it
     if (markedForReview[currentKey]) {
       setMarkedForReview(prev => {
@@ -360,7 +247,7 @@ const TestInterface = () => {
 
   const handleReviewLater = () => {
     const currentKey = `${currentSubject}-${currentQuestion}`;
-    
+
     // Toggle mark for review state
     if (markedForReview[currentKey]) {
       // Unmark if already marked
@@ -486,22 +373,9 @@ const TestInterface = () => {
         toast.success("Test submitted successfully!", {
           duration: 5000,
         });
-        
-        // Set test completion flag again to be safe
-        localStorage.setItem("testCompleted", "true");
-        
-        // Exit fullscreen before redirecting
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
-        }
-        
-        window.location.href = "/test-plan-result";
+        localStorage.setItem("testSubmitted", "true"); // store flag
+        router.replace("/test-plan-result");
+
       } else {
         toast.error("Failed to submit test.", {
           duration: 5000,
@@ -633,11 +507,10 @@ const TestInterface = () => {
             {selectedSubjects.map((subject) => (
               <button
                 key={subject.name}
-                className={`px-3 sm:px-5 py-1.5 flex items-center gap-2 rounded-md transition-all duration-300 text-sm sm:text-base ${
-                  currentSubject === subject.name
-                    ? "bg-blue-600 text-white font-semibold shadow-sm"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-3 sm:px-5 py-1.5 flex items-center gap-2 rounded-md transition-all duration-300 text-sm sm:text-base ${currentSubject === subject.name
+                  ? "bg-blue-600 text-white font-semibold shadow-sm"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
                 onClick={() => {
                   setCurrentSubject(subject.name);
                   setCurrentQuestion(0);
@@ -691,9 +564,8 @@ const TestInterface = () => {
 
         {/* Question Section */}
         <div
-          className={`w-full lg:w-3/4 select-none ${
-            showQuestionPanel ? "hidden lg:block" : "block"
-          }`}
+          className={`w-full lg:w-3/4 select-none ${showQuestionPanel ? "hidden lg:block" : "block"
+            }`}
         >
           <div className="bg-white rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
             {/* Question Header */}
@@ -704,21 +576,20 @@ const TestInterface = () => {
 
               <div className="flex flex-wrap gap-2">
                 <span
-                  className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
-                    markedForReview[`${currentSubject}-${currentQuestion}`]
-                      ? "bg-amber-100 text-amber-800"
-                      : answers[`${currentSubject}-${currentQuestion}`] !==
-                        undefined
+                  className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${markedForReview[`${currentSubject}-${currentQuestion}`]
+                    ? "bg-amber-100 text-amber-800"
+                    : answers[`${currentSubject}-${currentQuestion}`] !==
+                      undefined
                       ? "bg-green-100 text-green-800"
                       : "bg-blue-100 text-blue-800"
-                  }`}
+                    }`}
                 >
                   {markedForReview[`${currentSubject}-${currentQuestion}`]
                     ? "Review"
                     : answers[`${currentSubject}-${currentQuestion}`] !==
                       undefined
-                    ? "Answered"
-                    : "Not Answered"}
+                      ? "Answered"
+                      : "Not Answered"}
                 </span>
                 <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                   {currentSubject}
@@ -770,18 +641,16 @@ const TestInterface = () => {
                           />
                           <label
                             htmlFor={`${inputName}-${index}`}
-                            className={`flex items-start cursor-pointer w-full px-3 sm:px-5 py-3 sm:py-3 rounded-lg border transition-all duration-300 text-sm sm:text-base ${
-                              isSelected
-                                ? "bg-blue-600 text-white border-blue-600 shadow-md"
-                                : "bg-white hover:bg-gray-50 border-gray-200"
-                            }`}
+                            className={`flex items-start cursor-pointer w-full px-3 sm:px-5 py-3 sm:py-3 rounded-lg border transition-all duration-300 text-sm sm:text-base ${isSelected
+                              ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                              : "bg-white hover:bg-gray-50 border-gray-200"
+                              }`}
                           >
                             <span
-                              className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full mr-3 sm:mr-3 border-2 font-bold text-sm sm:text-lg flex-shrink-0 mt-0.5 ${
-                                isSelected
-                                  ? "bg-blue-500 text-white border-blue-500"
-                                  : "bg-gray-200 text-blue-600 border-gray-300"
-                              }`}
+                              className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full mr-3 sm:mr-3 border-2 font-bold text-sm sm:text-lg flex-shrink-0 mt-0.5 ${isSelected
+                                ? "bg-blue-500 text-white border-blue-500"
+                                : "bg-gray-200 text-blue-600 border-gray-300"
+                                }`}
                             >
                               {serialLetter}
                             </span>
@@ -805,11 +674,10 @@ const TestInterface = () => {
                   <button
                     onClick={() => handleNavigation("prev")}
                     disabled={currentQuestion === 0}
-                    className={`flex-1 px-4 py-2.5 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm font-medium ${
-                      currentQuestion === 0
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                    }`}
+                    className={`flex-1 px-4 py-2.5 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm font-medium ${currentQuestion === 0
+                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                      }`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -912,11 +780,10 @@ const TestInterface = () => {
                 <button
                   onClick={() => handleNavigation("prev")}
                   disabled={currentQuestion === 0}
-                  className={`px-4 sm:px-6 py-2 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm sm:text-base ${
-                    currentQuestion === 0
-                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                  }`}
+                  className={`px-4 sm:px-6 py-2 rounded-lg flex items-center justify-center space-x-1 transition-all text-sm sm:text-base ${currentQuestion === 0
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    }`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1014,11 +881,10 @@ const TestInterface = () => {
       bg-white rounded-l-xl lg:rounded-xl shadow-2xl lg:shadow-sm
       h-full flex flex-col
       transform transition-transform duration-300 ease-in-out
-      ${
-        showQuestionPanel
-          ? "translate-x-0"
-          : "translate-x-full lg:translate-x-0"
-      }
+      ${showQuestionPanel
+                ? "translate-x-0"
+                : "translate-x-full lg:translate-x-0"
+              }
     `}
           >
             {/* Panel Header */}
@@ -1090,17 +956,16 @@ const TestInterface = () => {
                 {Array.from({ length: allocatedQuestions }).map((_, index) => (
                   <button
                     key={index}
-                    className={`w-full aspect-square flex items-center justify-center text-xs sm:text-sm rounded-md transition-all font-medium ${
-                      currentQuestion === index
-                        ? "bg-blue-600 text-white border-2 border-blue-700 shadow-md"
-                        : markedForReview[`${currentSubject}-${index}`]
+                    className={`w-full aspect-square flex items-center justify-center text-xs sm:text-sm rounded-md transition-all font-medium ${currentQuestion === index
+                      ? "bg-blue-600 text-white border-2 border-blue-700 shadow-md"
+                      : markedForReview[`${currentSubject}-${index}`]
                         ? "bg-amber-500 text-white"
                         : answers[`${currentSubject}-${index}`] !== undefined
-                        ? "bg-green-500 text-white"
-                        : visitedQuestions[`${currentSubject}-${index}`]
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-300 text-gray-700 hover:bg-gray-400"
-                    }`}
+                          ? "bg-green-500 text-white"
+                          : visitedQuestions[`${currentSubject}-${index}`]
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                      }`}
                     onClick={() => {
                       setCurrentQuestion(index);
                       if (!visitedQuestions[`${currentSubject}-${index}`]) {
