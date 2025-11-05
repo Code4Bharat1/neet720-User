@@ -379,7 +379,7 @@ const TestInterface = () => {
       localStorage.setItem("currentTestID", response.data.testResult.id);
       if (response.status === 201) {
         toast.success("Test submitted successfully!", { duration: 5000 });
-        window.location.href = "/result";
+        router.replace("/result")
       } else {
         toast.error("Failed to submit test.", { duration: 5000 });
       }
