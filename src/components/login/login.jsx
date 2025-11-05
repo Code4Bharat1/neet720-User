@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -14,6 +14,15 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      // Prevent coming back to login page
+      router.replace("/dashboard");
+    }
+  }, []);
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,7 +59,7 @@ const Login = () => {
       localStorage.setItem("authToken", response.data.token);
 
       toast.success("✅ Login Successfully!", { duration: 4000 });
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to login.", {
         duration: 4000,

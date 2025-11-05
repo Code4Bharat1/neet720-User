@@ -241,7 +241,11 @@ const NavBar = () => {
                 Personal Data
               </button>
               <button
-                onClick={() => router.push("/login")}
+                onClick={() => {
+                  localStorage.removeItem("authToken");
+                  router.replace("/login");
+                }
+                }
                 className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full"
               >
                 <MdLogout className="mr-2 text-xl" />
