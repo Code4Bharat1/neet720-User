@@ -48,6 +48,16 @@ const TestInterface = () => {
   const [fullscreenExitCount, setFullscreenExitCount] = useState(0);
   const [showFullscreenWarning, setShowFullscreenWarning] = useState(false);
 
+  // Prevent access if test was already completed
+  useEffect(() => {
+    const testCompleted = localStorage.getItem("testCompleted");
+    if (testCompleted === "true") {
+      toast.error("Test already completed! Redirecting to exam plan...");
+      router.replace("/examplan");
+      return;
+    }
+  }, [router]);
+
   // Tab visibility detection
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -389,6 +399,10 @@ const TestInterface = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
+    
+    // Set test completion flag BEFORE any redirects
+    localStorage.setItem("testCompleted", "true");
+    
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       toast.error("Authentication failed! Please log in again.", {
@@ -472,6 +486,9 @@ const TestInterface = () => {
         toast.success("Test submitted successfully!", {
           duration: 5000,
         });
+        
+        // Set test completion flag again to be safe
+        localStorage.setItem("testCompleted", "true");
         
         // Exit fullscreen before redirecting
         if (document.exitFullscreen) {

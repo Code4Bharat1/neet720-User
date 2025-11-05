@@ -52,48 +52,48 @@ function normalizeExamplan(rawVal) {
   }
 }
 
-// put this near normalizeExamplan()
-function getStartTest() {
-  try {
-    const raw = localStorage.getItem("startTest");
-    if (!raw) return null;
-    const obj = typeof raw === "string" ? JSON.parse(raw) : raw;
-    if (!obj?.subject || !obj?.chapter || obj?.allocatedQuestions == null)
-      return null;
-    return obj;
-  } catch {
-    return null;
-  }
-}
-
 const TestPlanResultPage = () => {
   const router = useRouter();
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
-  const [subjects, setSubjects] = useState([]); // [{name, icon, bgColor, score, max, correct, wrong, unattempted}]
+  const [subjects, setSubjects] = useState([]);
   const [totalScore, setTotalScore] = useState(0);
   const [totalMax, setTotalMax] = useState(0);
 
-  // ⛔ BLOCK BROWSER BACK/FORWARD BUTTONS COMPLETELY
+  // Set test completion flag and block navigation
   useEffect(() => {
-    // Prevent any navigation away from this page using browser buttons
+    // Mark test as completed
+    localStorage.setItem("testCompleted", "true");
+
+    // Prevent any navigation back to test interface
     const blockNavigation = (event) => {
-      // Store the current scroll position
-      window.history.pushState(null, "", window.location.href);
+      // Clear test data and redirect to examplan
+      localStorage.removeItem("selectedSubjects");
+      localStorage.removeItem("startTest");
+      localStorage.removeItem("examplan");
+      localStorage.removeItem("testStartTime");
+      router.replace("/examplan");
     };
 
-    // Push current state to history and set up blocker
+    // Block browser back/forward buttons
     window.history.pushState(null, "", window.location.href);
     window.addEventListener("popstate", blockNavigation);
 
+    // Handle page refresh/closing
+    const handleBeforeUnload = (event) => {
+      localStorage.setItem("testCompleted", "true");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       window.removeEventListener("popstate", blockNavigation);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [router]);
 
-  // SECOND useEffect - Process exam results
+  // Process exam results
   useEffect(() => {
-    // Read from localStorage (support "examplan" and "examPlan")
     const raw =
       localStorage.getItem("examplan") ??
       localStorage.getItem("examPlan") ??
@@ -171,7 +171,18 @@ const TestPlanResultPage = () => {
   }, []);
 
   const handleRetakeTest = () => {
-    // Instead of going back to test, redirect to examplan like Exit button
+    // Clear test completion flag for new test
+    localStorage.removeItem("testCompleted");
+    router.push("/examplan");
+    localStorage.removeItem("selectedSubjects");
+    localStorage.removeItem("startTest");
+    localStorage.removeItem("examplan");
+    localStorage.removeItem("testStartTime");
+  };
+
+  const handleExit = () => {
+    // Clear test completion flag
+    localStorage.removeItem("testCompleted");
     router.push("/examplan");
     localStorage.removeItem("selectedSubjects");
     localStorage.removeItem("startTest");
@@ -264,9 +275,6 @@ const TestPlanResultPage = () => {
                 <span>
                   Wrong: <b>{subject.wrong}</b>
                 </span>
-                {/* <span>
-                  Unattempted: <b>{subject.unattempted}</b>
-                </span> */}
                 <span>
                   Total: <b>{subject.total}</b>
                 </span>
@@ -296,23 +304,9 @@ const TestPlanResultPage = () => {
             >
               Retake Test
             </motion.button>
-            {/* <motion.button
-              className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/analytics")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              View Analytics
-            </motion.button> */}
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => {
-                router.push("/examplan");
-                localStorage.removeItem("selectedSubjects");
-                localStorage.removeItem("startTest");
-                localStorage.removeItem("examplan");
-                localStorage.removeItem("testStartTime");
-              }}
+              onClick={handleExit}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
