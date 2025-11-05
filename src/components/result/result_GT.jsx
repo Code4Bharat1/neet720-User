@@ -167,7 +167,7 @@ const ResultPage = () => {
   }, []);
 
   const handleRetakeTest = () => {
-    router.push("/testinterfaceGT");
+    router.replace("/testinterfaceGT");
     localStorage.removeItem("testAnswers");
   };
 
@@ -282,7 +282,7 @@ const ResultPage = () => {
             </motion.button>
             <motion.button
               className="bg-[#303B59] text-white py-2.5 sm:py-3 px-6 sm:px-8 rounded-lg sm:rounded-xl w-full sm:w-72 md:w-64 text-center hover:bg-gray-800 transition-all shadow-md font-medium text-sm sm:text-base"
-              onClick={() => {router.push("/testselection");
+              onClick={() => {router.replace("/testselection");
                 localStorage.removeItem("testAnswers");
                 localStorage.removeItem("questionTime");
                 localStorage.removeItem("selectedChapters");
