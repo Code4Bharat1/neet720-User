@@ -367,7 +367,7 @@ const TestInterfacePYQ = () => {
     localStorage.setItem("scoreTotal", String(grandTotal));
     localStorage.setItem("scoreMax", String(maxMarks));
 
-    router.push("/resultPYQ");
+    router.replace("/resultPYQ");
   };
 
   useEffect(() => {
