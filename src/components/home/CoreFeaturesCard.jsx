@@ -42,7 +42,7 @@ export default function CoreFeatureComponent() {
   // Sample data array
   const pyqData = [
     {
-      title: "Mathematics PYQ",
+      title: "FUll Test",
       description:
         "Complete collection of previous year questions with detailed solutions",
       year: "2023",
@@ -72,10 +72,10 @@ export default function CoreFeatureComponent() {
     },
     {
       title: "FAST QUIZ",
-      description: "Previous year English literature examination papers",
+      description: "Previous year  Neet Questions literature examination papers",
       year: "2022",
-      subject: "English",
-      text2: "Review English PYQ",
+      subject: "Neet PYQ",
+      text2: "Review Neet PYQ",
     },
     {
       title: "RESULT SECTION",

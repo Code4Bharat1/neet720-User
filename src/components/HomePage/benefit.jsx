@@ -35,7 +35,7 @@ const benefitsData = [
 
 export default function BenefitsPage() {
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-[#E6F2FF] min-h-screen"> {/* Light Blue Background */}
       
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-[#0B3558] to-[#1a5a8a] py-16 sm:py-20 md:py-24 lg:py-28">
@@ -71,10 +71,9 @@ export default function BenefitsPage() {
               viewport={{ once: true, margin: '-100px' }}
               className="relative"
             >
-              <div className={`grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 md:gap-16 lg:gap-20 items-center ${
-                i % 2 === 1 ? '' : ''
-              }`}>
-                
+              <div
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 md:gap-16 lg:gap-20 items-center`}
+              >
                 {/* Image Side */}
                 <div className={`${i % 2 === 1 ? 'lg:order-2' : 'lg:order-1'} relative`}>
                   <motion.div
@@ -83,8 +82,12 @@ export default function BenefitsPage() {
                     className="relative group"
                   >
                     {/* Decorative element */}
-                    <div className={`absolute ${i % 2 === 0 ? '-top-6 -left-6' : '-top-6 -right-6'} w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-3xl -z-10`} />
-                    
+                    <div
+                      className={`absolute ${
+                        i % 2 === 0 ? '-top-6 -left-6' : '-top-6 -right-6'
+                      } w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-3xl -z-10`}
+                    />
+
                     {/* Image container */}
                     <div className="relative bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200">
                       <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-white">
@@ -96,9 +99,9 @@ export default function BenefitsPage() {
                           sizes="(max-width: 768px) 100vw, 50vw"
                         />
                       </div>
-                      
+
                       {/* Feature badge */}
-                      <div className="absolute -top-4 -right-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-bold shadow-lg">
+                      <div className="absolute -top-4 -right-4 bg-gradient-to-r from-[#149C9F] to-[#103F5D] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-bold shadow-lg">
                         Feature #{i + 1}
                       </div>
                     </div>
@@ -117,7 +120,7 @@ export default function BenefitsPage() {
                     {/* Title */}
                     <div>
                       <div className="inline-block mb-3 sm:mb-4">
-                        <span className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                        <span className="bg-gradient-to-r from-[#149C9F] to-[#103F5D] text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider">
                           Essential Tool
                         </span>
                       </div>
@@ -138,20 +141,26 @@ export default function BenefitsPage() {
                           whileHover={{ x: 8 }}
                           className="group cursor-default"
                         >
-                          <div className="relative bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-7 shadow-lg hover:shadow-xl border border-slate-200 hover:border-cyan-300 transition-all duration-300">
-                            {/* Gradient accent */}
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500 to-blue-600 rounded-l-xl sm:rounded-l-2xl" />
-                            
+                          {/* ✅ Gradient Box instead of white */}
+                          <div className="relative bg-gradient-to-r from-[#149C9F] to-[#103F5D] rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-7 shadow-lg hover:shadow-xl transition-all duration-300">
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-white/50 to-white/20 rounded-l-xl sm:rounded-l-2xl" />
                             <div className="flex items-start gap-4">
-                              {/* Icon */}
-                              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <svg
+                                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2.5}
+                                    d="M5 13l4 4L19 7"
+                                  />
                                 </svg>
                               </div>
-                              
-                              {/* Text */}
-                              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-700 font-medium leading-relaxed pt-1">
+                              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white font-medium leading-relaxed pt-1 drop-shadow-md">
                                 {point}
                               </p>
                             </div>
