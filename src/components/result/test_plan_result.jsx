@@ -52,29 +52,15 @@ function normalizeExamplan(rawVal) {
   }
 }
 
-// put this near normalizeExamplan()
-function getStartTest() {
-  try {
-    const raw = localStorage.getItem("startTest");
-    if (!raw) return null;
-    const obj = typeof raw === "string" ? JSON.parse(raw) : raw;
-    if (!obj?.subject || !obj?.chapter || obj?.allocatedQuestions == null)
-      return null;
-    return obj;
-  } catch {
-    return null;
-  }
-}
-
 const TestPlanResultPage = () => {
   const router = useRouter();
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
-  const [subjects, setSubjects] = useState([]); // [{name, icon, bgColor, score, max, correct, wrong, unattempted}]
+  const [subjects, setSubjects] = useState([]);
   const [totalScore, setTotalScore] = useState(0);
   const [totalMax, setTotalMax] = useState(0);
 
-  // ⛔ BLOCK BROWSER BACK/FORWARD BUTTONS COMPLETELY
+  // Set test completion flag and block navigation
   useEffect(() => {
     window.history.pushState(null, "", window.location.href);
     const blockBack = () => {
@@ -85,9 +71,8 @@ const TestPlanResultPage = () => {
     return () => window.removeEventListener("popstate", blockBack);
   }, []);
 
-  // SECOND useEffect - Process exam results
+  // Process exam results
   useEffect(() => {
-    // Read from localStorage (support "examplan" and "examPlan")
     const raw =
       localStorage.getItem("examplan") ??
       localStorage.getItem("examPlan") ??
@@ -261,9 +246,6 @@ const TestPlanResultPage = () => {
                 <span>
                   Wrong: <b>{subject.wrong}</b>
                 </span>
-                {/* <span>
-                  Unattempted: <b>{subject.unattempted}</b>
-                </span> */}
                 <span>
                   Total: <b>{subject.total}</b>
                 </span>
@@ -293,14 +275,6 @@ const TestPlanResultPage = () => {
             >
               Retake Test
             </motion.button>
-            {/* <motion.button
-              className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
-              onClick={() => router.push("/analytics")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              View Analytics
-            </motion.button> */}
             <motion.button
               className="bg-[#303B59] text-white py-2 px-8 rounded-md w-64 text-center hover:bg-gray-800"
               onClick={() => {

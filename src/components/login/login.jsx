@@ -28,46 +28,92 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.loginId);
-      const isMobile = /^[0-9]{10}$/.test(formData.loginId);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-      const payload = { password: formData.password };
+  // ✅ Validate empty inputs first
+  if (!formData.loginId.trim()) {
+    toast.error("Please enter your Email or Mobile Number", {
+      id: "login-error",
+      duration: 2000,
+    });
+    return;
+  }
 
-      if (isEmail) {
-        payload.emailAddress = formData.loginId;
-      } else if (isMobile) {
-        payload.mobileNumber = formData.loginId;
-      } else {
-        toast.error("Please enter a valid email or 10-digit mobile number");
-        setLoading(false);
-        return;
-      }
+  if (!formData.password.trim()) {
+    toast.error("Please enter your Password", {
+      id: "login-error",
+      duration: 2000,
+    });
+    return;
+  }
 
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/students/login`,
-        payload
-      );
+  setLoading(true);
 
-      // ✅ Clear local storage on login
-      localStorage.clear();
+  try {
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.loginId);
+    const isMobile = /^[0-9]{10}$/.test(formData.loginId);
 
-      // ✅ Save token after clearing
-      localStorage.setItem("authToken", response.data.token);
+    const payload = { password: formData.password };
 
-      toast.success("✅ Login Successfully!", { duration: 4000 });
-      router.replace("/dashboard");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to login.", {
-        duration: 4000,
+    if (isEmail) {
+      payload.emailAddress = formData.loginId;
+    } else if (isMobile) {
+      payload.mobileNumber = formData.loginId;
+    } else {
+      toast.error("Please enter a valid email or 10-digit mobile number", {
+        id: "login-error",
+        duration: 2000,
       });
-    } finally {
       setLoading(false);
+      return;
     }
-  };
+
+    // ✅ Make API call
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/students/login`,
+      payload
+    );
+
+    // ✅ Check if API actually returned a valid token
+    const token = response?.data?.token;
+
+    if (!token || typeof token !== "string" || token.trim() === "") {
+      toast.error("Invalid email or password", {
+        id: "login-error",
+        duration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+
+    // ✅ Everything passed — save and redirect
+    localStorage.clear();
+    localStorage.setItem("authToken", token);
+
+    toast.success("✅ Login Successfully!", {
+      id: "login-success",
+      duration: 3000,
+    });
+
+    router.replace("/dashboard");
+  } catch (err) {
+    // ✅ Handle backend errors properly (like 401, 404, etc.)
+    const errorMessage =
+      err.response?.data?.message ||
+      (err.response?.status === 401
+        ? "Invalid email or password"
+        : "Failed to login. Please try again.");
+
+    toast.error(errorMessage, {
+      id: "login-error",
+      duration: 2500,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="flex flex-wrap bg-gradient-to-b from-[#0077B6] to-[#ADE8F4] min-h-screen">

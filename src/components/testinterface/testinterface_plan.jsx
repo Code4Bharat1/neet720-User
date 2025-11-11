@@ -53,7 +53,7 @@ const TestInterface = () => {
   //   document.addEventListener("FullscreenElement", handleFullScreenChange);
   //   document.addEventListener("webkitFullscreenElement", handleFullScreenChange);
   //   document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-  //   document.addEventListener("mozFullscreenElement", handleFullScreenChange);
+  //   document.addEventListener("mozfullscreenElement", handleFullScreenChange);
 
   //   return () => {
   //     document.removeEventListener("fullscreenchange", handleFullScreenChange);
@@ -286,6 +286,10 @@ const TestInterface = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
+    
+    // Set test completion flag BEFORE any redirects
+    localStorage.setItem("testCompleted", "true");
+    
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       toast.error("Authentication failed! Please log in again.", {
@@ -1003,7 +1007,8 @@ const TestInterface = () => {
         </div>
       </div>
 
-      {/* Tab Switch Warning Modal */}
+      {/* Commented Tab Switch Warning Modal */}
+      {/* 
       {showTabSwitchWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
           <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
@@ -1033,8 +1038,9 @@ const TestInterface = () => {
           </div>
         </div>
       )}
+      */}
 
-      {/* Fullscreen Warning Modal */}
+      {/* Fullscreen Warning Modal
       {showFullscreenWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
           <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
@@ -1063,7 +1069,7 @@ const TestInterface = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {isModalVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -1078,7 +1084,7 @@ const TestInterface = () => {
             <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
               <button
                 onClick={() => setIsModalVisible(false)}
-                className="w-full sm:w-auto px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                  className="w-full sm:w-auto px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
               >
                 Cancel
               </button>

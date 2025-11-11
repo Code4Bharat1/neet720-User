@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
@@ -13,61 +14,109 @@ const subjectImages = {
 };
 
 function PYQCard({ title, subject, text2, index }) {
+  const [flipped, setFlipped] = useState(false);
+
+  // Inline 3D styles - avoids needing extra Tailwind utilities
+  const containerStyle = {
+    width: "100%",
+    height: "100%",
+    perspective: "1200px",
+  };
+
+  const innerStyle = {
+    width: "100%",
+    height: "100%",
+    position: "relative",
+    transition: "transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1)", 
+    transformStyle: "preserve-3d",
+    WebkitTransformStyle: "preserve-3d",
+    willChange: "transform",
+    transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+  };
+
+  const faceStyle = {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    WebkitBackfaceVisibility: "hidden",
+    backfaceVisibility: "hidden",
+    overflow: "hidden",
+  };
+
+  const backStyle = {
+    ...faceStyle,
+    transform: "rotateY(180deg)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "1rem",
+    textAlign: "center",
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
       viewport={{ once: true }}
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+      className="w-full mx-auto"
+      style={{ height: "20rem" }} // matches previous h-80
     >
-      <Card className="group w-full mx-auto overflow-hidden bg-white shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 relative rounded-2xl border border-slate-200">
-        {/* Image Section */}
-        <div className="aspect-video bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-white relative overflow-hidden">
-          {/* Decorative background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
-          <img
-            src={subjectImages[subject] || "/images/pyq-illustration.png"}
-            alt={`${subject} PYQ Illustration`}
-            className="max-h-full max-w-full object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-110 relative z-10"
-          />
-        </div>
-
-        {/* Footer Section */}
-        <div className="bg-gradient-to-r from-[#129EA0] to-[#0d7a7c] px-4 py-4 transition-all duration-300 group-hover:bg-white relative">
-          <h2 className="text-white text-base sm:text-lg md:text-xl font-bold text-center opacity-100 group-hover:opacity-0 transition-all duration-300">
-            {title}
-          </h2>
-        </div>
-
-        {/* Hover Text */}
-        <div className="absolute inset-0 flex items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white/95 backdrop-blur-sm">
-          <div className="text-center space-y-3">
-            <div className="w-12 h-12 mx-auto bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+      <div style={containerStyle} className="h-full relative cursor-pointer">
+        <div style={innerStyle}>
+          {/* FRONT */}
+          <Card style={faceStyle} className="bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col justify-between">
+            <div className="aspect-video bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-6 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 transition-opacity duration-300" />
+              <img
+                src={subjectImages[subject] || "/images/pyq-illustration.png"}
+                alt={`${subject} PYQ Illustration`}
+                className="max-h-full max-w-full object-contain transition-all duration-300 relative z-10"
+              />
             </div>
-            <p className="text-slate-700 text-sm sm:text-base md:text-lg font-semibold leading-relaxed px-2">
-              {text2}
-            </p>
-          </div>
+
+            <div className="bg-gradient-to-r from-[#129EA0] to-[#0d7a7c] px-4 py-4 transition-all duration-300">
+              <h2 className="text-white text-base sm:text-lg md:text-xl font-bold text-center">
+                {title}
+              </h2>
+            </div>
+          </Card>
+
+          {/* BACK */}
+          <Card style={backStyle} className="bg-white rounded-2xl shadow-xl border border-slate-200">
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 mx-auto bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <p className="text-slate-700 text-sm sm:text-base md:text-lg font-semibold leading-relaxed px-2">
+                {text2}
+              </p>
+            </div>
+          </Card>
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 }
 
 export default function CoreFeatureComponent() {
   const pyqData = [
-    { title: "Mathematics PYQ", subject: "Mathematics", text2: "Access And Practice Questions From Previous Years." },
+    { title: "FULL TEST ", subject: "Mathematics", text2: "Access And Practice Questions From Previous Years." },
     { title: "SUBJECT WISE MARKS ANALYSIS", subject: "Physics", text2: "View Detailed Dashboard With Subject Performance Analysis." },
-    { title: "NEET COLLEGE PREDICTION", subject: "Chemistry", text2: "Predict NEET Rank And Explore Suitable College Options." },
+    { title: "NEET COLLEGE PREDICTION", subject: "Chemistry", text2: "Predict Neet Rank And Explore Suitable College Options." },
     { title: "CREATE TEST", subject: "Biology", text2: "Customize Tests To Focus On Specific Topics For Revision." },
-    { title: "FAST QUIZ", subject: "English", text2: "Review English PYQs Quickly And Effectively." },
+    { title: "FAST QUIZ", subject: "English", text2: "Review Neet PYQs Quickly And Effectively." },
     { title: "RESULT SECTION", subject: "History", text2: "Track And View Test Results With Insights." },
   ];
 
+
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a2e44] via-[#103F5D] to-[#0a2e44] px-4 sm:px-6 md:px-10 lg:px-16 py-12 sm:py-16 md:py-20 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
@@ -106,23 +155,6 @@ export default function CoreFeatureComponent() {
             />
           ))}
         </div>
-
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-          className="text-center mt-16 sm:mt-20"
-        >
-          {/* <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 sm:px-12 py-4 sm:py-5 rounded-full text-base sm:text-lg font-bold shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300"
-          >
-            Explore All Features
-          </motion.button> */}
-        </motion.div>
       </div>
     </div>
   );
