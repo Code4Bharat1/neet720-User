@@ -372,9 +372,13 @@ const TestCards = () => {
       setTimer(60);
     } else {
       toast.error(
-        "Warning: Exiting fullscreen will return you to the selection page.",
-        { duration: 9000 }
-      );
+  "⚠️ Warning: Exiting fullscreen will return you to the selection page.",
+  {
+    id: "fullscreen-warning", // 👈 unique ID
+    duration: 1500,
+  }
+);
+
       router.push(route);
     }
   };
