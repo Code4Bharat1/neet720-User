@@ -118,7 +118,7 @@ const ToggleBar = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             {/* Profile Dropdown */}
             {profileMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border">
@@ -133,7 +133,8 @@ const ToggleBar = () => {
                 </button>
                 <button
                   onClick={() => {
-                    router.push("/login");
+                    localStorage.removeItem("authToken");
+                    router.replace("/login");
                     setProfileMenu(false);
                   }}
                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
@@ -148,15 +149,13 @@ const ToggleBar = () => {
 
       {/* Sidebar Menu with Animation */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-40 z-50 transition-all duration-300 ${
-          menuOpen ? "visible opacity-100" : "invisible opacity-0"
-        }`}
+        className={`fixed inset-0 bg-black bg-opacity-40 z-50 transition-all duration-300 ${menuOpen ? "visible opacity-100" : "invisible opacity-0"
+          }`}
       >
         <div
           ref={menuRef}
-          className={`bg-white w-[75%] max-w-sm h-full flex flex-col transform transition-transform duration-300 ${
-            menuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`bg-white w-[75%] max-w-sm h-full flex flex-col transform transition-transform duration-300 ${menuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           {/* Profile Section - Fixed at top */}
           <div className="flex-shrink-0 flex flex-col items-center py-4 px-4 border-b border-gray-200 bg-white">
