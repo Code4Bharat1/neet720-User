@@ -97,6 +97,25 @@ const QuizInterface = () => {
   const currentAnswer = answers[currentQuestion.id]
   const DifficultyIcon = difficultySettings[difficulty].icon
 
+  // Prevent back/forward navigation after quiz is completed
+  useEffect(() => {
+    if (!quizCompleted || !showFinalResults) return
+
+    // Push a new history state to block back button
+    window.history.pushState(null, null, window.location.href)
+
+    const handlePopState = (event) => {
+      // Prevent going back
+      window.history.pushState(null, null, window.location.href)
+    }
+
+    window.addEventListener("popstate", handlePopState)
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState)
+    }
+  }, [quizCompleted, showFinalResults])
+
   // Fullscreen escape handler
   // useEffect(() => {
   //   const handleFullScreenChange = () => {

@@ -137,6 +137,25 @@ export default function TakeTest() {
     }
   }, [testStarted, testCompleted]);
 
+  // Prevent back/forward navigation after test is completed
+  useEffect(() => {
+    if (!testCompleted || !showResults) return;
+
+    // Push a new history state to block back button
+    window.history.pushState(null, null, window.location.href);
+
+    const handlePopState = (event) => {
+      // Prevent going back
+      window.history.pushState(null, null, window.location.href);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [testCompleted, showResults]);
+
   // ========================================
   // ORIGINAL FUNCTIONALITY
   // ========================================
