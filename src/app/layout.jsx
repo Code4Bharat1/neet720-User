@@ -1,7 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
-import ClientLayout from "./LP_clientLayout"; // ✅ Make sure this path is correct
+import Navbar from "@/components/Layout/Navbar";
+import Footer from "@/components/Layout/Footer";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,73 +14,56 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ✅ Add this
-export const viewport = {
-  width: "device-width",
-  initialScale: 1,
-};
-
+// ✅ Global Metadata for NEET720
 export const metadata = {
-  title: "NEET720 – Smart NEET Exam Portal & AI Rank Predictor",
+  metadataBase: new URL("https://neet720.com/"),
+  title: "NEET 720 | Best NEET Coaching for Full Score Preparation",
   description:
-    "NEET720 is the all-in-one NEET exam portal featuring AI-powered rank predictor, college predictor, test series, and performance analytics for NEET 2026.",
+    "NEET720 provides top-rank NEET coaching with chapter-wise tests, full syllabus mock exams, PYQs, and score-boosting strategies to help students aim for a perfect 720.",
   keywords: [
-    "NEET720",
-    "neet720 portal",
-    "neet720 rank predictor",
-    "NEET exam 2026",
-    "NEET college predictor AI",
-    "NEET performance analytics",
-    "NEET test series platform",
-    "smart NEET preparation",
+    "NEET 720",
+    "Best NEET Coaching",
+    "NEET Test Series",
+    "NEET Online Classes",
+    "NEET Preparation 2025",
+    "Full Marks NEET Strategy",
+    "NEET Topper Tips",
   ],
-  applicationName: "NEET720",
-  authors: [{ name: "NEET720 Team", url: "https://neet720.com" }],
-  creator: "NEET720",
-  publisher: "NEET720",
-  metadataBase: new URL("https://neet720.com"),
-  alternates: {
-    canonical: "https://neet720.com",
-  },
-
-  openGraph: {
-    title: "NEET720 – Smart NEET Exam Portal & AI Rank Predictor",
-    description:
-      "Prepare for NEET 2026 smarter with NEET720. Get AI-powered insights, college predictions, personalized test analytics, and more.",
-    url: "https://neet720.com",
-    siteName: "NEET720",
-    images: [
-      {
-        url: "https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/NEET720.jpeg",
-        width: 1200,
-        height: 630,
-        alt: "NEET720 – NEET Exam Portal with AI Rank Prediction",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "NEET720 – Smart NEET Exam Portal & AI Rank Predictor",
-    description:
-      "Explore NEET test analytics, AI-powered rank prediction, and college guidance with NEET720.",
-    images: [
-      "https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/NEET720.jpeg",
-    ],
-    site: "@neet720",
-  },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
+  openGraph: {
+    title: "NEET720 | India’s Most Accurate NEET Practice Platform",
+    description:
+      "Practice high-accuracy NEET mock tests, AI-based performance analysis, and score-boosting recommendations.",
+    url: "https://neet720.com/",
+    siteName: "NEET720",
+    images: [
+      {
+        url: "https://neet720.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "NEET720 Coaching Platform",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NEET720 | Full Score NEET Coaching",
+    description:
+      "Achieve a perfect NEET score with India’s most focused practice platform.",
+    images: ["https://neet720.com/og-image.jpg"],
+  },
   robots: {
     index: true,
     follow: true,
   },
-  other: {
-    keywords:
-      "NEET720, NEET rank predictor, NEET2026 portal, NEET AI analysis, best NEET preparation platform",
+  alternates: {
+    canonical: "https://neet720.com/",
   },
 };
 
@@ -87,36 +71,39 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-clip`}
       >
-        {/* ✅ Toast Notifications */}
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          toastOptions={{
-            duration: 4000,
-            style: {
-              zIndex: 999999, // 🔥 makes it appear above modals
-              background: "#333",
-              color: "#fff",
-            },
-            success: {
-              iconTheme: {
-                primary: "#16a34a", // green-600
-                secondary: "#ecfdf5", // green-50
-              },
-            },
-            error: {
-              iconTheme: {
-                primary: "#dc2626", // red-600
-                secondary: "#fee2e2", // red-50
-              },
-            },
-          }}
-        />
+        <Navbar />
+        {children}
+        <Footer />
 
-        {/* ✅ Your app layout */}
-        <ClientLayout>{children}</ClientLayout>
+        {/* Schema Markup for SEO */}
+        <Script
+          id="schema-coaching"
+          type="application/ld+json"
+          strategy="afterInteractive"
+        >
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            name: "NEET720",
+            description:
+              "Top-tier NEET coaching & mock test platform designed to help students achieve 700+ scores.",
+            url: "https://neet720.com/",
+            logo: "https://neet720.com/og-image.jpg",
+            sameAs: [
+              "https://www.facebook.com/neet720",
+              "https://www.instagram.com/neet720",
+              "https://www.youtube.com/@neet720",
+            ],
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "India",
+              addressRegion: "IN",
+              addressCountry: "India",
+            },
+          })}
+        </Script>
       </body>
     </html>
   );
