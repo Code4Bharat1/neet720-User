@@ -1,3 +1,22 @@
+
+
+
+export const metadata = {
+  title:
+    "pasttest | NEET720 – India's Most Trusted NEET Preparation Platform",
+  description:
+    "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
+  openGraph: {
+    url: "https://neet720.com/pasttest",
+    title: "pasttest | NEET720",
+    description:
+      "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
+    siteName: "NEET720",
+  },
+};
+
+
+
 "use client";
 
 import Sidebar from "@/components/layout/sidebar/sidebar";
@@ -11,6 +30,7 @@ import Head from "next/head";
 
 const Page = () => {
 
+  
   return (
     <>
       <Head>
