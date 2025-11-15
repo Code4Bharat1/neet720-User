@@ -66,6 +66,13 @@ const NeetPrep = () => {
     visible: { opacity: 1, y: 0 },
   };
 
+  // Exclude the generic "General" subject from UI lists (case-insensitive)
+  const availableSubjects = subjectUnits
+    ? Object.keys(subjectUnits).filter(
+        (s) => s && s.toLowerCase() !== "general"
+      )
+    : [];
+
   //Function to enter the full screen
   const enterFullScreen = async () => {
     const elem = document.documentElement;
@@ -74,7 +81,7 @@ const NeetPrep = () => {
     } else if (elem.webkitRequestFullscreen) {
       await elem.webkitRequestFullscreen(); // Safari
     } else if (elem.msRequestFullscreen) {
-      await elem.msRequestFullscreen(); // IE11
+      await elem.msRequestFullscreen(); // IE11yY
     }
   };
 
@@ -122,6 +129,9 @@ const NeetPrep = () => {
     return <div className="text-center text-red-500 mt-10">{error}</div>;
   }
 
+
+
+
   return (
     <div className="flex items-center justify-center max-sm:-mt-40 min-h-screen md:-mt-16 relative p-4">
       <motion.div
@@ -144,8 +154,8 @@ const NeetPrep = () => {
             Subject Wise
           </label>
           <div className="flex flex-wrap justify-center gap-4 mt-4">
-            {subjectUnits && Object.keys(subjectUnits).length > 0 ? (
-              Object.keys(subjectUnits).map((subject) => (
+            {availableSubjects && availableSubjects.length > 0 ? (
+              availableSubjects.map((subject) => (
                 <motion.div
                   key={subject}
                   className={`px-6 py-2 rounded-lg border text-center cursor-pointer ${
@@ -160,7 +170,6 @@ const NeetPrep = () => {
                 </motion.div>
               ))
             ) : (
-              // Optional: You can display a message or leave this empty if you don't want to show anything when no subjects are present
               <div>No subjects available</div>
             )}
           </div>
