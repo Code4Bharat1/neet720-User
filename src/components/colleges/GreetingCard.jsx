@@ -728,7 +728,7 @@ const GreetingCard = () => {
   );
 
   const uniqueCourses = useMemo(() => 
-    ["MBBS", "BDS", "BSc Nursing"].sort(), // Assuming fixed courses
+    ["MBBS", "BDS", "BSc Nursing","BNYS","BUMS","BHMS","BAMS"].sort(), // Assuming fixed courses
     []
   );
 
