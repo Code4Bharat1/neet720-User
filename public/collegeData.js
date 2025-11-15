@@ -1310,8 +1310,7 @@ const collegeData = [
 {"collegeName":"Gujarat Homeopathic Medical College, Savli","state":"Gujarat","type":"Private","category":["General","Management Quota","NRI"],"minAIR":70000,"maxAIR":145000,"closingScore":440,"year":2024,"availableCourses":["BHMS"]},
 {"collegeName":"Baroda Homeopathic Medical College, Vadodara","state":"Gujarat","type":"Private","category":["General","Management Quota","NRI"],"minAIR":73000,"maxAIR":150000,"closingScore":438,"year":2024,"availableCourses":["BHMS"]},
 {"collegeName":"Z.V.M. Unani Medical College, Godhra","state":"Gujarat","type":"Private","category":["General","Management Quota","NRI"],"minAIR":80000,"maxAIR":160000,"closingScore":430,"year":2024,"availableCourses":["BUMS"]},
-{"collegeName":"Al-Ameen Unani Medical College, Rajkot","state":"Gujar at","type":"Private","category":["General","Management Quota","NRI"],"minAIR":85000,"maxAIR":170000,"closingScore":425,"year":2024,"availableCourses":["BUMS"]},
-
+{"collegeName":"Al-Ameen Unani Medical College, Rajkot","state":"Gujarat","type":"Private","category":["General","Management Quota","NRI"],"minAIR":85000,"maxAIR":170000,"closingScore":425,"year":2024,"availableCourses":["BUMS"]},
 
 
 
