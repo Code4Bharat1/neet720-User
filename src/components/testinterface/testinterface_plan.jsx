@@ -1874,7 +1874,8 @@ const TestInterface = () => {
 
                   <button
                     onClick={() => handleNavigation("next")}
-                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center space-x-1 text-sm font-medium"
+                    disabled={currentQuestion === lastIndex - 1}
+                    className={`flex-1 px-4 py-2.5 ${currentQuestion === lastIndex - 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'} rounded-lg transition-all flex items-center justify-center space-x-1 text-sm font-medium`}
                   >
                     <span>Next</span>
                     <svg
@@ -2015,7 +2016,8 @@ const TestInterface = () => {
 
                 <button
                   onClick={() => handleNavigation("next")}
-                  className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center space-x-1 text-sm sm:text-base"
+                  disabled={currentQuestion === lastIndex - 1}
+                  className={`px-4 sm:px-6 py-2 ${currentQuestion === lastIndex - 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'} rounded-lg transition-all flex items-center justify-center space-x-1 text-sm sm:text-base`}
                 >
                   <span>Next</span>
                   <svg
