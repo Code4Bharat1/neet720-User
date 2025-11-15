@@ -1122,7 +1122,7 @@ import {
   FaRegQuestionCircle,
   FaFlag,
 } from "react-icons/fa";
-import toast from "react-hot-toast";
+import toast from "../../lib/toastManager";
 import Loading from "../Loading/Loading";
 import { useRouter } from "next/navigation";
 

@@ -1,281 +1,95 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import { FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { Bar } from "react-chartjs-2";
 import {
-  Chart,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
   Tooltip,
   Legend,
-} from "chart.js";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
 import { withinRange } from "@/lib/dateFilters";
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-const SpeedCard = ({ changeDate }) => {
-  const [daily, setDaily] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [allData, setAllData] = useState([]); // Store all data for filtering
+const SpeedCard = ({ selectedFilter }) => {
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [viewFilter, setViewFilter] = useState(selectedFilter || "This Year");
 
-  // Enhanced date helpers with better period handling
-  const getStartOfWeek = (date) => {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday as start of week
-    return new Date(d.setDate(diff));
-  };
+  useEffect(() => {
+    setViewFilter(selectedFilter || "This Year");
+  }, [selectedFilter]);
 
-  const getStartOfMonth = (date) => {
-    const d = new Date(date);
-    return new Date(d.getFullYear(), d.getMonth(), 1);
-  };
-
-  const getStartOfYear = (date) => {
-    const d = new Date(date);
-    return new Date(d.getFullYear(), 0, 1);
-  };
-
-  const isSameWeek = (testDate, currentDate) => {
-    const test = new Date(testDate);
-    const current = new Date(currentDate);
-    const weekStart = getStartOfWeek(current);
-    const testWeekStart = getStartOfWeek(test);
-    return weekStart.getTime() === testWeekStart.getTime();
-  };
-
-  const isSameMonth = (testDate, currentDate) => {
-    const test = new Date(testDate);
-    const current = new Date(currentDate);
-    return test.getFullYear() === current.getFullYear() && 
-           test.getMonth() === current.getMonth();
-  };
-
-  const isSameYear = (testDate, currentDate) => 
-    new Date(testDate).getFullYear() === new Date(currentDate).getFullYear();
-
-  // More robust date formatting
-  const asISODate = (dateString) => {
-    const date = new Date(dateString);
-    // Adjust for timezone to get local date
-    const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-    return localDate.toISOString().split('T')[0];
-  };
-
-  // Format date for display based on period
-  const formatDateForDisplay = (dateString, period) => {
-    const date = new Date(dateString);
-    switch (period) {
-      case "This Week":
-        return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-      case "This Month":
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      case "This Year":
-        return date.toLocaleDateString('en-US', { month: 'short' });
-      default:
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-  };
-
-  // Fetch all data initially
   useEffect(() => {
     const fetchAverageMarks = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("authToken");
-        if (!token) {
-          console.warn("No token found in localStorage");
-          setAllData([]);
-          setDaily([]);
-          setError("No authentication token found");
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/average`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Filter by date range
+        const filtered = response.data.filter((t) =>
+          withinRange(viewFilter, t.updatedAt)
+        );
+
+        if (filtered.length === 0) {
+          setChartData([]);
+          setError(null);
           return;
         }
 
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/average`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        // Process data for chart
+        const processedData = filtered.map((test, idx) => ({
+          name: `Test ${idx + 1}`,
+          Physics: test.Physics || 0,
+          Chemistry: test.Chemistry || 0,
+          Biology: test.Biology || 0,
+          Botany: test.Botany || 0,
+          Zoology: test.Zoology || 0,
+          overall: Math.round(
+            (test.Physics + test.Chemistry + test.Biology + (test.Botany || 0) + (test.Zoology || 0)) / 5
+          ),
+        }));
 
-        console.log("API Response:", res.data);
-        const raw = Array.isArray(res.data) ? res.data : [];
-        setAllData(raw);
+        setChartData(processedData);
+
         setError(null);
-        
-      } catch (error) {
-        console.error("Error fetching average marks:", error);
-        setAllData([]);
-        setDaily([]);
-        setError("Unable to load average marks data");
+      } catch (err) {
+        console.error("Error fetching average marks:", err);
+        setError("Failed to load performance data");
       } finally {
         setLoading(false);
       }
     };
 
     fetchAverageMarks();
-  }, []);
-
-  // Process data when changeDate or allData changes
-  useEffect(() => {
-    if (allData.length === 0) {
-      setDaily([]);
-      return;
-    }
-
-    // Use withinRange for filtering
-    const filtered = allData.filter((t) => withinRange(changeDate, t.updatedAt));
-
-    console.log("Filtered data for", changeDate, ":", filtered);
-
-    // Group by day with improved logic
-    const byDay = new Map();
-    
-    filtered.forEach((test) => {
-      const testDate = asISODate(test.updatedAt);
-      
-      if (!byDay.has(testDate)) {
-        byDay.set(testDate, {
-          Physics: [],
-          Chemistry: [],
-          Biology: [],
-          Botany: [],
-          Zoology: [],
-          count: 0
-        });
-      }
-      
-      const dayData = byDay.get(testDate);
-      
-      // Collect all scores for each subject
-      if (test.Physics !== undefined && test.Physics !== null) {
-        dayData.Physics.push(test.Physics);
-      }
-      if (test.Chemistry !== undefined && test.Chemistry !== null) {
-        dayData.Chemistry.push(test.Chemistry);
-      }
-      if (test.Biology !== undefined && test.Biology !== null) {
-        dayData.Biology.push(test.Biology);
-      }
-      if (test.Botany !== undefined && test.Botany !== null) {
-        dayData.Botany.push(test.Botany);
-      }
-      if (test.Zoology !== undefined && test.Zoology !== null) {
-        dayData.Zoology.push(test.Zoology);
-      }
-      dayData.count += 1;
-    });
-
-    // Calculate averages and create final array
-    const rows = Array.from(byDay.entries())
-      .map(([date, dayData]) => {
-        const calculateAverage = (scores) => {
-          if (scores.length === 0) return 0;
-          const sum = scores.reduce((a, b) => a + b, 0);
-          return +(sum / scores.length).toFixed(2);
-        };
-
-        const Physics = calculateAverage(dayData.Physics);
-        const Chemistry = calculateAverage(dayData.Chemistry);
-        const Biology = calculateAverage(dayData.Biology);
-        const Botany = calculateAverage(dayData.Botany);
-        const Zoology = calculateAverage(dayData.Zoology);
-        
-        // Calculate overall average from available subjects
-        const subjectsWithData = [Physics, Chemistry, Biology, Botany, Zoology].filter(score => score > 0);
-        const overall = subjectsWithData.length > 0 
-          ? +(subjectsWithData.reduce((a, b) => a + b, 0) / subjectsWithData.length).toFixed(2)
-          : 0;
-        
-        return { 
-          date, 
-          Physics, 
-          Chemistry, 
-          Biology, 
-          Botany,
-          Zoology,
-          overall,
-          count: dayData.count 
-        };
-      })
-      .sort((a, b) => a.date.localeCompare(b.date)); // Sort by date ascending
-
-    console.log("Processed daily data for", changeDate, ":", rows);
-    setDaily(rows);
-  }, [allData, changeDate]);
-
-  // Improved trend calculation
-  const last = daily.length > 0 ? daily[daily.length - 1] : null;
-  const prev = daily.length > 1 ? daily[daily.length - 2] : null;
-  
-  const currentAvg = last ? last.overall.toFixed(2) : "0.00";
-  const prevAvg = prev ? prev.overall : last ? last.overall : 0;
-  const isImproving = last && last.overall >= prevAvg;
-  const trendColor = isImproving ? "text-green-500" : "text-red-500";
-  const TrendIcon = isImproving ? FaArrowUp : FaArrowDown;
-
-  // Prepare chart data with all subjects
-  const chartData = {
-    labels: daily.map((r) => formatDateForDisplay(r.date, changeDate)),
-    datasets: [
-      {
-        label: "Physics",
-        data: daily.map((r) => r.Physics),
-        backgroundColor: "#16DBCC",
-        borderRadius: 6,
-        hidden: daily.every(r => r.Physics === 0), // Hide if no data
-      },
-      {
-        label: "Chemistry",
-        data: daily.map((r) => r.Chemistry),
-        backgroundColor: "#FFBB38",
-        borderRadius: 6,
-        hidden: daily.every(r => r.Chemistry === 0),
-      },
-      {
-        label: "Biology",
-        data: daily.map((r) => r.Biology),
-        backgroundColor: "#FE5C73",
-        borderRadius: 6,
-        hidden: daily.every(r => r.Biology === 0),
-      },
-      {
-        label: "Botany",
-        data: daily.map((r) => r.Botany),
-        backgroundColor: "#4CAF50",
-        borderRadius: 6,
-        hidden: daily.every(r => r.Botany === 0),
-      },
-      {
-        label: "Zoology",
-        data: daily.map((r) => r.Zoology),
-        backgroundColor: "#8BC34A",
-        borderRadius: 6,
-        hidden: daily.every(r => r.Zoology === 0),
-      },
-    ].filter(dataset => !dataset.hidden), // Remove completely hidden datasets
-  };
-
-  // Count available subjects for the current period
-  const availableSubjects = useMemo(() => {
-    const subjects = ['Physics', 'Chemistry', 'Biology', 'Botany', 'Zoology'];
-    return subjects.filter(subject => 
-      daily.some(day => day[subject] > 0)
-    ).length;
-  }, [daily]);
+  }, [viewFilter]);
 
   if (loading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Average Marks</CardTitle>
-          <CardDescription>Average marks across subjects</CardDescription>
+          <CardTitle>Average Performance</CardTitle>
+          <CardDescription>Subject-wise average marks over time</CardDescription>
         </CardHeader>
-        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
-          <div>Loading...</div>
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="animate-pulse text-gray-500">Loading performance data...</div>
         </CardContent>
       </Card>
     );
@@ -285,119 +99,155 @@ const SpeedCard = ({ changeDate }) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Average Marks</CardTitle>
-          <CardDescription>Average marks across subjects</CardDescription>
+          <CardTitle>Average Performance</CardTitle>
+          <CardDescription>Subject-wise average marks over time</CardDescription>
         </CardHeader>
-        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
-          <div className="text-red-500">{error}</div>
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="text-red-500 flex gap-2">
+            <AlertCircle className="h-5 w-5" />
+            {error}
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-  if (daily.length === 0) {
+  if (chartData.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Average Marks</CardTitle>
-          <CardDescription>Average marks across subjects</CardDescription>
+          <CardTitle>Average Performance</CardTitle>
+          <CardDescription>Subject-wise average marks over time</CardDescription>
         </CardHeader>
-        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
-          <div className="text-gray-400">No data for {changeDate}</div>
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="text-gray-400 text-center">
+            <p className="font-medium">No test data available</p>
+            <p className="text-sm">Complete tests to see performance trends</p>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
+  // Calculate summary statistics
+  const avgPhysics = chartData.reduce((sum, t) => sum + (t.Physics || 0), 0) / chartData.length;
+  const avgChemistry = chartData.reduce((sum, t) => sum + (t.Chemistry || 0), 0) / chartData.length;
+  const avgBiology = chartData.reduce((sum, t) => sum + (t.Biology || 0), 0) / chartData.length;
+  const avgBotany = chartData.reduce((sum, t) => sum + (t.Botany || 0), 0) / chartData.length;
+  const avgZoology = chartData.reduce((sum, t) => sum + (t.Zoology || 0), 0) / chartData.length;
+
+  const avgOverall = Math.round((avgPhysics + avgChemistry + avgBiology + avgBotany + avgZoology) / 5);
+
+  const firstHalf = chartData.slice(0, Math.ceil(chartData.length / 2));
+  const secondHalf = chartData.slice(Math.ceil(chartData.length / 2));
+
+  const firstHalfAvg = firstHalf.reduce((sum, d) => sum + d.overall, 0) / firstHalf.length;
+  const secondHalfAvg = secondHalf.reduce((sum, d) => sum + d.overall, 0) / secondHalf.length;
+  const trend = Math.round(((secondHalfAvg - firstHalfAvg) / (firstHalfAvg || 1)) * 100);
+  const isImproving = secondHalfAvg >= firstHalfAvg;
+
+  const trendColor = isImproving ? "text-green-600" : "text-red-600";
+  const TrendIcon = isImproving ? TrendingUp : TrendingDown;
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Average Marks ({changeDate})</CardTitle>
-        <CardDescription>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-bold text-gray-500">AVERAGE MARKS ({changeDate})</span>
-            <span className={`flex items-center text-sm font-medium ${trendColor}`}>
-              <TrendIcon className="mr-1" />
-              {isImproving ? "Improved" : "Dropped"}
-            </span>
+      <CardHeader className="px-3 py-4 sm:px-6 sm:py-5">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+          <div>
+            <CardTitle className="text-lg sm:text-xl md:text-2xl">Average Performance</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Subject-wise average marks over time</CardDescription>
           </div>
-          <h2 className="text-2xl font-bold mt-2">{currentAvg}%</h2>
-          <p className="text-xs text-gray-500">
-            {last ? `Latest: ${formatDateForDisplay(last.date, changeDate)}` : "No data available"}
-            {last && last.count > 1 && ` (${last.count} tests)`}
-            {availableSubjects > 0 && ` • ${availableSubjects} subject${availableSubjects > 1 ? 's' : ''}`}
-          </p>
-        </CardDescription>
+          <div className={`flex items-center gap-1 font-semibold text-sm sm:text-base ${trendColor}`}>
+            <TrendIcon className="h-4 w-4" />
+            <span>{isImproving ? "+" : "-"}{Math.abs(trend)}%</span>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent className="w-full h-auto min-h-[320px]">
-        <div className="w-full h-64 mt-4">
-          <Bar
-            data={chartData}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              interaction: { mode: "index", intersect: false },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  max: 100,
-                  ticks: {
-                    callback: (v) => v + "%",
-                  },
-                  grid: {
-                    color: "rgba(0, 0, 0, 0.1)",
-                  },
-                },
-                x: {
-                  grid: {
-                    display: false,
-                  },
-                  ticks: {
-                    maxRotation: daily.length > 7 ? 45 : 0,
-                    minRotation: daily.length > 7 ? 45 : 0,
-                    autoSkip: true,
-                    maxTicksLimit: daily.length > 10 ? 10 : undefined,
-                  },
-                },
-              },
-              plugins: {
-                legend: { 
-                  display: true, 
-                  position: "bottom",
-                  labels: {
-                    usePointStyle: true,
-                    padding: 15,
-                    boxWidth: 8,
-                  }
-                },
-                tooltip: {
-                  callbacks: {
-                    label: (context) => {
-                      const label = context.dataset.label || '';
-                      const value = context.parsed.y;
-                      return `${label}: ${value}%`;
-                    },
-                    afterLabel: (context) => {
-                      const index = context.dataIndex;
-                      const dayData = daily[index];
-                      const testsCount = dayData?.count;
-                      return testsCount > 1 ? `Based on ${testsCount} tests` : '';
-                    }
-                  },
-                },
-              },
-            }}
-          />
+
+      <CardContent className="space-y-4 sm:space-y-6 px-3 py-4 sm:px-6 sm:py-5">
+        {/* Main Score Display */}
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 sm:p-4 border border-blue-200">
+          <div className="text-center">
+            <p className="text-xs sm:text-sm text-gray-600 font-medium mb-2">Overall Average ({viewFilter})</p>
+            <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-blue-600 mb-2">{avgOverall}%</p>
+            <p className="text-xs text-gray-600">
+              {isImproving ? "Improving trend" : "Declining trend"}
+            </p>
+          </div>
         </div>
 
-        {/* Status messages */}
-        {!loading && daily.length === 0 && (
-          <p className="mt-2 text-xs text-gray-500 text-center">No test records found for {changeDate.toLowerCase()}.</p>
-        )}
-        
-        {/* Period info */}
-        <div className="mt-2 text-xs text-gray-400 text-center">
-          <p>Showing {daily.length} day{daily.length !== 1 ? 's' : ''} • {changeDate}</p>
+        {/* Subject Averages Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+          {[
+            ["Physics", Math.round(avgPhysics)],
+            ["Chemistry", Math.round(avgChemistry)],
+            ["Biology", Math.round(avgBiology)],
+            ["Botany", Math.round(avgBotany)],
+            ["Zoology", Math.round(avgZoology)],
+          ].map(([subject, score]) => (
+            score > 0 && (
+              <div
+                key={subject}
+                className="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 text-center"
+              >
+                <p className="text-xs font-semibold text-gray-600 mb-1 truncate">{subject}</p>
+                <p className="text-lg sm:text-xl font-bold text-gray-800">{score}%</p>
+                <div className="mt-2 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 transition-all duration-300"
+                    style={{ width: `${Math.min(score, 100)}%` }}
+                  />
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+
+        {/* Bar Chart */}
+        <div className="mt-4 sm:mt-6">
+          <p className="text-xs sm:text-sm font-semibold text-gray-700 mb-3">Performance Across Tests</p>
+          <ResponsiveContainer width="100%" height={chartData.length > 5 ? 240 : 220}>
+            <BarChart data={chartData} margin={{ top: 10, right: 5, left: -25, bottom: chartData.length > 5 ? 50 : 30 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis
+                dataKey="name"
+                tick={{ fontSize: 10 }}
+                angle={chartData.length > 5 ? -45 : 0}
+                textAnchor={chartData.length > 5 ? "end" : "middle"}
+                height={chartData.length > 5 ? 60 : 25}
+              />
+              <YAxis
+                tick={{ fontSize: 10 }}
+                ticks={[0, 25, 50, 75, 100]}
+                domain={[0, 100]}
+                label={{ value: "Score (%)", angle: -90, position: "insideLeft", offset: 5 }}
+                width={30}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #ccc",
+                  borderRadius: "6px",
+                }}
+                formatter={(value) => `${value}%`}
+              />
+              <Legend />
+              <Bar dataKey="Physics" fill="#0E5FD9" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Chemistry" fill="#0FAF62" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Biology" fill="#E84646" radius={[4, 4, 0, 0]} />
+              {chartData.some((d) => d.Botany > 0) && (
+                <Bar dataKey="Botany" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+              )}
+              {chartData.some((d) => d.Zoology > 0) && (
+                <Bar dataKey="Zoology" fill="#F59E0B" radius={[4, 4, 0, 0]} />
+              )}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Footer Info */}
+        <div className="text-xs text-gray-500 text-center pt-2 sm:pt-4 border-t">
+          <p className="text-xs sm:text-sm">Showing {chartData.length} test{chartData.length !== 1 ? "s" : ""} • {viewFilter}</p>
         </div>
       </CardContent>
     </Card>

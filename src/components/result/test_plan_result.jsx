@@ -150,14 +150,22 @@ const TestPlanResultPage = () => {
   }, []);
 
   const handleRetakeTest = () => {
-    // ✅ remove all test related data
-    localStorage.removeItem("selectedSubjects");
-    localStorage.removeItem("startTest");
+    // ✅ Get the current subject from startTest before clearing
+    const startTestData = JSON.parse(localStorage.getItem("startTest"));
+    const subject = startTestData?.subject || "Physics";
+    const chapter = startTestData?.chapter || "";
+    const allocatedQuestions = startTestData?.allocatedQuestions || 0;
+    
+    // ✅ Remove only exam/answers data, keep test metadata
     localStorage.removeItem("examplan");
     localStorage.removeItem("testStartTime");
-    localStorage.removeItem("testSubmitted"); // ✅ IMPORTANT
-
-    router.replace("/testinterfaceplan"); // ✅ replace to avoid back nav
+    localStorage.removeItem("testSubmitted");
+    
+    // ✅ Keep startTest and selectedSubjects intact to restore the same test
+    // Redirect back to test interface with same subject
+    router.replace(
+      `/testinterfaceplan?chapter=${encodeURIComponent(chapter)}&allocatedQuestions=${allocatedQuestions}&subject=${subject}`
+    );
   };
 
 

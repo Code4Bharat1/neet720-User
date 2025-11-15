@@ -13,7 +13,7 @@ import SpeedCard from "@/components/dashboard/SpeedCard";
 import AccuracyCard from "@/components/dashboard/AccuracyCard";
 import SuccessRateCard from "@/components/dashboard/SuccessRateCard";
 import OverallPerformanceCard from "@/components/dashboard/OverallPerformanceCard";
-import MostVisitedPageCard from "@/components/dashboard/MostVisitedCard";
+import MostVisitedCard from "@/components/dashboard/MostVisitedCard";
 import PerformanceSummaryCard from "@/components/dashboard/PerformanceSummaryCard";
 import jsPDF from "jspdf";
 import Chatbot from "@/components/chatbot/chatbot";
@@ -96,13 +96,13 @@ const Page = () => {
           <div ref={captureRef} className="bg-white w-full">
             {/* Updated Grid Layout: 3 Columns in Medium Screens */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-4 mt-8 auto-rows-fr">
-              <SpeedCard changeDate={selectedFilter} />
-              <AccuracyCard selectedFilter={selectedFilter} />
-              <SuccessRateCard selectedFilter={selectedFilter} />
+              <SpeedCard selectedFilter={selectedFilter} />
+                <AccuracyCard selectedFilter={selectedFilter} />
+                <SuccessRateCard selectedFilter={selectedFilter} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-4 mt-8 auto-rows-fr">
               <OverallPerformanceCard selectedFilter={selectedFilter} />
-              <MostVisitedPageCard selectedFilter={selectedFilter} />
+              <MostVisitedCard selectedFilter={selectedFilter} />
               <PerformanceSummaryCard selectedFilter={selectedFilter} />
             </div>
           </div>

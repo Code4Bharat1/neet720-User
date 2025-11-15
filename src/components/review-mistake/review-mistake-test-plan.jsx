@@ -94,6 +94,54 @@ export default function ReviewMistakeExamPlan() {
     );
   }
 
+  // Handle case where no data is available
+  if (!items || items.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 select-none">
+        {/* Header */}
+        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b">
+          <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div>
+                <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                  <FaBookOpen className="text-blue-600" />
+                  Review Mistakes
+                </h1>
+                <p className="text-sm text-gray-600">
+                  Total: 0 • Correct: 0 • Incorrect: 0
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => router.back()}
+              className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-black transition"
+            >
+              Back to Results
+            </button>
+          </div>
+        </div>
+
+        {/* Empty State Message */}
+        <div className="max-w-5xl mx-auto px-4 py-6">
+          <div className="bg-white border rounded-xl p-12 text-center shadow-sm">
+            <FaBookOpen className="text-4xl text-gray-300 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-700 mb-2">No Questions Attempted</h2>
+            <p className="text-gray-600 mb-6">
+              You haven't attempted any questions yet. Complete the test first to review your mistakes.
+            </p>
+            <button
+              onClick={() => router.back()}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+            >
+              Back to Results
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const total = items.length;
   const correctCount = items.filter((x) => x.isCorrect === true).length;
   const incorrectCount = total - correctCount;
@@ -135,11 +183,6 @@ export default function ReviewMistakeExamPlan() {
 
       {/* List */}
       <div className="max-w-5xl mx-auto px-4 py-6 space-y-4">
-        {items.length === 0 && (
-          <div className="bg-white border rounded-xl p-8 text-center text-gray-600">
-            No review data found in <code>localStorage["examplan"]</code>.
-          </div>
-        )}
 
         {items.map((q, idx) => {
           const isCorrect = q.isCorrect === true;

@@ -75,8 +75,8 @@ export default function StudentDashboard() {
         }
 
         const pendingData = await pendingResponse.json();
-        if (pendingData.success) {
-          setPendingTests(pendingData.pendingTests || []);
+        if (pendingData.success && pendingData.data) {
+          setPendingTests(pendingData.data || []);
         }
       } catch (err) {
         console.error("Error fetching dashboard data:", err);

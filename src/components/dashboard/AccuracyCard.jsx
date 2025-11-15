@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import {
   LineChart,
   Line,
+  CartesianGrid,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
-import axios from "axios";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { withinRange } from "@/lib/dateFilters";
 
 const AccuracyCard = ({ selectedFilter }) => {
@@ -22,6 +23,11 @@ const AccuracyCard = ({ selectedFilter }) => {
   const [trendPercentage, setTrendPercentage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [viewFilter, setViewFilter] = useState(selectedFilter || "This Year");
+
+  useEffect(() => {
+    setViewFilter(selectedFilter || "This Year");
+  }, [selectedFilter]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,142 +42,58 @@ const AccuracyCard = ({ selectedFilter }) => {
             },
           }
         );
-        console.log("response :", response.data);
 
-        const rawData = response.data.filter((t) => withinRange(selectedFilter, t.updatedAt));
-        const currentDate = new Date();
+        const rawData = response.data.filter((t) => withinRange(viewFilter, t.updatedAt));
 
-        const isSameYear = (date) =>
-          new Date(date).getFullYear() === currentDate.getFullYear();
-        const isSameMonth = (date) =>
-          isSameYear(date) &&
-          new Date(date).getMonth() === currentDate.getMonth();
-        const isSameWeek = (date) => {
-          const testDate = new Date(date);
-          const weekStart = new Date(currentDate);
-          weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-          const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekStart.getDate() + 6);
-          return testDate >= weekStart && testDate <= weekEnd;
-        };
-
-        let performanceData = [];
-        
-        if (selectedFilter === "This Year") {
-          const monthLabels = [
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-          ];
-
-          // FIXED: Always create all 12 months, even with 0 data
-          performanceData = monthLabels.map((month, index) => {
-            const filtered = rawData.filter((item) => {
-              const testDate = new Date(item.updatedAt);
-              return isSameYear(testDate) && testDate.getMonth() === index;
-            });
-
-            const totalPhysics = filtered.reduce((sum, item) => sum + (item.Physics || 0), 0);
-            const totalChemistry = filtered.reduce((sum, item) => sum + (item.Chemistry || 0), 0);
-            const totalBiology = filtered.reduce((sum, item) => sum + (item.Biology || 0), 0);
-
-            return {
-              order: index,
-              label: month,
-              physics: totalPhysics, // Will be 0 if no data for this month
-              chemistry: totalChemistry, // Will be 0 if no data for this month
-              biology: totalBiology, // Will be 0 if no data for this month
-            };
-          });
-
-        } else if (selectedFilter === "This Month") {
-          // FIXED: Always create all weeks for the month
-          const weekLabels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
-          
-          performanceData = weekLabels.map((week, index) => {
-            const filtered = rawData.filter((item) => {
-              const testDate = new Date(item.updatedAt);
-              if (!isSameMonth(testDate)) return false;
-              
-              const day = testDate.getDate();
-              const weekNumber = Math.ceil(day / 7) - 1; // 0-indexed week number
-              return weekNumber === index;
-            });
-
-            const totalPhysics = filtered.reduce((sum, item) => sum + (item.Physics || 0), 0);
-            const totalChemistry = filtered.reduce((sum, item) => sum + (item.Chemistry || 0), 0);
-            const totalBiology = filtered.reduce((sum, item) => sum + (item.Biology || 0), 0);
-
-            return {
-              order: index,
-              label: week,
-              physics: totalPhysics, // Will be 0 if no data for this week
-              chemistry: totalChemistry, // Will be 0 if no data for this week
-              biology: totalBiology, // Will be 0 if no data for this week
-            };
-          });
-
-        } else if (selectedFilter === "This Week") {
-          // FIXED: Always create all 7 days
-          const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-          
-          performanceData = dayLabels.map((day, index) => {
-            const filtered = rawData.filter((item) => {
-              const testDate = new Date(item.updatedAt);
-              return isSameWeek(testDate) && testDate.getDay() === index;
-            });
-
-            const totalPhysics = filtered.reduce((sum, item) => sum + (item.Physics || 0), 0);
-            const totalChemistry = filtered.reduce((sum, item) => sum + (item.Chemistry || 0), 0);
-            const totalBiology = filtered.reduce((sum, item) => sum + (item.Biology || 0), 0);
-
-            return {
-              order: index,
-              label: day,
-              physics: totalPhysics, // Will be 0 if no data for this day
-              chemistry: totalChemistry, // Will be 0 if no data for this day
-              biology: totalBiology, // Will be 0 if no data for this day
-            };
-          });
+        if (rawData.length === 0) {
+          setData([]);
+          setAvgAccuracy(0);
+          setIsImproving(false);
+          setTrendPercentage(0);
+          return;
         }
 
-        // Sort by order to ensure proper chronological sequence
-        performanceData.sort((a, b) => a.order - b.order);
-        
+        // Transform data into subject-wise points
+        const performanceData = rawData.map((t, i) => ({
+          name: `Test ${i + 1}`,
+          Physics: t.Physics || 0,
+          Chemistry: t.Chemistry || 0,
+          Biology: t.Biology || 0,
+          Botany: t.Botany || 0,
+          Zoology: t.Zoology || 0,
+        }));
+
         setData(performanceData);
 
-        // Calculate average accuracy - only count periods with actual data
-        const dataPointsWithValues = performanceData.filter(item => 
-          item.physics > 0 || item.chemistry > 0 || item.biology > 0
-        );
-        
-        const totalScores = dataPointsWithValues.reduce(
-          (acc, item) => acc + item.physics + item.chemistry + item.biology,
+        // Calculate average accuracy
+        const totalScores = rawData.reduce(
+          (acc, t) =>
+            acc + (t.Physics || 0) + (t.Chemistry || 0) + (t.Biology || 0) + (t.Botany || 0) + (t.Zoology || 0),
           0
         );
-        
-        const totalSubjects = dataPointsWithValues.length * 3;
-        const avgAccuracyCalc = totalSubjects > 0 ? Math.round(totalScores / totalSubjects) : 0;
+
+        const count = rawData.length;
+        const avgAccuracyCalc = Math.round(totalScores / (count * 5));
 
         setAvgAccuracy(avgAccuracyCalc);
 
-        // Trend calculation - only use periods with data
-        if (dataPointsWithValues.length >= 2) {
-          const last = dataPointsWithValues[dataPointsWithValues.length - 1];
-          const prev = dataPointsWithValues[dataPointsWithValues.length - 2];
+        // Trend calculation
+        if (performanceData.length >= 2) {
+          const firstHalf = performanceData.slice(0, Math.ceil(performanceData.length / 2));
+          const secondHalf = performanceData.slice(Math.ceil(performanceData.length / 2));
 
-          const lastTotal = (last.physics + last.chemistry + last.biology) / 3;
-          const prevTotal = (prev.physics + prev.chemistry + prev.biology) / 3;
+          const firstAvg =
+            firstHalf.reduce((sum, d) => sum + d.Physics + d.Chemistry + d.Biology + (d.Botany || 0) + (d.Zoology || 0), 0) /
+            (firstHalf.length * 5);
 
-          const trendDiff = lastTotal - prevTotal;
-          const trendPercent = prevTotal !== 0 ? ((trendDiff / prevTotal) * 100).toFixed(1) : 0;
+          const secondAvg =
+            secondHalf.reduce((sum, d) => sum + d.Physics + d.Chemistry + d.Biology + (d.Botany || 0) + (d.Zoology || 0), 0) /
+            (secondHalf.length * 5);
 
-          setIsImproving(trendDiff > 0 ? true : trendDiff < 0 ? false : null);
-          setTrendPercentage(Math.abs(trendPercent));
-        } else {
-          setIsImproving(null);
-          setTrendPercentage(0);
+          const isUp = secondAvg > firstAvg;
+          setIsImproving(isUp);
+          setTrendPercentage(Math.round(Math.abs((secondAvg - firstAvg) / (firstAvg || 1) * 100)));
         }
-
       } catch (err) {
         console.error("Error fetching accuracy data:", err);
         setError("Unable to load accuracy data");
@@ -181,13 +103,10 @@ const AccuracyCard = ({ selectedFilter }) => {
     };
 
     fetchData();
-  }, [selectedFilter]);
+  }, [viewFilter]);
 
-  // Determine trend icon and color
-  const trendColor = isImproving === null ? "text-gray-500" : 
-                     isImproving ? "text-green-500" : "text-red-500";
-  const TrendIcon = isImproving === null ? null : 
-                    isImproving ? FaArrowUp : FaArrowDown;
+  const trendColor = isImproving === null ? "text-gray-500" : isImproving ? "text-green-500" : "text-red-500";
+  const TrendIcon = isImproving === null ? null : isImproving ? FaArrowUp : FaArrowDown;
 
   if (loading) {
     return (
@@ -196,8 +115,8 @@ const AccuracyCard = ({ selectedFilter }) => {
           <CardTitle>Accuracy Overview</CardTitle>
           <CardDescription>Subject-wise accuracy across tests</CardDescription>
         </CardHeader>
-        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
-          <div>Loading...</div>
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="animate-pulse text-gray-500">Loading...</div>
         </CardContent>
       </Card>
     );
@@ -210,7 +129,7 @@ const AccuracyCard = ({ selectedFilter }) => {
           <CardTitle>Accuracy Overview</CardTitle>
           <CardDescription>Subject-wise accuracy across tests</CardDescription>
         </CardHeader>
-        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
+        <CardContent className="h-72 flex items-center justify-center">
           <div className="text-red-500">{error}</div>
         </CardContent>
       </Card>
@@ -224,8 +143,11 @@ const AccuracyCard = ({ selectedFilter }) => {
           <CardTitle>Accuracy Overview</CardTitle>
           <CardDescription>Subject-wise accuracy across tests</CardDescription>
         </CardHeader>
-        <CardContent className="w-full h-auto min-h-[320px] flex items-center justify-center">
-          <div className="text-gray-400">No data for {selectedFilter}</div>
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="text-gray-400 text-center">
+            <p className="font-medium">No data available</p>
+            <p className="text-sm">Complete tests to track accuracy</p>
+          </div>
         </CardContent>
       </Card>
     );
@@ -233,76 +155,106 @@ const AccuracyCard = ({ selectedFilter }) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>ACCURACY</CardTitle>
+      <CardHeader className="px-3 py-4 sm:px-6 sm:py-5">
+        <CardTitle className="text-lg sm:text-xl md:text-2xl">Accuracy Overview</CardTitle>
         <CardDescription>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-bold text-gray-500">ACCURACY</span>
-            <span className={`flex items-center text-sm font-medium ${trendColor}`}>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mt-2">
+            <span className="text-xs sm:text-sm font-bold text-gray-600">ACCURACY TREND</span>
+            <span className={`flex items-center text-xs sm:text-sm font-medium ${trendColor}`}>
               {TrendIcon && <TrendIcon className="mr-1" />}
-              {trendPercentage > 0 ? `${trendPercentage}%` : '0%'} 
+              {trendPercentage > 0 ? `${trendPercentage}%` : "0%"}
               {isImproving !== null && (isImproving ? " Increase" : " Decrease")}
             </span>
           </div>
-          <h2 className="text-2xl font-bold mt-2">{avgAccuracy}%</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-3">{avgAccuracy}%</h2>
+          <p className="text-xs text-gray-500 mt-1">{viewFilter} Performance</p>
         </CardDescription>
       </CardHeader>
-      <CardContent className="w-full h-auto min-h-[320px]">
-        <ResponsiveContainer width="100%" height={260}>
-          <LineChart 
-            data={data} 
-            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis 
-              dataKey="label" 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: '#6B7280' }}
-              interval={0} // Show all labels
+
+      <CardContent className="px-3 py-4 sm:px-6 sm:py-5">
+        <ResponsiveContainer width="100%" height={data.length > 5 ? 220 : 200}>
+          <LineChart data={data} margin={{ top: 10, right: 5, left: -25, bottom: data.length > 5 ? 50 : 30 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis
+              dataKey="name"
+              tick={{ fontSize: 10 }}
+              angle={data.length > 5 ? -45 : 0}
+              textAnchor={data.length > 5 ? "end" : "middle"}
+              height={data.length > 5 ? 60 : 25}
             />
-            <YAxis hide />
-            <Tooltip 
+            <YAxis
+              tick={{ fontSize: 10 }}
+              domain={[0, 100]}
+              ticks={[0, 25, 50, 75, 100]}
+              label={{ value: "Accuracy (%)", angle: -90, position: "insideLeft", offset: 5 }}
+              width={30}
+            />
+            <Tooltip
               contentStyle={{
-                backgroundColor: '#374151',
-                border: 'none',
-                borderRadius: '8px',
-                color: 'white'
+                backgroundColor: "#fff",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
               }}
-              formatter={(value, name) => [
-                `${value}%`, 
-                name.charAt(0).toUpperCase() + name.slice(1)
-              ]}
+              formatter={(value) => `${value}%`}
             />
+            <Legend />
             <Line
               type="monotone"
-              dataKey="physics"
+              dataKey="Physics"
               stroke="#0E5FD9"
               strokeWidth={3}
-              dot={{ fill: '#0E5FD9', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#0E5FD9', strokeWidth: 2 }}
-              connectNulls={false} // Don't connect lines through zero values
+              dot={{ fill: "#0E5FD9", r: 4 }}
+              activeDot={{ r: 6 }}
             />
             <Line
               type="monotone"
-              dataKey="chemistry"
+              dataKey="Chemistry"
               stroke="#0FAF62"
               strokeWidth={3}
-              dot={{ fill: '#0FAF62', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#0FAF62', strokeWidth: 2 }}
-              connectNulls={false}
+              dot={{ fill: "#0FAF62", r: 4 }}
+              activeDot={{ r: 6 }}
             />
             <Line
               type="monotone"
-              dataKey="biology"
+              dataKey="Biology"
               stroke="#E84646"
               strokeWidth={3}
-              dot={{ fill: '#E84646', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#E84646', strokeWidth: 2 }}
-              connectNulls={false}
+              dot={{ fill: "#E84646", r: 4 }}
+              activeDot={{ r: 6 }}
             />
           </LineChart>
         </ResponsiveContainer>
+
+        {/* Summary Stats */}
+        <div className="mt-4 pt-4 border-t space-y-2">
+          <p className="text-xs text-gray-600 font-medium">Subject Performance ({viewFilter}):</p>
+          <div className="grid grid-cols-3 gap-1 sm:gap-2 text-center">
+            <div className="bg-blue-50 p-2 rounded">
+              <p className="text-xs text-gray-600">Physics</p>
+              <p className="text-sm font-bold text-blue-600">
+                {Math.round(
+                  data.reduce((sum, d) => sum + d.Physics, 0) / data.length
+                )}%
+              </p>
+            </div>
+            <div className="bg-green-50 p-2 rounded">
+              <p className="text-xs text-gray-600">Chemistry</p>
+              <p className="text-sm font-bold text-green-600">
+                {Math.round(
+                  data.reduce((sum, d) => sum + d.Chemistry, 0) / data.length
+                )}%
+              </p>
+            </div>
+            <div className="bg-red-50 p-2 rounded">
+              <p className="text-xs text-gray-600">Biology</p>
+              <p className="text-sm font-bold text-red-600">
+                {Math.round(
+                  data.reduce((sum, d) => sum + d.Biology, 0) / data.length
+                )}%
+              </p>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

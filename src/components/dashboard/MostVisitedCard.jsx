@@ -10,67 +10,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import axios from "axios";
+import { withinRange } from "@/lib/dateFilters";
 
-const MostVisitedPageCard = ({ selectedFilter }) => {
+const MostVisitedCard = ({ selectedFilter }) => {
   const [data, setData] = useState([]);
   const [graphData, setGraphData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalTests, setTotalTests] = useState(0);
+  const [viewFilter, setViewFilter] = useState(selectedFilter || "This Year");
 
-  // Enhanced date helpers with daily support
-  const getStartOfDay = (date) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d;
-  };
-
-  const getStartOfWeek = (date) => {
-    const d = new Date(date);
-    const day = d.getDay(); // Sunday = 0, Monday = 1, ...
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Monday start
-    const start = new Date(d.setDate(diff));
-    start.setHours(0, 0, 0, 0); // ✅ normalize to start of day (local)
-    return start;
-  };
-
-  const isSameDay = (testDate, currentDate) => {
-    const test = getStartOfDay(testDate);
-    const current = getStartOfDay(currentDate);
-    return test.getTime() === current.getTime();
-  };
-
-  const isSameWeek = (testDate, currentDate) => {
-    const test = new Date(testDate);
-    const current = new Date(currentDate);
-    const weekStart = getStartOfWeek(current);
-    const testWeekStart = getStartOfWeek(test);
-    return weekStart.getTime() === testWeekStart.getTime();
-  };
-
-  const isSameMonth = (testDate, currentDate) => {
-    const test = new Date(testDate);
-    const current = new Date(currentDate);
-    return test.getFullYear() === current.getFullYear() &&
-      test.getMonth() === current.getMonth();
-  };
-
-  const isSameYear = (testDate, currentDate) =>
-    new Date(testDate).getFullYear() === new Date(currentDate).getFullYear();
+  useEffect(() => {
+    setViewFilter(selectedFilter || "This Year");
+  }, [selectedFilter]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        setError(null);
-
         const token = localStorage.getItem("authToken");
-        if (!token) {
-          setError("Authentication required");
-          setLoading(false);
-          return;
-        }
-
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/testcount`,
           {
@@ -80,288 +38,101 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
           }
         );
 
-        console.log("API Response:", response.data);
-
-        const rawData = response.data;
-
-        // Check if we have valid data structure
-        if (!rawData || typeof rawData !== 'object') {
-          setError("Invalid data format received");
-          setLoading(false);
+        if (!response.data) {
+          setError("Invalid response format");
           return;
         }
 
-        const currentDate = new Date();
+        // Categorize tests
+        const testTypeMap = {
+          "Full Test": response.data.fullTestResults?.totalTests || 0,
+          "System Test": response.data.recommendedTests?.totalTests || 0,
+          "Quick Test": response.data.meTests?.totalTests || 0,
+          "Admin Test": response.data.adminTests?.totalTests || 0,
+        };
 
-        // Process each test type with better error handling
-        const testTypes = [
-          {
-            key: 'fullTestResults',
-            name: 'Full Tests',
-            color: "#1E66F5",
-
-          },
-          {
-            key: 'recommendedTests',
-            name: 'Recommended Tests',
-            color: "#FFA500"
-          },
-          {
-            key: 'meTests',
-            name: 'ME Tests',
-            color: "#FF3B30"
-          }
-        ];
-
-        let filteredTests = [];
-
-        testTypes.forEach(testType => {
-          const testData = rawData[testType.key];
-
-          if (testData && typeof testData === 'object') {
-            let shouldInclude = false;
-
-            // Apply date filtering based on selectedFilter
-            switch (selectedFilter) {
-              case "Today": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameDay(localUpdatedAt, currentDate);
-                break;
-              }
-              case "This Week": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameWeek(localUpdatedAt, currentDate);
-                break;
-              }
-              case "This Month": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameMonth(localUpdatedAt, currentDate);
-                break;
-              }
-              case "This Year": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameYear(localUpdatedAt, currentDate);
-                break;
-              }
-              default:
-                shouldInclude = true;
-            }
-
-            if (shouldInclude && testData.totalTests > 0) {
-              filteredTests.push({
-                name: testType.name,
-                totalTests: testData.totalTests || 0,
-                color: testType.color
-              });
-            }
-          }
-        });
-
-        console.log("Filtered tests:", filteredTests);
-
-        // Calculate total tests
-        const total = filteredTests.reduce((sum, test) => sum + test.totalTests, 0);
+        const total = Object.values(testTypeMap).reduce((a, b) => a + b, 0);
         setTotalTests(total);
 
-        if (total === 0) {
-          setData([]);
-          setGraphData([]);
-          setLoading(false);
-          return;
-        }
-
-        // Prepare data for table (percentages)
-        const tableData = filteredTests.map(test => ({
-          name: test.name,
-          value: ((test.totalTests / total) * 100).toFixed(1),
-          color: test.color,
-          totalTests: test.totalTests
-        }));
-
-        // Prepare data for graph (absolute values)
-        const pieData = filteredTests.map(test => ({
-          name: test.name,
-          value: test.totalTests,
-          color: test.color
-        }));
+        // Prepare table data
+        const tableData = Object.entries(testTypeMap)
+          .filter(([_, count]) => count > 0)
+          .map(([name, count]) => {
+            const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+            return {
+              name,
+              count,
+              percentage: parseFloat(percentage),
+            };
+          });
 
         setData(tableData);
-        setGraphData(pieData);
-        setLoading(false);
 
+        // Prepare pie chart data with colors
+        const chartColors = {
+          "Full Test": "#1E66F5",
+          "System Test": "#FFA500",
+          "Quick Test": "#FF3B30",
+          "Admin Test": "#8B5CF6",
+        };
+
+        const pieData = tableData.map((item) => ({
+          name: item.name,
+          value: item.count,
+          fill: chartColors[item.name] || "#999",
+        }));
+
+        setGraphData(pieData);
       } catch (err) {
-        console.error("Error fetching test statistics:", err);
-        setError(err.response?.data?.message || "Failed to load test statistics");
+        console.error("Error fetching test data:", err);
+        setError("Failed to load test statistics");
+      } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [selectedFilter]);
+  }, [viewFilter]);
 
-  // Add real-time updates - refetch data every 30 seconds to catch new tests
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const token = localStorage.getItem("authToken");
-      if (token && !loading) {
-        // Silently refresh data without showing loading state
-        fetchDataSilently();
-      }
-    }, 30000); // Refresh every 30 seconds
-
-    const fetchDataSilently = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard/testcount`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const rawData = response.data;
-        const currentDate = new Date();
-
-        const testTypes = [
-          { key: 'fullTestResults', name: 'Full Tests', color: "#1E66F5" },
-          { key: 'recommendedTests', name: 'Recommended Tests', color: "#FFA500" },
-          { key: 'meTests', name: 'ME Tests', color: "#FF3B30" }
-        ];
-
-        let filteredTests = [];
-
-        testTypes.forEach(testType => {
-          const testData = rawData[testType.key];
-
-          if (testData && typeof testData === 'object') {
-            let shouldInclude = false;
-
-            switch (selectedFilter) {
-              case "Today": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameDay(localUpdatedAt, currentDate);
-                break;
-              }
-              case "This Week": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameWeek(localUpdatedAt, currentDate);
-                break;
-              }
-              case "This Month": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameMonth(localUpdatedAt, currentDate);
-                break;
-              }
-              case "This Year": {
-                const localUpdatedAt = new Date(testData.updatedAt);
-                shouldInclude = testData.updatedAt && isSameYear(localUpdatedAt, currentDate);
-                break;
-              }
-              default:
-                shouldInclude = true;
-            }
-
-            if (shouldInclude && testData.totalTests > 0) {
-              filteredTests.push({
-                name: testType.name,
-                totalTests: testData.totalTests || 0,
-                color: testType.color
-              });
-            }
-          }
-        });
-
-        const total = filteredTests.reduce((sum, test) => sum + test.totalTests, 0);
-        setTotalTests(total);
-
-        if (total === 0) {
-          setData([]);
-          setGraphData([]);
-          return;
-        }
-
-        const tableData = filteredTests.map(test => ({
-          name: test.name,
-          value: ((test.totalTests / total) * 100).toFixed(1),
-          color: test.color,
-          totalTests: test.totalTests
-        }));
-
-        const pieData = filteredTests.map(test => ({
-          name: test.name,
-          value: test.totalTests,
-          color: test.color
-        }));
-
-        setData(tableData);
-        setGraphData(pieData);
-      } catch (err) {
-        console.error("Error silently refreshing test statistics:", err);
-        // Don't set error state for silent refresh to avoid disrupting user experience
-      }
-    };
-
-    return () => clearInterval(interval);
-  }, [selectedFilter, loading]);
-
-  // Render loading state
   if (loading) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>Test Statistics</CardTitle>
-          <CardDescription>
-            Overview of test data based on selection
-          </CardDescription>
+          <CardDescription>Overview of test data</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-64">
-          <div className="text-center text-blue-500">Loading test statistics...</div>
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="animate-pulse text-gray-500">Loading test statistics...</div>
         </CardContent>
       </Card>
     );
   }
 
-  // Render error state
   if (error) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>Test Statistics</CardTitle>
-          <CardDescription>
-            Overview of test data based on selection
-          </CardDescription>
+          <CardDescription>Overview of test data</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-64">
-          <div className="text-center text-red-500">{error}</div>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Retry
-          </button>
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="text-red-500">{error}</div>
         </CardContent>
       </Card>
     );
   }
 
-  // Render no data state
   if (data.length === 0) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>Test Statistics</CardTitle>
-          <CardDescription>
-            Overview of test data based on selection
-          </CardDescription>
+          <CardDescription>Overview of test data</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-64">
-          <div className="text-center text-gray-500">
-            No test data found for {selectedFilter.toLowerCase()}
-          </div>
-          <div className="text-sm text-gray-400 mt-2">
-            Take some tests to see statistics
+        <CardContent className="h-72 flex items-center justify-center">
+          <div className="text-gray-400 text-center">
+            <p className="font-medium">No test data available</p>
+            <p className="text-sm">Complete tests to see statistics</p>
           </div>
         </CardContent>
       </Card>
@@ -370,161 +141,97 @@ const MostVisitedPageCard = ({ selectedFilter }) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Test Statistics</CardTitle>
-        <CardDescription>
-          Overview of test data based on selection
-        </CardDescription>
+      <CardHeader className="px-3 py-4 sm:px-6 sm:py-5">
+        <CardTitle className="text-lg sm:text-xl md:text-2xl">Test Statistics</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Overview of completed tests</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col items-center">
-        {/* Total Tests Summary */}
-        <div className="w-full text-center mb-4 p-3 bg-gray-50 rounded-lg">
-          <div className="text-2xl font-bold text-blue-600">{totalTests}</div>
-          <div className="text-sm text-gray-600">Total Tests ({selectedFilter})</div>
+
+      <CardContent className="space-y-4 px-3 py-4 sm:px-6 sm:py-5 overflow-hidden">
+        {/* Total Tests Card */}
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-3 sm:p-4 border border-purple-200">
+          <div className="text-center">
+            <p className="text-xs sm:text-sm text-gray-600 font-medium">Total Tests ({viewFilter})</p>
+            <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-purple-600 mt-2">{totalTests}</p>
+            <p className="text-xs text-gray-600 mt-1">Across all categories</p>
+          </div>
         </div>
 
-        {/* Chart */}
-        <div className="w-full flex justify-center items-center overflow-visible min-h-[260px] md:min-h-[280px] lg:min-h-[300px]">
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
-              <defs>
-                {/* ✨ Gradient fills for each test type */}
-                <linearGradient id="blueGradient" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#1E66F5" />
-                  <stop offset="100%" stopColor="#4FACFE" />
-                </linearGradient>
-                <linearGradient id="orangeGradient" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#FFA500" />
-                  <stop offset="100%" stopColor="#FFCE00" />
-                </linearGradient>
-                <linearGradient id="redGradient" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#FF3B30" />
-                  <stop offset="100%" stopColor="#FF6B6B" />
-                </linearGradient>
-              </defs>
+        {/* Pie Chart */}
+        <div className="w-full">
+          <p className="text-xs sm:text-sm font-semibold text-gray-700 mb-3">Test Distribution</p>
+          <div style={{ width: "100%", height: "280px" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <Pie
+                  data={graphData}
+                  cx="50%"
+                  cy="45%"
+                  labelLine={true}
+                  label={({ name, value, percent }) => `${name}: ${value}`}
+                  outerRadius={50}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {graphData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value) => `${value} test${value !== 1 ? "s" : ""}`}
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    border: "1px solid #ccc",
+                    borderRadius: "6px",
+                    fontSize: "12px",
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-              <Pie
-                data={graphData}
-                cx="50%"
-                cy="50%"
-                innerRadius={55}
-                outerRadius={85}
-                paddingAngle={3}
-                cornerRadius={6}
-                dataKey="value"
-                labelLine={false}
-                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
-                  const RAD = Math.PI / 180;
-                  const r = innerRadius + (outerRadius - innerRadius) * 0.6;
-                  const x = cx + r * Math.cos(-midAngle * RAD);
-                  const y = cy + r * Math.sin(-midAngle * RAD);
-                  const shortName = name.replace(" Tests", "");
-                  const pct = `${(percent * 100).toFixed(0)}%`;
-                  const isSmallScreen =
-                    typeof window !== "undefined" && window.innerWidth < 380;
-
-                  return (
-                    <text
-                      x={x}
-                      y={y}
-                      fill="#222"
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                      fontSize={isSmallScreen ? 10 : 12}
-                      fontWeight="600"
-                      style={{ pointerEvents: "none" }}
-                    >
-                      {isSmallScreen ? (
-                        <>
-                          <tspan x={x} dy="-0.4em">{shortName}</tspan>
-                          <tspan x={x} dy="1.2em">{pct}</tspan>
-                        </>
-                      ) : (
-                        <>
-                          <tspan x={x} dy="-0.4em">{shortName}</tspan>
-                          <tspan x={x} dy="1.2em">{pct}</tspan>
-                        </>
-                      )}
-                    </text>
-                  );
-                }}
-              >
-                {/* ✨ Apply gradients for better visual depth */}
-                {graphData.map((entry, i) => (
-                  <Cell
-                    key={i}
-                    fill={
-                      entry.name.includes("Full")
-                        ? "url(#blueGradient)"
-                        : entry.name.includes("Recommended")
-                          ? "url(#orangeGradient)"
-                          : "url(#redGradient)"
-                    }
-                    stroke="#fff"
-                    strokeWidth={2}
+        {/* Table */}
+        <div className="border-t pt-4 w-full overflow-x-auto">
+          <p className="text-xs sm:text-sm font-semibold text-gray-700 mb-3">Test Breakdown</p>
+          <div className="space-y-2">
+            {data.map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                  <div
+                    className="w-3 h-3 rounded-full shrink-0 flex-shrink-0"
+                    style={{ backgroundColor: graphData[idx]?.fill }}
                   />
-                ))}
-              </Pie>
-
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#fff",
-                  borderRadius: "8px",
-                  border: "1px solid #e5e7eb",
-                  boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
-                }}
-                labelStyle={{ color: "#111", fontWeight: "600" }}
-                formatter={(value, name) => [`${value} tests`, name]}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-
-
-        {/* Data Table - Mobile responsive */}
-        <div className="w-full mt-4">
-          <div className="flex justify-between border-b pb-2 text-gray-500 text-xs sm:text-sm font-medium">
-            <span className="truncate pr-2">TEST NAME</span>
-            <span className="truncate pl-2">TOTAL TESTS (%)</span>
-          </div>
-          {data.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-2 sm:py-3 border-b">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <span
-                  className="w-3 h-3 rounded-full shrink-0"
-                  style={{ backgroundColor: item.color }}
-                ></span>
-                <span className="text-gray-700 text-xs sm:text-sm font-medium truncate">
-                  {item.name}
-                </span>
-              </div>
-              <div className="text-right min-w-0 pl-2">
-                <div className="text-xs sm:text-sm font-semibold text-gray-900 whitespace-nowrap">
-                  {item.totalTests} tests
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-gray-800 truncate" title={item.name}>{item.name}</p>
+                    <p className="text-xs text-gray-600">{item.count} test{item.count !== 1 ? "s" : ""}</p>
+                  </div>
                 </div>
-                <div className={`text-xs ${parseFloat(item.value) < 33 ? "text-red-500" :
-                  parseFloat(item.value) < 66 ? "text-yellow-500" : "text-green-500"
-                  } whitespace-nowrap`}>
-                  {item.value}%
+                <div className="text-right flex-shrink-0 pl-2 ml-2">
+                  <p className="text-xs sm:text-sm font-bold text-gray-900 whitespace-nowrap">{item.count}</p>
+                  <p
+                    className={`text-xs font-semibold whitespace-nowrap ${
+                      item.percentage >= 50
+                        ? "text-green-600"
+                        : item.percentage >= 25
+                        ? "text-yellow-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {item.percentage}%
+                  </p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Period Info */}
-        <div className="w-full mt-4 text-center">
-          <div className="text-xs text-gray-400">
-            Showing data for: {selectedFilter}
-          </div>
-          <div className="text-xs text-gray-400 mt-1">
-            Updates automatically every 30 seconds
-          </div>
+        {/* Footer */}
+        <div className="text-xs text-gray-500 text-center pt-2 sm:pt-4 border-t">
+          <p className="text-xs sm:text-sm">Data for: {viewFilter}</p>
         </div>
       </CardContent>
     </Card>
   );
 };
 
-export default MostVisitedPageCard;
+export default MostVisitedCard;
