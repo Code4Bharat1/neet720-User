@@ -1,31 +1,49 @@
 export async function generateMetadata({ params }) {
-  const { "test-type": testType, "test-id": testId } = params;
+  const { seriesId, testId } = params;
 
-  const title = `review-test-mistake (${testType}) (${testId}) | NEET720 – India's Most Trusted NEET Preparation Platform`;
-  const description =
-    "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.";
+  const title = `NEET Test – ${testId.replace(/-/g, " ")} | ${seriesId.replace(
+    /-/g,
+    " "
+  )} | NEET720`;
+
+  const description = `Attempt NEET mock test ${testId.replace(
+    /-/g,
+    " "
+  )} under ${seriesId.replace(
+    /-/g,
+    " "
+  )}. Includes timer, analytics, performance review & accuracy tracking.`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://neet720.com/test-series/${seriesId}/test/${testId}`,
+    },
     openGraph: {
-      url: `https://neet720.com/review-test-mistake/${testType}/${testId}`,
       title,
       description,
-      siteName: "NEET720",
+      url: `https://neet720.com/test-series/${seriesId}/test/${testId}`,
+      type: "article",
+      images: [
+        {
+          url: "https://neet720.com/og-image.jpg",
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["https://neet720.com/og-image.jpg"],
     },
   };
 }
 
+import TestPage from "@/components/TestSeries/TestPage";
 
-
-import TestPage from '@/components/TestSeries/TestPage'
-import React from 'react'
-
-export default function page() {
-  return (
-    <div>
-      <TestPage />
-    </div>
-  )
+export default function Page() {
+  return <TestPage />;
 }

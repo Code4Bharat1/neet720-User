@@ -1,4 +1,3 @@
-
 export const metadata = {
   title:
     "login | NEET720 – India's Most Trusted NEET Preparation Platform",
@@ -14,9 +13,6 @@ export const metadata = {
 };
 
 
-
-
-'use client'
 import React from 'react';
 import LoginPage from '@/components/login/login';
 

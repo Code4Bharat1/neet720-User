@@ -13,7 +13,6 @@ export const metadata = {
 };
 
 
-"use client";
 import React from "react";
 import Sidebar from "@/components/layout/sidebar/sidebar";
 import PersonalData from "@/components/personaldata/personaldata";

@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-
 import Perfromance from '@/components/top10_frontend/Performance'
 import FeaturesPerformance from '@/components/top10_frontend/FeaturePerformance'
 import React from 'react'

@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-
 import ExamPlan from '@/components/exam_Plan/ExamPlan'
 import React from 'react'
 

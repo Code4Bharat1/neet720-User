@@ -13,7 +13,6 @@ export const metadata = {
 };
 
 
-'use client'
 import React from 'react';
 import GetCertified from '@/components/a1/getcertified';
 

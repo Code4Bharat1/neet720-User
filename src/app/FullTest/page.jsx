@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-
 import FeatureTest from '@/components/FullTest/FeatureTest'
 import FullTest from '@/components/FullTest/FullTest'
 import React from 'react'

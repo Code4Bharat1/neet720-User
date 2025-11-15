@@ -1,21 +1,4 @@
-export const metadata = {
-  title:
-    "viewanalyticsEP | NEET720 – India's Most Trusted NEET Preparation Platform",
-  description:
-    "View your exam performance analytics and personalized NEET improvement insights on NEET720.",
-  openGraph: {
-    url: "https://neet720.com/viewanalyticsEP",
-    title: "viewanalyticsEP | NEET720",
-    description:
-      "View your exam performance analytics and personalized NEET improvement insights on NEET720.",
-    siteName: "NEET720",
-  },
-};
-
-
-
 "use client";
-
 import { useState } from "react";
 import Sidebar from "@/components/layout/sidebar/sidebar";
 import NavBar from "@/components/layout/navbar/navbar";
@@ -25,7 +8,6 @@ import ViewAnalyticsHeader from "@/components/ViewAnalyticsCT/ViewAnalyticsHeade
 import TestReportChart from "@/components/ViewAnalyticsCT/TestReportCard";
 import TestPerformanceSummary from "@/components/ViewAnalyticsCT/TestPerformanceSummary";
 import ChapterPerformanceChart from "@/components/ViewAnalyticsCT/ChapterPerformanceChart";
-
 // Dummy data for each section
 const sectionData = {
   Physics: {
@@ -98,3 +80,4 @@ const Page = () => {
 };
 
 export default Page;
+

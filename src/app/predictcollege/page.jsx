@@ -14,7 +14,6 @@ export const metadata = {
 
 
 
-"use client";
 import React from "react";
 import FilterCard from "@/components/predictcollege/filtercard";
 import NavBar from "@/components/layout/navbar/navbar";

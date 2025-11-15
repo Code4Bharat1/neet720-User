@@ -1,7 +1,3 @@
-
-
-
-
 export const metadata = {
   title:
     "signup | NEET720 – India's Most Trusted NEET Preparation Platform",
@@ -15,14 +11,8 @@ export const metadata = {
     siteName: "NEET720",
   },
 };
-
-'use client'
 import React from 'react';
 import SignUpPage from '@/components/signup/signup';
-
-
-
-
 const Page = () => {
   return (
     <div>

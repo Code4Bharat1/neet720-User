@@ -12,15 +12,8 @@ export const metadata = {
   },
 };
 
-
-
-
-'use client'
 import React from 'react';
 import ForgotPassword from '@/components/a1/forgotpassword';
-
-
-
 
 const Page = () => {
   return (

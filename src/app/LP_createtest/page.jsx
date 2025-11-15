@@ -1,6 +1,3 @@
-// import React from 'react';
-
-
 export const metadata = {
   title:
     "LP_createtest | NEET720 – India's Most Trusted NEET Preparation Platform",

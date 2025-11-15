@@ -1,20 +1,5 @@
-export const metadata = {
-  title:
-    "credits | NEET720 – India's Most Trusted NEET Preparation Platform",
-  description:
-    "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
-  openGraph: {
-    url: "https://neet720.com/credits",
-    title: "credits | NEET720",
-    description:
-      "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
-    siteName: "NEET720",
-  },
-};
+"use client";
 
-
-
-"use client"
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';

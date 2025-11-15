@@ -12,13 +12,6 @@ export const metadata = {
   },
 };
 
-
-
-
-
-
-
-"use client";
 import NavBar from '@/components/layout/navbar/navbar';
 import Sidebar from '@/components/layout/sidebar/sidebar';
 import ToggleBar from '@/components/layout/togglebar/togglebar';

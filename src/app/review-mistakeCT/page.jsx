@@ -12,11 +12,6 @@ export const metadata = {
   },
 };
 
-
-
-
-
-
 import React from "react";
 import { Suspense } from "react";
 import ReviewMistakeCT from "@/components/review-mistake/review-mistakeCT";

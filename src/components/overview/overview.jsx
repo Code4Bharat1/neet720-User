@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { AiOutlineDownload } from "react-icons/ai"; // Import Download Icon
 

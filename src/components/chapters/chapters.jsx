@@ -1,3 +1,4 @@
+"use client";
 // Chapters.jsx (controlled)
 "use client";
 import { useEffect, useState } from "react";

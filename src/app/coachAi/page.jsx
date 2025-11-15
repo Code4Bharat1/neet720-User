@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-
 import AiCoachPlan from '@/components/aiCoach/aiCoach'
 import React from 'react'
 

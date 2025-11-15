@@ -12,9 +12,6 @@ export const metadata = {
   },
 };
 
-
-
-'use client'
 import React from 'react';
 import TestInterfaceMobile from '@/components/testinterfacemobile/testinterfacemobile';
 import { Result } from 'postcss';

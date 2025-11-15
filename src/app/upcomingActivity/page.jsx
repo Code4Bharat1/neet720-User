@@ -11,9 +11,6 @@ export const metadata = {
     siteName: "NEET720",
   },
 };
-
-
-
 import React from 'react'
 import UpcomingActivity from '@/components/upcomingActivity_frontend/upcomingActivity'
 const Page = () => {
@@ -23,5 +20,4 @@ const Page = () => {
     </div>
   )
 }
-
 export default Page

@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-
 import ReviewAllTestMistakes from '@/components/review-mistake/review-mistake-all'
 import React from 'react'
 

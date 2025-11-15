@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-
 import React from 'react'
 import PreviousYearQuestion from '@/components/LP_PYQ/PYQ'
 

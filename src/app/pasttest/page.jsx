@@ -1,6 +1,3 @@
-
-
-
 export const metadata = {
   title:
     "pasttest | NEET720 – India's Most Trusted NEET Preparation Platform",
@@ -14,10 +11,6 @@ export const metadata = {
     siteName: "NEET720",
   },
 };
-
-
-
-"use client";
 
 import Sidebar from "@/components/layout/sidebar/sidebar";
 import NavBar from "@/components/layout/navbar/navbar";

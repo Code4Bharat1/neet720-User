@@ -12,7 +12,6 @@ export const metadata = {
   },
 };
 
-
 import CustomTask from '@/components/customTask/CustomTask'
 import React from 'react'
 

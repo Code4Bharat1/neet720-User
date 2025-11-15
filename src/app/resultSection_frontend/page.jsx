@@ -12,10 +12,6 @@ export const metadata = {
   },
 };
 
-
-
-
-
 import FeatureResult from '@/components/resultSection_frontend/featureResult'
 import ResultSection from '@/components/resultSection_frontend/resultSection'
 import React from 'react'

@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-
 import Analytic from '@/components/analyticSection/Analytic'
 import FeatureAnalytic from '@/components/analyticSection/FeatureAnalytic'
 import React from 'react'

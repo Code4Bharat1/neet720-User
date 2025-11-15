@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { ArrowRight, Target, Trophy, Lightbulb, Sparkles, TrendingUp } from "lucide-react";
 

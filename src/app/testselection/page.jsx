@@ -1,19 +1,5 @@
-export const metadata = {
-  title:
-    "testselection | NEET720 – India's Most Trusted NEET Preparation Platform",
-  description:
-    "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
-  openGraph: {
-    url: "https://neet720.com/testselection",
-    title: "testselection | NEET720",
-    description:
-      "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
-    siteName: "NEET720",
-  },
-};
-
-
 "use client";
+
 import React, { useState , useEffect} from "react";
 import Sidebar from "@/components/layout/sidebar/sidebar";
 import NavBar from "@/components/layout/navbar/navbar";
@@ -141,3 +127,4 @@ const Page = () => {
 };
 
 export default Page;
+

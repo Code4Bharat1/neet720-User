@@ -1,4 +1,3 @@
-
 export const metadata = {
   title:
     "result | NEET720 – India's Most Trusted NEET Preparation Platform",
@@ -13,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-'use client'
 import React from 'react';
 import TestInterfaceMobile from '@/components/testinterfacemobile/testinterfacemobile';
 import { Result } from 'postcss';

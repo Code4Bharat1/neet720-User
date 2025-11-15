@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-"use client";
 import React from "react";
 import Sidebar from "@/components/layout/sidebar/sidebar";
 import NavBar from "@/components/layout/navbar/navbar";

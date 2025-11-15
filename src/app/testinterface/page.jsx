@@ -12,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-'use client'
 import React from 'react';
 import TestInterface from '@/components/testinterface/testinterface';
 import TestInterfaceMobile from "@/components/testInterfaceMobileView/testInterface"

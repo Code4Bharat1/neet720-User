@@ -1,5 +1,3 @@
-
-
 export const metadata = {
   title:
     "noticeSection | NEET720 – India's Most Trusted NEET Preparation Platform",

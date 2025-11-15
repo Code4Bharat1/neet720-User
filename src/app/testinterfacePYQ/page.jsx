@@ -12,7 +12,6 @@ export const metadata = {
   },
 };
 
-
 import React from 'react'
 import TestInterfacePYQ from '@/components/testinterface/testinterface_PYQ'
 export default function page() {

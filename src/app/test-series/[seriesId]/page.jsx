@@ -1,34 +1,41 @@
 export async function generateMetadata({ params }) {
   const { seriesId } = params;
 
-  const title = `test-series (${seriesId}) | NEET720 – India's Most Trusted NEET Preparation Platform`;
-  const description =
-    "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.";
+  const formatted = seriesId.replace(/-/g, " ");
+
+  const title = `NEET Test Series – ${formatted} | NEET720`;
+  const description = `Practice NEET chapter-wise and full-length test series: ${formatted}. Boost your score with real-exam simulation.`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://neet720.com/test-series/${seriesId}`,
+    },
     openGraph: {
-      url: `https://neet720.com/test-series/${seriesId}`,
       title,
       description,
-      siteName: "NEET720",
+      url: `https://neet720.com/test-series/${seriesId}`,
+      type: "article",
+      images: [
+        {
+          url: "https://neet720.com/og-image.jpg",
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["https://neet720.com/og-image.jpg"],
     },
   };
 }
 
+import UserTestsBySeries from "@/components/TestSeries/UserTestsBySeries";
 
-
-
-
-
-import UserTestsBySeries from '@/components/TestSeries/UserTestsBySeries'
-import React from 'react'
-
-export default function page() {
-  return (
-    <div>
-        <UserTestsBySeries />
-    </div>
-  )
+export default function Page() {
+  return <UserTestsBySeries />;
 }

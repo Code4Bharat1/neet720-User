@@ -11,14 +11,8 @@ export const metadata = {
     siteName: "NEET720",
   },
 };
-
-'use client'
 import React from 'react';
 import VerifyYourEmail from '@/components/a1/verifyyouremail';
-
-
-
-
 const Page = () => {
   return (
     <div>

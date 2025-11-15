@@ -1,5 +1,3 @@
-
-
 export const metadata = {
   title:
     "testinterfaceCT | NEET720 – India's Most Trusted NEET Preparation Platform",
@@ -14,8 +12,6 @@ export const metadata = {
   },
 };
 
-
-"use client";
 import React from "react";
 import TestInterface_CT from "@/components/testinterface/testinterface_CT";
 import TestInterfaceMobile from "@/components/testinterfacemobile/testinterfacemobile_CT";

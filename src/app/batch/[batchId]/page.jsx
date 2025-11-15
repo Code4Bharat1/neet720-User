@@ -12,10 +12,6 @@ export const metadata = {
   },
 };
 
-
-
-
-
 import BatchTestsCard from '@/components/batch/BatchInfoPage'
 import React from 'react'
 

@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";

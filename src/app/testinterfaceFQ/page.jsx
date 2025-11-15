@@ -13,7 +13,6 @@ export const metadata = {
 };
 
 
-"use client";
 import React from "react";
 import TestInterface_FQ from "@/components/testinterface/testinterface_FQ";
 
