@@ -1,6 +1,11 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /login
+Disallow: /forgotpassword
 
 # Host
 Host: https://neet720.com
