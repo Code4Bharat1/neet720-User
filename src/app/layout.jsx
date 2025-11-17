@@ -104,8 +104,8 @@ export const metadata = {
     site: "@neet720",
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
     apple: "/apple-touch-icon.png",
   },
   robots: {
