@@ -61,9 +61,9 @@ export default function Navbar() {
               />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                NEET720
-              </h1>
+              <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                NEET 720
+              </h2>
               <p className="text-[10px] md:text-xs text-gray-500 font-medium">
                 Your Success Partner
               </p>
