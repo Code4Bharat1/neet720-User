@@ -1,14 +1,19 @@
-# *
 User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /private/
-Disallow: /login
-Disallow: /forgotpassword
+Disallow: /personaldata
+Disallow: /dashboard
+Disallow: /testinterface
+Disallow: /review-
+Disallow: /result
+Disallow: /analytics
+Disallow: /credits
+Disallow: /signup
+Disallow: /signUpPage
+Disallow: /verifyyouremail
+Disallow: /enter-test
 
-# Host
-Host: https://neet720.com
-
-# Sitemaps
+# Sitemap
 Sitemap: https://neet720.com/sitemap.xml
