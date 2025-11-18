@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 
 export default function ClientLayout({ children }) {
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
 
   const routesWithLayout = [
     "/HomePage",
@@ -26,13 +26,12 @@ export default function ClientLayout({ children }) {
     "/upcomingActivity",
     "/customTask",
     "/recentTest",
-    "/top10_frontend"
+    "/top10_frontend",
   ];
 
-  const showHeaderFooter = routesWithLayout.some((route) =>
-  pathname?.startsWith(route)
-);
-
+  const showHeaderFooter = routesWithLayout.some((r) =>
+    pathname.startsWith(r)
+  );
 
   return (
     <>

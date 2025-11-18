@@ -59,20 +59,44 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/features"
+                  href="/terms"
                   className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center justify-center md:justify-start gap-2 group"
                 >
                   <span className="w-0 h-0.5 bg-blue-600 group-hover:w-4 transition-all duration-300"></span>
-                  Features
+                 Terms & Conditions
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href="/privacy"
                   className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center justify-center md:justify-start gap-2 group"
                 >
                   <span className="w-0 h-0.5 bg-blue-600 group-hover:w-4 transition-all duration-300"></span>
-                  About Us
+                 Privacy Policy
+                </Link>
+              </li>
+
+
+
+              <li>
+                <Link
+                  href="/refund"
+                  className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center justify-center md:justify-start gap-2 group"
+                >
+                  <span className="w-0 h-0.5 bg-blue-600 group-hover:w-4 transition-all duration-300"></span>
+                Refund Policy
+                </Link>
+              </li>
+
+
+
+              <li>
+                <Link
+                  href="/cancellation"
+                  className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center justify-center md:justify-start gap-2 group"
+                >
+                  <span className="w-0 h-0.5 bg-blue-600 group-hover:w-4 transition-all duration-300"></span>
+               Concellation  Policy
                 </Link>
               </li>
             </ul>

@@ -37,13 +37,10 @@ const TEST_STORAGE_KEYS = [
 const Page = () => {
   const [selectedFilter, setSelectedFilter] = useState("This Year");
 
-  // 🔹 Clean up any leftover test state when this page loads
   useEffect(() => {
     try {
       if (typeof window !== "undefined") {
         TEST_STORAGE_KEYS.forEach((k) => localStorage.removeItem(k));
-        // If you used sessionStorage for any of these, also clear there:
-        // TEST_STORAGE_KEYS.forEach((k) => sessionStorage.removeItem(k));
       }
     } catch (e) {
       console.warn("Storage cleanup failed:", e);
@@ -52,6 +49,34 @@ const Page = () => {
 
   return (
     <>
+
+      {/* ⭐ AEO Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: `
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://neet720.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Previous Year Questions",
+                "item": "https://neet720.com/previousyearquestions"
+              }
+            ]
+          }
+          `
+        }}
+      />
+
       <Head>
         <title>
           NEET720 Previous Year Papers – Practice NEET PYQs (2005–2024) Online
@@ -99,18 +124,16 @@ const Page = () => {
           content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/pyqs.png"
         />
       </Head>
+
       <div className="md:flex min-h-screen relative">
-        {/* Sidebar for md screens */}
         <Sidebar />
 
-        {/* Main Content */}
         <div className="w-full md:w-5/6 flex flex-col">
           <ToggleBar />
           <NavBar />
 
           <Hero selectedFilter={selectedFilter} />
 
-          {/* Updated Grid Layout: 3 Columns in Medium Screens */}
           <div className="mx-4 md:mt-6">
             <TestCards />
           </div>
@@ -118,7 +141,6 @@ const Page = () => {
             <ScheduledTestCard />
           </div>
 
-          {/* Bottom Navbar for mobile screens */}
           <BottomNavbar selectedFilter={selectedFilter} />
         </div>
       </div>
@@ -127,4 +149,3 @@ const Page = () => {
 };
 
 export default Page;
-

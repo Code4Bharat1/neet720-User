@@ -118,9 +118,9 @@ const Hero = () => {
       >
         {/* Text Content */}
         <div className="flex-1 text-left mb-4 md:mb-0">
-          <h3 className="text-sm md:text-4xl font-bold mb-2 md:mb-6">
+          <h2 className="text-sm md:text-4xl font-bold mb-2 md:mb-6">
             Welcome Back, {firstName} {lastName}!
-          </h3>
+          </h2>
           {/* <p className="text-[10px] md:text-lg md:font-thin">
             You have{" "}
             <strong className="font-bold">
