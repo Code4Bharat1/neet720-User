@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: "Privacy Policy - neet720",
-    url: "https://www.neet720.com/privacy",
+    url: "https://neet720.com/privacy",
     description:
       "Read neet720 privacy policy to learn how we collect, use, and protect your personal information.",
     inLanguage: "en-IN",
@@ -89,7 +89,7 @@ export default function PrivacyPolicy() {
         title="Privacy Policy – neet720"
         description="Learn how neet720 protects your privacy and handles your personal data responsibly."
         keywords="privacy policy, data protection, neet720 privacy, user information safety"
-        url="https://www.neet720.com/privacy-policy"
+        url="https://neet720.com/privacy-policy"
         schema={schema}
       /> */}
 

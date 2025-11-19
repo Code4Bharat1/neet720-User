@@ -1,0 +1,5 @@
+RewriteEngine On
+
+# Redirect www → non-www
+RewriteCond %{HTTP_HOST} ^www\.neet720\.com [NC]
+RewriteRule ^(.*)$ https://neet720.com/$1 [L,R=301]
