@@ -628,9 +628,9 @@ export default function TakeTest() {
                 <Menu className="w-5 h-5" />
               </button>
               <div className="min-w-0 flex-1">
-                <h1 className="text-base sm:text-xl font-semibold text-gray-900 truncate">
+                <h2 className="text-base sm:text-xl font-semibold text-gray-900 truncate">
                   {test.testName}
-                </h1>
+                </h2>
                 <div className="text-xs sm:text-sm text-gray-600">
                   Question {currentQuestionIndex + 1} of {questions.length}
                 </div>

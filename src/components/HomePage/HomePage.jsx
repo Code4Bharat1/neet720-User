@@ -74,12 +74,13 @@ export default function HomePage() {
                 NEET Preparation Platform
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#00425A] drop-shadow-lg leading-tight">
-              Crack NEET with
-              <span className="block mt-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent">
-                Confidence and Clarity
-              </span>
-            </h1>
+           <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#001f54] leading-tight">
+  Crack NEET with 
+  <span className="block mt-2 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+    Confidence and Clarity 
+  </span>
+</h3>
+
             <p className="text-base sm:text-lg md:text-xl text-[#003145] drop-shadow leading-relaxed max-w-xl">
               Join a structured learning journey with expert guidance, smart practice tools, and personalized support — everything you need to succeed in NEET.
             </p>

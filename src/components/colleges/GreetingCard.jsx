@@ -529,9 +529,9 @@
 //           {/* Content */}
 //           <div className="relative z-10 space-y-4">
 //             <h2 className="text-xl font-medium opacity-90">{greeting} {name}</h2>
-//             <h1 className="text-4xl font-bold leading-tight">
+//             <h2 className="text-4xl font-bold leading-tight">
 //               Worried About Your<br />NEET Rank?
-//             </h1>
+//             </h2>
 //             <p className="text-lg opacity-90">Let's predict it and explore your college options!</p>
 //           </div>
 //         </div>
