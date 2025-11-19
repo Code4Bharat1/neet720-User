@@ -53,11 +53,11 @@ export default function UpcomingActivity() {
       <div className="flex flex-col-reverse md:flex-row items-center justify-center px-4 sm:px-6 py-8 md:py-16 gap-6 md:gap-12 lg:gap-20 bg-[#083e5d]">
         {/* Text Section */}
         <div className="text-center">
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold font-serif mb-3">
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold font-serif mb-3">
             Upcoming
             <br />
             Activities
-          </h2>
+          </h1>
 
           {/* Decorative Underline */}
           <div className="flex items-center justify-center mb-3">
