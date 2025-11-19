@@ -25,19 +25,11 @@ export async function generateMetadata({ params }) {
       description,
       url: `https://neet720.com/test-series/${seriesId}/test/${testId}`,
       type: "article",
-      images: [
-        {
-          url: "https://neet720.com/og-image.jpg",
-          width: 1200,
-          height: 630,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["https://neet720.com/og-image.jpg"],
     },
   };
 }

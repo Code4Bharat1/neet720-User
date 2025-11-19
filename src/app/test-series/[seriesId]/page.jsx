@@ -1,10 +1,9 @@
 export async function generateMetadata({ params }) {
   const { seriesId } = params;
 
-  const formatted = seriesId.replace(/-/g, " ");
-
-  const title = `NEET Test Series – ${formatted} | NEET720`;
-  const description = `Practice NEET chapter-wise and full-length test series: ${formatted}. Boost your score with real-exam simulation.`;
+  const formattedName = seriesId.replace(/-/g, " ");
+  const title = `NEET Test Series – ${formattedName} | NEET720`;
+  const description = `Practice NEET chapter-wise and full-length test series: ${formattedName}. Improve accuracy with real-exam simulation on NEET720.`;
 
   return {
     title,
@@ -17,19 +16,11 @@ export async function generateMetadata({ params }) {
       description,
       url: `https://neet720.com/test-series/${seriesId}`,
       type: "article",
-      images: [
-        {
-          url: "https://neet720.com/og-image.jpg",
-          width: 1200,
-          height: 630,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["https://neet720.com/og-image.jpg"],
     },
   };
 }
