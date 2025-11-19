@@ -173,12 +173,12 @@ export default function HomePage() {
                 AI-Powered Learning
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#001f54] leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#001f54] leading-tight">
               Crack NEET with Confidence
               <span className="block mt-2 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                 Let AI Guide You
               </span>
-            </h1>
+            </h2>
             <p className="text-[#1a1a1a] text-sm sm:text-base md:text-lg leading-relaxed max-w-xl">
               Get ready to conquer NEET with the power of AI by your side.
               Our intelligent assistant provides personalized guidance, smart study plans, instant doubt-solving, and performance tracking — all tailored to your needs.
