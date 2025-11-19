@@ -74,12 +74,12 @@ export default function HomePage() {
                 NEET Preparation Platform
               </span>
             </div>
-           <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#001f54] leading-tight">
+           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#001f54] leading-tight">
   Crack NEET with 
   <span className="block mt-2 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
     Confidence and Clarity 
   </span>
-</h3>
+</h2>
 
             <p className="text-base sm:text-lg md:text-xl text-[#003145] drop-shadow leading-relaxed max-w-xl">
               Join a structured learning journey with expert guidance, smart practice tools, and personalized support — everything you need to succeed in NEET.
@@ -271,10 +271,10 @@ export default function HomePage() {
                 Complete Question Bank
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+            <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               All Previous Year
               <span className="block mt-2">Questions</span>
-            </h2>
+            </h3>
             <p className="text-sm sm:text-base md:text-lg lg:text-xl font-medium leading-relaxed max-w-2xl">
               Access a complete collection of NEET Previous Year Questions, organized year-wise and chapter-wise to strengthen your foundation and boost your exam readiness.
             </p>
@@ -332,12 +332,19 @@ export default function HomePage() {
         <meta name="description" content="Join the best AI-powered NEET preparation platform with expert guidance and smart learning tools." />
       </Head>
 
-      <main className="relative min-h-screen overflow-hidden">
-        <AnimatePresence mode="wait">
-          <div className="w-full h-auto min-h-screen md:h-screen">
-            {slides[currentSlide]}
-          </div>
-        </AnimatePresence>
+    <main className="relative min-h-screen overflow-hidden">
+  
+  {/* SEO Main Heading */}
+  <h1 className="sr-only">
+    Best NEET Preparation Platform – Crack NEET with Confidence Using AI
+  </h1>
+
+  <AnimatePresence mode="wait">
+    <div className="w-full h-auto min-h-screen md:h-screen">
+      {slides[currentSlide]}
+    </div>
+  </AnimatePresence>
+
 
         {/* Modern Slide Indicators */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center space-x-3 z-20 bg-white/20 backdrop-blur-md px-4 py-3 rounded-full">
