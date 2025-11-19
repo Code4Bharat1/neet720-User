@@ -96,7 +96,7 @@ export default function Footer() {
                   className="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center justify-center md:justify-start gap-2 group"
                 >
                   <span className="w-0 h-0.5 bg-blue-600 group-hover:w-4 transition-all duration-300"></span>
-               Concellation  Policy
+               Cancellation  Policy
                 </Link>
               </li>
             </ul>

@@ -87,7 +87,7 @@ const WelcomePage = () => {
             lineHeight: '1.5em',
           }}
         >
-          Welcome to Nexcore Alliance
+          Welcome to neet720
         </p>
         <p className="text-lg md:text-lg font-medium mt-7">
           Welcome as you learn a world <br />

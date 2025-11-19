@@ -134,7 +134,7 @@ const Login = () => {
         <div className="md:hidden flex justify-center mb-6">
           <Image
             src="/neet720_logo.jpg"
-            alt="Nexcore Logo"
+            alt="neet720Logo"
             width={160}
             height={40}
             className="object-contain"

@@ -87,7 +87,7 @@ export default function RefundPolicy() {
               </span>
             </h1>
             <p className="text-blue-100 text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-              At <strong>NEXCORE ALLIANCE LLP</strong>, we strive to ensure your satisfaction. However, we understand that circumstances may change, and we are here to assist you with a fair refund process.
+              At <strong>neet720</strong>, we strive to ensure your satisfaction. However, we understand that circumstances may change, and we are here to assist you with a fair refund process.
             </p>
           </div>
         </div>

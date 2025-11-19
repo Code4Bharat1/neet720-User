@@ -38,16 +38,16 @@ export default function CancellationPolicy() {
     "@context": "https://schema.org",
     "@type": "CancellationPolicy",
     name: "Cancellation Policy",
-    url: "https://www.NEXCORE ALLIANCE LLP.com/cancellationpolicy",
+    url: "https://www.neet720.com/cancellation",
     description:
-      "Read NEXCORE ALLIANCE LLP's cancellation policy. Learn the conditions and guidelines for cancelling your course enrollment.",
+      "Read neet720 cancellation policy. Learn the conditions and guidelines for cancelling your course enrollment.",
     publisher: {
       "@type": "Organization",
-      name: "NEXCORE ALLIANCE LLP",
-      url: "https://www.NEXCORE ALLIANCE LLP.com",
+      name: "neet720",
+      url: "https://www.neet720.com",
       logo: {
         "@type": "ImageObject",
-        url: "https://www.NEXCORE ALLIANCE LLP.com/og-image.png",
+        url: "https://www.neet720.com/og-image.png",
       },
     },
     inLanguage: "en-IN",
@@ -89,10 +89,10 @@ export default function CancellationPolicy() {
   return (
     <>
       {/* <SEOHead
-        title="Cancellation Policy – NEXCORE ALLIANCE LLP"
-        description="Read NEXCORE ALLIANCE LLP's cancellation policy. Learn about eligibility, process, and conditions for cancelling your course enrollment."
-        keywords="NEXCORE ALLIANCE LLP cancellation policy, cancel course enrollment, cancellation rules India, course cancellation guidelines"
-        url="https://www.NEXCORE ALLIANCE LLP.com/cancellationpolicy"
+        title="Cancellation Policy – neet720"
+        description="Read neet720 cancellation policy. Learn about eligibility, process, and conditions for cancelling your course enrollment."
+        keywords="neet720 cancellation policy, cancel course enrollment, cancellation rules India, course cancellation guidelines"
+        url="https://www.neet720.com/cancellationpolicy"
         schema={schema}
       /> */}
 
@@ -129,7 +129,7 @@ export default function CancellationPolicy() {
                 </span>
               </h1>
               <p className="text-orange-100 text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-                At <strong>NEXCORE ALLIANCE LLP</strong>, we aim to provide a transparent and user-friendly cancellation process. You may cancel your course enrollment under the following conditions:
+                At <strong>neet720</strong>, we aim to provide a transparent and user-friendly cancellation process. You may cancel your course enrollment under the following conditions:
               </p>
             </div>
           </div>

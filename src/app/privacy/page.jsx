@@ -8,10 +8,10 @@ export default function PrivacyPolicy() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Privacy Policy - NEXCORE ALLIANCE LLP",
-    url: "https://www.NEXCORE ALLIANCE LLP.com/privacy-policy",
+    name: "Privacy Policy - neet720",
+    url: "https://www.neet720.com/privacy",
     description:
-      "Read NEXCORE ALLIANCE LLP's privacy policy to learn how we collect, use, and protect your personal information.",
+      "Read neet720 privacy policy to learn how we collect, use, and protect your personal information.",
     inLanguage: "en-IN",
   };
 
@@ -79,17 +79,17 @@ export default function PrivacyPolicy() {
         "All updates will be communicated through our website.",
         "We encourage you to review the policy periodically to stay informed."
       ],
-      content: "NEXCORE ALLIANCE LLP reserves the right to update this privacy policy to reflect changes in our practices or legal requirements."
+      content: "neet720 reserves the right to update this privacy policy to reflect changes in our practices or legal requirements."
     }
   ];
 
   return (
     <>
       {/* <SEOHead
-        title="Privacy Policy – NEXCORE ALLIANCE LLP"
-        description="Learn how NEXCORE ALLIANCE LLP protects your privacy and handles your personal data responsibly."
-        keywords="privacy policy, data protection, NEXCORE ALLIANCE LLP privacy, user information safety"
-        url="https://www.NEXCORE ALLIANCE LLP.com/privacy-policy"
+        title="Privacy Policy – neet720"
+        description="Learn how neet720 protects your privacy and handles your personal data responsibly."
+        keywords="privacy policy, data protection, neet720 privacy, user information safety"
+        url="https://www.neet720.com/privacy-policy"
         schema={schema}
       /> */}
 
@@ -132,7 +132,7 @@ export default function PrivacyPolicy() {
             <div className="relative bg-gradient-to-r from-green-50 to-cyan-50 border-l-4 border-green-600 rounded-r-xl p-6 mb-10 overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full filter blur-2xl opacity-30"></div>
               <p className="relative text-base md:text-lg leading-relaxed text-gray-700">
-                At <strong className="text-green-700">NEXCORE ALLIANCE LLP</strong>, we are committed to safeguarding your privacy. This policy explains how we collect, use, and protect your personal information to ensure a secure and transparent experience.
+                At <strong className="text-green-700">neet720</strong>, we are committed to safeguarding your privacy. This policy explains how we collect, use, and protect your personal information to ensure a secure and transparent experience.
               </p>
             </div>
 
@@ -213,7 +213,7 @@ export default function PrivacyPolicy() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full filter blur-2xl opacity-30"></div>
               <p className="relative text-base md:text-lg leading-relaxed text-center text-gray-700">
                 If you have any questions or concerns about this policy, please feel free to contact us. At{" "}
-                <strong className="text-green-700">NEXCORE ALLIANCE LLP</strong>, your privacy and trust are of utmost importance to us.
+                <strong className="text-green-700">neet720</strong>, your privacy and trust are of utmost importance to us.
               </p>
             </div>
 
