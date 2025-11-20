@@ -1,11 +1,19 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { pageview } from "@/lib/gtag";   // ✅ ADD THIS
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname() || "";
+
+  // ⭐ ADD THIS USEEFFECT FOR PAGEVIEW TRACKING
+  useEffect(() => {
+    if (!pathname) return;
+    pageview(pathname);   // Track route changes
+  }, [pathname]);
 
   const routesWithLayout = [
     "/HomePage",

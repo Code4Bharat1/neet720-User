@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import ClientLayout from "./LP_clientLayout"; // Keep this client component
+import Script from "next/script";
 
 // Fonts
 const geistSans = Geist({
@@ -120,7 +121,25 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* AEO Schema */}
+
+
+{/* Google Analytics GA4 */}
+<Script
+  src="https://www.googletagmanager.com/gtag/js?id=G-FWW584RNVM"
+  strategy="afterInteractive"
+/>
+
+<Script id="ga4-init" strategy="afterInteractive">
+  {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FWW584RNVM');
+  `}
+</Script>
+
+
+{/* AEO Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -139,8 +158,11 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
-      </head>
 
+
+
+      </head>
+ 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Toasts */}
         <Toaster

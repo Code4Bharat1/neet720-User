@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
+import { trackEvent } from "@/lib/gtag";
+
 import {
   AiOutlineMail,
   AiOutlineUser,
@@ -69,40 +71,48 @@ const SignUpPage = () => {
   /* =========================================================
      🔹 SEND OTP (Email + WhatsApp)
   ========================================================= */
-  const handleSendOtp = async () => {
-    const { emailAddress, mobileNumber } = formData;
+const handleSendOtp = async () => {
+  const { emailAddress, mobileNumber } = formData;
 
-    if (!emailAddress || !mobileNumber) {
-      toast.error("Please enter both email and mobile number.");
-      return;
-    }
-    if (!validateEmail(emailAddress)) {
-      toast.error("Invalid email address.");
-      return;
-    }
-    if (!validateMobile(mobileNumber)) {
-      toast.error("Enter a valid 10-digit mobile number.");
-      return;
-    }
+  if (!emailAddress || !mobileNumber) {
+    toast.error("Please enter both email and mobile number.");
+    return;
+  }
+  if (!validateEmail(emailAddress)) {
+    toast.error("Invalid email address.");
+    return;
+  }
+  if (!validateMobile(mobileNumber)) {
+    toast.error("Enter a valid 10-digit mobile number.");
+    return;
+  }
 
-    try {
-      setLoading(true);
-      const res = await axios.post(`${apiBaseUrl}/demo/signup/send-otp`, {
-        emailAddress,
-        mobileNumber,
+  try {
+    setLoading(true);
+    const res = await axios.post(`${apiBaseUrl}/demo/signup/send-otp`, {
+      emailAddress,
+      mobileNumber,
+    });
+
+    if (res.status === 200) {
+      toast.success("OTP sent to your Email & WhatsApp!");
+      setOtpSent(true);
+      setResendOtpClicked(false);
+
+      // ⭐ Google Analytics Event
+      trackEvent({
+        action: "send_otp",
+        category: "signup",
+        label: "OTP sent",
       });
-
-      if (res.status === 200) {
-        toast.success("OTP sent to your Email & WhatsApp!");
-        setOtpSent(true);
-        setResendOtpClicked(false); // reset resend flag
-      }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to send OTP.");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Failed to send OTP.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   /* =========================================================
      🔹 VERIFY OTP
@@ -157,72 +167,81 @@ const SignUpPage = () => {
      🔹 COMPLETE SIGNUP
   ========================================================= */
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const {
+  e.preventDefault();
+  const {
+    firstName,
+    lastName,
+    emailAddress,
+    mobileNumber,
+    password,
+    confirmPassword,
+  } = formData;
+
+  if (!firstName || !emailAddress || !mobileNumber || !password || !confirmPassword) {
+    toast.error("All fields are required.");
+    return;
+  }
+
+  if (!validateEmail(emailAddress)) {
+    toast.error("Invalid email address.");
+    return;
+  }
+
+  if (!validateMobile(mobileNumber)) {
+    toast.error("Mobile number must be exactly 10 digits.");
+    return;
+  }
+
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    toast.error(passwordError);
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    toast.error("Passwords do not match.");
+    return;
+  }
+
+  if (!otpVerified) {
+    toast.error("Please verify OTP first.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const res = await axios.post(`${apiBaseUrl}/demo/signup/complete`, {
       firstName,
       lastName,
+      fullName: `${firstName} ${lastName}`,
       emailAddress,
       mobileNumber,
       password,
-      confirmPassword,
-    } = formData;
+      isDemo: true,
+    });
 
-    if (!firstName || !emailAddress || !mobileNumber || !password || !confirmPassword) {
-      toast.error("All fields are required.");
-      return;
-    }
+    if (res.status === 201) {
+      toast.success("Signup successful!");
 
-    if (!validateEmail(emailAddress)) {
-      toast.error("Invalid email address.");
-      return;
-    }
-
-    if (!validateMobile(mobileNumber)) {
-      toast.error("Mobile number must be exactly 10 digits.");
-      return;
-    }
-
-    const passwordError = validatePassword(password);
-    if (passwordError) {
-      toast.error(passwordError);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-
-    if (!otpVerified) {
-      toast.error("Please verify OTP first.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await axios.post(`${apiBaseUrl}/demo/signup/complete`, {
-        firstName,
-        lastName,
-        fullName: `${firstName} ${lastName}`,
-        emailAddress,
-        mobileNumber,
-        password,
-        isDemo: true,
+      // ⭐ Google Analytics event added here
+      trackEvent({
+        action: "sign_up",
+        category: "user",
+        label: "Signup completed",
       });
 
-      if (res.status === 201) {
-        toast.success("Signup successful!");
-        if (res.data.token) {
-          localStorage.setItem("authToken", res.data.token);
-        }
-        router.push("/login");
+      if (res.data.token) {
+        localStorage.setItem("authToken", res.data.token);
       }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Signup failed.");
-    } finally {
-      setLoading(false);
+      router.push("/login");
     }
-  };
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Signup failed.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   /* =========================================================
      🔹 UI RENDER
