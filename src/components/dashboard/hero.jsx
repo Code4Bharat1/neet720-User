@@ -48,29 +48,65 @@ const Hero = () => {
     fetchSidebarColors();
   }, []);
 
-  useEffect(() => {
-    const fetchPendingTests = async () => {
-      try {
-        const token = localStorage.getItem("authToken"); // Get the token from localStorage
-        const response = await axios.get(`${apiBaseUrl}/dashboard/pending`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // useEffect(() => {
+  //   const fetchPendingTests = async () => {
+  //     try {
+  //       const token = localStorage.getItem("authToken"); // Get the token from localStorage
+  //       const response = await axios.get(`${apiBaseUrl}/dashboard/pending`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
 
-        // Filter the pending tests
-        const pendingTestsData = response.data.filter(
-          (test) => test.status === "pending"
-        );
+  //       // Filter the pending tests
+  //       const pendingTestsData = response.data.filter(
+  //         (test) => test.status === "pending"
+  //       );
 
-        setPendingData(pendingTestsData.length);
-      } catch (error) {
-        console.error("Error Fetching pending test ", error);
+  //       setPendingData(pendingTestsData.length);
+  //     } catch (error) {
+  //       console.error("Error Fetching pending test ", error);
+  //     }
+  //   };
+
+  //   fetchPendingTests();
+  // }, []);
+
+useEffect(() => {
+  const fetchPendingTests = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      
+      if (!token) {
+        console.error("No auth token found");
+        return;
       }
-    };
 
-    fetchPendingTests();
-  }, []);
+      console.log("Fetching pending tests..."); // Debug log
+      
+      const response = await axios.get(`${apiBaseUrl}/dashboard/pending`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Pending tests response:", response.data); // Debug log
+
+      // Filter the pending tests
+      const pendingTestsData = response.data.filter(
+        (test) => test.status === "pending"
+      );
+
+      setPendingData(pendingTestsData.length);
+    } catch (error) {
+      console.error("Error Fetching pending test:", error);
+      console.error("Error response:", error.response?.data); // See backend error
+      console.error("Error status:", error.response?.status);
+    }
+  };
+
+  fetchPendingTests();
+}, []);
 
   useEffect(() => {
     const fetchStudentName = async () => {
