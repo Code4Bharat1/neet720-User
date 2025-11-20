@@ -1,3 +1,5 @@
+"use client";
+
 export async function generateMetadata({ params }) {
   const { seriesId, testId } = params;
 
