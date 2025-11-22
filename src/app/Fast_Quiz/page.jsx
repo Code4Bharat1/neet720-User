@@ -12,6 +12,8 @@ export const metadata = {
   },
 };
 
+
+
 import React from 'react'
 import FastQuiz from '@/components/Fast_Quiz/fastquiz.jsx'
 
