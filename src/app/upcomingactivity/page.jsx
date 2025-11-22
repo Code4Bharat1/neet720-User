@@ -4,15 +4,15 @@ export const metadata = {
   description:
     "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
   openGraph: {
-    url: "https://neet720.com/upcomingActivity",
+    url: "https://neet720.com/upcomingactivity",
     title: "upcomingActivity | NEET720",
     description:
       "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
     siteName: "NEET720",
   },
 };
+import UpcomingActivity from '@/components/upcomingActivity_frontend/upcomingActivity';
 import React from 'react'
-import UpcomingActivity from '@/components/upcomingActivity_frontend/upcomingActivity'
 const Page = () => {
   return (
     <div>
