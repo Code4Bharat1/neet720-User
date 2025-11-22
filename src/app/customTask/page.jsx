@@ -1,3 +1,5 @@
+
+
 export const metadata = {
   title: "customTask | NEET720 – India's Most Trusted NEET Preparation Platform",
   description:
@@ -12,10 +14,11 @@ export const metadata = {
 };
 
 import CustomTask from "@/components/customTask/CustomTask";
+
 export default function Page() {
   return (
     <div>
-      <CustomTask />
+      <CustomTask/>
     </div>
   );
 }
