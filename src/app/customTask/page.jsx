@@ -1,6 +1,5 @@
 export const metadata = {
-  title:
-    "customTask | NEET720 – India's Most Trusted NEET Preparation Platform",
+  title: "customTask | NEET720 – India's Most Trusted NEET Preparation Platform",
   description:
     "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
   openGraph: {
@@ -12,15 +11,12 @@ export const metadata = {
   },
 };
 
-import CustomTask from '@/components/customTask/CustomTask.jsx'
-import React from 'react'
+import CustomTask from "@/components/customTask/CustomTask";
 
-const Page = () => {
+export default function Page() {
   return (
     <div>
-      <CustomTask/>
+      <CustomTask />
     </div>
-  )
+  );
 }
-
-export default Page
