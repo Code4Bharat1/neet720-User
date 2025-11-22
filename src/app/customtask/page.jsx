@@ -15,7 +15,7 @@ export const metadata = {
   },
 };
 
-import CustomTask from "@/components/CustomTask/CustomTask.jsx";
+import CustomTask from "@/components/CustomTask/CustomTask";
 
 export default function Page() {
   return (
