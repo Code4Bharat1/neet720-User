@@ -20,7 +20,7 @@ const Page = () => {
    <Scholarship/>
     </div>
   )
-}
+};
 
 
 
