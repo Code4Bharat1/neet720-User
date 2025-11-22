@@ -19,8 +19,7 @@ import HomePage from '@/components/HomePage/HomePage'
 import BenefitsPage from '@/components/HomePage/benefit'
 import CoreFeatureComponent from '@/components/HomePage/CoreFeaturesCard'
 import Home from '@/components/HomePage/neet'
-import NotificationSection from '@/components/LP_notification/notificationSection'
-
+import NotificationSection from '@/components/LP_notification/notificationSection';
 
 export default function page() {
   return (
