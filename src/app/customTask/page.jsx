@@ -12,7 +12,6 @@ export const metadata = {
 };
 
 import CustomTask from "@/components/customTask/CustomTask";
-
 export default function Page() {
   return (
     <div>
