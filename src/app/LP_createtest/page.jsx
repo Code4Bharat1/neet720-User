@@ -1,3 +1,5 @@
+import CreateTestPage from "@/components/LP_createtest/createtest";
+
 export const metadata = {
   title:
     "LP_createtest | NEET720 – India's Most Trusted NEET Preparation Platform",
@@ -13,6 +15,7 @@ export const metadata = {
 };
 
 import CreateTestPage from "@/components/LP_createtest/createtest";
+
 
 // const CreateTestPage = () => (
 //   <div>
