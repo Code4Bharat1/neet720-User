@@ -7,7 +7,7 @@ export const metadata = {
   description:
     "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
   openGraph: {
-    url: "https://neet720.com/CustomTask",
+    url: "https://neet720.com/customTask",
     title: "customTask | NEET720",
     description:
       "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
@@ -15,7 +15,7 @@ export const metadata = {
   },
 };
 
-import CustomTask from "@/components/CustomTask/CustomTask";
+import CustomTask from "@/components/customTask/CustomTask";
 
 export default function Page() {
   return (
