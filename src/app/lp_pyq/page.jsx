@@ -4,7 +4,7 @@ export const metadata = {
   description:
     "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
   openGraph: {
-    url: "https://neet720.com/LP_PYQ",
+    url: "https://neet720.com/lp_pyq",
     title: "LP_PYQ | NEET720",
     description:
       "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
@@ -13,13 +13,14 @@ export const metadata = {
 };
 
 import React from 'react'
-import PreviousYearQuestion from '@/components/LP_PYQ/PYQ'
-
+import PreviousYearQuestions from '@/components/LP_PYQ/PYQ';
 export default function page() {
   return (
     <div>
-     
-<PreviousYearQuestion/>
+     <PreviousYearQuestions/>
     </div>
   )
 }
+
+{/* <PreviousYearQuestion/> */}
+// import PreviousYearQuestion from '@/components/LP_PYQ/PYQ'
