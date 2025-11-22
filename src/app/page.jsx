@@ -82,10 +82,8 @@ export default function page() {
       <div>
         <Navbar />
         <HomePage />
-        <BenefitsPage />
-        <CoreFeatureComponent />
-        <Home />
-        <Footer />
+        
+        {/* <Footer /> */}
       </div>
     </>
   );
