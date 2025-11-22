@@ -19,6 +19,7 @@ const Page = () => {
   return (
     <div>
 
+
 <ExamPlan/>
     </div>
   )
