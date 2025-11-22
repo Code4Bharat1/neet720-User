@@ -12,7 +12,7 @@ export const metadata = {
   },
 };
 
-import CustomTask from '@/components/customTask/CustomTask'
+import CustomTask from '@/components/customTask/CustomTask.jsx'
 import React from 'react'
 
 const Page = () => {
