@@ -12,7 +12,7 @@
 //   },
 // };
 
-// import Chatbot from '@/components/chatbot_front/chatbot'
+// import Chatbot from '@/components/chatbot_front/chatbott'
 // import React from 'react'
 
 
