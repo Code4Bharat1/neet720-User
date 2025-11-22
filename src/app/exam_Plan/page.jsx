@@ -12,7 +12,7 @@ export const metadata = {
   },
 };
 
-import ExamPlan from '@/components/exam_plan/ExamPlan';
+import ExamPlan from '@/components/exam_plan/ExamPlan.jsx';
 import React from 'react'
 
 const Page = () => {
