@@ -4,7 +4,7 @@ export const metadata = {
   description:
     "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
   openGraph: {
-    url: "https://neet720.com/collegePrediction",
+    url: "https://neet720.com/collegeprediction",
     title: "collegePrediction | NEET720",
     description:
       "NEET720 offers India’s best NEET mock tests, PYQs, analytics, AIR prediction, and smart learning tools for NEET aspirants.",
