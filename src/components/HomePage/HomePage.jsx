@@ -48,13 +48,13 @@ const Hero = () => {
 
   const features = [
     { icon: Target, text: 'Practice until perfect' },
-    { icon: Brain, text: 'GPT-4o AI Integration' },
+    { icon: Brain, text: 'AI-Supported AI Integration' },
     { icon: BarChart3, text: 'Deep Analytics' },
     { icon: Award, text: 'College Predictor' }
   ];
 
   const dashboardStats = [
-    { label: 'Questions', value: '65,240', icon: BookOpen },
+    { label: 'Questions', value: '1,00,240+', icon: BookOpen },
     { label: 'Accuracy', value: '87%', icon: Target },
     { label: 'Rank', value: '#156', icon: Award }
   ];
@@ -67,7 +67,7 @@ const Hero = () => {
             {/* Badges */}
             <div className="flex flex-wrap gap-2">
               <span className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-1.5 rounded-full text-xs font-medium shadow-lg flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> NEET 2025 Ready
+                <Sparkles className="w-3 h-3" /> NEET 2026 Ready
               </span>
               <span className="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-4 py-1.5 rounded-full text-xs font-medium shadow-lg">
                 #1 Rated Platform
@@ -237,7 +237,7 @@ const Features = () => {
     { 
       icon: MessageCircle, 
       title: '24×7 AI Chatbot', 
-      desc: 'Instant doubt resolution powered by GPT-4o', 
+      desc: 'AI-based instant doubt clearing', 
       items: ['Upload questions', 'Step-by-step solutions', 'Available anytime'] 
     },
     { 
@@ -354,7 +354,7 @@ const Pricing = () => {
       period: '',
       desc: 'For coaching centers', 
       popular: false,
-      features: ['All Pro features', 'Multi-student access', 'Admin dashboard', 'Dedicated support', 'Custom branding'] 
+      features: [ 'Your Institute’s & College Logo & Colors','All Pro features', 'Multi-student access', 'Admin dashboard', 'Dedicated support'] 
     }
   ];
 
@@ -545,7 +545,7 @@ const CTA = () => (
   <section className="py-16 bg-gradient-to-r from-slate-900 via-teal-800 to-teal-600 relative overflow-hidden">
     <div className="max-w-4xl mx-auto px-4 text-center relative">
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-        Ready to ace NEET 2025?
+        Ready to ace NEET 2026?
       </h2>
       <p className="text-teal-100 mb-8 text-lg">
         Join 10,000+ students already preparing smarter with NEET 720
