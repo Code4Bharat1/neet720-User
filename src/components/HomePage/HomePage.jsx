@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Check, Star, ChevronDown, ChevronUp, BookOpen, Brain, Target, Users, Award, Clock, Zap, BarChart3, MessageCircle, Phone, Mail, Menu, X, ArrowUp, Play, Sparkles } from 'lucide-react';
+import { Check, Star, ChevronDown, Bot, BookOpen, Brain, Target, Users, Award, Clock, Zap, BarChart3, MessageCircle,Timer, Phone, Mail, Menu, X, ArrowUp, Play, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaWhatsapp, FaInstagram, FaFacebookF } from 'react-icons/fa';
@@ -55,8 +55,9 @@ const Hero = () => {
 
   const dashboardStats = [
     { label: 'Questions', value: '1,00,240+', icon: BookOpen },
-    { label: 'Accuracy', value: '87%', icon: Target },
-    { label: 'Rank', value: '#156', icon: Award }
+    { label: 'Total Test Score', value: '645/720', icon: Target },
+    { label: 'Speed (Q/min)', value: '0.85', icon: Timer },
+
   ];
 
   return (
@@ -296,6 +297,17 @@ const Features = () => {
 // Practice Section
 const Practice = () => {
   const practiceItems = [
+    { 
+  icon: Bot, 
+  title: 'AI Coach', 
+  desc: 'Personalized study recommendations and improvement tips based on your performance.' 
+},
+{ 
+  icon: BarChart3, 
+  title: 'Performance Overview', 
+  desc: 'Get a complete summary of your tests, accuracy, and progress trends.' 
+},
+
     { icon: Clock, title: 'Full Test Series', desc: 'Simulate actual NEET with full-length mock tests.' },
     { icon: Zap, title: 'Subject-wise Analysis', desc: 'Drill down into Physics, Chemistry, and Biology.' },
     { icon: Target, title: 'College Predictor', desc: 'Estimate your chances at top medical colleges.' },
