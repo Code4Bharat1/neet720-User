@@ -568,9 +568,18 @@ const CTA = () => (
             Start Free Trial →
           </button>
         </Link>
-        <button className="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
-          Schedule Demo
-        </button>
+        <button
+  onClick={() => {
+    window.open(
+      "https://mail.google.com/mail/?view=cm&fs=1&to=demo.neet720@gmail.com",
+      "_blank"
+    );
+  }}
+  className="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300"
+>
+  Schedule a Demo
+</button>
+
       </div>
     </div>
   </section>

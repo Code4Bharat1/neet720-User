@@ -118,12 +118,18 @@ export default function Navbar() {
 
             {/* Buttons */}
             <li>
-              <Link
-                href="/signup"
-                className="text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium text-sm"
-              >
-                Schedule a Demo
-              </Link>
+              <button
+  onClick={() => {
+    window.open(
+      "https://mail.google.com/mail/?view=cm&fs=1&to=demo.neet720@gmail.com",
+      "_blank"
+    );
+  }}
+  className="text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium text-sm"
+>
+  Schedule a Demo
+</button>
+
             </li>
 
             <li>
