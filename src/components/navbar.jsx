@@ -5,24 +5,25 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 
 const features = [
-  { name: "Full Test", href: "/FullTest" },
-  { name: "Fast Quiz", href: "/Fast_Quiz" },
-  { name: "Create Test", href: "/LP_createtest" },
-  { name: "Subject-wise Marks Analysis", href: "/Subjectwise_frontend" },
+  { name: "Full Test", href: "/fulltest" },
+  { name: "Fast Quiz", href: "/fast_quiz" },
+  { name: "Create Test", href: "/lp_createtest" },
+  { name: "Subject-wise Marks Analysis", href: "/subjectwise_frontend" },
   { name: "Chatbot", href: "/chatbot" },
-  { name: "Result Section", href: "/resultSection_frontend" },
-  { name: "Exam Plan", href: "/exam_Plan" },
-  { name: "Analytics", href: "/analyticSection" },
-  { name: "College Prediction", href: "/collegePrediction" },
-  { name: "Previous Year Question", href: "/LP_PYQ" },
-  { name: "Scholarship", href: "/Scholarship_frontend" },
-  { name: "Notice Section", href: "/noticeSection" },
-  { name: "Notification Section", href: "/LP_notification" },
+  { name: "Result Section", href: "/resultsection_frontend" },
+  { name: "Exam Plan", href: "/exam_plan" },
+  { name: "Analytics", href: "/analyticsection" },
+  { name: "College Prediction", href: "/collegeprediction" },
+  { name: "Previous Year Question", href: "/lp_pyq" },
+  { name: "Scholarship", href: "/scholarship_frontend" },
+  { name: "Notice Section", href: "/noticesection" },
+  { name: "Notification Section", href: "/lp_notification" },
   { name: "Top 10 Performance", href: "/top10_frontend" },
-  { name: "Upcoming Activities", href: "/upcomingActivity" },
-  { name: "Create Own Task", href: "/customTask" },
-  { name: "Own Recent Test", href: "/recentTest" },
+  { name: "Upcoming Activities", href: "/upcomingactivity" },
+  { name: "Create Own Task", href: "/customtask" },
+  { name: "Own Recent Test", href: "/recenttest" },
 ];
+
 
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -66,7 +67,7 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <ul className="hidden md:flex items-center gap-6 lg:gap-8">
             {/* Standard Links */}
-            {["Home", "Demo", "Pricing", "FAQs"].map((item) => (
+            {["Home","Pricing", "FAQs"].map((item) => (
               <li key={item}>
                 <Link
                   href={`/${item.toLowerCase() === "home" ? "" : item.toLowerCase()}`}
@@ -197,7 +198,7 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link href="/demo" onClick={() => setMobileMenu(false)}>Demo</Link>
+            {/* <Link href="/demo" onClick={() => setMobileMenu(false)}>Demo</Link> */}
             <Link href="/pricing" onClick={() => setMobileMenu(false)}>Pricing</Link>
             <Link href="/faqs" onClick={() => setMobileMenu(false)}>FAQs</Link>
             {/* <Link href="/contact" onClick={() => setMobileMenu(false)}>Contact</Link> */}

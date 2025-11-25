@@ -17,7 +17,7 @@ export default function ClientLayout({ children }) {
 
   const routesWithLayout = [
     "/HomePage",
-    "/FullTest",
+    "/fulltest",
     "/Fast_Quiz",
     "/LP_createtest",
     "/Subjectwise_frontend",
