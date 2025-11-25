@@ -15,25 +15,38 @@ export default function UserTestSeriesList() {
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
-    const fetchTestSeries = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/test-series`);
-        if (res.data.success) {
-          setTestSeries(res.data.data);
-          console.log(res.data.data)
-        } else {
-          setError(res.data.message || "Failed to load test series.");
-        }
-      } catch (err) {
-        console.error("Error fetching test series:", err);
-        setError("Error fetching test series.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTestSeries = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
 
-    fetchTestSeries();
-  }, []);
+      if (!token) {
+        setError("You are not logged in.");
+        setLoading(false);
+        return;
+      }
+
+      const res = await axios.get(`${API_BASE}/test-series`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.data.success) {
+        setTestSeries(res.data.data);
+      } else {
+        setError(res.data.message || "Failed to load test series.");
+      }
+    } catch (err) {
+      console.error("Error fetching test series:", err);
+      setError("Error fetching test series.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchTestSeries();
+}, []);
+
 
   if (loading) {
     return (
