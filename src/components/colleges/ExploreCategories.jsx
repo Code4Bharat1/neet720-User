@@ -1,4 +1,5 @@
 import React from "react";
+import { TrendingUp, Award } from "lucide-react";
 
 const AirPredictionTable = () => {
   const data = [
@@ -42,27 +43,70 @@ const AirPredictionTable = () => {
   ];
 
   return (
-    <div className="overflow-x-auto my-10">
-      <h2 className="text-center text-2xl font-bold mb-6">Marks vs Expected AIR Table</h2>
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-        <thead>
-          <tr className="bg-[#286D96] text-white text-lg">
-            <th className="py-3 px-5 text-left border-b">Marks</th>
-            <th className="py-3 px-5 text-left border-b">Expected Rank</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr
-              key={index}
-              className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
-            >
-              <td className="py-3 px-5 border-b">{row.marks}</td>
-              <td className="py-3 px-5 border-b">{row.rank}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="max-w-4xl mx-auto px-4 my-10">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white rounded-t-2xl p-6 shadow-lg">
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <TrendingUp className="w-8 h-8" />
+          <h2 className="text-3xl font-bold">NEET 2024</h2>
+        </div>
+        <p className="text-center text-lg opacity-90">Marks vs Expected AIR Table</p>
+      </div>
+
+      {/* Table Container */}
+      <div className="bg-white rounded-b-2xl shadow-xl overflow-hidden border-2 border-teal-100">
+        <div className="overflow-x-auto">
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gradient-to-r from-teal-400 to-teal-500 text-white">
+                <th className="py-4 px-6 text-left font-semibold text-base border-b-2 border-teal-600">
+                  <div className="flex items-center gap-2">
+                    <Award className="w-5 h-5" />
+                    Marks Range
+                  </div>
+                </th>
+                <th className="py-4 px-6 text-left font-semibold text-base border-b-2 border-teal-600">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    Expected AIR
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row, index) => (
+                <tr
+                  key={index}
+                  className={`
+                    ${index % 2 === 0 ? "bg-teal-50" : "bg-white"}
+                    hover:bg-teal-100 transition-colors duration-150
+                    ${index === 0 ? "font-semibold" : ""}
+                  `}
+                >
+                  <td className="py-3 px-6 border-b border-gray-200 text-gray-800">
+                    <span className={`${index < 5 ? "text-teal-700 font-semibold" : ""}`}>
+                      {row.marks}
+                    </span>
+                  </td>
+                  <td className="py-3 px-6 border-b border-gray-200 text-gray-700">
+                    <span className={`${index < 5 ? "text-teal-700 font-semibold" : ""}`}>
+                      {row.rank}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer Note */}
+        <div className="bg-gradient-to-r from-teal-50 to-cyan-50 p-4 border-t-2 border-teal-200">
+          <p className="text-sm text-gray-600 text-center">
+            <span className="font-semibold text-teal-700">Note:</span> These are approximate predictions based on previous year trends. 
+            Actual ranks may vary based on difficulty level and number of candidates.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

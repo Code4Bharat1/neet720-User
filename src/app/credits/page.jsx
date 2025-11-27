@@ -62,7 +62,6 @@ const Page = () => {
     fetchResults();
   }, []);
 
-  // Format date to display as "DD-MM-YYYY HH:MM"
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
@@ -73,7 +72,6 @@ const Page = () => {
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   };
 
-  // Mock scholarship plans
   const scholarshipPlans = [
     {
       id: 'basic',
@@ -87,8 +85,7 @@ const Page = () => {
         'Participation in basic workshops',
         'Annual academic competition eligibility'
       ],
-      color: 'blue',
-      gradient: 'from-blue-400 to-blue-600',
+      gradient: 'from-teal-400 to-teal-600',
       icon: <AcademicCapIcon className="h-14 w-14 text-white mb-4" />,
       illustration:
         <div className="absolute right-0 bottom-0 opacity-10">
@@ -109,8 +106,7 @@ const Page = () => {
         'Internship placement assistance',
         'Study abroad opportunities'
       ],
-      color: 'purple',
-      gradient: 'from-purple-500 to-indigo-600',
+      gradient: 'from-teal-500 to-cyan-600',
       recommended: true,
       icon: <TrophyIcon className="h-14 w-14 text-white mb-4" />,
       illustration:
@@ -131,8 +127,7 @@ const Page = () => {
         'Leadership development workshops',
         'Industry expert networking events'
       ],
-      color: 'indigo',
-      gradient: 'from-indigo-400 to-indigo-700',
+      gradient: 'from-cyan-400 to-teal-600',
       icon: <BuildingLibraryIcon className="h-14 w-14 text-white mb-4" />,
       illustration:
         <div className="absolute right-0 bottom-0 opacity-10">
@@ -147,39 +142,34 @@ const Page = () => {
   };
 
   const confirmRedemption = () => {
-    // Handle the actual redemption logic here
     console.log(`Confirming redemption for ${selectedPlan.name} for ${selectedPlan.points} points`);
     setShowConfirmation(false);
-
-    // You would typically make an API call here to process the redemption
-    // For now, we'll just simulate success with an alert
     alert(`Congratulations! You've successfully redeemed the ${selectedPlan.name}!`);
   };
 
   const formatTestType = (type) => {
     switch (type) {
       case 'Full Test':
-        return { color: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white', icon: <ClockIcon className="h-4 w-4 mr-1" /> };
+        return { color: 'bg-gradient-to-r from-teal-500 to-teal-600 text-white', icon: <ClockIcon className="h-4 w-4 mr-1" /> };
       case 'Generated Test':
-        return { color: 'bg-gradient-to-r from-purple-500 to-purple-600 text-white', icon: <LightBulbIcon className="h-4 w-4 mr-1" /> };
+        return { color: 'bg-gradient-to-r from-cyan-500 to-cyan-600 text-white', icon: <LightBulbIcon className="h-4 w-4 mr-1" /> };
       case 'ME Test':
-        return { color: 'bg-gradient-to-r from-green-500 to-green-600 text-white', icon: <BookOpenIcon className="h-4 w-4 mr-1" /> };
+        return { color: 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white', icon: <BookOpenIcon className="h-4 w-4 mr-1" /> };
       default:
         return { color: 'bg-gray-100 text-gray-800', icon: <CheckCircleIcon className="h-4 w-4 mr-1" /> };
     }
   };
 
-  // Aesthetic loading screen
   if (loading) return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex flex-col justify-center items-center">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 flex flex-col justify-center items-center">
       <div className="relative">
         <div className="absolute inset-0 flex items-center justify-center">
-
+          <div className="w-20 h-20 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin"></div>
         </div>
-        <AcademicCapIcon className="h-20 w-20 text-indigo-400" />
+        <AcademicCapIcon className="h-20 w-20 text-teal-400" />
       </div>
-      <h2 className="mt-8 text-2xl font-bold text-indigo-700">Loading Your Portal</h2>
-      <p className="mt-2 text-indigo-500 font-medium">Preparing your academic dashboard...</p>
+      <h2 className="mt-8 text-2xl font-bold text-teal-700">Loading Your Portal</h2>
+      <p className="mt-2 text-teal-600 font-medium">Preparing your academic dashboard...</p>
     </div>
   );
 
@@ -202,49 +192,39 @@ const Page = () => {
   );
 
   if (!results) return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-100 flex flex-col justify-center items-center">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 flex flex-col justify-center items-center">
       <div className="p-12 bg-white rounded-2xl shadow-xl text-center max-w-md">
-        <div className="bg-blue-100 p-4 rounded-full inline-flex items-center justify-center mb-6">
-          <AcademicCapIcon className="h-16 w-16 text-blue-500" />
+        <div className="bg-teal-100 p-4 rounded-full inline-flex items-center justify-center mb-6">
+          <AcademicCapIcon className="h-16 w-16 text-teal-500" />
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Begin Your Journey</h2>
         <p className="text-gray-600 mb-8">You haven't taken any tests yet. Start your academic journey today!</p>
-        <button className="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
+        <button className="w-full py-4 px-6 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
           Take Your First Test
         </button>
       </div>
     </div>
   );
 
-  // Combine all tests into a single array with type indicator
   const allTests = results ? [
     ...results.fullTests.map(test => ({ ...test, points: test.marksObtained, type: 'Full Test' })),
     ...results.generatedTests.map(test => ({ ...test, points: test.score, testName: test.testname, type: 'Generated Test' })),
     ...results.meTests.map(test => ({ ...test, points: test.score, type: 'ME Test' }))
-  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : []; // Sort by date (newest first)
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
 
-  // Calculate percentage of total points needed for each scholarship
   const calculateProgress = (points, requiredPoints) => {
     return Math.min(100, Math.round((points / requiredPoints) * 100));
   };
 
-  // Get recent tests (last 5)
   const recentTests = allTests.slice(0, 5);
 
-  // Calculate average score improvement
   const calculateImprovement = () => {
     if (allTests.length < 2) return 0;
-
-    // Sort by date (oldest first)
     const sortedTests = [...allTests].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-    // Get first 5 and last 5 tests for comparison
     const firstTests = sortedTests.slice(0, Math.min(5, Math.floor(sortedTests.length / 2)));
     const lastTests = sortedTests.slice(-Math.min(5, Math.floor(sortedTests.length / 2)));
-
     const firstAvg = firstTests.reduce((sum, test) => sum + test.points, 0) / firstTests.length;
     const lastAvg = lastTests.reduce((sum, test) => sum + test.points, 0) / lastTests.length;
-
     return Math.round(((lastAvg - firstAvg) / firstAvg) * 100);
   };
 
@@ -254,78 +234,63 @@ const Page = () => {
         <title>NEET720 Scholarships & Credits – Earn Rewards Through Your Test Performance</title>
         <meta name="description" content="Track your academic progress, earn NEET720 credits, and unlock scholarships by completing full tests. Aim higher with real rewards for your efforts!" />
         <meta name="keywords" content="NEET720 scholarships, NEET credits, earn rewards NEET test, NEET scholarship points, academic progress NEET720, NEET720 performance rewards" />
-        <meta name="robots" content="index, follow" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        <meta property="og:title" content="NEET720 Scholarships & Credits – Earn Rewards Through Your Test Performance" />
-        <meta property="og:description" content="Get rewarded for your NEET preparation! Track your test performance, earn academic credits, and qualify for scholarships on NEET720." />
-        <meta property="og:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/scholarship" />
-        <meta property="og:url" content="https://neet720.com/credits" />
-        <meta property="og:type" content="website" />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="NEET720 Scholarships & Credits – Earn Rewards Through Your Test Performance" />
-        <meta name="twitter:description" content="Boost your NEET journey by earning credits and scholarships for every test you take. Track your points and aim for excellence with NEET720." />
-        <meta name="twitter:image" content="https://s3.ap-southeast-1.wasabisys.com/neet720/seoImages/scholarship" />
         <link rel="canonical" href="https://neet720.com/credits" />
       </Head>
       <ToggleBar className="fixed top-0" />
-      <div className='flex min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50'>
+      <div className='flex min-h-screen '>
         <Sidebar className="hidden md:block w-64 shadow-md z-10" />
-        
         <BottomNavbar />
-        <div className='w-full'>
+        <div className='w-auto ml-3'>
           <NavBar />
           <div className="flex-1 p-6 md:p-8 pt-24 md:pt-0">
             {/* Header Section */}
-            <div className="mb-8 ">
+            <div className="mb-8">
               <div className="flex flex-col md:flex-row md:items-center text-center justify-center">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center">
+                  <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center mt-10">
                     Academic Dashboard
-                    <span className="ml-3 px-3 py-1 text-xs font-medium bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-sm">
+                    <span className="ml-3 px-3 py-1 text-xs font-medium bg-gradient-to-r from-teal-500 to-cyan-600 text-white rounded-full shadow-sm">
                       Student Portal
                     </span>
                   </h1>
                   <p className="text-gray-600">Unlock your academic potential and earn scholarships</p>
                 </div>
-
               </div>
             </div>
 
             {/* Achievement Banner */}
-            <div className="mb-8 relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 md:p-8">
+            <div className="mb-8 relative overflow-hidden bg-gradient-to-r from-teal-600 to-cyan-700 rounded-2xl shadow-xl p-6 md:p-8">
               <div className="absolute top-0 right-0 opacity-10 transform translate-x-16 -translate-y-6">
                 <AcademicCapIcon className="h-64 w-64 text-white" />
               </div>
               <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-2">Academic Progress</h2>
-                  <p className="text-blue-100 mb-4 max-w-xl">
+                  <p className="text-cyan-100 mb-4 max-w-xl">
                     You've earned <span className="font-bold text-white">{results.totals.overallTotal} points</span> through your academic efforts.
                     Keep going to qualify for prestigious scholarships!
                   </p>
                   <div className="flex flex-wrap gap-4 mt-4">
                     <button
-                      className="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition flex items-center"
+                      className="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition flex items-center backdrop-blur-sm"
                       onClick={() => setActiveTab('subscriptions')}
                     >
                       <TrophyIcon className="h-5 w-5 mr-2" />
                       View Scholarships
                     </button>
-                    <button className="px-4 py-2 bg-white text-indigo-700 rounded-lg hover:bg-opacity-90 transition flex items-center">
+                    <button className="px-4 py-2 bg-white text-teal-700 rounded-lg hover:bg-opacity-90 transition flex items-center font-semibold">
                       <ChartBarIcon className="h-5 w-5 mr-2" />
                       Performance Report
                     </button>
                   </div>
                 </div>
-                <div className="mt-6 md:mt-0 bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
+                <div className="mt-6 md:mt-0 bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
                   <div className="text-4xl font-bold text-white flex items-center">
                     {allTests.length}
-                    <span className="ml-2 text-sm font-medium text-blue-100">Tests Completed</span>
+                    <span className="ml-2 text-sm font-medium text-cyan-100">Tests Completed</span>
                   </div>
                   {calculateImprovement() > 0 && (
-                    <div className="flex items-center mt-2 text-green-300">
+                    <div className="flex items-center mt-2 text-emerald-300">
                       <ArrowUpIcon className="h-4 w-4 mr-1" />
                       <span className="font-medium">{calculateImprovement()}% improvement</span>
                     </div>
@@ -336,13 +301,13 @@ const Page = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-teal-100">
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="bg-blue-100 p-3 rounded-xl">
-                      <SparklesIcon className="h-6 w-6 text-blue-600" />
+                    <div className="bg-teal-100 p-3 rounded-xl">
+                      <SparklesIcon className="h-6 w-6 text-teal-600" />
                     </div>
-                    <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Academic Points</span>
+                    <span className="text-xs font-medium text-teal-600 bg-teal-50 px-2 py-1 rounded-full">Academic Points</span>
                   </div>
                   <h3 className="text-gray-500 text-sm font-medium mb-1">Total Points Earned</h3>
                   <div className="flex items-end">
@@ -352,11 +317,11 @@ const Page = () => {
                   <div className="mt-4">
                     <div className="flex justify-between mb-1">
                       <span className="text-xs text-gray-500">Progress to Excellence Scholarship</span>
-                      <span className="text-xs font-medium text-indigo-600">{calculateProgress(results.totals.overallTotal, 12000)}%</span>
+                      <span className="text-xs font-medium text-teal-600">{calculateProgress(results.totals.overallTotal, 12000)}%</span>
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-2.5">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full"
+                        className="bg-gradient-to-r from-teal-500 to-cyan-600 h-2.5 rounded-full transition-all duration-300"
                         style={{ width: `${calculateProgress(results.totals.overallTotal, 12000)}%` }}
                       ></div>
                     </div>
@@ -364,13 +329,13 @@ const Page = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-cyan-100">
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="bg-indigo-100 p-3 rounded-xl">
-                      <FireIcon className="h-6 w-6 text-indigo-600" />
+                    <div className="bg-cyan-100 p-3 rounded-xl">
+                      <FireIcon className="h-6 w-6 text-cyan-600" />
                     </div>
-                    <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">Performance Metrics</span>
+                    <span className="text-xs font-medium text-cyan-600 bg-cyan-50 px-2 py-1 rounded-full">Performance Metrics</span>
                   </div>
                   <h3 className="text-gray-500 text-sm font-medium mb-1">Average Test Score</h3>
                   <div className="flex items-end">
@@ -388,13 +353,13 @@ const Page = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-teal-100">
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="bg-purple-100 p-3 rounded-xl">
-                      <RocketLaunchIcon className="h-6 w-6 text-purple-600" />
+                    <div className="bg-teal-100 p-3 rounded-xl">
+                      <RocketLaunchIcon className="h-6 w-6 text-teal-600" />
                     </div>
-                    <span className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-full">Achievement</span>
+                    <span className="text-xs font-medium text-teal-600 bg-teal-50 px-2 py-1 rounded-full">Achievement</span>
                   </div>
                   <h3 className="text-gray-500 text-sm font-medium mb-1">Next Scholarship Goal</h3>
                   <div className="flex items-end">
@@ -411,7 +376,7 @@ const Page = () => {
                           results.totals.overallTotal >= 8000 ? "Excellence Scholarship" :
                             results.totals.overallTotal >= 5000 ? "Merit Scholarship" : "Foundation Scholarship"}
                       </span>
-                      <span className="text-xs font-medium text-purple-600">
+                      <span className="text-xs font-medium text-teal-600">
                         {results.totals.overallTotal >= 12000 ? "Eligible" :
                           `${results.totals.overallTotal >= 8000 ? 12000 - results.totals.overallTotal :
                             results.totals.overallTotal >= 5000 ? 8000 - results.totals.overallTotal :
@@ -420,7 +385,7 @@ const Page = () => {
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-2.5">
                       <div
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2.5 rounded-full"
+                        className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2.5 rounded-full transition-all duration-300"
                         style={{
                           width: `${results.totals.overallTotal >= 12000 ? 100 :
                             results.totals.overallTotal >= 8000 ? calculateProgress(results.totals.overallTotal, 12000) :
@@ -435,11 +400,11 @@ const Page = () => {
             </div>
 
             {/* Tabs */}
-            <div className="mb-6 border-b border-gray-200">
+            <div className="mb-6 border-b-2 border-gray-200">
               <div className="flex space-x-8">
                 <button
                   className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'results'
-                    ? 'border-indigo-500 text-indigo-600'
+                    ? 'border-teal-500 text-teal-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     } transition`}
                   onClick={() => setActiveTab('results')}
@@ -448,7 +413,7 @@ const Page = () => {
                 </button>
                 <button
                   className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'subscriptions'
-                    ? 'border-indigo-500 text-indigo-600'
+                    ? 'border-teal-500 text-teal-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     } transition`}
                   onClick={() => setActiveTab('subscriptions')}
@@ -463,13 +428,13 @@ const Page = () => {
               <div className="flex flex-col gap-6">
                 <div className="flex gap-10 max-sm:flex-col justify-center">
                   <div className=''>
-                    <Image src="/scholarship-Image.png" className='w-[800px] h-[410px] rounded-md shadow-md max-w-800' alt='Scholarship Image' height={800} width={800} />
+                    <Image src="/scholarship-Image.png" className='w-[800px] h-[410px] rounded-2xl shadow-xl max-w-800 border-2 border-teal-100' alt='Scholarship Image' height={800} width={800} />
                   </div>
                   {/* Recent Activity */}
-                  <div className="bg-white rounded-2xl shadow-md w-full overflow-hidden h-full">
-                    <div className="p-6 border-b border-gray-100">
+                  <div className="bg-white rounded-2xl shadow-lg w-full overflow-hidden h-full border-2 border-teal-100">
+                    <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-teal-50 to-cyan-50">
                       <h2 className="text-2xl font-semibold text-gray-800">Recent Activity</h2>
-                      <p className="text-sm text-gray-500">Your latest test submissions</p>
+                      <p className="text-sm text-gray-600">Your latest test submissions</p>
                     </div>
                     <div className="p-6">
                       {recentTests.length > 0 ? (
@@ -477,15 +442,15 @@ const Page = () => {
                           {recentTests.map((test, index) => {
                             const testStyle = formatTestType(test.type);
                             return (
-                              <div key={index} className="flex items-start ">
-                                <div className={`${testStyle.color} p-2 rounded-lg mr-4 flex items-center justify-center`}>
+                              <div key={index} className="flex items-start hover:bg-teal-50 p-3 rounded-lg transition-colors">
+                                <div className={`${testStyle.color} p-2 rounded-lg mr-4 flex items-center justify-center shadow-md`}>
                                   {testStyle.icon}
                                 </div>
                                 <div className="flex justify-between w-full">
                                   <p className="text-xl font-medium text-gray-800">{test.testName}</p>
                                   <div className="flex items-center mt-1">
                                     <span className="text-xs text-gray-500 mr-3">{formatDate(test.createdAt)}</span>
-                                    <span className="text-xs font-medium text-indigo-600">{test.points} points</span>
+                                    <span className="text-xs font-medium text-teal-600 bg-teal-50 px-2 py-1 rounded-full">{test.points} points</span>
                                   </div>
                                 </div>
                               </div>
@@ -497,20 +462,19 @@ const Page = () => {
                       )}
                     </div>
                   </div>
-
                 </div>
 
                 {/* Test Results Table */}
-                <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-                  <div className="p-6 border-b border-gray-100">
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-teal-100">
+                  <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-teal-50 to-cyan-50">
                     <h2 className="text-lg font-semibold text-gray-800">Complete Test History</h2>
-                    <p className="text-xs text-gray-500">View your test performances (10 entries per page)</p>
+                    <p className="text-xs text-gray-600">View your test performances (10 entries per page)</p>
                   </div>
 
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead>
-                        <tr className="bg-gray-50">
+                        <tr className="bg-gradient-to-r from-teal-50 to-cyan-50">
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Test Name</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
@@ -522,12 +486,12 @@ const Page = () => {
                         {allTests.slice(currentPage * 10, (currentPage + 1) * 10).map((test, index) => {
                           const testStyle = formatTestType(test.type);
                           return (
-                            <tr key={`${test.type}-${index}`} className="hover:bg-gray-50 transition">
+                            <tr key={`${test.type}-${index}`} className="hover:bg-teal-50 transition">
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm font-medium text-gray-900">{test.testName}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${testStyle.color}`}>
+                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${testStyle.color} shadow-sm`}>
                                   <span className="flex items-center">
                                     {testStyle.icon}
                                     {test.type}
@@ -536,7 +500,7 @@ const Page = () => {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
-                                  <div className="h-2 w-2 rounded-full bg-green-400 mr-2"></div>
+                                  <div className="h-2 w-2 rounded-full bg-emerald-400 mr-2"></div>
                                   <span className="font-semibold text-gray-900">{test.points}</span>
                                   <span className="text-gray-500 text-xs ml-1">points</span>
                                 </div>
@@ -545,14 +509,14 @@ const Page = () => {
                                 {formatDate(test.createdAt)}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 py-1 text-xs rounded-md bg-green-100 text-green-800 font-medium">Completed</span>
+                                <span className="px-2 py-1 text-xs rounded-md bg-emerald-100 text-emerald-800 font-medium">Completed</span>
                               </td>
                             </tr>
                           );
                         })}
                       </tbody>
                       <tfoot>
-                        <tr className="bg-gray-50">
+                        <tr className="bg-gradient-to-r from-teal-50 to-cyan-50">
                           <td colSpan="5" className="px-6 py-4">
                             <div className="flex items-center justify-between">
                               <div className="text-sm font-medium text-gray-500">
@@ -564,12 +528,12 @@ const Page = () => {
                                   disabled={currentPage === 0}
                                   className={`px-3 py-1 rounded-md text-sm ${currentPage === 0
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                                    : 'bg-teal-50 text-teal-600 hover:bg-teal-100'
                                     }`}
                                 >
                                   Previous
                                 </button>
-                                <div className="px-3 py-1 bg-indigo-500 text-white rounded-md text-sm font-medium">
+                                <div className="px-3 py-1 bg-teal-500 text-white rounded-md text-sm font-medium">
                                   {currentPage + 1}
                                 </div>
                                 <button
@@ -577,7 +541,7 @@ const Page = () => {
                                   disabled={(currentPage + 1) * 10 >= allTests.length}
                                   className={`px-3 py-1 rounded-md text-sm ${(currentPage + 1) * 10 >= allTests.length
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                                    : 'bg-teal-50 text-teal-600 hover:bg-teal-100'
                                     }`}
                                 >
                                   Next
@@ -593,7 +557,7 @@ const Page = () => {
               </div>
             ) : (
               <div>
-                <div className="mb-8 bg-white rounded-2xl shadow-md p-6 md:p-8">
+                <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 md:p-8 border-2 border-teal-100">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div>
                       <h2 className="text-2xl font-bold text-gray-800 mb-2">Academic Scholarships</h2>
@@ -601,20 +565,20 @@ const Page = () => {
                         Unlock prestigious scholarships by showcasing your academic excellence
                       </p>
                     </div>
-                    <div className="mt-4 md:mt-0 flex items-center bg-indigo-50 px-4 py-2 rounded-lg">
-                      <SparklesIcon className="h-5 w-5 text-indigo-600 mr-2" />
-                      <span className="font-medium text-indigo-700">{results.totals.overallTotal} points available</span>
+                    <div className="mt-4 md:mt-0 flex items-center bg-teal-50 px-4 py-2 rounded-lg border border-teal-200">
+                      <SparklesIcon className="h-5 w-5 text-teal-600 mr-2" />
+                      <span className="font-medium text-teal-700">{results.totals.overallTotal} points available</span>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl mb-8">
+                  <div className="p-4 bg-cyan-50 border-2 border-cyan-200 rounded-xl mb-8">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 bg-blue-100 rounded-lg p-2">
-                        <LightBulbIcon className="h-6 w-6 text-blue-600" />
+                      <div className="flex-shrink-0 bg-cyan-100 rounded-lg p-2">
+                        <LightBulbIcon className="h-6 w-6 text-cyan-600" />
                       </div>
                       <div className="ml-4">
-                        <h3 className="font-medium text-blue-800 text-sm">How Scholarships Work</h3>
-                        <p className="text-blue-700 text-xs mt-1">
+                        <h3 className="font-medium text-cyan-800 text-sm">How Scholarships Work</h3>
+                        <p className="text-cyan-700 text-xs mt-1">
                           Accumulate points through tests and academic activities. Redeem your points for scholarships to support your education.
                           Higher point totals unlock more valuable scholarship opportunities.
                         </p>
@@ -627,12 +591,12 @@ const Page = () => {
                   {scholarshipPlans.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`relative bg-white rounded-2xl shadow-lg overflow-hidden transition transform hover:scale-105 hover:shadow-xl max-h-[700px] ${plan.recommended ? 'ring-2 ring-purple-400' : ''
+                      className={`relative bg-white rounded-2xl shadow-xl overflow-hidden transition transform hover:scale-105 hover:shadow-2xl max-h-[700px] border-2 ${plan.recommended ? 'border-amber-400 ring-4 ring-amber-200' : 'border-teal-200'
                         }`}
                     >
                       {plan.recommended && (
                         <div className="absolute top-4 right-4 z-20">
-                          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                          <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
                             MOST PRESTIGIOUS
                           </div>
                         </div>
@@ -648,7 +612,7 @@ const Page = () => {
                           </h3>
                           <div className="text-center mb-4">
                             <span className="text-4xl font-bold text-white">{plan.amount}</span>
-                            <div className="text-blue-100 text-sm mt-1">Scholarship Value</div>
+                            <div className="text-cyan-100 text-sm mt-1">Scholarship Value</div>
                           </div>
                           <div className="flex justify-between items-center text-white text-sm mb-2">
                             <span>Required Points</span>
@@ -656,7 +620,7 @@ const Page = () => {
                           </div>
                           <div className="w-full bg-white bg-opacity-20 rounded-full h-2 mb-2">
                             <div
-                              className="bg-white h-2 rounded-full"
+                              className="bg-white h-2 rounded-full transition-all duration-300"
                               style={{ width: `${calculateProgress(results.totals.overallTotal, plan.points)}%` }}
                             ></div>
                           </div>
@@ -666,12 +630,12 @@ const Page = () => {
                         </div>
                       </div>
                       <div className="p-6 flex flex-col justify-between">
-                        <div className="mb-4" >
+                        <div className="mb-4">
                           <h4 className="font-medium text-gray-700 mb-2 text-sm">Scholarship Benefits</h4>
                           <ul className="space-y-3">
                             {plan.features.map((feature, idx) => (
                               <li key={idx} className="flex items-start">
-                                <CheckCircleIcon className={`h-5 w-5 text-${plan.color}-500 mr-2 flex-shrink-0`} />
+                                <CheckCircleIcon className="h-5 w-5 text-teal-500 mr-2 flex-shrink-0" />
                                 <span className="text-sm text-gray-600">{feature}</span>
                               </li>
                             ))}
@@ -702,16 +666,16 @@ const Page = () => {
       {/* Confirmation Modal */}
       {showConfirmation && selectedPlan && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 md:p-8 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8 animate-fade-in border-2 border-teal-200">
             <div className="text-center mb-6">
-              <div className={`inline-flex items-center justify-center p-3 bg-${selectedPlan.color}-100 rounded-full mb-4`}>
-                <TrophyIcon className={`h-8 w-8 text-${selectedPlan.color}-600`} />
+              <div className="inline-flex items-center justify-center p-3 bg-teal-100 rounded-full mb-4">
+                <TrophyIcon className="h-8 w-8 text-teal-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Confirm Scholarship Redemption</h3>
               <p className="text-gray-600 mb-4">
                 You're about to redeem your points for the <span className="font-semibold">{selectedPlan.name}</span> worth <span className="font-semibold">{selectedPlan.amount}</span>.
               </p>
-              <div className="p-4 bg-yellow-50 rounded-lg text-sm text-yellow-800 mb-4">
+              <div className="p-4 bg-amber-50 rounded-lg text-sm text-amber-800 mb-4 border border-amber-200">
                 <p>This will deduct <span className="font-bold">{selectedPlan.points} points</span> from your balance.</p>
               </div>
             </div>

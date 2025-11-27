@@ -28,10 +28,7 @@ import BottomNavbar from "../layout/bottomnav/bottomnav";
 import NavBar from "../layout/navbar/navbar";
 
 /**
- * AI Coach Plan - Enhanced UI
- * - Beautiful, responsive design optimized for mobile
- * - Bold chapter names and structured content
- * - Modern card layouts with improved visual hierarchy
+ * AI Coach Plan - Enhanced UI with Teal Theme
  */
 const SUBJECT_META = {
   Biology: {
@@ -50,10 +47,10 @@ const SUBJECT_META = {
   },
   Physics: {
     icon: Atom,
-    bg: "bg-indigo-50",
-    pill: "text-indigo-700 bg-indigo-100 border-indigo-200",
-    ring: "ring-indigo-200",
-    accent: "border-l-indigo-500",
+    bg: "bg-cyan-50",
+    pill: "text-cyan-700 bg-cyan-100 border-cyan-200",
+    ring: "ring-cyan-200",
+    accent: "border-l-cyan-500",
   },
 };
 
@@ -77,7 +74,6 @@ function decodeJWT(token) {
 
 // Simple toast system
 function showToast(message, type = "success") {
-  // In a real app, you'd implement a proper toast system
   console.log(`${type.toUpperCase()}: ${message}`);
   if (window.alert) {
     window.alert(message);
@@ -113,8 +109,8 @@ function useStudentAuth() {
 function SectionHeader({ icon: Icon, title, subtitle, className = "" }) {
   return (
     <div className={`flex items-start gap-3 mb-4 ${className}`}>
-      <div className="shrink-0 p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 shadow-sm">
-        <Icon className="w-5 h-5 text-gray-700" />
+      <div className="shrink-0 p-2.5 rounded-xl bg-gradient-to-br from-teal-100 to-cyan-200 shadow-sm">
+        <Icon className="w-5 h-5 text-teal-700" />
       </div>
       <div className="min-w-0 flex-1">
         <h2 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight">
@@ -146,7 +142,7 @@ function ProgressBar({ value, className = "" }) {
       className={`w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner ${className}`}
     >
       <div
-        className="h-full bg-gradient-to-r from-gray-800 to-gray-900 transition-all duration-500 ease-out rounded-full"
+        className="h-full bg-gradient-to-r from-teal-500 to-cyan-600 transition-all duration-500 ease-out rounded-full"
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
       />
     </div>
@@ -155,12 +151,10 @@ function ProgressBar({ value, className = "" }) {
 
 // Transform API response to match component's expected structure
 function transformApiData(candidate) {
-  // If data is already in expected format, return as is
   if (typeof candidate.summary === "string") {
     return candidate;
   }
 
-  // Transform summary object to string
   const summaryString = `Overall performance: ${
     candidate.summary.overall_last5
   }. Subjects: ${candidate.summary.subjects
@@ -171,7 +165,6 @@ function transformApiData(candidate) {
     ", "
   )}.`;
 
-  // Transform focus array to object
   const focusObject = {};
   candidate.focus.forEach((item) => {
     const chaptersText = item.chapters
@@ -180,7 +173,6 @@ function transformApiData(candidate) {
     focusObject[item.subject] = chaptersText;
   });
 
-  // Transform plan to phases
   const planObject = {
     "Phase 1": {
       duration: "1 week",
@@ -197,7 +189,6 @@ function transformApiData(candidate) {
     },
   };
 
-  // Transform tasks to weeks structure
   const tasksObject = {
     week1: candidate.tasks.map((task) => ({
       subject: task.subject,
@@ -208,7 +199,6 @@ function transformApiData(candidate) {
     })),
   };
 
-  // Transform coach notes to string
   const coachNotes = candidate.tone_coach_notes.join(". ");
 
   return {
@@ -295,7 +285,6 @@ export default function AiCoachPlan() {
         }
         if (!candidate) throw new Error("AI plan not found in API response");
 
-        // Transform the data to match expected structure
         const transformedCandidate = transformApiData(candidate);
         setPlan(transformedCandidate);
         console.log("Transformed AI Coach Plan:", transformedCandidate);
@@ -308,12 +297,6 @@ export default function AiCoachPlan() {
       }
     };
 
-    // Demo data for testing
-    // if (!studentId) {
-    //   setPlan(candidate)
-    //   setLoading(false);
-    //   return;
-    // }
     fetchPlan();
   }, [studentId, token, API_BASE]);
 
@@ -348,23 +331,23 @@ export default function AiCoachPlan() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-sm">
+    <div className="flex min-h-screen ">
+      <div className="fixed top-0 left-0 right-0 ">
         <NavBar></NavBar>
       </div>
       <Sidebar />
       <ToggleBar />
-      <div className="flex-1">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-20 sm:mt-5 lg:px-8 py-6 sm:py-8">
+      <div className="flex-1 mt-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-20 sm:mt-5 lg:px-8 py-6 sm:py-8 ">
           {/* Enhanced Page Header */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 mb-8">
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-teal-200 p-6 sm:p-8 mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 shadow-lg">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 shadow-lg">
                     <Brain className="w-6 h-6 text-white" />
                   </div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                     AI Coach Plan
                   </h1>
                 </div>
@@ -372,7 +355,7 @@ export default function AiCoachPlan() {
                   {studentId ? (
                     <span className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                       <span>📚 Personalized study roadmap for</span>
-                      <Pill className="bg-blue-100 text-blue-700 border-blue-200 w-fit">
+                      <Pill className="bg-teal-100 text-teal-700 border-teal-200 w-fit">
                         Student ID: {studentId}
                       </Pill>
                     </span>
@@ -384,36 +367,38 @@ export default function AiCoachPlan() {
 
               {/* Enhanced Progress Section */}
               <div className="w-full lg:w-80">
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+                <div className="bg-gradient-to-br from-teal-50 to-cyan-100 rounded-xl p-4 border-2 border-teal-200 shadow-md">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                    <span className="text-sm font-semibold text-teal-800 flex items-center gap-2">
                       <TrendingUp className="w-4 h-4" />
                       Overall Progress
                     </span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-lg font-bold text-teal-900">
                       {Math.round(percentComplete)}%
                     </span>
                   </div>
                   <ProgressBar value={percentComplete} />
-                  <p className="text-xs text-gray-600 mt-2">
+                  <p className="text-xs text-teal-700 mt-2">
                     Keep going! You're making great progress 🎯
                   </p>
                 </div>
               </div>
             </div>
           </div>
+
           {/* Loading State */}
           {loading && (
-            <div className="flex items-center gap-3 text-gray-700 bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+            <div className="flex items-center gap-3 text-gray-700 bg-white border-2 border-teal-200 rounded-xl p-6 shadow-md">
+              <Loader2 className="w-5 h-5 animate-spin text-teal-600" />
               <span className="text-sm font-medium">
                 Fetching your personalized AI plan…
               </span>
             </div>
           )}
+
           {/* Error State */}
           {!loading && error && (
-            <div className="flex items-start gap-3 text-red-700 bg-red-50 border border-red-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-start gap-3 text-red-700 bg-red-50 border-2 border-red-200 rounded-xl p-6 shadow-md">
               <AlertTriangle className="w-6 h-6 mt-0.5 text-red-600" />
               <div className="space-y-1">
                 <p className="font-semibold">Unable to load your plan</p>
@@ -421,31 +406,32 @@ export default function AiCoachPlan() {
               </div>
             </div>
           )}
+
           {!loading && !error && plan && (
             <div className="space-y-8">
               {/* Enhanced Summary Section */}
-              <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              <section className="bg-white rounded-2xl border-2 border-teal-200 shadow-lg overflow-hidden">
                 <div className="p-6 sm:p-8">
                   <SectionHeader
                     icon={Brain}
                     title="📝 Study Summary"
                     subtitle="AI-generated insights based on your current performance"
                   />
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+                  <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-6 border-2 border-teal-200">
                     <div className="prose prose-sm max-w-none">
                       <p className="text-gray-800 leading-relaxed text-base font-medium">
                         {plan.summary}
                       </p>
                     </div>
                     {plan.tone_coach_notes && (
-                      <div className="mt-4 pt-4 border-t border-blue-200">
+                      <div className="mt-4 pt-4 border-t-2 border-teal-200">
                         <div className="flex items-start gap-3">
-                          <Star className="w-5 h-5 text-blue-600 mt-0.5" />
+                          <Star className="w-5 h-5 text-teal-600 mt-0.5" />
                           <div>
-                            <h4 className="font-semibold text-blue-800 mb-1">
+                            <h4 className="font-semibold text-teal-800 mb-1">
                               Coach Notes
                             </h4>
-                            <p className="text-sm text-blue-700">
+                            <p className="text-sm text-teal-700">
                               {plan.tone_coach_notes}
                             </p>
                           </div>
@@ -455,6 +441,7 @@ export default function AiCoachPlan() {
                   </div>
                 </div>
               </section>
+
               {/* Enhanced Subject Focus */}
               {plan.focus && (
                 <section className="space-y-6">
@@ -476,12 +463,12 @@ export default function AiCoachPlan() {
                       return (
                         <div
                           key={subject}
-                          className={`bg-white rounded-2xl border border-gray-200 ${meta.bg} shadow-sm hover:shadow-md transition-shadow duration-200`}
+                          className={`bg-white rounded-2xl border-2 border-gray-200 ${meta.bg} shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}
                         >
-                          <div className={`h-1 ${meta.accent} rounded-t-2xl`} />
+                          <div className={`h-2 ${meta.accent} rounded-t-2xl`} />
                           <div className="p-6">
                             <div className="flex items-center gap-3 mb-4">
-                              <div className="p-2.5 rounded-xl bg-white shadow-sm border border-gray-200">
+                              <div className="p-2.5 rounded-xl bg-white shadow-md border-2 border-gray-200">
                                 <Icon className="w-5 h-5 text-gray-800" />
                               </div>
                               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -493,7 +480,6 @@ export default function AiCoachPlan() {
                             </div>
                             <div className="space-y-2">
                               {(() => {
-                                // Extract chapter names from parentheses
                                 const chapterRegex = /\(([^)]+)\)/g;
                                 const chapters = [];
                                 let match;
@@ -503,7 +489,6 @@ export default function AiCoachPlan() {
                                   chapters.push(match[1]);
                                 }
 
-                                // Get text without parentheses for description
                                 const description =
                                   typeof text === "string"
                                     ? text
@@ -525,7 +510,7 @@ export default function AiCoachPlan() {
                                               key={idx}
                                               className="text-sm leading-relaxed flex items-start gap-2"
                                             >
-                                              <span className="text-gray-400 mt-1">
+                                              <span className="text-teal-500 mt-1">
                                                 •
                                               </span>
                                               <span className="font-bold text-gray-900">
@@ -557,9 +542,10 @@ export default function AiCoachPlan() {
                   </div>
                 </section>
               )}
+
               {/* Enhanced Phased Plan */}
               {plan.plan && (
-                <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <section className="bg-white rounded-2xl border-2 border-teal-200 shadow-lg overflow-hidden">
                   <div className="p-6 sm:p-8">
                     <SectionHeader
                       icon={CalendarClock}
@@ -571,11 +557,11 @@ export default function AiCoachPlan() {
                         ([phaseKey, info], idx) => (
                           <div
                             key={phaseKey}
-                            className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200 hover:shadow-md transition-shadow duration-200"
+                            className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-5 border-2 border-teal-200 hover:shadow-md transition-all duration-200"
                           >
                             <div className="flex gap-4">
                               <div className="shrink-0">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 text-white flex items-center justify-center font-bold shadow-lg">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-white flex items-center justify-center font-bold shadow-lg">
                                   {idx + 1}
                                 </div>
                               </div>
@@ -585,8 +571,8 @@ export default function AiCoachPlan() {
                                     {phaseKey}
                                   </h4>
                                   <div className="flex items-center gap-2">
-                                    <Clock className="w-4 h-4 text-gray-600" />
-                                    <Pill className="bg-white text-gray-700 border-gray-300">
+                                    <Clock className="w-4 h-4 text-teal-600" />
+                                    <Pill className="bg-white text-teal-700 border-teal-300">
                                       {info?.duration || "—"}
                                     </Pill>
                                   </div>
@@ -604,7 +590,7 @@ export default function AiCoachPlan() {
                                           key={idx}
                                           className="text-sm text-gray-700 leading-relaxed flex items-start gap-2"
                                         >
-                                          <span className="text-gray-400 mt-1">
+                                          <span className="text-teal-500 mt-1">
                                             •
                                           </span>
                                           <span>{point.trim()}</span>
@@ -621,8 +607,9 @@ export default function AiCoachPlan() {
                   </div>
                 </section>
               )}
+
               {/* Enhanced Weekly Tasks */}
-              <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              <section className="bg-white rounded-2xl border-2 border-teal-200 shadow-lg overflow-hidden">
                 <div className="p-6 sm:p-8">
                   <SectionHeader
                     icon={ListChecks}
@@ -643,12 +630,12 @@ export default function AiCoachPlan() {
                       return (
                         <details
                           key={w.weekKey}
-                          className="group bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-200 overflow-hidden"
+                          className="group bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl border-2 border-teal-200 overflow-hidden"
                         >
-                          <summary className="list-none cursor-pointer p-4 sm:p-6 hover:bg-gray-50 transition-colors duration-200">
+                          <summary className="list-none cursor-pointer p-4 sm:p-6 hover:bg-teal-100 transition-colors duration-200">
                             <div className="flex items-center justify-between gap-4">
                               <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white text-lg font-bold flex items-center justify-center shadow-lg">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white text-lg font-bold flex items-center justify-center shadow-lg">
                                   {w.index}
                                 </div>
                                 <div className="space-y-1">
@@ -664,21 +651,21 @@ export default function AiCoachPlan() {
                                     </span>
                                     <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
                                       <div
-                                        className="h-full bg-green-500 transition-all duration-300"
+                                        className="h-full bg-gradient-to-r from-teal-500 to-cyan-600 transition-all duration-300"
                                         style={{ width: `${weekProgress}%` }}
                                       />
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              <ChevronDown className="w-6 h-6 text-gray-500 transition-transform duration-200 group-open:rotate-180" />
+                              <ChevronDown className="w-6 h-6 text-teal-600 transition-transform duration-200 group-open:rotate-180" />
                             </div>
                           </summary>
 
                           <div className="px-4 sm:px-6 pb-6">
-                            <div className="bg-white rounded-xl border border-gray-200 p-4">
+                            <div className="bg-white rounded-xl border-2 border-teal-200 p-4">
                               <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                <BookOpen className="w-4 h-4" />
+                                <BookOpen className="w-4 h-4 text-teal-600" />
                                 Tasks for this week:
                               </h4>
                               <ul className="space-y-3">
@@ -694,8 +681,8 @@ export default function AiCoachPlan() {
                                       key={idx}
                                       className={`flex items-start gap-4 p-4 rounded-xl border-l-4 transition-all duration-200 ${
                                         done
-                                          ? "bg-green-50 border-green-500 border border-green-200"
-                                          : `bg-gray-50 ${meta.accent} border border-gray-200 hover:shadow-sm`
+                                          ? "bg-emerald-50 border-emerald-500 border-2 border-emerald-200"
+                                          : `bg-gray-50 ${meta.accent} border-2 border-gray-200 hover:shadow-md`
                                       }`}
                                     >
                                       <button
@@ -704,8 +691,8 @@ export default function AiCoachPlan() {
                                         }
                                         className={`mt-1 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
                                           done
-                                            ? "border-green-500 bg-green-500 text-white shadow-lg"
-                                            : "border-gray-300 bg-white hover:border-gray-400"
+                                            ? "border-emerald-500 bg-emerald-500 text-white shadow-lg"
+                                            : "border-gray-300 bg-white hover:border-teal-400"
                                         }`}
                                         aria-label={
                                           done
@@ -740,7 +727,7 @@ export default function AiCoachPlan() {
                                                   key={pointIdx}
                                                   className="text-sm text-gray-700 leading-relaxed flex items-start gap-2"
                                                 >
-                                                  <span className="text-gray-400 mt-1">
+                                                  <span className="text-teal-500 mt-1">
                                                     •
                                                   </span>
                                                   <span>{point.trim()}</span>
@@ -760,7 +747,7 @@ export default function AiCoachPlan() {
                     })}
                     {!weeks.length && (
                       <div className="text-center py-12 text-gray-600">
-                        <ClipboardList className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <ClipboardList className="w-12 h-12 text-teal-400 mx-auto mb-4" />
                         <p className="text-lg font-medium">
                           No weekly tasks found
                         </p>
@@ -772,8 +759,9 @@ export default function AiCoachPlan() {
                   </div>
                 </div>
               </section>
+
               {/* Enhanced Footer Actions */}
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
+              <div className="bg-white rounded-2xl border-2 border-teal-200 shadow-lg p-6 sm:p-8">
                 <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
                   <div className="space-y-2">
                     <h3 className="font-semibold text-gray-900">
@@ -792,14 +780,14 @@ export default function AiCoachPlan() {
                         setProgress({});
                         showToast("Progress reset for all weeks", "success");
                       }}
-                      className="px-6 py-3 rounded-xl border-2 border-gray-300 text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                      className="px-6 py-3 rounded-xl border-2 border-teal-300 text-teal-700 bg-white hover:bg-teal-50 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
                     >
                       <RotateCcw className="w-4 h-4" />
                       Reset Progress
                     </button>
                     <button
                       onClick={() => window.print()}
-                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 text-white hover:from-gray-900 hover:to-black font-medium shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-600 text-white hover:from-teal-600 hover:to-cyan-700 font-medium shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 transform hover:scale-105"
                     >
                       <Printer className="w-4 h-4" />
                       Print Plan
