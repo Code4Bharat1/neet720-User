@@ -150,12 +150,12 @@ useEffect(() => {
     <div className="flex items-end justify-center mt-16 w-full">
       <div
         className="w-full h-[120px] md:h-[262px] mx-4 rounded-lg p-6 md:p-8 flex flex-row items-center justify-between my-5 shadow-lg 
-             bg-gradient-to-r from-[#53ADD3] to-[#3e9ec7] text-white"
+             bg-teal-400  text-white"
       >
         {/* Text Content */}
         <div className="flex-1 text-left mb-4 md:mb-0">
           <h2 className="text-sm md:text-4xl font-bold mb-2 md:mb-6">
-            Welcome Back, {firstName} {lastName}!
+            Welcome Back,  Dr.{firstName} {lastName}!
           </h2>
           {/* <p className="text-[10px] md:text-lg md:font-thin">
             You have{" "}

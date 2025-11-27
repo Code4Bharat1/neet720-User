@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 const checkUserSession = async () => {
   // Simulate a backend check for user session
   return new Promise((resolve) =>
-    setTimeout(() => resolve({ isAuthenticated: true, userName: 'John Doe' }), 1000)
+    setTimeout(() => resolve({ isAuthenticated: true, userName: 'Akshat Kumar' }), 1000)
   );
 };
 

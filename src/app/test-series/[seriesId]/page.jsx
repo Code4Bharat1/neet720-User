@@ -1,7 +1,7 @@
 
 
 export async function generateMetadata({ params }) {
-  const { seriesId } = params;
+  const { seriesId } = await params;
 
   const formattedName = seriesId.replace(/-/g, " ");
   const title = `NEET Test Series – ${formattedName} | NEET720`;

@@ -176,7 +176,7 @@
 //               {sidebarLinks.map((item) => (
 //                 <button
 //                   key={item.name}
-//                   className="w-full text-left flex items-center gap-3 text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50 rounded-lg px-3 py-3 transition-all duration-200 text-base"
+//                   className="w-full text-left flex items-center gap-3 text-gray-700 font-medium hover:text-teal-400 hover:bg-teal-50 rounded-lg px-3 py-3 transition-all duration-200 text-base"
 //                   onClick={() => {
 //                     router.push(item.path);
 //                     setMenuOpen(false);
@@ -402,12 +402,12 @@
 //                     }}
 //                     className={`w-full text-left flex items-center gap-3 font-medium rounded-lg px-3 py-3 transition-all duration-200 text-base
 //                       ${isActive 
-//                         ? "bg-blue-100 text-blue-700 font-semibold border-l-4 border-blue-600"
-//                         : "text-gray-700 hover:text-blue-600 hover:bg-blue-50 border-l-4 border-transparent"
+//                         ? "bg-teal-100 text-teal-700 font-semibold border-l-4 border-teal-400"
+//                         : "text-gray-700 hover:text-teal-400 hover:bg-teal-50 border-l-4 border-transparent"
 //                       }
 //                     `}
 //                   >
-//                     <span className={`text-xl flex-shrink-0 ${isActive ? "text-blue-700" : "text-gray-500"}`}>
+//                     <span className={`text-xl flex-shrink-0 ${isActive ? "text-teal-700" : "text-gray-500"}`}>
 //                       {item.icon}
 //                     </span>
 //                     <span className="truncate">{item.name}</span>
@@ -639,14 +639,14 @@ const ToggleBar = () => {
                     className={`w-full text-left flex items-center gap-3 font-medium rounded-lg px-3 py-3 transition-all duration-200 text-base
                       ${
                         isActive
-                          ? "bg-blue-100 text-blue-700 font-semibold border-l-4 border-blue-600"
-                          : "text-gray-700 hover:text-blue-600 hover:bg-blue-50 border-l-4 border-transparent"
+                          ? "bg-teal-100 text-teal-700 font-semibold border-l-4 border-teal-400"
+                          : "text-gray-700 hover:text-teal-400 hover:bg-teal-50 border-l-4 border-transparent"
                       }
                     `}
                   >
                     <span
                       className={`text-xl flex-shrink-0 ${
-                        isActive ? "text-blue-700" : "text-gray-500"
+                        isActive ? "text-teal-700" : "text-gray-500"
                       }`}
                     >
                       {item.icon}

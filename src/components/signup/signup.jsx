@@ -286,7 +286,7 @@ const handleSendOtp = async () => {
                     value={formData.firstName}
                     onChange={handleChange}
                     className="pl-10 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-[#45A4CE]"
-                    placeholder="John"
+                    placeholder="Akshat"
                     required
                   />
                 </div>
@@ -302,7 +302,7 @@ const handleSendOtp = async () => {
                     value={formData.lastName}
                     onChange={handleChange}
                     className="pl-10 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-[#45A4CE]"
-                    placeholder="Doe"
+                    placeholder="Gupta"
                   />
                 </div>
               </div>
@@ -321,7 +321,7 @@ const handleSendOtp = async () => {
                   value={formData.emailAddress}
                   onChange={handleChange}
                   className="pl-10 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-[#45A4CE]"
-                  placeholder="example@email.com"
+                  placeholder="neet720@email.com"
                   required
                   disabled={otpVerified}
                 />

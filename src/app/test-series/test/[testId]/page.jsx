@@ -1,7 +1,16 @@
-
-
 export async function generateMetadata({ params }) {
-  const { seriesId, testId } = params;
+  // Do NOT await params — check if needed
+  const resolved = await Promise.resolve(params);
+
+  const { seriesId, testId } = resolved;
+
+  if (!seriesId || !testId) {
+    console.warn("⚠ Missing route params:", resolved);
+    return {
+      title: "NEET Test – NEET720",
+      description: "Attempt NEET tests on NEET720",
+    };
+  }
 
   const title = `NEET Test – ${testId.replace(/-/g, " ")} | ${seriesId.replace(
     /-/g,
@@ -35,6 +44,7 @@ export async function generateMetadata({ params }) {
     },
   };
 }
+
 
 import TestPage from "@/components/TestSeries/TestPage";
 

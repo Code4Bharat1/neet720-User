@@ -498,7 +498,7 @@ const TestCards = () => {
           <div
             key={index}
             onClick={() => handleClick(card.route)}
-            className="md:h-[100px] flex items-center justify-center gap-4 p-4 rounded-lg text-white font-medium shadow hover:scale-105 cursor-pointer transition bg-blue-500"
+            className="md:h-[100px] flex items-center justify-center gap-4 p-4 rounded-lg text-black font-medium shadow hover:scale-105 cursor-pointer transition bg-teal-300"
           >
             {card.icon}
             <span>{card.title}</span>

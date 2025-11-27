@@ -20,36 +20,6 @@ const NavBar = () => {
   const [notifications, setNotifications] = useState([]);
   const [result, setResults] = useState(null);
 
-  const [colors, setColors] = useState({
-    navbarColor: "#27759C",
-    sidebarColor: "#0E2936",
-    textColor: "#ffffff",
-  });
-
-  // Fetch admin-defined colors
-  useEffect(() => {
-    const fetchAdminColors = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        if (!token) return;
-
-        const decoded = jwtDecode(token);
-        const id = decoded.id;
-
-        const response = await axios.post(`${apiBaseUrl}/newadmin/studentcolors`, {
-          studentId: id,
-        });
-
-        const { navbarColor, sidebarColor, textColor } = response.data.colors;
-        setColors({ navbarColor, sidebarColor, textColor });
-      } catch (error) {
-        console.error("Error fetching admin colors:", error);
-      }
-    };
-
-    fetchAdminColors();
-  }, []);
-
   // Fetch student points
   useEffect(() => {
     const fetchResults = async () => {
@@ -96,51 +66,6 @@ const NavBar = () => {
     fetchProfileImage();
   }, [router]);
 
-  // Fetch notifications
-  // useEffect(() => {
-  //   const fetchNotifications = async () => {
-  //     try {
-  //       const token = localStorage.getItem("authToken");
-  //       if (!token) {
-  //         router.push("/login");
-  //         return;
-  //       }
-
-  //       const response = await axios.get(
-  //         `${apiBaseUrl}/newadmin/upcomingtest-data`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       const tests = response.data.tests;
-  //       const currentDate = new Date();
-
-  //       const newNotifications = [];
-
-  //       tests.forEach((test) => {
-  //         const start = new Date(test.exam_start_date);
-  //         const end = new Date(test.exam_end_date);
-
-  //         if (start.toDateString() === currentDate.toDateString()) {
-  //           newNotifications.push(`New test - ${test.testname}`);
-  //         }
-
-  //         if (end.toDateString() === currentDate.toDateString()) {
-  //           newNotifications.push(`Last day for the test - ${test.testname}`);
-  //         }
-  //       });
-
-  //       setNotifications(newNotifications);
-  //     } catch (error) {
-  //       console.error("Error fetching notifications:", error);
-  //     }
-  //   };
-
-  //   fetchNotifications();
-  // }, []);
-
   // Handle dropdowns
   const toggleProfileMenu = () => {
     setProfileMenu(!profileMenu);
@@ -170,9 +95,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <div
-      className="hidden md:flex w-full px-8 py-4 items-center justify-between relative bg-blue-300"
-    >
+    <div className="hidden md:flex w-full px-8 py-4 items-center justify-between relative bg-white border-b border-gray-200 shadow-sm">
       <div className="flex items-center flex-grow max-w-md">
         {/* Placeholder for left section */}
       </div>
@@ -180,38 +103,42 @@ const NavBar = () => {
       <div className="flex items-center space-x-5">
         {/* Credits Section */}
         <div
-          className="flex items-center bg-gray-600 px-3 space-x-2 py-1 rounded-sm"
+          className="flex items-center bg-gradient-to-r bg-teal-400 px-4 space-x-2 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
           title="Cookies"
         >
-          <FaMedal className="text-xl text-yellow-400" />
-          <p className="text-lg text-white">{result}</p>
+          <FaMedal className="text-xl text-white" />
+          <p className="text-lg font-semibold text-white">{result}</p>
         </div>
 
         {/* Notifications */}
         <div className="relative cursor-pointer" ref={notificationsRef}>
-          <IoMdNotifications
-            className="text-3xl text-white"
-            onClick={toggleNotifications}
-          />
-          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-            {notifications.length}
-          </span>
+          <div className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            <IoMdNotifications
+              className="text-3xl text-gray-700"
+              onClick={toggleNotifications}
+            />
+            {notifications.length > 0 && (
+              <span className="absolute top-1 right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                {notifications.length}
+              </span>
+            )}
+          </div>
 
           {notificationsOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-2 z-50">
-              <div className="px-4 py-2 text-gray-700 font-semibold border-b">
+            <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100">
+              <div className="px-4 py-3 text-gray-800 font-semibold border-b border-gray-200">
                 Notifications
               </div>
-              <ul className="text-sm text-gray-600">
+              <ul className="text-sm text-gray-600 max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <li className="px-4 py-2 text-center text-gray-500">
+                  <li className="px-4 py-6 text-center text-gray-500">
                     No new notifications
                   </li>
                 ) : (
                   notifications.map((notification, index) => (
                     <li
                       key={index}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 border-b border-gray-100 last:border-b-0"
                     >
                       <Link href="/testselection">{notification}</Link>
                     </li>
@@ -227,28 +154,28 @@ const NavBar = () => {
           <img
             src="neet720_logo.jpg"
             alt="Profile"
-            className="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer"
+            className="w-10 h-10 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-teal-400 transition-colors duration-200"
             onClick={toggleProfileMenu}
           />
 
           {profileMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+            <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100">
               <button
                 onClick={() => router.push("/personaldata")}
-                className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full"
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 w-full transition-colors duration-150 font-medium"
               >
-                <MdAccountCircle className="mr-2 text-xl" />
+                <MdAccountCircle className="mr-3 text-xl text-teal-500" />
                 Personal Data
               </button>
+              <div className="border-t border-gray-100 my-1"></div>
               <button
                 onClick={() => {
                   localStorage.removeItem("authToken");
                   router.replace("/login");
-                }
-                }
-                className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full"
+                }}
+                className="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 w-full transition-colors duration-150 font-medium"
               >
-                <MdLogout className="mr-2 text-xl" />
+                <MdLogout className="mr-3 text-xl" />
                 Log Out
               </button>
             </div>

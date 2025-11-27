@@ -12,7 +12,7 @@ const testimonials = [
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at massa sit amet nisi blandit vehicula adipiscing elit.",
   },
   {
-    name: "John Doe",
+    name: "Akshat Kumar",
     role: "Software Engineer",
     image: "/student2.png",
     feedback:
