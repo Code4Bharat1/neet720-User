@@ -155,18 +155,31 @@ const Hero = () => {
               </div>
               
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                {dashboardStats.map((stat, i) => {
-                  const StatIcon = stat.icon;
-                  return (
-                    <div key={i} className="text-center p-4 bg-gradient-to-br from-teal-50 to-white rounded-2xl border border-teal-100 hover:scale-105 transition-transform cursor-pointer">
-                      <StatIcon className="w-5 h-5 text-teal-500 mx-auto mb-2" />
-                      <div className="text-xl font-bold text-teal-600">{stat.value}</div>
-                      <div className="text-xs text-gray-500">{stat.label}</div>
-                    </div>
-                  );
-                })}
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+  {dashboardStats.map((stat, i) => {
+    const StatIcon = stat.icon;
+    return (
+      <div
+        key={i}
+        className="text-center p-4 bg-gradient-to-br from-teal-50 to-white 
+                   rounded-2xl border border-teal-100 
+                   hover:scale-105 transition-transform 
+                   cursor-pointer w-full"
+      >
+        <StatIcon className="w-5 h-5 text-teal-500 mx-auto mb-2" />
+
+        <div className="text-xl sm:text-2xl font-bold text-teal-600">
+          {stat.value}
+        </div>
+
+        <div className="text-xs sm:text-sm text-gray-500">
+          {stat.label}
+        </div>
+      </div>
+    );
+  })}
+</div>
+
               
               {/* Chart */}
               {/* <div className="h-40 bg-gradient-to-br from-slate-50 to-teal-50 rounded-2xl p-4 relative overflow-hidden">
