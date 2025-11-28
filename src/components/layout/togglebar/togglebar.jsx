@@ -12,8 +12,10 @@ import {
   FaCookie,
   FaBook,
   FaTablets,
+
 } from "react-icons/fa";
 import { BookText } from "lucide-react";
+import { MdAccountCircle } from "react-icons/md";
 import { RiGeminiFill } from "react-icons/ri";
 import axios from "axios";
 
@@ -115,7 +117,7 @@ const ToggleBar = () => {
   const toggleProfileMenu = () => {
     setProfileMenu(!profileMenu);
   };
-// const profileRef = useRef(null);
+  // const profileRef = useRef(null);
 
   return (
     <div className="fixed top-0 w-full z-50 md:hidden bg-white shadow-2xl">
@@ -133,14 +135,10 @@ const ToggleBar = () => {
           {/* Profile */}
           <div className="relative" ref={profileRef}>
             <div
-              className="w-8 h-8 rounded-full overflow-hidden cursor-pointer"
               onClick={toggleProfileMenu}
+              className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-gray-300 cursor-pointer hover:border-teal-400 transition-colors duration-200"
             >
-              <img
-                src={"/neet720_logo.jpg" || profileImage}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
+              <MdAccountCircle className="text-4xl text-gray-700" />
             </div>
 
             {/* Profile Dropdown */}
@@ -148,7 +146,7 @@ const ToggleBar = () => {
               <div
                 ref={profileRef}
                 className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border"
-              > 
+              >
                 <button
                   onClick={() => {
                     router.push("/personaldata");

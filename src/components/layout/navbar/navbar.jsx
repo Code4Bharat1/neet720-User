@@ -151,12 +151,12 @@ const NavBar = () => {
 
         {/* Profile Dropdown */}
         <div className="relative" ref={profileRef}>
-          <img
-            src="neet720_logo.jpg"
-            alt="Profile"
-            className="w-10 h-10 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-teal-400 transition-colors duration-200"
+          <div
             onClick={toggleProfileMenu}
-          />
+            className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-gray-300 cursor-pointer hover:border-teal-400 transition-colors duration-200"
+          >
+            <MdAccountCircle className="text-4xl text-gray-700" />
+          </div>
 
           {profileMenu && (
             <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100">
