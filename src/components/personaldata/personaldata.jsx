@@ -9,6 +9,37 @@ import toast from "react-hot-toast";
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 console.log("API base URL =>", apiBaseUrl);
 
+const INDIAN_STATES = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal"
+];
+
 const PersonalData = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -23,7 +54,7 @@ const PersonalData = () => {
     targetYear: "",
     domicileState: "",
     mobileNumber: "",
-    fullAddress: "",
+    pincode: "",
   });
 
   const [profileImage, setProfileImage] = useState("/profile.jpg");
@@ -56,7 +87,7 @@ const PersonalData = () => {
             targetYear: userData.targetYear || "",
             domicileState: userData.domicileState || "",
             mobileNumber: userData.mobileNumber || "",
-            fullAddress: userData.fullAddress || "",
+            pincode: userData.pincode || "",
           });
 
           setProfileImage(userData.profileImage || "/profile.jpg");
@@ -129,6 +160,13 @@ const PersonalData = () => {
       return;
     }
 
+    const pincodeRegex = /^\d{6}$/;
+    if (formData.pincode && !pincodeRegex.test(formData.pincode)) {
+      toast.error("Please enter a valid 6-digit pincode.");
+      setIsUpdating(false);
+      return;
+    }
+
     try {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) {
@@ -168,7 +206,7 @@ const PersonalData = () => {
         mobileNumber: formData.mobileNumber,
         gender: formData.gender,
         emailAddress: formData.emailAddress,
-        fullAddress: formData.fullAddress,
+        pincode: formData.pincode,
       };
 
       const response = await axios.post(
@@ -278,7 +316,6 @@ const PersonalData = () => {
                 <div className="text-center sm:text-left mt-4 sm:mt-0">
                   <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 flex items-center justify-center sm:justify-start gap-2">
                    Dr. {formData.firstName} {formData.lastName}
-                    {/* <span className="text-2xl">👨🏻‍🦱</span> */}
                   </h2>
                   <p className="text-gray-600 text-sm md:text-base mt-1 flex items-center justify-center sm:justify-start gap-2">
                     <Mail className="w-4 h-4 text-teal-500" />
@@ -388,7 +425,6 @@ const PersonalData = () => {
                   { value: "", label: "Select gender" },
                   { value: "Male", label: "Male" },
                   { value: "Female", label: "Female" },
-                  { value: "Other", label: "Other" },
                 ]}
               />
 
@@ -413,15 +449,17 @@ const PersonalData = () => {
                 icon={<Award className="w-5 h-5 text-teal-500" />}
               />
 
-              <InputField
+              <SelectField
                 label="State (Domicile)"
                 name="domicileState"
-                type="text"
-                placeholder="Maharashtra"
                 value={formData.domicileState}
                 onChange={handleChange}
                 isEditable={isEditable}
                 icon={<MapPin className="w-5 h-5 text-teal-500" />}
+                options={[
+                  { value: "", label: "Select state" },
+                  ...INDIAN_STATES.map(state => ({ value: state, label: state }))
+                ]}
               />
 
               <InputField
@@ -434,24 +472,17 @@ const PersonalData = () => {
                 isEditable={isEditable}
                 icon={<Phone className="w-5 h-5 text-teal-500" />}
               />
-            </div>
 
-            {/* Address Section */}
-            <div className="mt-8">
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-6 h-6 text-teal-600" />
-                <div>
-                  <h2 className="text-lg md:text-xl font-bold text-gray-800">Address</h2>
-                  <p className="text-sm text-gray-500">Your current domicile</p>
-                </div>
-              </div>
-              <TextAreaField
-                label="Full Address"
-                name="fullAddress"
-                placeholder="Enter your full address"
-                value={formData.fullAddress}
+              <InputField
+                label="Pincode"
+                name="pincode"
+                type="text"
+                placeholder="400001"
+                value={formData.pincode}
                 onChange={handleChange}
                 isEditable={isEditable}
+                icon={<MapPin className="w-5 h-5 text-teal-500" />}
+                maxLength={6}
               />
             </div>
           </form>
@@ -535,7 +566,7 @@ const PersonalData = () => {
   );
 };
 
-const InputField = ({ label, name, type, placeholder, value, onChange, isEditable, icon }) => (
+const InputField = ({ label, name, type, placeholder, value, onChange, isEditable, icon, maxLength }) => (
   <div>
     <label className="block mb-2 text-sm font-semibold text-gray-800 flex items-center gap-2">
       {icon}
@@ -548,6 +579,7 @@ const InputField = ({ label, name, type, placeholder, value, onChange, isEditabl
       value={value}
       onChange={onChange}
       disabled={!isEditable}
+      maxLength={maxLength}
       className="bg-gray-50 border-2 border-teal-200 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 block w-full p-3 disabled:bg-gray-100 disabled:text-gray-600 transition-all duration-200"
     />
   </div>
@@ -572,21 +604,6 @@ const SelectField = ({ label, name, value, onChange, isEditable, icon, options }
         </option>
       ))}
     </select>
-  </div>
-);
-
-const TextAreaField = ({ label, name, placeholder, value, onChange, isEditable }) => (
-  <div>
-    <label className="block mb-2 text-sm font-semibold text-gray-800">{label}</label>
-    <textarea
-      name={name}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      disabled={!isEditable}
-      rows={4}
-      className="bg-gray-50 border-2 border-teal-200 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 block w-full p-3 disabled:bg-gray-100 disabled:text-gray-600 transition-all duration-200 resize-none"
-    />
   </div>
 );
 

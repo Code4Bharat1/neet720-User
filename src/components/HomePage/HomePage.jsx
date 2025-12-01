@@ -31,7 +31,7 @@ const ScrollToTop = () => {
 // Hero Section
 const Hero = () => {
   const [text, setText] = useState('');
-  const fullText = 'Crack NEET with Confidence Using AI';
+  const fullText = ' Crack NEET with Confidence Using AI';
   
   useEffect(() => {
     let i = 0;
@@ -77,7 +77,7 @@ const Hero = () => {
             
             {/* Heading */}
             <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Best NEET Preparation Platform – 
+              Best NEET Preparation Platform –  
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
                 {text}
                 <span className="animate-pulse">|</span>
@@ -367,7 +367,8 @@ const Pricing = () => {
   const plans = [
     { 
       name: 'Pro', 
-      price: annual ? '₹1825' : '₹349', 
+      price: annual ? '₹1,825' : '₹349',
+      originalPrice: annual ? '₹4,188' : null,
       period: annual ? '/year' : '/month', 
       desc: 'Everything you need', 
       popular: true, 
@@ -375,11 +376,18 @@ const Pricing = () => {
     },
     { 
       name: 'Institute', 
-      price: 'Custom', 
+      price: 'Custom',
+      originalPrice: null,
       period: '',
-      desc: 'For coaching centers', 
+      desc: 'Designed for coaching centers and junior colleges', 
       popular: false,
-      features: [ 'Your Institute’s & College Logo & Colors','All Pro features', 'Multi-student access', 'Admin dashboard', 'Dedicated support'] 
+      features: [
+        'Personalized branding with your institute\'s or organization\'s logo and colors',
+        'All Pro features included', 
+        'Multi-student access', 
+        'Admin dashboard', 
+        'Dedicated support'
+      ] 
     }
   ];
 
@@ -388,7 +396,7 @@ const Pricing = () => {
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-12">
           <span className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-             Simple Pricing
+            💎 Simple Pricing
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Choose your plan
@@ -407,7 +415,7 @@ const Pricing = () => {
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${annual ? 'bg-teal-600 text-white shadow' : 'text-gray-600 hover:text-gray-900'}`}
             >
               Yearly
-              <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">Save 20%</span>
+              <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">Save 57%</span>
             </button>
           </div>
         </div>
@@ -433,23 +441,38 @@ const Pricing = () => {
               <p className={`text-sm mb-4 ${plan.popular ? 'text-teal-100' : 'text-gray-500'}`}>
                 {plan.desc}
               </p>
+              
+              {/* E-commerce style pricing */}
               <div className="mb-6">
-                <span className={`text-4xl font-bold ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
-                  {plan.price}
-                </span>
-                {plan.period && (
-                  <span className={`text-sm ${plan.popular ? 'text-teal-100' : 'text-gray-500'}`}>
-                    {plan.period}
-                  </span>
+                {plan.originalPrice && (
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg line-through opacity-70">
+                      {plan.originalPrice}
+                    </span>
+                    <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded">
+                      57% OFF
+                    </span>
+                  </div>
                 )}
+                <div>
+                  <span className={`text-4xl font-bold ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
+                    {plan.price}
+                  </span>
+                  {plan.period && (
+                    <span className={`text-sm ml-1 ${plan.popular ? 'text-teal-100' : 'text-gray-500'}`}>
+                      {plan.period}
+                    </span>
+                  )}
+                </div>
               </div>
+              
               <ul className="space-y-4 mb-8">
                 {plan.features.map((f, j) => (
-                  <li key={j} className="flex items-center gap-3 text-sm">
-                    <div className={`w-5 h-5 rounded-full flex items-center justify-center ${plan.popular ? 'bg-white/20' : 'bg-teal-100'}`}>
+                  <li key={j} className="flex items-start gap-3 text-sm">
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${plan.popular ? 'bg-white/20' : 'bg-teal-100'}`}>
                       <Check className={`w-3 h-3 ${plan.popular ? 'text-white' : 'text-teal-600'}`} />
                     </div>
-                    {f}
+                    <span>{f}</span>
                   </li>
                 ))}
               </ul>
@@ -610,7 +633,7 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: FaWhatsapp, href: 'https://wa.me/919321625553', gradient: 'from-green-400 to-green-600' },
+    { icon: FaWhatsapp, href: 'https://wa.me/919152601933', gradient: 'from-green-400 to-green-600' },
     { icon: FaInstagram, href: '#', gradient: 'from-pink-500 to-purple-600' },
     { icon: FaFacebookF, href: '#', gradient: 'from-blue-500 to-blue-700' }
   ];
@@ -659,7 +682,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-gray-600 mb-6">
               <li className="flex items-center justify-center md:justify-start gap-2">
                 <Phone className="w-4 h-4 text-teal-600" />
-                <span>+91-98676-07406</span>
+                <span>+91-9152601933</span>
               </li>
               <li className="flex items-center justify-center md:justify-start gap-2">
                 <Mail className="w-4 h-4 text-teal-600" />
@@ -690,7 +713,7 @@ const Footer = () => {
               })}
             </div>
             <p className="text-xs text-gray-400 mt-4">
-              Support available all 7 days - 10 AM - 7 PM IST
+              Support available all 7 days - 10 AM - 8 PM IST
             </p>
           </div>
         </div>
