@@ -240,44 +240,86 @@
 
 // // export default Login;
 
-// "use client";
-// import { useState, useEffect } from "react";
-// import axios from "axios";
-// import { useRouter } from "next/navigation";
-// import Image from "next/image";
-// import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineMail, AiOutlineLock } from "react-icons/ai";
-// import toast from "react-hot-toast";
 
-// const Login = () => {
+// "use client";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import Image from "next/image";
+// import { useRouter } from "next/navigation";
+// import toast from "react-hot-toast";
+// import {
+//   AiOutlineEye,
+//   AiOutlineEyeInvisible,
+//   AiOutlineMail,
+//   AiOutlineLock,
+// } from "react-icons/ai";
+
+// export default function Login() {
 //   const [formData, setFormData] = useState({
 //     loginId: "",
 //     password: "",
 //   });
 //   const [showPassword, setShowPassword] = useState(false);
 //   const [loading, setLoading] = useState(false);
+
 //   const router = useRouter();
 
-//   const handleChange = (e) => {
+//   const handleChange = (e) =>
 //     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+//   /** ---------------- GOOGLE LOGIN SCRIPT LOADER ----------------**/
+//   useEffect(() => {
+//     const script = document.createElement("script");
+//     script.src = "https://accounts.google.com/gsi/client";
+//     script.async = true;
+//     script.defer = true;
+
+//     script.onload = () => {
+//       window.google?.accounts.id.initialize({
+//         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+//         callback: handleGoogleResponse,
+//       });
+
+//       window.google?.accounts.id.renderButton(
+//         document.getElementById("googleLoginButton"),
+//         {
+//           theme: "outline",
+//           size: "large",
+//           width: "100%",
+//         }
+//       );
+//     };
+
+//     document.body.appendChild(script);
+//   }, []);
+
+//   /** ---------------- GOOGLE LOGIN RESPONSE HANDLER ----------------**/
+//   const handleGoogleResponse = async (googleResponse) => {
+//     try {
+//       const backendRes = await axios.post(
+//         `${process.env.NEXT_PUBLIC_API_BASE_URL}/students/google-login`,
+//         {
+//           credential: googleResponse.credential,
+//         }
+//       );
+
+//       const token = backendRes.data.token;
+//       localStorage.setItem("authToken", token);
+
+//       toast.success("Login Successful!");
+//       router.replace("/dashboard");
+//     } catch (error) {
+//       console.error(error);
+//       toast.error("Google login failed. Try again.");
+//     }
 //   };
 
+//   /** ---------------- NORMAL LOGIN SUBMIT ----------------**/
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 
-//     if (!formData.loginId.trim()) {
-//       toast.error("Please enter your Email or Mobile Number", {
-//         id: "login-error",
-//         duration: 2000,
-//       });
-//       return;
-//     }
-
-//     if (!formData.password.trim()) {
-//       toast.error("Please enter your Password", {
-//         id: "login-error",
-//         duration: 2000,
-//       });
-//       return;
+//     if (!formData.loginId || !formData.password) {
+//       return toast.error("Email/Mobile & Password required");
 //     }
 
 //     setLoading(true);
@@ -287,244 +329,118 @@
 //       const isMobile = /^[0-9]{10}$/.test(formData.loginId);
 
 //       const payload = { password: formData.password };
+//       if (isEmail) payload.emailAddress = formData.loginId;
+//       else if (isMobile) payload.mobileNumber = formData.loginId;
+//       else return toast.error("Invalid email or mobile number");
 
-//       if (isEmail) {
-//         payload.emailAddress = formData.loginId;
-//       } else if (isMobile) {
-//         payload.mobileNumber = formData.loginId;
-//       } else {
-//         toast.error("Please enter a valid email or 10-digit mobile number", {
-//           id: "login-error",
-//           duration: 2000,
-//         });
-//         setLoading(false);
-//         return;
-//       }
-
-//       const response = await axios.post(
+//       const res = await axios.post(
 //         `${process.env.NEXT_PUBLIC_API_BASE_URL}/students/login`,
 //         payload
 //       );
 
-//       const token = response?.data?.token;
+//       localStorage.setItem("authToken", res.data.token);
 
-//       if (!token || typeof token !== "string" || token.trim() === "") {
-//         toast.error("Invalid email or password", {
-//           id: "login-error",
-//           duration: 2000,
-//         });
-//         setLoading(false);
-//         return;
-//       }
-
-//       localStorage.clear();
-//       localStorage.setItem("authToken", token);
-
-//       toast.success("✅ Login Successfully!", {
-//         id: "login-success",
-//         duration: 3000,
-//       });
-
+//       toast.success("Login Successful!");
 //       router.replace("/dashboard");
 //     } catch (err) {
-//       const errorMessage =
-//         err.response?.data?.message ||
-//         (err.response?.status === 401
-//           ? "Invalid email or password"
-//           : "Failed to login. Please try again.");
-
-//       toast.error(errorMessage, {
-//         id: "login-error",
-//         duration: 2500,
-//       });
+//       toast.error(err.response?.data?.message || "Login failed");
 //     } finally {
 //       setLoading(false);
 //     }
 //   };
 
 //   return (
-//     <div className="flex flex-wrap bg-gradient-to-br from-teal-400 via-cyan-400 to-blue-400 min-h-screen relative overflow-hidden">
-//       {/* Animated Background Circles */}
-//       <div className="absolute top-0 left-0 w-96 h-96 bg-teal-300/30 rounded-full blur-3xl animate-pulse"></div>
-//       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-
-//       {/* Left Section */}
-//       <div className="hidden md:flex md:w-[40%] items-center justify-center relative z-10">
-//         <div className="bg-white/20 backdrop-blur-lg p-12 rounded-3xl shadow-2xl border border-white/30">
-//           <Image
-//             src="/neet720_logo.jpg"
-//             alt="Neet720 Logo"
-//             width={300}
-//             height={200}
-//             className="object-contain drop-shadow-2xl"
-//           />
-//         </div>
-//       </div>
-
-//       {/* Right Section */}
-//       <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white/95 backdrop-blur-xl p-8 md:rounded-l-3xl shadow-2xl relative z-10">
-//         {/* Logo for Mobile */}
-//         <div className="md:hidden flex justify-center mb-8">
-//           <div className="bg-gradient-to-br from-teal-400 to-cyan-400 p-4 rounded-2xl shadow-xl">
-//             <Image
-//               src="/neet720_logo.jpg"
-//               alt="neet720Logo"
-//               width={160}
-//               height={60}
-//               className="object-contain"
-//             />
-//           </div>
+//     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+//       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+//         <div className="flex justify-center mb-6">
+//           <Image src="/logo.png" width={130} height={130} alt="Logo" />
 //         </div>
 
-//         {/* Heading */}
-//         <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-400 to-cyan-500 bg-clip-text text-transparent mb-2 text-center">
-//           Welcome Back
-//         </h2>
+//         <h2 className="text-2xl font-bold mb-3">Welcome Back</h2>
 
-//         <p className="text-gray-600 text-base md:text-lg mb-8 text-center font-medium">
-//           Login to continue your journey
-//         </p>
-
-//         <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md">
-//           {/* Login ID Input */}
+//         <form onSubmit={handleSubmit} className="space-y-5">
+//           {/* Email */}
 //           <div>
-//             <label
-//               htmlFor="loginId"
-//               className="block text-sm font-bold text-gray-700 mb-2"
-//             >
-//               Email Address or Mobile Number
-//             </label>
-//             <div className="relative group">
-//               <AiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-400 text-xl group-focus-within:text-teal-500 transition-colors" />
+//             <label className="text-sm font-semibold">Email or Mobile</label>
+//             <div className="relative">
+//               <AiOutlineMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
 //               <input
 //                 type="text"
 //                 name="loginId"
-//                 id="loginId"
 //                 value={formData.loginId}
 //                 onChange={handleChange}
-//                 required
-//                 className="pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl w-full focus:outline-none focus:border-teal-400 focus:ring-4 focus:ring-teal-400/20 transition-all text-gray-900 placeholder:text-gray-400"
-//                 placeholder="Enter your email or mobile number"
+//                 className="w-full pl-10 pr-3 py-3 border rounded-lg bg-gray-50"
+//                 placeholder="student@example.com / 9876543210"
 //               />
 //             </div>
 //           </div>
 
-//           {/* Password Input */}
+//           {/* Password */}
 //           <div>
-//             <label
-//               htmlFor="password"
-//               className="block text-sm font-bold text-gray-700 mb-2"
-//             >
-//               Password
-//             </label>
-//             <div className="relative group">
-//               <AiOutlineLock className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-400 text-xl group-focus-within:text-teal-500 transition-colors" />
+//             <label className="text-sm font-semibold">Password</label>
+//             <div className="relative">
+//               <AiOutlineLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
 //               <input
 //                 type={showPassword ? "text" : "password"}
 //                 name="password"
-//                 id="password"
 //                 value={formData.password}
 //                 onChange={handleChange}
-//                 required
-//                 className="pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl w-full focus:outline-none focus:border-teal-400 focus:ring-4 focus:ring-teal-400/20 transition-all text-gray-900 placeholder:text-gray-400"
-//                 placeholder="Enter your password"
+//                 className="w-full pl-10 pr-10 py-3 border rounded-lg bg-gray-50"
+//                 placeholder="********"
 //               />
-//               <button
-//                 type="button"
-//                 onClick={() => setShowPassword((prev) => !prev)}
-//                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-teal-500 transition-colors"
+//               <span
+//                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+//                 onClick={() => setShowPassword(!showPassword)}
 //               >
 //                 {showPassword ? (
-//                   <AiOutlineEye size={20} />
+//                   <AiOutlineEyeInvisible />
 //                 ) : (
-//                   <AiOutlineEyeInvisible size={20} />
+//                   <AiOutlineEye />
 //                 )}
-//               </button>
+//               </span>
 //             </div>
-//           </div>
-
-//           {/* Forgot Password */}
-//           <div className="flex items-center justify-end">
-//             <button
-//               type="button"
-//               onClick={() => router.push("/forgotpassword")}
-//               className="text-sm font-semibold text-teal-500 hover:text-teal-600 hover:underline transition-colors"
-//             >
-//               Forgot Password?
-//             </button>
 //           </div>
 
 //           {/* Login Button */}
 //           <button
 //             type="submit"
 //             disabled={loading}
-//             className="w-full py-4 bg-gradient-to-r from-teal-400 to-cyan-400 text-white font-bold text-lg rounded-xl hover:from-teal-500 hover:to-cyan-500 focus:outline-none focus:ring-4 focus:ring-teal-400/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-teal-400/30 hover:shadow-2xl hover:shadow-teal-400/40 hover:scale-[1.02] active:scale-[0.98]"
+//             className="w-full py-3 bg-teal-500 text-white font-semibold rounded-lg"
 //           >
-//             {loading ? (
-//               <span className="flex items-center justify-center gap-2">
-//                 <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-//                   <circle
-//                     className="opacity-25"
-//                     cx="12"
-//                     cy="12"
-//                     r="10"
-//                     stroke="currentColor"
-//                     strokeWidth="4"
-//                     fill="none"
-//                   ></circle>
-//                   <path
-//                     className="opacity-75"
-//                     fill="currentColor"
-//                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-//                   ></path>
-//                 </svg>
-//                 Logging in...
-//               </span>
-//             ) : (
-//               "Log In"
-//             )}
+//             {loading ? "Logging in..." : "Login"}
 //           </button>
 //         </form>
 
-//         {/* Sign Up Redirect */}
-//         <div className="mt-8 text-center">
-//           <p className="text-sm text-gray-600 font-medium">
-//             Don't have an account?{" "}
-//             <button
-//               onClick={() => router.push("/signup")}
-//               className="text-teal-500 font-bold hover:text-teal-600 hover:underline transition-colors"
-//             >
-//               Sign Up
-//             </button>
-//           </p>
-//         </div>
+//         {/* OR Divider */}
+//         <div className="text-center text-gray-500 my-4 text-sm">OR</div>
 
-//         {/* Security Badge */}
-//         <div className="mt-6 flex items-center gap-2 text-xs text-gray-500">
-//           <svg
-//             className="w-4 h-4 text-teal-400"
-//             fill="currentColor"
-//             viewBox="0 0 20 20"
+//         {/* GOOGLE LOGIN BUTTON */}
+//         <div id="googleLoginButton"></div>
+
+//         <p className="text-center text-sm mt-4">
+//           New user?{" "}
+//           <span
+//             className="text-teal-500 cursor-pointer"
+//             onClick={() => router.push("/signup")}
 //           >
-//             <path
-//               fillRule="evenodd"
-//               d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-//               clipRule="evenodd"
-//             />
-//           </svg>
-//           <span>Secure login with encrypted connection</span>
-//         </div>
+//             Create an account
+//           </span>
+//         </p>
 //       </div>
 //     </div>
 //   );
-// };
+// }
 
-// export default Login;
+
+
+
+
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
@@ -532,40 +448,70 @@ import {
   AiOutlineLock,
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import toast from "react-hot-toast";
 
-const Login = () => {
+export default function Login() {
   const [formData, setFormData] = useState({
     loginId: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  /** ---------------- GOOGLE LOGIN SCRIPT LOADER ---------------- **/
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      window.google?.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+      });
+
+      window.google?.accounts.id.renderButton(
+        document.getElementById("googleLoginButton"),
+        {
+          theme: "outline",
+          size: "large",
+          width: "100%",
+        }
+      );
+    };
+
+    document.body.appendChild(script);
+  }, []);
+
+  /** ---------------- GOOGLE LOGIN RESPONSE HANDLER ---------------- **/
+  const handleGoogleResponse = async (googleResponse) => {
+    try {
+      const backendRes = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/students/google-login`,
+        { credential: googleResponse.credential }
+      );
+
+      const token = backendRes.data.token;
+      localStorage.setItem("authToken", token);
+
+      toast.success("Login Successful!");
+      router.replace("/dashboard");
+    } catch (error) {
+      toast.error("Google login failed. Try again.");
+    }
   };
 
+  /** ---------------- NORMAL LOGIN SUBMIT ---------------- **/
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.loginId.trim()) {
-      toast.error("Please enter your Email or Mobile Number", {
-        id: "login-error",
-        duration: 2000,
-      });
-      return;
-    }
-
-    if (!formData.password.trim()) {
-      toast.error("Please enter your Password", {
-        id: "login-error",
-        duration: 2000,
-      });
-      return;
-    }
+    if (!formData.loginId.trim()) return toast.error("Email/Mobile required");
+    if (!formData.password.trim()) return toast.error("Password required");
 
     setLoading(true);
 
@@ -575,55 +521,21 @@ const Login = () => {
 
       const payload = { password: formData.password };
 
-      if (isEmail) {
-        payload.emailAddress = formData.loginId;
-      } else if (isMobile) {
-        payload.mobileNumber = formData.loginId;
-      } else {
-        toast.error("Please enter a valid email or 10-digit mobile number", {
-          id: "login-error",
-          duration: 2000,
-        });
-        setLoading(false);
-        return;
-      }
+      if (isEmail) payload.emailAddress = formData.loginId;
+      else if (isMobile) payload.mobileNumber = formData.loginId;
+      else return toast.error("Invalid email or mobile number");
 
-      const response = await axios.post(
+      const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/students/login`,
         payload
       );
 
-      const token = response?.data?.token;
+      localStorage.setItem("authToken", res.data.token);
 
-      if (!token || typeof token !== "string" || token.trim() === "") {
-        toast.error("Invalid email or password", {
-          id: "login-error",
-          duration: 2000,
-        });
-        setLoading(false);
-        return;
-      }
-
-      localStorage.clear();
-      localStorage.setItem("authToken", token);
-
-      toast.success("✅ Login Successfully!", {
-        id: "login-success",
-        duration: 3000,
-      });
-
+      toast.success("Login Successful!");
       router.replace("/dashboard");
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.message ||
-        (err.response?.status === 401
-          ? "Invalid email or password"
-          : "Failed to login. Please try again.");
-
-      toast.error(errorMessage, {
-        id: "login-error",
-        duration: 2500,
-      });
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -632,27 +544,16 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 overflow-hidden">
       <div className="w-full max-w-md">
-        {/* Card Container */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <Image
-                src="/logo.png"
-                alt="Profile"
-                width={120}
-                height={120}
-                className="w-full h-full object-cover"
-              />
-
-             
-            {/* <button
-              onClick={() => router.push("/dashboard")}
-              className="px-4 py-2  bg-teal-500 text-white text-xs font-semibold rounded-lg hover:bg-teal-600 transition-colors"
-            >
-              Student dashboard access
-            </button> */}
-            </div>
+          <div className="flex items-center justify-center mb-8">
+            <Image
+              src="/logo.png"
+              width={120}
+              height={120}
+              alt="Logo"
+              className="object-cover"
+            />
           </div>
 
           {/* Welcome Text */}
@@ -662,7 +563,7 @@ const Login = () => {
             </h2>
             <p className="text-sm text-gray-600 leading-relaxed">
               Login to continue your NEET journey with structured plans, mock
-              tests, and an AI coach by your side.
+              tests, and your AI coach.
             </p>
           </div>
 
@@ -686,8 +587,7 @@ const Login = () => {
                   value={formData.loginId}
                   onChange={handleChange}
                   className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all"
-                  placeholder="student@example.com"
-                  required
+                  placeholder="student@example.com / 9876543210"
                 />
               </div>
             </div>
@@ -711,11 +611,10 @@ const Login = () => {
                   onChange={handleChange}
                   className="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all"
                   placeholder="••••••••"
-                  required
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showPassword ? (
@@ -725,28 +624,6 @@ const Login = () => {
                   )}
                 </button>
               </div>
-            </div>
-
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-teal-500 focus:ring-teal-400 cursor-pointer"
-                />
-                <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                  Remember me
-                </span>
-              </label>
-              <button
-                type="button"
-                onClick={() => router.push("/forgotpassword")}
-                className="text-sm text-teal-500 font-semibold hover:text-teal-600 transition-colors"
-              >
-                Forgot password?
-              </button>
             </div>
 
             {/* Login Button */}
@@ -766,35 +643,24 @@ const Login = () => {
             <div className="flex-1 h-px bg-gray-200"></div>
           </div>
 
-          {/* Google Login */}
-          <button
-            type="button"
-            className="w-full py-3 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2"
-          >
-            <FcGoogle size={20} />
-            Login with Google
-          </button>
+          {/* Google Login UI + Script Button */}
+          <div id="googleLoginButton" className="w-full"></div>
 
-          {/* Sign Up Link */}
           <p className="text-center text-sm text-gray-600 mt-6">
             New to NEET720?{" "}
-            <button
+            <span
               onClick={() => router.push("/signup")}
-              className="text-teal-500 font-semibold hover:text-teal-600 hover:underline transition-colors"
+              className="text-teal-500 font-semibold hover:text-teal-600 hover:underline cursor-pointer"
             >
               Create an account
-            </button>
+            </span>
           </p>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-xs text-gray-500 mt-6">
-          By continuing, you agree to NEET720's Terms of Service and Privacy
-          Policy
+          By continuing, you agree to NEET720's Terms & Privacy Policy
         </p>
       </div>
     </div>
   );
-};
-
-export default Login;
+}
