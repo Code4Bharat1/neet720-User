@@ -433,8 +433,6 @@
 
 
 
-
-
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -598,9 +596,13 @@ export default function Login() {
                 <label className="text-sm font-semibold text-gray-700">
                   Password
                 </label>
-                <span className="text-xs text-gray-500">
-                  Minimum 8 characters
-                </span>
+                <button
+                  type="button"
+                  onClick={() => router.push("/forgotpassword")}
+                  className="text-xs text-teal-500 hover:text-teal-600 font-medium hover:underline transition-colors"
+                >
+                  Forgot password?
+                </button>
               </div>
               <div className="relative">
                 <AiOutlineLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />

@@ -451,6 +451,8 @@ const Practice = () => {
 };
 
 // Pricing Section
+
+
 const Pricing = () => {
   const [annual, setAnnual] = useState(true);
 
@@ -462,6 +464,7 @@ const Pricing = () => {
       period: annual ? "/year" : "/month",
       desc: "Everything you need",
       popular: true,
+      paymentLink: annual ? "https://rzp.io/rzp/83RBILJ" : "https://rzp.io/rzp/9Dz0oN7",
       features: [
         "Unlimited PYQs",
         "Full test library",
@@ -477,6 +480,7 @@ const Pricing = () => {
       period: "",
       desc: "Designed for coaching centers and junior colleges",
       popular: false,
+      paymentLink: "https://wa.me/919594430295?text=Hi,%20I'm%20interested%20in%20the%20Institute%20plan",
       features: [
         "Personalized branding with your institute's or organization's logo and colors",
         "All Pro features included",
@@ -492,7 +496,7 @@ const Pricing = () => {
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-12">
           <span className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-            💎 Simple Pricing
+            Simple Pricing
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Choose your plan
@@ -606,15 +610,18 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <button
-                className={`w-full py-4 rounded-xl font-semibold transition-all ${
+              <a
+                href={plan.paymentLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`block w-full py-4 rounded-xl font-semibold transition-all text-center ${
                   plan.popular
                     ? "bg-white text-teal-600 hover:bg-gray-100 shadow-lg"
                     : "bg-teal-600 text-white hover:bg-teal-700"
                 }`}
               >
                 {plan.price === "Custom" ? "Contact Sales" : "Start Free Trial"}
-              </button>
+              </a>
             </div>
           ))}
         </div>
@@ -622,6 +629,7 @@ const Pricing = () => {
     </section>
   );
 };
+
 
 // Testimonials
 const Testimonials = () => {

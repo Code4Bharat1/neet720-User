@@ -3,7 +3,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { AiOutlineSend } from 'react-icons/ai';
+import toast from 'react-hot-toast';
+import {
+  AiOutlineMail,
+  AiOutlineLock,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlinePhone,
+  AiOutlineKey,
+} from 'react-icons/ai';
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -15,12 +23,12 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   // UI state
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // API base URL from environment variables
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const isStrongPassword = (password) => {
     const regex =
@@ -28,238 +36,252 @@ const ForgotPassword = () => {
     return regex.test(password);
   };
 
-
   // Step 1: Send mobile number to request OTP
   const handleMobileSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
     setIsLoading(true);
 
     if (!mobileNumber) {
-      setError('Please enter your mobile number.');
+      toast.error('Please enter your mobile number.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!/^[0-9]{10}$/.test(mobileNumber)) {
+      toast.error('Please enter a valid 10-digit mobile number.');
       setIsLoading(false);
       return;
     }
 
     try {
-      // Send request to backend to send OTP to WhatsApp
       const response = await axios.post(`${apiBaseUrl}/students/forgot-password`, {
-        mobileNumber, // Use mobile number to send OTP
+        mobileNumber,
       });
 
       if (response.status === 200) {
-        setMessage('OTP sent to your WhatsApp for password reset.');
+        toast.success('OTP sent to your WhatsApp successfully!');
         setIsOtpSent(true);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred. Please try again.');
+      toast.error(err.response?.data?.message || 'An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Step 2: Reset Password by sending OTP and new password together
+  // Step 2: Reset Password
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
 
-    // Basic validation: Ensure all fields are filled out
     if (!otp || !newPassword || !confirmPassword) {
-      setError('Please fill out all fields: OTP, new password, and confirm password.');
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
+      toast.error('Please fill out all fields.');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
+      toast.error('Passwords do not match.');
       return;
     }
 
-    // Check password strength
     if (!isStrongPassword(newPassword)) {
-      setError(
-        'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+      toast.error(
+        'Password must be at least 8 characters with uppercase, lowercase, number, and special character.'
       );
       return;
     }
 
-
     try {
       const response = await axios.post(`${apiBaseUrl}/students/reset-password`, {
-        mobileNumber, // Mobile number for password reset
-        otp,          // OTP as a string
-        newPassword,  // New password field
+        mobileNumber,
+        otp,
+        newPassword,
       });
 
       if (response.status === 200) {
-        setMessage('Your password has been successfully reset.');
-        // Optionally, redirect to login after a short delay
+        toast.success('Password reset successfully!');
         setTimeout(() => {
           router.push('/login');
         }, 2000);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to reset the password. Please try again.');
+      toast.error(err.response?.data?.message || 'Failed to reset password. Please try again.');
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left Section */}
-      <div className="hidden md:flex md:w-[40%] bg-gradient-to-b from-[#0077B6] to-[#ADE8F4]  items-center justify-center">
-        <Image
-          src="/neet720_logo.jpg"
-          alt="Neet720 Logo"
-          width={300}
-          height={200}
-          className="object-contain"
-        />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 overflow-hidden">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10">
+          {/* Header */}
+          <div className="flex items-center justify-center mb-8">
+            <Image
+              src="/logo.png"
+              width={120}
+              height={120}
+              alt="Logo"
+              className="object-cover"
+            />
+          </div>
 
-      {/* Right Section */}
-      <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white p-6 md:rounded-l-3xl">
-        {/* Logo Section for Mobile */}
-        <div className="md:hidden flex justify-center mb-6">
-          <Image
-            src="/neet720_logo.jpg"
-            alt="Neet720 Logo"
-            width={160}
-            height={40}
-            className="object-contain"
-          />
-        </div>
+          {/* Title & Description */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {isOtpSent ? 'Reset Your Password' : 'Forgot Password?'}
+            </h2>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {isOtpSent
+                ? 'Enter the OTP sent to your WhatsApp and create a new password.'
+                : 'Enter your registered mobile number to receive an OTP via WhatsApp.'}
+            </p>
+          </div>
 
-        {/* Heading Section */}
-        <h2 className="text-center text-2xl md:text-3xl font-bold text-[#000] mb-4">
-          Forgot Your Password?
-        </h2>
-        {!isOtpSent && (
-          <p className="text-gray-600 text-center mb-6">
-            Enter your mobile number to receive an OTP for password reset via WhatsApp.
-          </p>
-        )}
-
-        {isOtpSent && (
-          <p className="text-gray-600 text-center mb-6">
-            Enter the OTP sent to your WhatsApp and reset your password.
-          </p>
-        )}
-
-        {/* Form Section */}
-        <form
-          onSubmit={isOtpSent ? handleResetPassword : handleMobileSubmit}
-          className="space-y-6 w-full md:w-full max-w-md"
-        >
-          {/* Mobile Number Field (only visible before OTP is sent) */}
-          {!isOtpSent && (
-            <div className="mb-6">
-              <label htmlFor="mobileNumber" className="block text-sm font-bold text-gray-700 mb-2">
-                Mobile Number
-              </label>
-              <input
-                type="text"
-                id="mobileNumber"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-                required
-                className="appearance-none rounded-md block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Enter Your Mobile Number"
-              />
-            </div>
-          )}
-
-          {/* OTP, New Password, and Confirm Password Fields (visible after OTP is sent) */}
-          {isOtpSent && (
-            <>
-              <div className="mb-6">
-                <label htmlFor="otp" className="block text-sm font-bold text-gray-700 mb-2">
-                  OTP
-                </label>
-                <input
-                  type="text"
-                  id="otp"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  required
-                  maxLength={6}
-                  className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Enter OTP"
-                />
-              </div>
-
-              <div className="mb-6">
-
-                <label htmlFor="newPassword" className="block text-sm font-bold text-gray-700 mb-2">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Enter New Password"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Password must include 8+ characters, uppercase, lowercase, number & special symbol.
-                </p>
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-700 mb-2">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Confirm New Password"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Error Message */}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          {/* Success Message */}
-          {message && <p className="text-green-500 text-sm">{message}</p>}
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className={`w-full py-3 bg-[#45A4CE] text-white font-semibold rounded-md hover:bg-[#3e9ec7] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all flex items-center justify-center ${isLoading && 'opacity-75'}`}
-            disabled={isLoading}
+          {/* Form */}
+          <form
+            onSubmit={isOtpSent ? handleResetPassword : handleMobileSubmit}
+            className="space-y-5"
           >
-            <AiOutlineSend className="text-lg mr-2" />
-            {isLoading
-              ? 'Sending...'
-              : isOtpSent
+            {/* Mobile Number Field */}
+            {!isOtpSent && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-semibold text-gray-700">
+                    Mobile Number
+                  </label>
+                  <span className="text-xs text-gray-500">10 digits</span>
+                </div>
+                <div className="relative">
+                  <AiOutlinePhone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                  <input
+                    type="text"
+                    value={mobileNumber}
+                    onChange={(e) => setMobileNumber(e.target.value)}
+                    maxLength={10}
+                    className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all"
+                    placeholder="9876543210"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* OTP Field */}
+            {isOtpSent && (
+              <>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-semibold text-gray-700">
+                      OTP
+                    </label>
+                    <span className="text-xs text-gray-500">6 digits</span>
+                  </div>
+                  <div className="relative">
+                    <AiOutlineKey className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                    <input
+                      type="text"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      maxLength={6}
+                      className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all"
+                      placeholder="Enter 6-digit OTP"
+                    />
+                  </div>
+                </div>
+
+                {/* New Password Field */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-semibold text-gray-700">
+                      New Password
+                    </label>
+                    <span className="text-xs text-gray-500">Strong password</span>
+                  </div>
+                  <div className="relative">
+                    <AiOutlineLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                    <input
+                      type={showNewPassword ? 'text' : 'password'}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {showNewPassword ? (
+                        <AiOutlineEye size={18} />
+                      ) : (
+                        <AiOutlineEyeInvisible size={18} />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1.5">
+                    Min 8 characters with uppercase, lowercase, number & special character
+                  </p>
+                </div>
+
+                {/* Confirm Password Field */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-semibold text-gray-700">
+                      Confirm Password
+                    </label>
+                    <span className="text-xs text-gray-500">Match above</span>
+                  </div>
+                  <div className="relative">
+                    <AiOutlineLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {showConfirmPassword ? (
+                        <AiOutlineEye size={18} />
+                      ) : (
+                        <AiOutlineEyeInvisible size={18} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 bg-teal-500 text-white font-semibold rounded-xl hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-500/30"
+            >
+              {isLoading
+                ? 'Processing...'
+                : isOtpSent
                 ? 'Reset Password'
                 : 'Send OTP'}
-          </button>
-        </form>
-
-        {/* Back to Login */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600 font-semibold">
-            Remember your password?{' '}
-            <button
-              onClick={() => router.push('/login')}
-              className="font-medium text-[#53ADD3] hover:text-[#3e9ec7] cursor-pointer"
-            >
-              Log in
             </button>
+          </form>
+
+          {/* Back to Login */}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Remember your password?{' '}
+            <span
+              onClick={() => router.push('/login')}
+              className="text-teal-500 font-semibold hover:text-teal-600 hover:underline cursor-pointer"
+            >
+              Back to Login
+            </span>
           </p>
         </div>
+
+        <p className="text-center text-xs text-gray-500 mt-6">
+          By continuing, you agree to NEET720's Terms & Privacy Policy
+        </p>
       </div>
     </div>
   );
