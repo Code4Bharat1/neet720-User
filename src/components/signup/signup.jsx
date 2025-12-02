@@ -1066,20 +1066,20 @@ const SignUpPage = () => {
           )}
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-6">
+          {/* <div className="flex items-center gap-4 my-6">
             <div className="flex-1 h-px bg-gray-200"></div>
             <span className="text-xs text-gray-500">or sign up using</span>
             <div className="flex-1 h-px bg-gray-200"></div>
-          </div>
+          </div> */}
 
           {/* Google Signup */}
-          <button
+          {/* <button
             type="button"
             className="w-full py-3 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2"
           >
             <FcGoogle size={20} />
             Sign up with Google
-          </button>
+          </button> */}
 
           {/* Login Link */}
           <p className="text-center text-sm text-gray-600 mt-6">
