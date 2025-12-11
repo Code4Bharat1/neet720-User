@@ -179,23 +179,55 @@ const QuizInterface = () => {
     }
   }, [currentQuestionIndex, questions])
 
+  // const fetchQuestions = async () => {
+  //   setLoading(true)
+  //   setError("")
+  //   try {
+  //     const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`, {
+  //       numberOfQuestions: numberOfQuestions,
+  //       difficulty: difficulty.toLowerCase(),
+  //       excludeIds: [],
+  //     })
+  //     setQuestions(res.data.questions)
+  //     console.log("Fetched questions:", res.data.questions)
+  //   } catch (err) {
+  //     setError("Failed to fetch questions")
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
+
   const fetchQuestions = async () => {
-    setLoading(true)
-    setError("")
-    try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`, {
+  setLoading(true)
+  setError("")
+
+  try {
+    const token = localStorage.getItem("authToken")
+
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`,
+      {
         numberOfQuestions: numberOfQuestions,
         difficulty: difficulty.toLowerCase(),
         excludeIds: [],
-      })
-      setQuestions(res.data.questions)
-      console.log("Fetched questions:", res.data.questions)
-    } catch (err) {
-      setError("Failed to fetch questions")
-    } finally {
-      setLoading(false)
-    }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅✅✅ REQUIRED
+        },
+      }
+    )
+
+    setQuestions(res.data.questions)
+    console.log("Fetched questions:", res.data.questions)
+  } catch (err) {
+    console.error("❌ Fetch Error:", err)
+    setError("Failed to fetch questions")
+  } finally {
+    setLoading(false)
   }
+}
+
 
   useEffect(() => {
   const handleKeyDown = (event) => {
@@ -213,32 +245,75 @@ const QuizInterface = () => {
   return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentQuestionIndex, questions.length]);
 
+  // const handleAddMoreQuestions = async (count = 5) => {
+  //   setAddingQuestions(true)
+  //   setError("")
+  //   try {
+  //     const usedIds = questions.map((q) => q.id)
+  //     const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`, {
+  //       numberOfQuestions: count,
+  //       difficulty,
+  //       excludeIds: usedIds,
+  //     })
+
+  //     const newQuestions = res.data.questions.filter((q) => !usedIds.includes(q.id))
+
+  //     if (newQuestions.length === 0) {
+  //       setNoMoreQuestions(true)
+  //       setError("No more unique questions available for this quiz.")
+  //     } else {
+  //       setQuestions((prev) => [...prev, ...newQuestions])
+  //       setNoMoreQuestions(false)
+  //     }
+  //   } catch (err) {
+  //     setError("Failed to add more questions")
+  //   } finally {
+  //     setAddingQuestions(false)
+  //   }
+  // }
+
+
   const handleAddMoreQuestions = async (count = 5) => {
-    setAddingQuestions(true)
-    setError("")
-    try {
-      const usedIds = questions.map((q) => q.id)
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`, {
+  setAddingQuestions(true)
+  setError("")
+
+  try {
+    const token = localStorage.getItem("authToken")
+    const usedIds = questions.map((q) => q.id)
+
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/questions`,
+      {
         numberOfQuestions: count,
         difficulty,
         excludeIds: usedIds,
-      })
-
-      const newQuestions = res.data.questions.filter((q) => !usedIds.includes(q.id))
-
-      if (newQuestions.length === 0) {
-        setNoMoreQuestions(true)
-        setError("No more unique questions available for this quiz.")
-      } else {
-        setQuestions((prev) => [...prev, ...newQuestions])
-        setNoMoreQuestions(false)
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅✅✅ REQUIRED
+        },
       }
-    } catch (err) {
-      setError("Failed to add more questions")
-    } finally {
-      setAddingQuestions(false)
+    )
+
+    const newQuestions = res.data.questions.filter(
+      (q) => !usedIds.includes(q.id)
+    )
+
+    if (newQuestions.length === 0) {
+      setNoMoreQuestions(true)
+      setError("No more unique questions available for this quiz.")
+    } else {
+      setQuestions((prev) => [...prev, ...newQuestions])
+      setNoMoreQuestions(false)
     }
+  } catch (err) {
+    console.error("❌ Add More Error:", err)
+    setError("Failed to add more questions")
+  } finally {
+    setAddingQuestions(false)
   }
+}
+
 
   const startBotThinking = () => {
     setBotThinking(true)
