@@ -1024,6 +1024,10 @@ const [isAdminStudent, setIsAdminStudent] = useState(false); // ✅ ADD THIS
   const [instituteName, setInstituteName] = useState("");
   const [instituteLogo, setInstituteLogo] = useState("");
 
+  const [isProUser, setIsProUser] = useState(false);
+const [daysLeft, setDaysLeft] = useState(null);
+
+
   // ✅ ✅ ✅ FIX 1: PUBLIC vs PRO sirf paymentVerified se decide hoga
 // useEffect(() => {
 //   const token = localStorage.getItem("authToken");
@@ -1049,6 +1053,31 @@ const [isAdminStudent, setIsAdminStudent] = useState(false); // ✅ ADD THIS
 
 // }, []);
 
+// useEffect(() => {
+//   const token = localStorage.getItem("authToken");
+//   if (!token) return;
+
+//   const decoded = jwtDecode(token);
+//   console.log("✅ SIDEBAR TOKEN:", decoded);
+
+//   // ✅ ADMIN STUDENT
+//   if (decoded?.addedByAdminId) {
+//     setIsAdminStudent(true);      // ✅ ADMIN FLAG
+//     setIsPublicStudent(false);   // ✅ NEVER LOCK
+//     return;
+//   }
+
+//   // ✅ PRO USER
+//   if (decoded?.paymentVerified === true) {
+//     setIsPublicStudent(false);   // ✅ PRO UNLOCK
+//     return;
+//   }
+
+//   // ✅ PUBLIC USER
+//   setIsPublicStudent(true);
+
+// }, []);
+
 useEffect(() => {
   const token = localStorage.getItem("authToken");
   if (!token) return;
@@ -1056,24 +1085,38 @@ useEffect(() => {
   const decoded = jwtDecode(token);
   console.log("✅ SIDEBAR TOKEN:", decoded);
 
-  // ✅ ADMIN STUDENT
+  // ADMIN
   if (decoded?.addedByAdminId) {
-    setIsAdminStudent(true);      // ✅ ADMIN FLAG
-    setIsPublicStudent(false);   // ✅ NEVER LOCK
+    setIsAdminStudent(true);
+    setIsPublicStudent(false);
+    setIsProUser(false);
     return;
   }
 
-  // ✅ PRO USER
+  // PRO USER
   if (decoded?.paymentVerified === true) {
-    setIsPublicStudent(false);   // ✅ PRO UNLOCK
+    setIsPublicStudent(false);
+    setIsProUser(true);
+
+    // ---- Subscription Countdown Logic ----
+    if (decoded?.subscriptionEnd) {
+      const today = new Date();
+      const expiry = new Date(decoded.subscriptionEnd);
+      const diff = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+
+      if (diff > 0 && diff <= 5) {
+        setDaysLeft(diff);    // show countdown
+      } else if (diff <= 0) {
+        setDaysLeft(0);       // expired
+      }
+    }
     return;
   }
 
-  // ✅ PUBLIC USER
+  // PUBLIC USER
   setIsPublicStudent(true);
-
+  setIsProUser(false);
 }, []);
-
 
 
   // ✅ ✅ ✅ FIX 2: Free usage + PRO unlimited logic
@@ -1274,6 +1317,20 @@ const adminOnlyPages = ['/notice', '/test-series', '/credits'];
             <p className="mt-2 text-[12px] font-semibold text-gray-700 text-center">
               {instituteName || "Institute Name"}
             </p>
+            {/* ⭐ PRO BADGE */}
+{isProUser && !isAdminStudent && (
+  <p className="mt-1 text-[11px] font-semibold text-teal-600 text-center">
+    ⭐ PRO Member
+  </p>
+)}
+
+{/* ⏳ Subscription Countdown */}
+{isProUser && daysLeft !== null && !isAdminStudent && (
+  <p className="text-[11px] text-red-500 font-semibold mt-1 text-center">
+    {daysLeft === 0 ? "Subscription Expired" : `${daysLeft} days left`}
+  </p>
+)}
+
           </div>
 
           <nav className="flex-1 px-3 py-6 space-y-6 overflow-y-auto scrollbar-hide">
