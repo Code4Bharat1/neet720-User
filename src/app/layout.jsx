@@ -1,8 +1,7 @@
 // ❌ NO "use client" here — RootLayout must be server component
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
-import ClientLayout from "./LP_clientLayout"; // Keep this client component
+import ClientLayout from "./LP_clientLayout"; // client component (contains Toaster & pageview)
 import Script from "next/script";
 
 // Fonts
@@ -28,38 +27,29 @@ export const metadata = {
   description:
     "NEET is the all-in-one NEET exam portal featuring AI-powered rank predictor, college predictor, test series, and performance analytics for NEET 2026.",
   keywords: [
-    "NEET",
+    "NEET720",
+    "NEET 720 marks",
+    "NEET 720/720",
+    "720 out of 720 in NEET",
+    "NEET 720 topper",
+    "Who scored 720 in NEET",
+    "How to score 720 in NEET",
+    "NEET perfect score 720",
+    "NEET 720 rank",
+    "NEET 720 strategy",
+    "NEET 720 full marks",
+    "NEET 720 achievers",
     "NEET 2026",
     "NEET mock test",
-    "NEET free mock test",
-    "best NEET mock test online",
-    "NEET test series",
-    "NEET online test series",
-    "NEET full syllabus mock test",
-    "NEET chapter-wise test",
-    "NEET chapter test free",
-    "NEET online practice",
-    "NEET previous year questions",
-    "NEET PYQ chapter wise",
-    "NEET NCERT based questions",
-    "NEET free study material",
-    "NEET rank predictor",
-    "NEET AIR predictor",
-    "NEET marks vs rank",
-    "NEET AI predictor",
-    "NEET college predictor",
-    "NEET cutoff 2026",
-    "NEET government college cutoff",
-    "NEET timetable for droppers",
-    "NEET study plan for 12th",
-    "how to prepare for NEET 2026",
-    "how to score 600+ in NEET",
-    "best NEET preparation website",
-    "NEET online learning platform",
-    "NEET performance analytics",
-    "NEET smart preparation",
-    "NEET720",
-    "NEET720 portal",
+    "How to score full marks in NEET",
+    "How many students scored 720 in NEET 2024",
+    "NEET perfect score strategy",
+    "NEET 720/720 preparation tips",
+    "Daily timetable to score 720 in NEET",
+    "Mistakes to avoid to score 720 in NEET",
+    "NEET topper study plan for 720",
+    "NEET 2026 topper marks",
+    "NEET 720 marks real stories",
   ],
 
   applicationName: "NEET720",
@@ -121,30 +111,26 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Google Analytics GA4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-FWW584RNVM"
+          strategy="afterInteractive"
+        />
 
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-FWW584RNVM');
+          `}
+        </Script>
 
-{/* Google Analytics GA4 */}
-<Script
-  src="https://www.googletagmanager.com/gtag/js?id=G-FWW584RNVM"
-  strategy="afterInteractive"
-/>
-
-<Script id="ga4-init" strategy="afterInteractive">
-  {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FWW584RNVM');
-  `}
-</Script>
-
-
-{/* AEO Schema */}
+        {/* AEO Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: `
-            {
+            __html: `{
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "NEET",
@@ -154,31 +140,13 @@ export default function RootLayout({ children }) {
                 "target": "https://neet720.com/search?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
-            }
-            `,
+            }`,
           }}
         />
-
-
-
       </head>
- 
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* Toasts */}
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          toastOptions={{
-            duration: 4000,
-            style: {
-              zIndex: 999999,
-              background: "#333",
-              color: "#fff",
-            },
-          }}
-        />
 
-        {/* Client-only wrapper */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Client-only wrapper (contains Toaster & pageview tracking) */}
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

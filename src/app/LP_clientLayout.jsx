@@ -4,15 +4,16 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { pageview } from "@/lib/gtag";   // ✅ ADD THIS
+import { pageview } from "@/lib/gtag";
+import { Toaster } from "react-hot-toast";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname() || "";
 
-  // ⭐ ADD THIS USEEFFECT FOR PAGEVIEW TRACKING
+  // Track route changes (pageview)
   useEffect(() => {
     if (!pathname) return;
-    pageview(pathname);   // Track route changes
+    pageview(pathname);
   }, [pathname]);
 
   const routesWithLayout = [
@@ -43,6 +44,20 @@ export default function ClientLayout({ children }) {
 
   return (
     <>
+      {/* Client-only Toaster (moved here from RootLayout) */}
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 4000,
+          style: {
+            zIndex: 999999,
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
+
       {showHeaderFooter && <Navbar />}
       {children}
       {showHeaderFooter && <Footer />}
