@@ -182,7 +182,8 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
             <p className="text-center sm:text-left">
-              © 2025 NEET720. All Rights Reserved.
+              © 2025 NEET720 – Official Website of the NEET720 Exam Portal.All Rights Reserved.
+
             </p>
 
             <div className="flex items-center gap-2 text-center">

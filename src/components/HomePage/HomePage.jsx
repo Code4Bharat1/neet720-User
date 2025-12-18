@@ -101,7 +101,7 @@ const Hero = () => {
 
             {/* Heading */}
             <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Best NEET Preparation Platform –
+              NEET720 – India’s Smart NEET Exam Portal for 720/720 Scorer
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
                 {text}
                 <span className="animate-pulse">|</span>
