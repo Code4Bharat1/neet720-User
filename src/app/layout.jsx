@@ -37,17 +37,28 @@ export const metadata = {
     // 🔹 Primary Keywords
     "NEET 720",
     "NEET exam portal",
+    "neet 720 coaching",
     "NEET mock test",
     "NEET AI rank predictor",
     "NEET college predictor",
     "NEET preparation platform",
+    "Neet 720 strategy",
+    "NEET 2026 Strategy",
+    "Neet 720 preparation",
+    "NEET 720 Score Predictor",
+    "Neet exam registration",
 
     // 🔹 Long-Tail Keywords
     "How to score 720 in NEET",
+    "NEET 720 Score Predictor",
     "NEET 720 preparation strategy",
     "NEET topper study plan for 720",
     "NEET 720 marks strategy",
     "NEET daily practice tests",
+    "NEET topper 720 marks",
+    "NEET Physics Most Expected Qs",
+    "Passing marks in NEET out of 720",
+    "Passing marks in neet out of 720 for mbbs",
 
     // 🔹 Feature-Based Keywords
     "NEET PYQ practice",
@@ -55,11 +66,23 @@ export const metadata = {
     "AI based NEET preparation",
     "NEET full syllabus mock tests",
     "NEET personalized learning",
+    "NEET Physics Formula Sheet",
+    "Can I score 720 in 3 months?",
 
     // 🔹 Year & Intent Keywords
     "NEET 2026 preparation",
     "NEET 2025 mock tests",
     "NEET exam strategy India",
+
+    
+    // 🔹 People Also Ask (PAA)
+   "What is the full form of NEET?",
+    "What is the eligibility for the NEET exam?",
+    "What is the age limit for the NEET exam?",
+    "What is the syllabus of the NEET exam?",
+    "What is the exam pattern of NEET?",
+    "What are the best preparation tips for the NEET exam?",
+    "Neet exam preparation tips",
   ],
 
   alternates: {
@@ -135,7 +158,7 @@ export default function RootLayout({ children }) {
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* ✅ Google Analytics (inside body only) */}
-        <Script
+        {/* <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-FWW584RNVM"
           strategy="afterInteractive"
         />
@@ -147,7 +170,7 @@ export default function RootLayout({ children }) {
             gtag('js', new Date());
             gtag('config', 'G-FWW584RNVM');
           `}
-        </Script>
+        </Script> */}
 
         {/* ✅ Client-side wrapper */}
         <ClientLayout>{children}</ClientLayout>

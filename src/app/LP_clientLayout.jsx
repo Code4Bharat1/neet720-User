@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { pageview } from "@/lib/gtag";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Toaster } from "react-hot-toast";
 
 export default function ClientLayout({ children }) {
@@ -44,7 +45,10 @@ export default function ClientLayout({ children }) {
 
   return (
     <>
-      {/* Client-only Toaster (moved here from RootLayout) */}
+      {/* ✅ Google Analytics (client-only) */}
+      <GoogleAnalytics />
+
+      {/* Client-only Toaster */}
       <Toaster
         position="top-center"
         reverseOrder={false}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import Script from "next/script";
 
 const faqs = [
   {
@@ -56,6 +57,20 @@ const faqs = [
   },
 ];
 
+// 🔹 Dynamic FAQ Schema (AUTO sync with UI)
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
+
 export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -64,59 +79,74 @@ export default function FAQPage() {
   };
 
   return (
-    <section className="min-h-screen py-20 bg-slate-50">
-      <div className="max-w-4xl mx-auto px-4">
+    <>
+      {/* ✅ SEO FAQ Schema */}
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema),
+        }}
+      />
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <span className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
-            Frequently Asked Questions
-          </span>
+      {/* ⬇️ YOUR EXISTING UI (UNCHANGED) */}
+      <section className="min-h-screen py-20 bg-slate-50">
+        <div className="max-w-4xl mx-auto px-4">
 
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mt-4">
-            Got Questions? We’ve Got Answers.
-          </h2>
+          {/* Header */}
+          <div className="text-center mb-12">
+            <span className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
+              Frequently Asked Questions
+            </span>
 
-          <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-            Everything you need to know about NEET720 — from features to support.
-          </p>
-        </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mt-4">
+              Got Questions? We’ve Got Answers.
+            </h2>
 
-        {/* FAQ List */}
-        <div className="space-y-4">
-          {faqs.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 cursor-pointer transition-all hover:shadow-md"
-              onClick={() => toggle(index)}
-            >
-              {/* Question */}
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {item.question}
-                </h3>
+            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+              Everything you need to know about NEET720 — from features to support.
+            </p>
+          </div>
 
-                <ChevronDown
-                  size={22}
-                  className={`text-gray-600 transition-transform duration-300 ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
-                />
-              </div>
-
-              {/* Answer */}
+          {/* FAQ List */}
+          <div className="space-y-4">
+            {faqs.map((item, index) => (
               <div
-                className={`mt-3 text-gray-600 overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
-                }`}
+                key={index}
+                className="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 cursor-pointer transition-all hover:shadow-md"
+                onClick={() => toggle(index)}
               >
-                {item.answer}
-              </div>
-            </div>
-          ))}
-        </div>
+                {/* Question */}
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {item.question}
+                  </h3>
 
-      </div>
-    </section>
+                  <ChevronDown
+                    size={22}
+                    className={`text-gray-600 transition-transform duration-300 ${
+                      openIndex === index ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {/* Answer */}
+                <div
+                  className={`mt-3 text-gray-600 overflow-hidden transition-all duration-300 ${
+                    openIndex === index
+                      ? "max-h-40 opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
+                  {item.answer}
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+    </>
   );
 }
