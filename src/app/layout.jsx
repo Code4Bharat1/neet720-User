@@ -2,7 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./LP_clientLayout";
-import Script from "next/script";
+import Script from "next/script"; 
 
 // Fonts
 const geistSans = Geist({
@@ -74,7 +74,7 @@ export const metadata = {
     "NEET 2025 mock tests",
     "NEET exam strategy India",
 
-    
+
     // 🔹 People Also Ask (PAA)
    "What is the full form of NEET?",
     "What is the eligibility for the NEET exam?",
@@ -94,20 +94,12 @@ export const metadata = {
     follow: true,
   },
 
-  openGraph: {
+ openGraph: {
     title: "NEET 720 | AI Rank Predictor, Mock Tests & 720 Strategy",
     description:
       "Prepare smarter for NEET with NEET 720. Access AI-powered rank prediction, college prediction, mock tests, PYQs, and expert strategies to score a perfect 720.",
     url: "https://neet720.com/",
     siteName: "NEET 720",
-    // images: [
-    //   {
-    //     // url: "/og-image.jpg", // place inside /public
-    //     width: 1200,
-    //     height: 630,
-    //     alt: "NEET 720 – Smart NEET Preparation Platform",
-    //   },
-    // ],
     locale: "en_IN",
     type: "website",
   },
@@ -117,63 +109,61 @@ export const metadata = {
     title: "NEET 720 | Smart NEET Exam Preparation Platform",
     description:
       "Crack NEET with confidence using NEET 720. AI rank predictor, mock tests, PYQs, and proven strategies to score 720/720.",
-    // images: ["/og-image.jpg"],
   },
-
-  // icons: {
-  //   icon: [
-  //     { url: "/favicon.ico", sizes: "any" },
-  //     { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
-  //     { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
-  //     { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
-  //   ],
-  //   apple: "/apple-touch-icon.png",
-  // },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* ✅ JSON-LD Schema */}
+        {/* ✅ Organization Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: `{
+            __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "NEET720",
-              "url": "https://neet720.com",
-              "logo": "https://neet720.com/logo.png",
-              "description": "NEET720 is India’s smart NEET exam portal offering AI rank prediction, mock tests, PYQs, and 720-scoring strategies.",
-              "sameAs": [
+              "@id": "https://neet720.com/#organization",
+              name: "NEET720",
+              url: "https://neet720.com",
+              logo: "https://neet720.com/logo.png",
+              description:
+                "NEET720 is India’s smart NEET exam portal offering AI rank prediction, mock tests, PYQs, and 720-scoring strategies.",
+              sameAs: [
                 "https://www.instagram.com/neet720",
                 "https://www.facebook.com/neet720",
-                "https://www.linkedin.com/company/neet720"
-              ]
-            }`,
+                "https://www.linkedin.com/company/neet720",
+              ],
+            }),
           }}
         />
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* ✅ Google Analytics (inside body only) */}
-        {/* <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-FWW584RNVM"
-          strategy="afterInteractive"
-        />
-
-        <Script id="ga4-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-FWW584RNVM');
-          `}
-        </Script> */}
-
-        {/* ✅ Client-side wrapper */}
+        {/* Client Layout (Navbar, Footer, GA, etc.) */}
         <ClientLayout>{children}</ClientLayout>
+
+        {/* ✅ Website + SearchAction Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "@id": "https://neet720.com/#website",
+              url: "https://neet720.com/",
+              name: "NEET720",
+              alternateName: "neet720",
+              potentialAction: {
+                "@type": "SearchAction",
+                target:
+                  "https://neet720.com/search?q={search_term_string}",
+                "query-input":
+                  "required name=search_term_string",
+              },
+            }),
+          }}
+        />
       </body>
     </html>
   );

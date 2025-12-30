@@ -38,6 +38,7 @@ export async function GET() {
     { path: "upcomingActivity", priority: "0.6" },
     { path: "top10_frontend", priority: "0.6" },
     { path: "customTask", priority: "0.6" },
+    {path:"schema-generator",priority:"0.5"},
   ];
 
   const batchUrls = batchSlugs.map((slug) => ({
